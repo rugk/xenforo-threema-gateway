@@ -21,7 +21,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     protected $GatewayHandler;
 
     /**
-     * Create provider
+     * Create provider.
      *
      * @param string $id Provider id
      */
@@ -190,9 +190,9 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
 
         if ($options->threema_gateway_tfa_usesodiumran) {
             //use own Sodium method
-            /** @var ThreemaGateway_Handler_Libsodium */
+            /* @var ThreemaGateway_Handler_Libsodium */
             $sodiumHelper = new ThreemaGateway_Handler_Libsodium;
-            $code = $sodiumHelper->getRandomNumeric($length);
+            $code         = $sodiumHelper->getRandomNumeric($length);
         } else {
             //use XenForo method
             $random = XenForo_Application::generateRandomString(4, true);

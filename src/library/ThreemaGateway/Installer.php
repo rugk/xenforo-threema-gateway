@@ -20,7 +20,7 @@ class ThreemaGateway_Installer
      */
     public static function getProviderModells()
     {
-        /** @var array An array with the modells of all providers */
+        /* @var array An array with the modells of all providers */
         $ProviderModels = [];
 
         // add provider
@@ -40,7 +40,7 @@ class ThreemaGateway_Installer
      */
     public static function install($installedAddon)
     {
-        /** @var array An array with the modells of all providers */
+        /* @var array An array with the modells of all providers */
         $ProviderModells = self::getProviderModells();
 
         // check requirements of Gateway
@@ -59,21 +59,22 @@ class ThreemaGateway_Installer
             }
 
             // add permissions
-            $permissionsModell = new ThreemaGateway_Model_Permissions;
-            $permissionsModell->addForUserGroup(2, 'use', 'allow');
-            $permissionsModell->addForUserGroup(2, 'send', 'allow');
-            $permissionsModell->addForUserGroup(2, 'receive', 'allow');
-            $permissionsModell->addForUserGroup(2, 'fetch', 'allow');
-            $permissionsModell->addForUserGroup(2, 'lookup', 'allow');
-            $permissionsModell->addForUserGroup(2, 'tfa', 'allow');
+            /** @var ThreemaGateway_Installer_Permissions $permissionsInstaller */
+            $permissionsInstaller = new ThreemaGateway_Installer_Permissions;
+            $permissionsInstaller->addForUserGroup(2, 'use', 'allow');
+            $permissionsInstaller->addForUserGroup(2, 'send', 'allow');
+            $permissionsInstaller->addForUserGroup(2, 'receive', 'allow');
+            $permissionsInstaller->addForUserGroup(2, 'fetch', 'allow');
+            $permissionsInstaller->addForUserGroup(2, 'lookup', 'allow');
+            $permissionsInstaller->addForUserGroup(2, 'tfa', 'allow');
 
             // create public key store
-            /** @var ThreemaGateway_Model_Keystore $keystore */
-            $keystore = new ThreemaGateway_Model_Keystore;
-            $keystore->createKeystore();
+            /** @var ThreemaGateway_Installer_Keystore $keystoreInstaller */
+            $keystoreInstaller = new ThreemaGateway_Installer_Keystore;
+            $keystoreInstaller->create();
 
-            // create public key store
-            /** @var XenForo_DataWriter $userFieldWriter  */
+            // create custom user field
+            /** @var XenForo_DataWriter $userFieldWriter */
             $userFieldWriter = XenForo_DataWriter::create('XenForo_DataWriter_UserField');
             $userFieldWriter->set('field_id', 'threemaid');
             $userFieldWriter->set('display_group', 'contact');
@@ -83,7 +84,7 @@ class ThreemaGateway_Installer
             $userFieldWriter->set('match_callback_class', 'ThreemaGateway_Helper_UserField');
             $userFieldWriter->set('match_callback_method', 'verifyThreemaId');
             $userFieldWriter->set('max_length', 8);
-            // $userFieldWriter->save();
+            $userFieldWriter->save();
         }
     }
 
@@ -92,7 +93,7 @@ class ThreemaGateway_Installer
      */
     public static function uninstall()
     {
-        /** @var array An array with the modells of all providers */
+        /* @var array An array with the modells of all providers */
         $ProviderModells = self::getProviderModells();
 
         // delete tfa provider from database
@@ -101,17 +102,31 @@ class ThreemaGateway_Installer
         }
 
         // delete keystore
-        /** @var ThreemaGateway_Model_Keystore */
-        $keystore = new ThreemaGateway_Model_Keystore;
-        $keystore->deleteKeystore();
+        /** @var ThreemaGateway_Installer_Keystore $keystoreInstaller */
+        $keystoreInstaller = new ThreemaGateway_Installer_Keystore;
+        $keystoreInstaller->destroy();
+
+        // delete permissions
+        /** @var ThreemaGateway_Installer_Permissions $permissionsInstaller */
+        $permissionsInstaller = new ThreemaGateway_Installer_Permissions;
+        $permissionsInstaller->deleteAll();
+
+        // delete custom user field (if it exists)
+        $userFieldModel = new XenForo_Model_UserField;
+        if ($userFieldModel->getUserFieldById('threemaid')) {
+            /** @var XenForo_DataWriter $userFieldWriter  */
+            $userFieldWriter = XenForo_DataWriter::create('XenForo_DataWriter_UserField');
+            $userFieldWriter->setExistingData('threemaid');
+            $userFieldWriter->delete();
+        }
     }
 
     /**
      * At the installation this will check the XenForo version and
      * remove the 2FA provider to the table.
      *
-     * @param string $error Will be filled by a human-readable error description
-     * when an error occurs
+     * @param  string $error Will be filled by a human-readable error description
+     *                       when an error occurs
      * @return bool
      */
     public static function meetsRequirements(&$error)

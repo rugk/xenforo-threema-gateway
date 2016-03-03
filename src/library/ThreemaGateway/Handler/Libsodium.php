@@ -189,7 +189,7 @@ class ThreemaGateway_Handler_Libsodium
      * @link https://paragonie.com/book/pecl-libsodium/read/03-utilities-helpers.md#memcmp
      * @param  string $str1 The first string
      * @param  string $str2 The second string
-     * @return int 0 = successful; -1 = failure
+     * @return int    0 = successful; -1 = failure
      */
     public function memcmp($str1, $str2)
     {

@@ -28,11 +28,11 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
     public static function renderOption(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
         if ($preparedOption['option_value']) {
-    		//censor option
+            //censor option
             $preparedOption['option_value'] = ThreemaGateway_Helper_General::censorString($preparedOption['option_value'], self::censorChars);
 
             // add note to explanation
-    		$preparedOption['explain']->setParams([
+            $preparedOption['explain']->setParams([
                 'note' => new XenForo_Phrase('option_threema_gateway_threema_id_secret_explain_note')
             ]);
         } else {
@@ -43,7 +43,7 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
         }
 
         //modify array to show text box
-        $preparedOption['edit_format'] = 'textbox';
+        $preparedOption['edit_format']  = 'textbox';
         $preparedOption['formatParams'] = ['placeholder' => ''];
 
         //pass this to the default handler
@@ -63,7 +63,7 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
     {
         //check whether change was really done by user
         // https://regex101.com/r/eY2uE3/3
-        if (preg_match('/\*{' . (16-self::censorChars) . '}[A-Za-z0-9]*/', $threemagwsecret)) {
+        if (preg_match('/\*{' . (16 - self::censorChars) . '}[A-Za-z0-9]*/', $threemagwsecret)) {
             $threemagwsecret = $dw->getExisting('option_value'); //reset old value
             return true;
         }

@@ -10,7 +10,7 @@
 
  class ThreemaGateway_Handler_Emoji
  {
-    /**
+     /**
      * Replaces unicode escape sequence with the correct UNICODE character.
      *
      * You need to pass it as surrogate pairs, e.g. \ud83d\udd11.

@@ -52,10 +52,10 @@ class ThreemaGateway_Installer_TfaProvider
     public function add($activated = true)
     {
         $db = XenForo_Application::get('db');
-        $db->query("INSERT INTO `xf_tfa_provider`
+        $db->query('INSERT INTO `xf_tfa_provider`
                   (`provider_id`, `provider_class`, `priority`, `active`)
-                  VALUES (?, ?, ?, ?)",
-                  [$this->TfaId, $this->TfaClass, $this->TfaPriority, (int)$activated]);
+                  VALUES (?, ?, ?, ?)',
+                  [$this->TfaId, $this->TfaClass, $this->TfaPriority, (int) $activated]);
     }
 
     /**
@@ -64,8 +64,8 @@ class ThreemaGateway_Installer_TfaProvider
     public function delete()
     {
         $db = XenForo_Application::get('db');
-        $db->query("DELETE FROM `xf_tfa_provider`
-                    WHERE `provider_id`=?",
+        $db->query('DELETE FROM `xf_tfa_provider`
+                    WHERE `provider_id`=?',
                     [$this->TfaId]);
     }
 }

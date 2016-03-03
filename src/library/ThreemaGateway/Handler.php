@@ -134,13 +134,23 @@ class ThreemaGateway_Handler
         // Set (missing) properties.
         $this->SdkVersion = MSGAPI_SDK_VERSION;
 
+        //create keystore
+        /** @var array $phpKeystore The setting for an optional PHP keystore */
+        $phpKeystore = $options->threema_gateway_keystorefile;
+
+        if (!$phpKeystore || !$phpKeystore['enabled']) {
+            $keystore = new ThreemaGateway_Handler_DbKeystore();
+        } else {
+            $keystore = new Threema\MsgApi\PublicKeyStores\PhpFile(__DIR__ . $phpKeystore['path']);
+        }
         //create connection
+        /** @var ThreemaGateway_Handler_Connection $connectorHelper */
         $connectorHelper = new ThreemaGateway_Handler_Connection(
             $this->GatewayId,
             $this->GatewaySecret
         );
         /** @var ThreemaGateway_Handler_Connection $connector */
-        $connector = $connectorHelper->create();
+        $connector = $connectorHelper->create($keystore);
 
         $this->connector = $connector;
     }
@@ -429,42 +439,6 @@ class ThreemaGateway_Handler
         }
 
         return $return;
-    }
-
-    /**
-     * Checks whether a Threema ID is valid ande exists.
-     *
-     * @param  string $threemaid      The Threema ID to check.
-     * @param  string $type           The type of the Threema ID (personal, gateway, any)
-     * @param  array  $error
-     * @param  bool   $checkExistence Whether not only formal aspects should
-     *                                be checked, but also the existence of the ID.
-     * @return bool
-     */
-    public function checkThreemaId(&$threemaid, $type, &$error, $checkExistence = true)
-    {
-        $threemaid = strtoupper($threemaid);
-
-        // check whether an id is formally correct
-        if (!preg_match('/' . ThreemaGateway_Constants::RegExThreemaId[$type] . '/', $threemaid)) {
-            $error[] = new XenForo_Phrase('threemagw_invalid_threema_id');
-            return false;
-        }
-
-        if (!$checkExistence) {
-            return true;
-        }
-
-        // fetches public key of an id to check whether it exists
-        try {
-            /** @var string $publicKey */
-            $publicKey = $this->fetchPublicKey($threemaid);
-        } catch (Exception $e) {
-            $error[] = new XenForo_Phrase('threemagw_threema_id_does_not_exist');
-            return false;
-        }
-
-        return true;
     }
 
     /**

@@ -22,8 +22,8 @@ class ThreemaGateway_Option_Status
      */
     public static function renderHtml(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
-        $isConfError = false;
-        $status      = ['libsodium', 'phpsdk', 'credits'];
+        $isConfError     = false;
+        $status          = ['libsodium', 'phpsdk', 'credits'];
         $additionalerror = '';
 
         //get old options

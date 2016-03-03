@@ -1,6 +1,6 @@
 <?php
 /**
- * Public key conversion.
+ * Creates a connection to the SDK.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -19,11 +19,6 @@ class ThreemaGateway_Handler_Connection
     protected $settings;
 
     /**
-     * @var Threema\MsgApi\PublicKeyStore Public keystore;
-     */
-    protected $keystore;
-
-    /**
      * Create the connection to the PHP-SDK.
      *
      * @param string $GatewayId     Your own gateway ID
@@ -31,22 +26,18 @@ class ThreemaGateway_Handler_Connection
      */
     public function __construct($GatewayId, $GatewaySecret)
     {
-        /** @var XenForo_Options */
-        $options = XenForo_Application::get('options');
-
-        //Create connection
-        $this->keystore = new ThreemaGateway_Handler_Keystore($options);
-        $this->settings = $this->createConnectionSettings($GatewayId, $GatewaySecret, $options->threema_gateway_usehttps);
+        $this->settings = $this->createConnectionSettings($GatewayId, $GatewaySecret);
     }
 
     /**
      * Creates the connection.
      *
-     * @return Threema\MsgApi\Connection $connector
+     * @param  Threema\MsgApi\PublicKeyStore $keystore A MsgAPI keystore.
+     * @return Threema\MsgApi\Connection
      */
-    public function create()
+    public function create($keystore)
     {
-        return new Connection($this->settings, $this->keystore);
+        return new Connection($this->settings, $keystore);
     }
 
     /**
@@ -54,13 +45,15 @@ class ThreemaGateway_Handler_Connection
      *
      * @param string $GatewayId     Your own gateway ID
      * @param string $GatewaySecret Your own gateway secret
-     * @param bool $useTlsOptions whether to use advanced options or not
      *
      * @return ConnectionSettings
      */
-    protected function createConnectionSettings($GatewayId, $GatewaySecret, $useTlsOptions)
+    protected function createConnectionSettings($GatewayId, $GatewaySecret)
     {
-        if ($useTlsOptions === true) {
+        /* @var XenForo_Options */
+        $options = XenForo_Application::get('options');
+
+        if ($options->threema_gateway_usehttps) {
             //create a connection with advanced options
             $settings = new ConnectionSettings(
                 $GatewayId,

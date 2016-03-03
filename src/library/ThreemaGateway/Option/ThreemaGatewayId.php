@@ -21,8 +21,11 @@ class ThreemaGateway_Option_ThreemaGatewayId
      */
     public static function verifyOption(&$threemaid, XenForo_DataWriter $dw, $fieldName)
     {
+        /** @var mixed Useless error var */
+        $error = '';
+
         //check for formal errors
-        if ($threemaid != '' && !preg_match('/' . ThreemaGateway_Constants::RegExThreemaId['gateway'] . '/', $threemaid)) {
+        if ($threemaid != '' && !ThreemaGateway_Handler_Validation::checkThreemaId($threemaid, 'gateway', $error, false)) {
             $dw->error(new XenForo_Phrase('threemagw_invalid_threema_id'), $fieldName);
             return false;
         }

@@ -15,7 +15,7 @@ class ThreemaGateway_Option_PhpKeyStorePath
      *
      * @param string             $phpKeystore Input
      * @param XenForo_DataWriter $dw
-     * @param string             $fieldName Name of field/option
+     * @param string             $fieldName   Name of field/option
      *
      * @return bool
      */

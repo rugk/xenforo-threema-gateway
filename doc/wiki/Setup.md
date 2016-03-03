@@ -5,11 +5,13 @@
 1. Install this add-on.
 2. Go to the ACP setting "Threema Gateway". It is very likely that you see at least one error message at the top.  
 3. These error messages should vanish when you are finished with the setup. You can reload the site at any time and see what is still missing.  
-4. Note that at this point of time no 2FA method is activated and your users should not notice any difference.
+4. Note that at this point of time no 2FA method is activated and your users should not notice any difference.\*
 5. At this point you [have to decide](https://gateway.threema.ch/en/products) whether you want to use the basic mode or the end-to-end mode of the Threema Gateway. The latter is recommend as it not only provides more security, but it also allows XenForo to receive messages, which is required by some 2FA modes.  
 6. When you want to use the basic mode create this ID on <https://gateway.threema.ch> and continue with step 3.  
 7. When you want to use the end-to-end encrypted mode continue with the next step.
 8. You should now install libsodium. How to do this is e.g. described [in step one](https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#1-preparation) of the "generate a new key pair" guide.
+
+\* It has to be said that your users could already see a minor difference: The custom user field for their Threema ID is already added. But this should not cause any inconveniences as by default only the format of the input is checked.
 
 ## 2. Threema Gateway setup
 

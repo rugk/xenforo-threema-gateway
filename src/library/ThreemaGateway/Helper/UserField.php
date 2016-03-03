@@ -1,6 +1,6 @@
 <?php
 /**
- * User field helper
+ * User field helper.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -9,24 +9,28 @@
 */
 
 /**
- * Verifies user fields
+ * Verifies user fields.
  */
 class ThreemaGateway_Helper_UserField
 {
     /**
      * Checks the custom Threema ID user field.
      *
-     * This basically only forwards the request to
+     * This basically only passes the request to
      * ThreemaGateway_Handler->checkThreemaId().
      *
-     * @param string $field The field id
-     * @param string $value The entered value
-     * @param array $error
+     * @param  string $field The field id
+     * @param  string $value The entered value
+     * @param  mixed $error
      * @return bool
      */
-    public static function verifyThreemaId($field, &$value, &$error) {
-        /** @var ThreemaGateway_Handler $gatewayHandler */
-        $gatewayHandler = new ThreemaGateway_Handler;
-        return $gatewayHandler->checkThreemaId($value, 'personal', $error);
+    public static function verifyThreemaId($field, &$value, &$error)
+    {
+        /** @var XenForo_Options $options */
+        $options = XenForo_Application::getOptions();
+
+        return ThreemaGateway_Handler_Validation::checkThreemaId(
+            $value, 'personal', $error, $options->threema_gateway_userfield_verifyexist
+        );
     }
 }

@@ -21,24 +21,36 @@ class ThreemaGateway_Installer_Permissions
     /**
      * Sets an "allow" rule for a specific user group.
      *
-     * @param int    $userGroupId       The user group:
-     *                                  1 = unconfirmed
-     *                                  2 = registered
-     *                                  3 = administrator
-     *                                  4 = moderator
-     * @param string $applyPermissionId The permission id
-     * @param string $permissionValue (optional) The value of the permission: allow, deny
-     * use_int
-     * @param integer $permissionValueInt (optional) When using an integer (use_int)
-     * specify the integer to store
+     * @param int    $userGroupId        The user group:
+     *                                   1 = unconfirmed
+     *                                   2 = registered
+     *                                   3 = administrator
+     *                                   4 = moderator
+     * @param string $applyPermissionId  The permission id
+     * @param string $permissionValue    (optional) The value of the permission: allow, deny
+     *                                   use_int
+     * @param int    $permissionValueInt (optional) When using an integer (use_int)
+     *                                   specify the integer to store
      */
     public function addForUserGroup($userGroupId, $permissionId, $permissionValue, $permissionValueInt = 0)
     {
         $db = XenForo_Application::get('db');
 
-        $db->query("INSERT IGNORE INTO xf_permission_entry
+        $db->query('INSERT IGNORE INTO xf_permission_entry
                 (user_group_id, user_id, permission_group_id, permission_id, permission_value, permission_value_int)
-                VALUES (?, 0, ?, ?, ?, ?)",
+                VALUES (?, 0, ?, ?, ?, ?)',
                 [$userGroupId, self::GroupId, $permissionId, $permissionValue, $permissionValueInt]);
+    }
+
+    /**
+     * Deletes all permissons of the sepcified group id.
+     */
+    public function deleteAll()
+    {
+        $db = XenForo_Application::get('db');
+
+        $db->query('DELETE FROM xf_permission_entry
+                WHERE permission_group_id=?',
+                [self::GroupId]);
     }
 }
