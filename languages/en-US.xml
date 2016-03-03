@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language title="English (US)" date_format="M j, Y" time_format="g:i A" decimal_point="." thousands_separator="," language_code="en-US" text_direction="LTR" addon_id="ThreemaGateway">
+  <phrase title="admin_permission_threemagw_showcredits" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway: Show credits]]></phrase>
+  <phrase title="option_group_threemagw" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Threema Gateway]]></phrase>
+  <phrase title="option_group_threemagw_description" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank">Threema Gateway</a>.]]></phrase>
+  <phrase title="option_group_threemagw_tfa" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
+  <phrase title="option_group_threemagw_tfa_description" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the Two-factor-authentication modes of the Threema Gateway.]]></phrase>
+  <phrase title="option_threema_gateway_e2e" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
+  <phrase title="option_threema_gateway_e2e_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Select the mode you chose when setting up your Threema ID. Without the end-to-end encrypted mode many options may not be available.]]></phrase>
+  <phrase title="option_threema_gateway_keystorefile" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Use PHP Keystore (not recommend)]]></phrase>
+  <phrase title="option_threema_gateway_keystorefile_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[By default the database is used to store the public keys of Threema users. When enabling this option you can specify a php file to use. This file <b>must already exist</b>!
+Note that the file must be stored in <code>library/ThreemaGateway</code>, but you can use relative paths to change this location.]]></phrase>
+  <phrase title="option_threema_gateway_mode_basic" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Basic mode]]></phrase>
+  <phrase title="option_threema_gateway_mode_e2e" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[End-to-end encrypted mode]]></phrase>
+  <phrase title="option_threema_gateway_privatekeyfile" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Private key file]]></phrase>
+  <phrase title="option_threema_gateway_privatekeyfile_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[If you use the end-to-end encrypted mode enter the path to your private key file here. The file must be placed in <code>library/ThreemaGateway</code>.]]></phrase>
+  <phrase title="option_threema_gateway_status" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Status]]></phrase>
+  <phrase title="option_threema_gateway_status_credits" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Remaining credits: <b>{credits}</b>]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_error" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[There was an error when fetching credits. You probably have entered an incorrect Threema Gateway ID or secret. There could also have been a connection error.]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_low" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Your credits are getting low. Please consider recharging them.]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_out" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[You have no credits (anymore). Without any credits you cannot send messages any more.]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_permission" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[You are not allowed to view the remaining credits.]]></phrase>
+  <phrase title="option_threema_gateway_status_error" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[You have some errors in your configuration. Until you resolve them it will not be possible to use this addon properly.]]></phrase>
+  <phrase title="option_threema_gateway_status_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_not_installed" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Libsodium is not installed.]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_not_installed_recommend" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[For performance and security reasons it is very much recommend to install libsodium. You can follow <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">this guide</a> for doing so.]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_not_installed_required_64bit" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[You can only use the pure PHP implementation with a 64bit version of PHP, so you either have to PGP x64 or <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">install libsodium</a>, which also provides more speed and security advantages.]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_outdated" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium.]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_version" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Sodium version: <b>{version}</b>]]></phrase>
+  <phrase title="option_threema_gateway_status_phpsdk_version" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Version of <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blanK">Threema PHP SDK</a>: <b>{version}</b>]]></phrase>
+  <phrase title="option_threema_gateway_threema_id" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway ID]]></phrase>
+  <phrase title="option_threema_gateway_threema_id_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Enter the Threema ID of your Gateway account here. (e.g. <code>*MYAPIID</code>)]]></phrase>
+  <phrase title="option_threema_gateway_threema_id_secret" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Threema ID secret]]></phrase>
+  <phrase title="option_threema_gateway_threema_id_secret_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Enter your secret for accessing the Threema Gateway here.{note}]]></phrase>
+  <phrase title="option_threema_gateway_threema_id_secret_explain_note" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[<br >
+<b>Note:</b> For security reasons your secret is mostly hidden and will only be changed when you replace the value here.]]></phrase>
+  <phrase title="option_threema_gateway_usehttps" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Use hardened HTTPS connection (recommend)]]></phrase>
+  <phrase title="option_threema_gateway_usehttps_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[When sending messages this prevents fallback attacks on the TLS/HTTPS connection by limiting the TLS version and ciphers to modern ones.
+Only disable this if you experience problems connecting to the Threema server (e.g. when the credits are not fetched correctly).]]></phrase>
+  <phrase title="option_threema_gateway_usesource" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Use source code of PHP SDK]]></phrase>
+  <phrase title="option_threema_gateway_usesource_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Instead of using the .phar this forces the add-on to use the source code of the PHP SDK. This is mostly useful for debugging.]]></phrase>
+  <phrase title="permission_group_threemagw" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
+  <phrase title="permission_interface_threemagw" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
+  <phrase title="permission_threemagw_fetch" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Fetch public key (based on ID)]]></phrase>
+  <phrase title="permission_threemagw_lookup" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Lookup ID/public key based on any criteria]]></phrase>
+  <phrase title="permission_threemagw_receive" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Receive messages]]></phrase>
+  <phrase title="permission_threemagw_send" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Send messages]]></phrase>
+  <phrase title="permission_threemagw_tfa" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Use Threema 2FA]]></phrase>
+  <phrase title="permission_threemagw_use" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Use Threema Gateway]]></phrase>
+  <phrase title="sendto_threema" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Send to Threema]]></phrase>
+  <phrase title="tfa_threemagw_conventional" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Threema - Conventional]]></phrase>
+  <phrase title="tfa_threemagw_conventional_desc" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[This will send you a 6 digit code through Threema to verify your login.{e2e}]]></phrase>
+  <phrase title="tfa_threemagw_conventional_message" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[\ud83d\udd11 Two-factor authentication
+
+Hi {user}, to complete the second step of the two-factor authentication, you must enter the following code:
+
+{code}
+
+The code is valid for {vadilityTime}.
+
+The login was requested via the IP {ip}. If you did not initiate this request, you should change your password urgently.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_continue" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to continue.]]></phrase>
+  <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to complete login.]]></phrase>
+  <phrase title="tfa_threemagw_conventional_message_short" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[\ud83d\udd11
+Code: {code}
+IP: {ip}
+Validity: {vadilityTime}
+
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_conventional_setup_descr" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[This mode sends you a 6 digit code to your Threema ID, which you have to enter when logging in.]]></phrase>
+  <phrase title="tfa_threemagw_setup_generaldescr" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[This two factor authentication mode uses the <a href="https://threema.ch" target="_blank">Threema</a> app. Before you can proceed you have to download it. It is available <a href="https://threema.ch/get-threema" target="_blank">for many platforms</a>. <br />
+Setup your Threema ID and enter it below.]]></phrase>
+  <phrase title="tfa_threemagw_setup_public_key" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Public Key]]></phrase>
+  <phrase title="tfa_threemagw_setup_public_key_descr" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Before proceeding, please confirm that the following fingerprint is correct. Often you can find it on the same page where you can also see your Threema ID and QR code.<br>
+<b>Key fingerprint:</b> {pubKeyShort}<br /><br />
+Please check each character of the code and confirm it is the same as displayed on your device. Should you notice any discrepancy when doing so, please <i>do not continue</i> and contact the forum admin.<br />
+The displayed fingerprint is derived from the public key, which is linked to your Threema ID. More information <a href="https://threema.ch/en/faq/threema_id" target="_blank">in the Threema FAQ</a>.]]></phrase>
+  <phrase title="tfa_threemagw_short_message_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Uses short messages instead of long ones to allow you to see your verification code directly in the notification, so you do not have to open Threema to see it.]]></phrase>
+  <phrase title="tfa_threemagw_use_number_smilies" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Use smilies as digits]]></phrase>
+  <phrase title="tfa_threemagw_use_number_smilies_explain" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Replaces the numbers in the code with smilies.]]></phrase>
+  <phrase title="tfa_threemagw_use_short_message" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Use short messages]]></phrase>
+  <phrase title="threemagw_confirmation_code" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Threema Confirmation Code]]></phrase>
+  <phrase title="threemagw_fetching_publickey_failed" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
+  <phrase title="threemagw_getting_credits_failed" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
+  <phrase title="threemagw_invalid_keystorepath" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[The path to the PHP keystore file is invalid.]]></phrase>
+  <phrase title="threemagw_invalid_privatekey" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[The private key is invalid or could not be found.]]></phrase>
+  <phrase title="threemagw_invalid_privkeypath" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[The path to the private key file is invalid.]]></phrase>
+  <phrase title="threemagw_invalid_threema_id" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[The Threema ID is invalid.]]></phrase>
+  <phrase title="threemagw_invalid_threema_secret" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[The Threema ID Secret is invalid.]]></phrase>
+  <phrase title="threemagw_message_is_sent_e2e" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[The message is sent end-to-end encrypted.]]></phrase>
+  <phrase title="threemagw_minute" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[minute]]></phrase>
+  <phrase title="threemagw_minutes" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[minutes]]></phrase>
+  <phrase title="threemagw_missing_sdk" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[The PHP SDK for Threema Gateway is missing.]]></phrase>
+  <phrase title="threemagw_not_writable_keystorefile" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[The PHP keystore file is not writable.]]></phrase>
+  <phrase title="threemagw_permission_error" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[There was a permission error.]]></phrase>
+  <phrase title="threemagw_phpkeystore_example" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[keystore.php]]></phrase>
+  <phrase title="threemagw_sending_failed" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Sending message failed.]]></phrase>
+  <phrase title="threemagw_threema_id_does_not_exist" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Threema ID does not exist.]]></phrase>
+  <phrase title="threemaid" addon_id="ThreemaGateway" version_id="1" version_string="0.1"><![CDATA[Threema ID]]></phrase>
+</language>

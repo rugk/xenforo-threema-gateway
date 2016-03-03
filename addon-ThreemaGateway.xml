@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="ThreemaGateway" title="Threema Gateway (2FA)" version_string="0.1.0" version_id="1" url="" install_callback_class="ThreemaGateway_Installer" install_callback_method="install" uninstall_callback_class="ThreemaGateway_Installer" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions>
+    <admin_permission admin_permission_id="threemagw_showcredits" display_order="620"/>
+  </admin_permissions>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="threemagw_option_list_status"><![CDATA[<xen:require css="threemagw_option_list_status.css" />
+
+<xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<p>{xen:raw $status.libsodium.text}</p>
+		<p class="explain {$status.libsodium.descclass}">{xen:raw $status.libsodium.descr}</p>
+
+		<p>{xen:raw $status.phpsdk.text}</p>
+		<p class="explain {$status.phpsdk.descclass}">{xen:raw $status.phpsdk.descr}</p>
+		
+		<p>{xen:raw $status.credits.text}</p>
+		<p class="explain {$status.credits.descclass}">{xen:raw $status.credits.descr}</p>
+		
+		<xen:if is="{$isConfError}">
+			<br />
+			<p class="error">{xen:phrase option_threema_gateway_status_error}</p>
+		</xen:if>
+		
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>]]></template>
+    <template title="threemagw_option_list_status.css"><![CDATA[.warning {
+  color: rgb(195, 123, 0) !important;
+}
+
+.error {
+  color: rgb(195, 0, 0) !important;
+}
+]]></template>
+    <template title="two_step_threemagw_conventional"><![CDATA[<p>{xen:phrase tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login, 'threemaid={$data.threemaid}'}</p>
+
+<dl class="ctrlUnit">
+    <dt><label for="ctrl_threemagw_code">{xen:phrase threemagw_confirmation_code}:</label></dt>
+	<dd>
+        <input type="text" name="code" id="ctrl_threemagw_code" class="textCtrl" />
+	</dd>
+</dl>]]></template>
+  </admin_templates>
+  <admin_template_modifications/>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="file_health_check" execute_order="10" callback_class="ThreemaGateway_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description="Integrate add-on into health check"/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="ThreemaGateway_Listener_InitDependencies" callback_method="addHelpers" active="1" hint="" description="Extend init_dependencies for template helpers"/>
+    <listener event_id="load_class_controller" execute_order="5" callback_class="ThreemaGateway_Listener_LoadClassController" callback_method="extendAccountController" active="1" hint="XenForo_ControllerPublic_Account" description="Extend XF account controller"/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups>
+    <group group_id="threemagw" display_order="1" debug_only="0"/>
+    <group group_id="threemagw_tfa" display_order="2" debug_only="0"/>
+    <option option_id="threema_gateway_e2e" edit_format="radio" data_type="string" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>basic={xen:phrase option_threema_gateway_mode_basic}
+e2e={xen:phrase option_threema_gateway_mode_e2e}</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="120"/>
+    </option>
+    <option option_id="threema_gateway_keystorefile" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_PhpKeyStorePath" validation_method="verifyOption">
+      <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path"}</default_value>
+      <edit_format_params>onoff=enabled
+value=path
+type=textbox
+placeholder={xen:phrase threemagw_phpkeystore_example}</edit_format_params>
+      <sub_options>enabled
+path</sub_options>
+      <relation group_id="threemagw" display_order="230"/>
+    </option>
+    <option option_id="threema_gateway_privatekeyfile" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_PrivateKeyPath" validation_method="verifyOption">
+      <default_value></default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="180"/>
+    </option>
+    <option option_id="threema_gateway_status" edit_format="callback" data_type="boolean" can_backup="1">
+      <default_value>true</default_value>
+      <edit_format_params>ThreemaGateway_Option_Status::renderHtml</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="1"/>
+    </option>
+    <option option_id="threema_gateway_threema_id" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_ThreemaGatewayId" validation_method="verifyOption">
+      <default_value></default_value>
+      <edit_format_params>placeholder = *MYAPIID</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="110"/>
+    </option>
+    <option option_id="threema_gateway_threema_id_secret" edit_format="callback" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_ThreemaGatewaySecret" validation_method="verifyOption">
+      <default_value></default_value>
+      <edit_format_params>ThreemaGateway_Option_ThreemaGatewaySecret::renderOption</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="110"/>
+    </option>
+    <option option_id="threema_gateway_usehttps" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="240"/>
+    </option>
+    <option option_id="threema_gateway_usesource" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="220"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups>
+      <permission_group permission_group_id="threemagw"/>
+    </permission_groups>
+    <permissions>
+      <permission permission_group_id="threemagw" permission_id="fetch" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="20"/>
+      <permission permission_group_id="threemagw" permission_id="lookup" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="30"/>
+      <permission permission_group_id="threemagw" permission_id="receive" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="15"/>
+      <permission permission_group_id="threemagw" permission_id="send" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="10"/>
+      <permission permission_group_id="threemagw" permission_id="tfa" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="55"/>
+      <permission permission_group_id="threemagw" permission_id="use" permission_type="flag" default_value="unset" interface_group_id="threemagw" display_order="5"/>
+    </permissions>
+    <interface_groups>
+      <interface_group interface_group_id="threemagw" display_order="305"/>
+    </interface_groups>
+  </permissions>
+  <phrases>
+    <phrase title="admin_permission_threemagw_showcredits" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway: Show credits]]></phrase>
+    <phrase title="option_group_threemagw" version_id="1" version_string="0.1"><![CDATA[Threema Gateway]]></phrase>
+    <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank">Threema Gateway</a>.]]></phrase>
+    <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
+    <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the Two-factor-authentication modes of the Threema Gateway.]]></phrase>
+    <phrase title="option_threema_gateway_e2e" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
+    <phrase title="option_threema_gateway_e2e_explain" version_id="1" version_string="0.1.0"><![CDATA[Select the mode you chose when setting up your Threema ID. Without the end-to-end encrypted mode many options may not be available.]]></phrase>
+    <phrase title="option_threema_gateway_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[Use PHP Keystore (not recommend)]]></phrase>
+    <phrase title="option_threema_gateway_keystorefile_explain" version_id="1" version_string="0.1.0"><![CDATA[By default the database is used to store the public keys of Threema users. When enabling this option you can specify a php file to use. This file <b>must already exist</b>!
+Note that the file must be stored in <code>library/ThreemaGateway</code>, but you can use relative paths to change this location.]]></phrase>
+    <phrase title="option_threema_gateway_mode_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic mode]]></phrase>
+    <phrase title="option_threema_gateway_mode_e2e" version_id="1" version_string="0.1.0"><![CDATA[End-to-end encrypted mode]]></phrase>
+    <phrase title="option_threema_gateway_privatekeyfile" version_id="1" version_string="0.1.0"><![CDATA[Private key file]]></phrase>
+    <phrase title="option_threema_gateway_privatekeyfile_explain" version_id="1" version_string="0.1.0"><![CDATA[If you use the end-to-end encrypted mode enter the path to your private key file here. The file must be placed in <code>library/ThreemaGateway</code>.]]></phrase>
+    <phrase title="option_threema_gateway_status" version_id="1" version_string="0.1"><![CDATA[Status]]></phrase>
+    <phrase title="option_threema_gateway_status_credits" version_id="1" version_string="0.1"><![CDATA[Remaining credits: <b>{credits}</b>]]></phrase>
+    <phrase title="option_threema_gateway_status_credits_error" version_id="1" version_string="0.1.0"><![CDATA[There was an error when fetching credits. You probably have entered an incorrect Threema Gateway ID or secret. There could also have been a connection error.]]></phrase>
+    <phrase title="option_threema_gateway_status_credits_low" version_id="1" version_string="0.1"><![CDATA[Your credits are getting low. Please consider recharging them.]]></phrase>
+    <phrase title="option_threema_gateway_status_credits_out" version_id="1" version_string="0.1"><![CDATA[You have no credits (anymore). Without any credits you cannot send messages any more.]]></phrase>
+    <phrase title="option_threema_gateway_status_credits_permission" version_id="1" version_string="0.1.0"><![CDATA[You are not allowed to view the remaining credits.]]></phrase>
+    <phrase title="option_threema_gateway_status_error" version_id="1" version_string="0.1"><![CDATA[You have some errors in your configuration. Until you resolve them it will not be possible to use this addon properly.]]></phrase>
+    <phrase title="option_threema_gateway_status_explain" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_not_installed" version_id="1" version_string="0.1"><![CDATA[Libsodium is not installed.]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_not_installed_recommend" version_id="1" version_string="0.1"><![CDATA[For performance and security reasons it is very much recommend to install libsodium. You can follow <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">this guide</a> for doing so.]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_not_installed_required_64bit" version_id="1" version_string="0.1"><![CDATA[You can only use the pure PHP implementation with a 64bit version of PHP, so you either have to PGP x64 or <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">install libsodium</a>, which also provides more speed and security advantages.]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_outdated" version_id="1" version_string="0.1"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium.]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_version" version_id="1" version_string="0.1"><![CDATA[Sodium version: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_status_phpsdk_version" version_id="1" version_string="0.1.0"><![CDATA[Version of <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blanK">Threema PHP SDK</a>: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_threema_id" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway ID]]></phrase>
+    <phrase title="option_threema_gateway_threema_id_explain" version_id="1" version_string="0.1"><![CDATA[Enter the Threema ID of your Gateway account here. (e.g. <code>*MYAPIID</code>)]]></phrase>
+    <phrase title="option_threema_gateway_threema_id_secret" version_id="1" version_string="0.1"><![CDATA[Threema ID secret]]></phrase>
+    <phrase title="option_threema_gateway_threema_id_secret_explain" version_id="1" version_string="0.1.0"><![CDATA[Enter your secret for accessing the Threema Gateway here.{note}]]></phrase>
+    <phrase title="option_threema_gateway_threema_id_secret_explain_note" version_id="1" version_string="0.1.0"><![CDATA[<br >
+<b>Note:</b> For security reasons your secret is mostly hidden and will only be changed when you replace the value here.]]></phrase>
+    <phrase title="option_threema_gateway_usehttps" version_id="1" version_string="0.1.0"><![CDATA[Use hardened HTTPS connection (recommend)]]></phrase>
+    <phrase title="option_threema_gateway_usehttps_explain" version_id="1" version_string="0.1.0"><![CDATA[When sending messages this prevents fallback attacks on the TLS/HTTPS connection by limiting the TLS version and ciphers to modern ones.
+Only disable this if you experience problems connecting to the Threema server (e.g. when the credits are not fetched correctly).]]></phrase>
+    <phrase title="option_threema_gateway_usesource" version_id="1" version_string="0.1.0"><![CDATA[Use source code of PHP SDK]]></phrase>
+    <phrase title="option_threema_gateway_usesource_explain" version_id="1" version_string="0.1.0"><![CDATA[Instead of using the .phar this forces the add-on to use the source code of the PHP SDK. This is mostly useful for debugging.]]></phrase>
+    <phrase title="permission_group_threemagw" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
+    <phrase title="permission_interface_threemagw" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
+    <phrase title="permission_threemagw_fetch" version_id="1" version_string="0.1.0"><![CDATA[Fetch public key (based on ID)]]></phrase>
+    <phrase title="permission_threemagw_lookup" version_id="1" version_string="0.1.0"><![CDATA[Lookup ID/public key based on any criteria]]></phrase>
+    <phrase title="permission_threemagw_receive" version_id="1" version_string="0.1.0"><![CDATA[Receive messages]]></phrase>
+    <phrase title="permission_threemagw_send" version_id="1" version_string="0.1.0"><![CDATA[Send messages]]></phrase>
+    <phrase title="permission_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Use Threema 2FA]]></phrase>
+    <phrase title="permission_threemagw_use" version_id="1" version_string="0.1.0"><![CDATA[Use Threema Gateway]]></phrase>
+    <phrase title="sendto_threema" version_id="1" version_string="0.1"><![CDATA[Send to Threema]]></phrase>
+    <phrase title="tfa_threemagw_conventional" version_id="1" version_string="0.1.0"><![CDATA[Threema - Conventional]]></phrase>
+    <phrase title="tfa_threemagw_conventional_desc" version_id="1" version_string="0.1"><![CDATA[This will send you a 6 digit code through Threema to verify your login.]]></phrase>
+    <phrase title="tfa_threemagw_conventional_message" version_id="1" version_string="0.1"><![CDATA[\ud83d\udd11 Two-factor authentication
+
+Hi {user}, to complete the second step of the two-factor authentication, you must enter the following code:
+
+{code}
+
+The code is valid for {vadilityTime}.
+
+The login was requested via the IP {ip}. If you did not initiate this request, you should change your password urgently.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
+    <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_continue" version_id="1" version_string="0.1"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to continue.]]></phrase>
+    <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login" version_id="1" version_string="0.1"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to complete login.]]></phrase>
+    <phrase title="tfa_threemagw_conventional_message_short" version_id="1" version_string="0.1"><![CDATA[\ud83d\udd11
+Code: {code}
+IP: {ip}
+Validity: {vadilityTime}
+
+{board}
+{board_url}]]></phrase>
+    <phrase title="tfa_threemagw_conventional_setup_descr" version_id="1" version_string="0.1"><![CDATA[This mode sends you a 6 digit code to your Threema ID, which you have to enter when logging in.]]></phrase>
+    <phrase title="tfa_threemagw_setup_generaldescr" version_id="1" version_string="0.1"><![CDATA[This two factor authentication mode uses the <a href="https://threema.ch" target="_blank">Threema</a> app. Before you can proceed you have to download it. It is available <a href="https://threema.ch/get-threema" target="_blank">for many platforms</a>. <br />
+Setup your Threema ID and enter it below.]]></phrase>
+    <phrase title="tfa_threemagw_setup_public_key" version_id="1" version_string="0.1"><![CDATA[Public Key]]></phrase>
+    <phrase title="tfa_threemagw_setup_public_key_descr" version_id="1" version_string="0.1"><![CDATA[Before proceeding, please confirm that the following fingerprint is correct. Often you can find it on the same page where you can also see your Threema ID and QR code.<br>
+<b>Key fingerprint:</b> {pubKeyShort}<br /><br />
+Please check each character of the code and confirm it is the same as displayed on your device. Should you notice any discrepancy when doing so, please <i>do not continue</i> and contact the forum admin.<br />
+The displayed fingerprint is derived from the public key, which is linked to your Threema ID. More information <a href="https://threema.ch/en/faq/threema_id" target="_blank">in the Threema FAQ</a>.]]></phrase>
+    <phrase title="tfa_threemagw_short_message_explain" version_id="1" version_string="0.1"><![CDATA[Uses short messages instead of long ones to allow you to see your verification code directly in the notification, so you do not have to open Threema to see it.]]></phrase>
+    <phrase title="tfa_threemagw_use_number_smilies" version_id="1" version_string="0.1"><![CDATA[Use smilies as digits]]></phrase>
+    <phrase title="tfa_threemagw_use_number_smilies_explain" version_id="1" version_string="0.1"><![CDATA[Replaces the numbers in the code with smilies.]]></phrase>
+    <phrase title="tfa_threemagw_use_short_message" version_id="1" version_string="0.1"><![CDATA[Use short messages]]></phrase>
+    <phrase title="threemagw_confirmation_code" version_id="1" version_string="0.1"><![CDATA[Threema Confirmation Code]]></phrase>
+    <phrase title="threemagw_fetching_publickey_failed" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
+    <phrase title="threemagw_getting_credits_failed" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
+    <phrase title="threemagw_invalid_keystorepath" version_id="1" version_string="0.1.0"><![CDATA[The path to the PHP keystore file is invalid.]]></phrase>
+    <phrase title="threemagw_invalid_privatekey" version_id="1" version_string="0.1.0"><![CDATA[The private key is invalid or could not be found.]]></phrase>
+    <phrase title="threemagw_invalid_privkeypath" version_id="1" version_string="0.1.0"><![CDATA[The path to the private key file is invalid.]]></phrase>
+    <phrase title="threemagw_invalid_threema_id" version_id="1" version_string="0.1"><![CDATA[The Threema ID is invalid.]]></phrase>
+    <phrase title="threemagw_invalid_threema_secret" version_id="1" version_string="0.1.0"><![CDATA[The Threema ID Secret is invalid.]]></phrase>
+    <phrase title="threemagw_minute" version_id="1" version_string="0.1"><![CDATA[minute]]></phrase>
+    <phrase title="threemagw_minutes" version_id="1" version_string="0.1"><![CDATA[minutes]]></phrase>
+    <phrase title="threemagw_missing_sdk" version_id="1" version_string="0.1.0"><![CDATA[The PHP SDK for Threema Gateway is missing.]]></phrase>
+    <phrase title="threemagw_not_writable_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[The PHP keystore file is not writable.]]></phrase>
+    <phrase title="threemagw_permission_error" version_id="1" version_string="0.1.0"><![CDATA[There was a permission error.]]></phrase>
+    <phrase title="threemagw_phpkeystore_example" version_id="1" version_string="0.1.0"><![CDATA[keystore.php]]></phrase>
+    <phrase title="threemagw_sending_failed" version_id="1" version_string="0.1.0"><![CDATA[Sending message failed.]]></phrase>
+    <phrase title="threemagw_threema_id_does_not_exist" version_id="1" version_string="0.1"><![CDATA[Threema ID does not exist.]]></phrase>
+    <phrase title="threemaid" version_id="1" version_string="0.1"><![CDATA[Threema ID]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates>
+    <template title="account_two_step_threemagw_conventional_manage" version_id="1" version_string="0.1"><![CDATA[<xen:title>{xen:phrase two_step_verification_setup}: {$provider.title}</xen:title>
+
+<xen:require css="threemagw.css" />
+
+<form method="post" class="xenForm {xen:if $newProviderHtml, AutoValidator}"
+<xen:comment>Use /enable link when setting provider up and use /manage link when changing setting later.</xen:comment>
+action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'">
+		"{xen:link 'account/two-step/enable'}"
+	<xen:else />
+		"{xen:link 'account/two-step/manage'}"
+	</xen:if> data-redirect="yes">
+	<dl class="ctrlUnit">
+		<dt></dt>
+		<xen:if is="{$context} == 'firstsetup'">
+			<xen:comment>First site of setup page shows general information.</xen:comment>
+			<dd>
+                <p>{xen:phrase tfa_threemagw_setup_generaldescr}</p>
+                <p>{xen:phrase tfa_threemagw_conventional_setup_descr}</p>
+			</dd>
+		<xen:elseif is="{$context} == 'manage'" />
+			<xen:comment>Later manages only show some basic information...</xen:comment>
+			<dd>
+                <p>{xen:phrase tfa_threemagw_conventional_setup_descr}</p>
+			</dd>
+		</xen:if>
+	</dl>
+	
+	<xen:if is="{$newProviderHtml}">
+		<xen:comment>Shows validation input field if Threema ID was changed.</xen:comment>
+		{xen:raw $newProviderHtml}
+
+		<dl class="ctrlUnit submitUnit">
+			<dt></dt>
+			<dd><input type="submit" name="save" value="{xen:phrase confirm}" accesskey="s" class="button primary" /></dd>
+		</dl>
+
+		<input type="hidden" name="confirm" value="1" />
+	<xen:else />
+		<xen:comment>Show Threema ID input and all other settings as this is not the validation page.</xen:comment>
+		<dl class="ctrlUnit">
+            <dt><label for="ctrl_threemagw_conventional_threemaid">{xen:phrase threemaid}:</label></dt>
+			<dd>
+                <input class="textCtrl inputThreemaId" type="text" name="threemaid" id="ctrl_threemagw_conventional_threemaid" placeholder="ECHOECHO" required="" maxlength="8" class="textCtrl" pattern="{xen:helper threemaregex, 'personal'}" value="{$threemaId}" />
+			</dd>
+			
+			<xen:if is="{$context} == 'manage'">
+				<dt><label></label></dt>
+				<dd>
+					<p><b>Key fingerprint:</b> {xen:helper threemaidpubkeyshort, {$threemaid}}<br /><br /></p>
+				</dd>
+			</xen:if>
+		</dl>
+		
+		<dl class="ctrlUnit">
+			<dt><label>{xen:phrase more_options}:</label></dt>
+			<dd><ul>
+				<li>
+                    <label><input type="checkbox" name="useNumberSmilies" value="1" {xen:if $providerData.useNumberSmilies, 'checked=""'} /> {xen:phrase tfa_threemagw_use_number_smilies}</label>
+                    <p class="explain">{xen:phrase tfa_threemagw_use_number_smilies_explain}</p>
+				</li>
+			</ul></dd>
+			
+			<dt></dt>
+			<dd><ul>
+				<li>
+                    <label><input type="checkbox" name="useShortMessage" value="1" {xen:if $providerData.useShortMessage, 'checked=""'} /> {xen:phrase tfa_threemagw_use_short_message}</label>
+                    <p class="explain">{xen:phrase tfa_threemagw_short_message_explain}</p>
+				</li>
+			</ul></dd>
+		</dl>
+		
+		<dl class="ctrlUnit submitUnit">
+			<dt></dt>
+			<xen:if is="{$context} == 'firstsetup'">
+				<dd><input type="submit" name="save" value="{xen:phrase confirm}" accesskey="s" class="button primary" /></dd>
+			<xen:else />
+				<dd><input type="submit" name="save" value="{xen:phrase sendto_threema}" accesskey="s" class="button primary" /></dd>
+			</xen:if>
+		</dl>
+	</xen:if>
+	
+	<input type="hidden" name="provider" value="{$providerId}" />
+	<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'">
+		<xen:comment>Add special parameters if this is in setup.</xen:comment>
+		<xen:if is="{$newProviderHtml}">
+			<input type="hidden" name="step" value="confirm" />
+		<xen:else />
+			<input type="hidden" name="step" value="setup" />
+		</xen:if>
+	<xen:elseif is="!{$newProviderHtml}" />
+		<input type="hidden" name="manage" value="1" />
+	</xen:if>
+	<input type="hidden" name="_xfConfirm" value="1" />
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="threemagw.css" version_id="1" version_string="0.1"><![CDATA[.inputThreemaId {
+  text-transform: uppercase;
+}]]></template>
+    <template title="two_step_threemagw_conventional" version_id="1" version_string="0.1.0"><![CDATA[<xen:if is="{$context} == 'setup'">
+	<dl class="ctrlUnit">
+		<dt></dt>
+		<dd>
+            <p>{xen:phrase tfa_threemagw_conventional_message_has_been_send_to_x_with_code_continue, 'threemaid={$data.threemaid}'}</p>
+		</dd>
+	</dl>
+<xen:else />
+    <p>{xen:phrase tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login, 'threemaid={$data.threemaid}'}</p>
+</xen:if>
+
+<dl class="ctrlUnit">
+    <dt><label for="ctrl_threemagw_code">{xen:phrase threemagw_confirmation_code}:</label></dt>
+	<dd>
+        <input type="text" name="code" id="ctrl_threemagw_code" class="textCtrl" />
+	</dd>
+</dl>
+
+<xen:if is="{$context} == 'setup'">
+	<xen:comment>Show public key of Threema ID</xen:comment>
+	<xen:comment>This allows the user to verify the public key received by the server, so potential Man-in-the-middle attacks can be mitigated.</xen:comment>
+	<dl class="ctrlUnit">
+		<dt><label>{xen:phrase tfa_threemagw_setup_public_key}:</label></dt>
+		<dd>
+			<p>{xen:phrase tfa_threemagw_setup_public_key_descr, 'threemaid={$data.threemaid}', 'pubKeyShort={xen:helper threemaidpubkeyshort, {$data.threemaid}}'}</p>
+		</dd>
+	</dl>
+</xen:if>]]></template>
+  </templates>
+  <public_template_modifications/>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
