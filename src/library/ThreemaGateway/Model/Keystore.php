@@ -1,6 +1,7 @@
 <?php
 /**
- * Model for Threema keystore.
+ * Model for Threema database keystore.
+ * TODO: Split intoi model and DataWriter and adjust.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -17,7 +18,6 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
 
     /**
      * Initialises the key store.
-     *
      */
     public function __construct()
     {
@@ -32,14 +32,14 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
      */
     public function findPublicKey($threemaId)
     {
-        /** @var array */
-        $result = $this->fetchAllKeyed("SELECT * FROM `" . self::DbTable . "`
-                  WHERE `threemaid` = ?",
+        /* @var array */
+        $result = $this->fetchAllKeyed('SELECT * FROM `' . self::DbTable . '`
+                  WHERE `threemaid` = ?',
                   'threemaid',
                   [$threemaId]);
 
         if (array_key_exists($threemaId, $result)) {
-            return (string)$result[$threemaId]['publickey'];
+            return (string) $result[$threemaId]['publickey'];
         }
 
         return null;
@@ -56,40 +56,11 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
     public function savePublicKey($threemaId, $publicKey)
     {
         $db = $this->_getDb();
-        $db->query("INSERT IGNORE INTO `" . self::DbTable . "`
+        $db->query('INSERT IGNORE INTO `' . self::DbTable . '`
                   (`threemaid`, `publickey`)
-                  VALUES (?, ?)",
+                  VALUES (?, ?)',
                   [$threemaId, $publicKey]);
 
         return true;
-    }
-
-    /**
-     * Create a new keystore (table) in the database.
-     *
-     * This is a replacement of the standard "create" function of keystores,
-     * but as create is already defined in XenForo_Model this canot be used
-     * here.
-     *
-     */
-    public function createKeystore()
-    {
-        $db = $this->_getDb();
-        $db->query("CREATE TABLE `" . self::DbTable . "`
-            (`threemaid` CHAR(8) NOT NULL PRIMARY KEY,
-            `publickey` CHAR(64) NOT NULL)
-            ");
-    }
-
-    /**
-     * Deletes the keystore (table).
-     *
-     * This is a non-standard function for a keystore.
-     *
-     */
-    public function deleteKeystore()
-    {
-        $db = $this->_getDb();
-        $db->query("DROP TABLE `" . self::DbTable . "`");
     }
 }

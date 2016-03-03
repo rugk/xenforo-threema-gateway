@@ -16,7 +16,7 @@ class ThreemaGateway_Option_PrivateKeyPath
      * Note that $filepath can also the key directly. However this is neither
      * the official way nor recommend or documented.
      *
-     * @param string             $filepath Input
+     * @param string             $filepath  Input
      * @param XenForo_DataWriter $dw
      * @param string             $fieldName Name of field/option
      *

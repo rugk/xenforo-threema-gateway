@@ -12,7 +12,7 @@
 class ThreemaGateway_Helper_PublicKey
 {
     /**
-     * XenForo template helper: threemaidpubkey
+     * XenForo template helper: threemaidpubkey.
      *
      * Returns the public key of a Threema ID.
      *
@@ -41,7 +41,7 @@ class ThreemaGateway_Helper_PublicKey
     }
 
     /**
-     * XenForo template helper: threemaidpubkeyshort
+     * XenForo template helper: threemaidpubkeyshort.
      *
      * Returns the short (user friendly) hash of the public key of a Threema ID.
      * Do not confuse this with convertShort(). Here you have to pass the
@@ -59,7 +59,7 @@ class ThreemaGateway_Helper_PublicKey
     }
 
     /**
-     * XenForo template helper: threemashortpubkey
+     * XenForo template helper: threemashortpubkey.
      *
      * Returns the short (user friendly) hash of the public key. Do not confuse
      * this with getShort(). Here you have to pass the public key!
@@ -73,7 +73,7 @@ class ThreemaGateway_Helper_PublicKey
     }
 
     /**
-     * XenForo template helper: threemaispubkey
+     * XenForo template helper: threemaispubkey.
      *
      * Checks whether a public key is valid.
      *
@@ -86,7 +86,7 @@ class ThreemaGateway_Helper_PublicKey
     }
 
     /**
-     * XenForo template helper: threemapubkeyremovesuffix
+     * XenForo template helper: threemapubkeyremovesuffix.
      *
      * Removes the suffix if neccessary.
      *

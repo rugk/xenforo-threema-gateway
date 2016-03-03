@@ -20,6 +20,11 @@
 		<p>{xen:raw $status.credits.text}</p>
 		<p class="explain {$status.credits.descclass}">{xen:raw $status.credits.descr}</p>
 		
+		<xen:if is="{$additionalerror}">
+			<br />
+			<p class="error">{$additionalerror}</p>
+		</xen:if>
+		
 		<xen:if is="{$isConfError}">
 			<br />
 			<p class="error">{xen:phrase option_threema_gateway_status_error}</p>
@@ -88,6 +93,30 @@ path</sub_options>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="1"/>
     </option>
+    <option option_id="threema_gateway_tfa_conventional" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="105"/>
+    </option>
+    <option option_id="threema_gateway_tfa_conventional_vadility" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>3</default_value>
+      <edit_format_params>min=1</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="110"/>
+    </option>
+    <option option_id="threema_gateway_tfa_conventional_vadility_setup" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>10</default_value>
+      <edit_format_params>min=1</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="115"/>
+    </option>
+    <option option_id="threema_gateway_tfa_usesodiumran" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="30"/>
+    </option>
     <option option_id="threema_gateway_threema_id" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_ThreemaGatewayId" validation_method="verifyOption">
       <default_value></default_value>
       <edit_format_params>placeholder = *MYAPIID</edit_format_params>
@@ -105,6 +134,12 @@ path</sub_options>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="240"/>
+    </option>
+    <option option_id="threema_gateway_userfield_verifyexist" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="310"/>
     </option>
     <option option_id="threema_gateway_usesource" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
@@ -134,7 +169,7 @@ path</sub_options>
     <phrase title="option_group_threemagw" version_id="1" version_string="0.1"><![CDATA[Threema Gateway]]></phrase>
     <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank">Threema Gateway</a>.]]></phrase>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
-    <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the Two-factor-authentication modes of the Threema Gateway.]]></phrase>
+    <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the two-factor-authentication modes of the Threema Gateway. Please note that the general Threema Gateway settings must be configured before.]]></phrase>
     <phrase title="option_threema_gateway_e2e" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
     <phrase title="option_threema_gateway_e2e_explain" version_id="1" version_string="0.1.0"><![CDATA[Select the mode you chose when setting up your Threema ID. Without the end-to-end encrypted mode many options may not be available.]]></phrase>
     <phrase title="option_threema_gateway_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[Use PHP Keystore (not recommend)]]></phrase>
@@ -154,10 +189,19 @@ Note that the file must be stored in <code>library/ThreemaGateway</code>, but yo
     <phrase title="option_threema_gateway_status_explain" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_not_installed" version_id="1" version_string="0.1"><![CDATA[Libsodium is not installed.]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_not_installed_recommend" version_id="1" version_string="0.1"><![CDATA[For performance and security reasons it is very much recommend to install libsodium. You can follow <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">this guide</a> for doing so.]]></phrase>
-    <phrase title="option_threema_gateway_status_libsodium_not_installed_required_64bit" version_id="1" version_string="0.1"><![CDATA[You can only use the pure PHP implementation with a 64bit version of PHP, so you either have to PGP x64 or <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">install libsodium</a>, which also provides more speed and security advantages.]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_not_installed_required_64bit" version_id="1" version_string="0.1.0"><![CDATA[You can only use the pure PHP implementation with a 64bit version of PHP, so you either have to install PHP x64 or <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">install libsodium</a>, which also provides more speed and security advantages.]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_outdated" version_id="1" version_string="0.1"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium.]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_version" version_id="1" version_string="0.1"><![CDATA[Sodium version: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_status_missing_private_key" version_id="1" version_string="0.1.0"><![CDATA[Currently it is not possible to use the Threema Gateway, because the private key is malformed or not specified.]]></phrase>
     <phrase title="option_threema_gateway_status_phpsdk_version" version_id="1" version_string="0.1.0"><![CDATA[Version of <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blanK">Threema PHP SDK</a>: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_tfa_conventional" version_id="1" version_string="0.1.0"><![CDATA[Activate Threema Gateway: Conventional]]></phrase>
+    <phrase title="option_threema_gateway_tfa_conventional_explain" version_id="1" version_string="0.1.0"><![CDATA[Allow users to use the "Conventional" 2FA method.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_conventional_vadility" version_id="1" version_string="0.1.0"><![CDATA[Vadility time]]></phrase>
+    <phrase title="option_threema_gateway_tfa_conventional_vadility_explain" version_id="1" version_string="0.1.0"><![CDATA[How long the one time code should be valid. (in minutes)]]></phrase>
+    <phrase title="option_threema_gateway_tfa_conventional_vadility_setup" version_id="1" version_string="0.1.0"><![CDATA[Vadility time when setting up]]></phrase>
+    <phrase title="option_threema_gateway_tfa_conventional_vadility_setup_explain" version_id="1" version_string="0.1.0"><![CDATA[How long the one time code should be when setting up the 2FA method. (in minutes)]]></phrase>
+    <phrase title="option_threema_gateway_tfa_usesodiumran" version_id="1" version_string="0.1.0"><![CDATA[Use libsodiums random number generator instead of XenForos internal one]]></phrase>
+    <phrase title="option_threema_gateway_tfa_usesodiumran_explain" version_id="1" version_string="0.1.0"><![CDATA[When this setting is activated all 2FA methods use <a href="https://download.libsodium.org/doc/generating_random_data/index.html" target="_blank">libsodium's random number generator</a> instead of XenForo's internal one. This may provide better security, but it only works when libsodium >= v0.2.0 is installed.]]></phrase>
     <phrase title="option_threema_gateway_threema_id" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway ID]]></phrase>
     <phrase title="option_threema_gateway_threema_id_explain" version_id="1" version_string="0.1"><![CDATA[Enter the Threema ID of your Gateway account here. (e.g. <code>*MYAPIID</code>)]]></phrase>
     <phrase title="option_threema_gateway_threema_id_secret" version_id="1" version_string="0.1"><![CDATA[Threema ID secret]]></phrase>
@@ -167,6 +211,8 @@ Note that the file must be stored in <code>library/ThreemaGateway</code>, but yo
     <phrase title="option_threema_gateway_usehttps" version_id="1" version_string="0.1.0"><![CDATA[Use hardened HTTPS connection (recommend)]]></phrase>
     <phrase title="option_threema_gateway_usehttps_explain" version_id="1" version_string="0.1.0"><![CDATA[When sending messages this prevents fallback attacks on the TLS/HTTPS connection by limiting the TLS version and ciphers to modern ones.
 Only disable this if you experience problems connecting to the Threema server (e.g. when the credits are not fetched correctly).]]></phrase>
+    <phrase title="option_threema_gateway_userfield_verifyexist" version_id="1" version_string="0.1.0"><![CDATA[Verify existence of Threema IDs entered in custom user fields]]></phrase>
+    <phrase title="option_threema_gateway_userfield_verifyexist_explain" version_id="1" version_string="0.1.0"><![CDATA[When this option is deactivated only the format of the Threema ID is verified. If it is activated the Threema server is also queried to check whether the ID really exists.]]></phrase>
     <phrase title="option_threema_gateway_usesource" version_id="1" version_string="0.1.0"><![CDATA[Use source code of PHP SDK]]></phrase>
     <phrase title="option_threema_gateway_usesource_explain" version_id="1" version_string="0.1.0"><![CDATA[Instead of using the .phar this forces the add-on to use the source code of the PHP SDK. This is mostly useful for debugging.]]></phrase>
     <phrase title="permission_group_threemagw" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
@@ -179,10 +225,11 @@ Only disable this if you experience problems connecting to the Threema server (e
     <phrase title="permission_threemagw_use" version_id="1" version_string="0.1.0"><![CDATA[Use Threema Gateway]]></phrase>
     <phrase title="sendto_threema" version_id="1" version_string="0.1"><![CDATA[Send to Threema]]></phrase>
     <phrase title="tfa_threemagw_conventional" version_id="1" version_string="0.1.0"><![CDATA[Threema - Conventional]]></phrase>
-    <phrase title="tfa_threemagw_conventional_desc" version_id="1" version_string="0.1"><![CDATA[This will send you a 6 digit code through Threema to verify your login.]]></phrase>
-    <phrase title="tfa_threemagw_conventional_message" version_id="1" version_string="0.1"><![CDATA[\ud83d\udd11 Two-factor authentication
+    <phrase title="tfa_threemagw_conventional_desc" version_id="1" version_string="0.1.0"><![CDATA[This will send you a 6 digit code through Threema to verify your login.{e2e}]]></phrase>
+    <phrase title="tfa_threemagw_conventional_message" version_id="1" version_string="0.1.0"><![CDATA[\ud83d\udd11 Two-factor authentication
 
-Hi {user}, to complete the second step of the two-factor authentication, you must enter the following code:
+Hi {user},
+to complete the second step of the two-factor authentication, you must enter the following code:
 
 {code}
 
@@ -222,6 +269,8 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_invalid_privkeypath" version_id="1" version_string="0.1.0"><![CDATA[The path to the private key file is invalid.]]></phrase>
     <phrase title="threemagw_invalid_threema_id" version_id="1" version_string="0.1"><![CDATA[The Threema ID is invalid.]]></phrase>
     <phrase title="threemagw_invalid_threema_secret" version_id="1" version_string="0.1.0"><![CDATA[The Threema ID Secret is invalid.]]></phrase>
+    <phrase title="threemagw_libsodium_error" version_id="1" version_string="0.1.0"><![CDATA[Error when trying to use libsodium.]]></phrase>
+    <phrase title="threemagw_message_is_sent_e2e" version_id="1" version_string="0.1.0"><![CDATA[The message is sent end-to-end encrypted.]]></phrase>
     <phrase title="threemagw_minute" version_id="1" version_string="0.1"><![CDATA[minute]]></phrase>
     <phrase title="threemagw_minutes" version_id="1" version_string="0.1"><![CDATA[minutes]]></phrase>
     <phrase title="threemagw_missing_sdk" version_id="1" version_string="0.1.0"><![CDATA[The PHP SDK for Threema Gateway is missing.]]></phrase>
@@ -229,13 +278,13 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_permission_error" version_id="1" version_string="0.1.0"><![CDATA[There was a permission error.]]></phrase>
     <phrase title="threemagw_phpkeystore_example" version_id="1" version_string="0.1.0"><![CDATA[keystore.php]]></phrase>
     <phrase title="threemagw_sending_failed" version_id="1" version_string="0.1.0"><![CDATA[Sending message failed.]]></phrase>
+    <phrase title="threemagw_threemaid" version_id="1" version_string="0.1.0"><![CDATA[Threema ID]]></phrase>
     <phrase title="threemagw_threema_id_does_not_exist" version_id="1" version_string="0.1"><![CDATA[Threema ID does not exist.]]></phrase>
-    <phrase title="threemaid" version_id="1" version_string="0.1"><![CDATA[Threema ID]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="account_two_step_threemagw_conventional_manage" version_id="1" version_string="0.1"><![CDATA[<xen:title>{xen:phrase two_step_verification_setup}: {$provider.title}</xen:title>
+    <template title="account_two_step_threemagw_conventional_manage" version_id="1" version_string="0.1.0"><![CDATA[<xen:title>{xen:phrase two_step_verification_setup}: {$provider.title}</xen:title>
 
 <xen:require css="threemagw.css" />
 
@@ -251,8 +300,8 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 		<xen:if is="{$context} == 'firstsetup'">
 			<xen:comment>First site of setup page shows general information.</xen:comment>
 			<dd>
-                <p>{xen:phrase tfa_threemagw_setup_generaldescr}</p>
-                <p>{xen:phrase tfa_threemagw_conventional_setup_descr}</p>
+				<p>{xen:phrase tfa_threemagw_setup_generaldescr}</p>
+				<p>{xen:phrase tfa_threemagw_conventional_setup_descr}</p>
 			</dd>
 		<xen:elseif is="{$context} == 'manage'" />
 			<xen:comment>Later manages only show some basic information...</xen:comment>
@@ -275,9 +324,9 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 	<xen:else />
 		<xen:comment>Show Threema ID input and all other settings as this is not the validation page.</xen:comment>
 		<dl class="ctrlUnit">
-            <dt><label for="ctrl_threemagw_conventional_threemaid">{xen:phrase threemaid}:</label></dt>
+            <dt><label for="ctrl_threemagw_conventional_threemaid">{xen:phrase threemagw_threemaid}:</label></dt>
 			<dd>
-                <input class="textCtrl inputThreemaId" type="text" name="threemaid" id="ctrl_threemagw_conventional_threemaid" placeholder="ECHOECHO" required="" maxlength="8" class="textCtrl" pattern="{xen:helper threemaregex, 'personal'}" value="{$threemaId}" />
+				<input class="textCtrl inputThreemaId" type="text" name="threemaid" id="ctrl_threemagw_conventional_threemaid" placeholder="ECHOECHO" required="" maxlength="8" class="textCtrl" pattern="{xen:helper threemaregex, 'personal'}" value="{$threemaId}" />
 			</dd>
 			
 			<xen:if is="{$context} == 'manage'">
@@ -292,7 +341,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			<dt><label>{xen:phrase more_options}:</label></dt>
 			<dd><ul>
 				<li>
-                    <label><input type="checkbox" name="useNumberSmilies" value="1" {xen:if $providerData.useNumberSmilies, 'checked=""'} /> {xen:phrase tfa_threemagw_use_number_smilies}</label>
+					<label><input type="checkbox" name="useNumberSmilies" value="1" {xen:if $providerData.useNumberSmilies, 'checked=""'} /> {xen:phrase tfa_threemagw_use_number_smilies}</label>
                     <p class="explain">{xen:phrase tfa_threemagw_use_number_smilies_explain}</p>
 				</li>
 			</ul></dd>
@@ -300,8 +349,8 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			<dt></dt>
 			<dd><ul>
 				<li>
-                    <label><input type="checkbox" name="useShortMessage" value="1" {xen:if $providerData.useShortMessage, 'checked=""'} /> {xen:phrase tfa_threemagw_use_short_message}</label>
-                    <p class="explain">{xen:phrase tfa_threemagw_short_message_explain}</p>
+					<label><input type="checkbox" name="useShortMessage" value="1" {xen:if $providerData.useShortMessage, 'checked=""'} /> {xen:phrase tfa_threemagw_use_short_message}</label>
+					<p class="explain">{xen:phrase tfa_threemagw_short_message_explain}</p>
 				</li>
 			</ul></dd>
 		</dl>

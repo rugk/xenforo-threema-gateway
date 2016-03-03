@@ -277,11 +277,14 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         $threemaid    = $input->filterSingle('threemaid', XenForo_Input::STRING);
 
         //check Threema ID
-        if ($this->GatewayHandler->checkThreemaId($threemaid, 'personal', $error)) {
+        /** @var string $verifErr */
+        $verifErr = '';
+        if (ThreemaGateway_Handler_Validation::checkThreemaId($threemaid, 'personal', $verifErr)) {
             // correct
             $providerData['threemaid'] = $threemaid;
         } else {
             // incorrect
+            $error[] = $verifErr;
             return [];
         }
 
@@ -380,6 +383,10 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
             //set default values of options
             $providerData['useNumberSmilies'] = true;
             $providerData['useShortMessage']  = false;
+
+            if (array_key_exists('threemaid', $user['customFields'])) {
+                $threemaId = $user['customFields']['threemaid'];
+            }
         } else {
             //first manage page
             $threemaId = $providerData['threemaid'];
