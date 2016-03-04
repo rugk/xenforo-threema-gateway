@@ -280,6 +280,8 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_sending_failed" version_id="1" version_string="0.1.0"><![CDATA[Sending message failed.]]></phrase>
     <phrase title="threemagw_threemaid" version_id="1" version_string="0.1.0"><![CDATA[Threema ID]]></phrase>
     <phrase title="threemagw_threema_id_does_not_exist" version_id="1" version_string="0.1"><![CDATA[Threema ID does not exist.]]></phrase>
+    <phrase title="user_field_threemaid" global_cache="1" version_id="1" version_string="0.1.0"><![CDATA[Threema ID]]></phrase>
+    <phrase title="user_field_threemaid_desc" version_id="1" version_string="0.1.0"><![CDATA[]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>
