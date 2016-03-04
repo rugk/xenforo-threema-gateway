@@ -73,6 +73,7 @@ Additionally there some other rules:
 
 ### XenForo
 * Intend templates correctly with tabs.
+* Avoid direct MySQL queries. Use Models/DataWriters instead.
 
 ### Markdown Style
 These markdown rules of course only apply to markdown files in this repo. When creating a description for issues or pull requests with markdown I do not care how you do this.

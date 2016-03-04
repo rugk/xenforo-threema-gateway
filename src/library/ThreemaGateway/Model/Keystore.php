@@ -1,7 +1,6 @@
 <?php
 /**
  * Model for Threema database keystore.
- * TODO: Split intoi model and DataWriter and adjust.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -32,35 +31,15 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
      */
     public function findPublicKey($threemaId)
     {
-        /* @var array */
-        $result = $this->fetchAllKeyed('SELECT * FROM `' . self::DbTable . '`
+        /* @var mixed result of SQL query */
+        $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DbTable . '`
                   WHERE `threemaid` = ?',
-                  'threemaid',
-                  [$threemaId]);
+                  $threemaId);
 
-        if (array_key_exists($threemaId, $result)) {
-            return (string) $result[$threemaId]['publickey'];
+        if (is_array($result) && array_key_exists('publickey', $result)) {
+            return (string) $result['publickey'];
         }
 
         return null;
-    }
-
-    /**
-     * Save a public key.
-     *
-     * @param  string    $threemaId
-     * @param  string    $publicKey
-     * @throws Exception
-     * @return bool
-     */
-    public function savePublicKey($threemaId, $publicKey)
-    {
-        $db = $this->_getDb();
-        $db->query('INSERT IGNORE INTO `' . self::DbTable . '`
-                  (`threemaid`, `publickey`)
-                  VALUES (?, ?)',
-                  [$threemaId, $publicKey]);
-
-        return true;
     }
 }
