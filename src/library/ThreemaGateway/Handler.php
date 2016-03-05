@@ -361,8 +361,8 @@ class ThreemaGateway_Handler
      *
      * In case of an error this does not throw an exception, but just returns false.
      *
-     * @param  string            $phone Phone number in international E.164
-     *                                  format, e.g. 41791234567
+     * @param  string            $phone Phone number (the best way is in international E.164
+     *                                  format without `+`, e.g. 41791234567)
      * @throws XenForo_Exception
      * @return string|false
      */
@@ -371,6 +371,13 @@ class ThreemaGateway_Handler
         // check permission
         if (!$this->hasPermission('lookup')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
+        }
+
+        //adjust phone number
+        $phone = preg_replace('/\s+/', '', $phone); //strip whitespace
+        if (substr($phone, 0, 1) == '+') {
+            //remove leading +
+            $phone = substr($phone, 1);
         }
 
         /** @var array $threemaId Return value */

@@ -7,7 +7,7 @@ Currently there are no plans to do so. However it is certainly possible and any 
 
 Basically it would be very good to have already some support for two-factor-authentication implemented in the forum software. (see next question)
 
-### Why did you choose XenForo ?
+### Why did you choose XenForo?
 
 The main reason was that XenForo v1.5 added Two-factor-authentication as native feature of XenForo and allowed it to be expanded by add-ons. Many users requested SMS 2FA.
 However SMS is insecure (see "Why not just SMS?") and the Threema Gateway is just perfectly suitable for such a task as sending OTP (one time passwords) to users.
@@ -100,6 +100,19 @@ When you do so, please be aware that every update of this addon overwrites these
 1. Now you can remove all data in the ACP options (just set them to a blank field) and if everything is correct you will still see your remaining credits. If not, there will be an error.
 
 Note that the health check displays an error for the edited file afterwards. If you do not want this you can calculate the checksum of the changed file and replace it in `library\ThreemaGateway\Listener\FileHealthCheck.php`.
+
+### How can I setup the option to lookup the phone number automatically?
+1. Create a custom user field where your users can put their phone number in. You may configure this to be publicly visible or not.
+  ![add phone user field 01](AddPhoneUserField01.PNG)
+
+2. The new user field gets added:
+  ![add phone user field 03](AddPhoneUserField03.PNG)
+
+3. Go to the 2FA settings, activate the phone lookup and enter the field ID you choose earlier there:
+  ![add phone user field 04](AddPhoneUserField04.PNG)
+
+Note that your users have to include the [country calling codes](https://en.wikipedia.org/wiki/List_of_country_calling_codes) in the phone number. So e.g. they have to write "+41 791 234567" instead of "0791 234567". However spaces and the "+" sign at the beginning are allowed and are automatically converted.  
+If it does not work also make sure that the users have the "lookup" permission.
 
 ### Messages are not send or received. What should I do?
 

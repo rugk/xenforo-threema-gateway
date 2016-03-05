@@ -330,7 +330,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
                 $error           = '';
                 $newProviderData = $this->verifySetupFromInput($input, $user, $error);
                 if (!$newProviderData) {
-                    return $this->responseError($error);
+                    return $controller->responseError($error);
                 }
 
                 //check if there is a new ID, which would require revalidation
@@ -384,9 +384,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
             $providerData['useNumberSmilies'] = true;
             $providerData['useShortMessage']  = false;
 
-            if (array_key_exists('threemaid', $user['customFields'])) {
-                $threemaId = $user['customFields']['threemaid'];
-            }
+            $threemaId = $this->getDefaultThreemaId($user);
         } else {
             //first manage page
             $threemaId = $providerData['threemaid'];
