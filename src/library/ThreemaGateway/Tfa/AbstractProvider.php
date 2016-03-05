@@ -233,7 +233,11 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
             $user['user_state'] == 'valid') {
 
             //lookup mail
-            $threemaId = $this->GatewayHandler->lookupMail($user['email']);
+            try {
+                $threemaId = $this->GatewayHandler->lookupMail($user['email']);
+            } catch (Exception $e) {
+                //ignore failure
+            }
         }
         if ($threemaId == '' &&
             $options->threema_gateway_tfa_autolookupphone && //verify ACP permission
@@ -243,7 +247,11 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
             $user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']] != '') {
 
             //lookup phone number
-            $threemaId = $this->GatewayHandler->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
+            try {
+                $threemaId = $this->GatewayHandler->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
+            } catch (Exception $e) {
+                //ignore failure
+            }
         }
 
         return $threemaId;
