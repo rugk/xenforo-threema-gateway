@@ -4,6 +4,8 @@ rem
 rem Copyright (c) rugk, 2015
 rem This file is licensed under the MIT/Expat license. See LICENSE.md for more information.
 
+rem THIS FILE IS DEPRECIATED! It shjould be replaced with a platform-independ solution. (python)
+
 rem ERROR CODES:
 rem    0    Everything worked as expected.
 rem    1-99 Warnings (Build can still be valid...)

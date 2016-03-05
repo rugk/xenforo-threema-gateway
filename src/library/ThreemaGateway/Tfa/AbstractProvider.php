@@ -182,7 +182,8 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     /**
      * Generates a random numeric string.
      *
-     * @param int $length The length of the string (default: 6)
+     * @param  int    $length The length of the string (default: 6)
+     * @return string
      */
     protected function generateRandomString($length = 6)
     {
@@ -207,5 +208,44 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         }
 
         return $code;
+    }
+
+    /**
+     * Gets the default Threema ID using different sources.
+     *
+     * @param  array        $user
+     * @return string|false
+     */
+    protected function getDefaultThreemaId(array $user)
+    {
+        $options = XenForo_Application::getOptions();
+        /** @var string $threemaId */
+        $threemaId = '';
+
+        if (array_key_exists('threemaid', $user['customFields']) &&
+            $user['customFields']['threemaid'] != '') {
+
+            //use custom user field
+            $threemaId = $user['customFields']['threemaid'];
+        }
+        if ($threemaId == '' &&
+            $options->threema_gateway_tfa_autolookupmail &&
+            $user['user_state'] == 'valid') {
+
+            //lookup mail
+            $threemaId = $this->GatewayHandler->lookupMail($user['email']);
+        }
+        if ($threemaId == '' &&
+            $options->threema_gateway_tfa_autolookupphone && //verify ACP permission
+            $options->threema_gateway_tfa_autolookupphone['enabled'] &&
+            $options->threema_gateway_tfa_autolookupphone['userfield'] && //verify ACP setup
+            array_key_exists($options->threema_gateway_tfa_autolookupphone['userfield'], $user['customFields']) && //verify user field
+            $user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']] != '') {
+
+            //lookup phone number
+            $threemaId = $this->GatewayHandler->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
+        }
+
+        return $threemaId;
     }
 }
