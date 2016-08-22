@@ -6,7 +6,7 @@ We follow [Semantic Versioning](http://semver.org/) to maintain backward compati
 
 ## General recommendations
 
-* During the installation of yours add-on, you should check whether this add-on is installed.
+* During the installation of yours add-on, you should check whether this add-on is installed. You can see [here](https://xenforo.com/community/threads/checking-for-the-existance-of-other-add-ons-while-installing.113610/#post-1047354) how you can do it.
 
 ## Using the Handler
 The file [`Handler.php`](../Handler.php) and all files in the directory `Handler` are the files you have to look at. This matches the classes `ThreemaGateway_Handler` and `ThreemaGateway_Handler_*`. These are also the only ones covered by the "Semantic Versioning" (as an API) as  all others are not intended to be extended or called by other add-ons.
@@ -15,7 +15,7 @@ All files are PHPDOC documented and contain all necessary notes to find out what
 
 #### Recommendations
 
-After you created the main Handler you should make sure to call `isAvaliable()` first and abort if the Gateway is not available. Afterwards you should check all required permissions via `hasPermission()`. But you should also be aware that already the `__construct` method may throw exceptions if the Threema Gateway is not correctly set up.  
+After you created the main handler you should make sure to call `isAvaliable()` first and abort if the Gateway is not available. Afterwards you should check all required permissions via `hasPermission()`. But you should also be aware that already the `__construct` method may throw exceptions if the Threema Gateway is not correctly set up.  
 You may also consider checking `isEndToEnd()` for security-sensitive data or when you want to test whether you can receive messages. (When the E2E mode is not set up you cannot receive any messages.)
 
 The methods for sending simple messages and E2E messages are deliberately separated. You can see how to automatically choose the method in [`ThreemaGateway_Tfa_AbstractProvider->sendMessage()`](../Tfa/AbstractProvider.php).
