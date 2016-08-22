@@ -2,17 +2,16 @@
 It's great you want to contribute to this project. You can do this in many ways, so keep on reading. :smiley: :tada:
 
 ## Bug reporting (Issues)
-If you experience any issues you can use the [GitHubs Issue Tracker]() to report these. Please always include the following details¹:
+If you experience any issues you can use the [GitHubs Issue Tracker]() to report these. Please  include the following details:
 - Operation system
 - PHP version
 - XenForo version
 - version of this add-on
 - whether you installed libsodium and if so:
   - which version of libsodium you installed
+- cURL version if relevant (if you experience connection/sending errors)
 
-Most of these information can be found in the status page of the settings of this add-on, so you can just copy & paste them from there.
-
-¹ If one piece of information really is not required, do not forget to not mention it at all. :wink:
+An issue template will be shown when you create a new issue in this repo.
 
 ## Translating
 The language files can be found in _xenforo-threema-gateway\languages_. If there is a language missing which you like to be supported, feel free to translate it. You can use the [English example](languages/en-US.xml) as a starting point. It is recommend to use XenForo for this as you can use the internal XenForo translation system for this, but as these are just XML files you can also manually translate them.
@@ -23,6 +22,8 @@ Here are some rules you should follow when you want to contribute code to this r
 ### Commit messages
 - Use the present tense ("Add feature" not "Added feature")
 - Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+
+More information: [A Note About Git Commit Messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
 
 ### PHP Style
 Use the **[PHP Coding Style Fixer](http://cs.sensiolabs.org/)** to clean up your code. There is a config file for this tool included in the repo (_[.php_cs](.php_cs)_), where many styling rules will be applied automatically. If you do not want or can use this, please follow these rules:
