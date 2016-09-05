@@ -16,20 +16,20 @@
 
 		<p>{xen:raw $status.phpsdk.text}</p>
 		<p class="explain {$status.phpsdk.descclass}">{xen:raw $status.phpsdk.descr}</p>
-		
+
 		<p>{xen:raw $status.credits.text}</p>
 		<p class="explain {$status.credits.descclass}">{xen:raw $status.credits.descr}</p>
-		
+
 		<xen:if is="{$additionalerror}">
 			<br />
 			<p class="error">{$additionalerror}</p>
 		</xen:if>
-		
+
 		<xen:if is="{$isConfError}">
 			<br />
 			<p class="error">{xen:phrase option_threema_gateway_status_error}</p>
 		</xen:if>
-		
+
 		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
 		{xen:raw $editLink}
 	</xen:html>
@@ -72,7 +72,7 @@ e2e={xen:phrase option_threema_gateway_mode_e2e}</edit_format_params>
       <relation group_id="threemagw" display_order="120"/>
     </option>
     <option option_id="threema_gateway_keystorefile" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_PhpKeyStorePath" validation_method="verifyOption">
-      <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path"}</default_value>
+      <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path";s:0:"";}</default_value>
       <edit_format_params>onoff=enabled
 value=path
 type=textbox
@@ -100,7 +100,7 @@ path</sub_options>
       <relation group_id="threemagw_tfa" display_order="40"/>
     </option>
     <option option_id="threema_gateway_tfa_autolookupphone" edit_format="onofftextbox" data_type="array" can_backup="1">
-      <default_value>a:2:{s:7:"enabled";s:0:"0";s:9:"userfield"}</default_value>
+      <default_value>a:2:{s:7:"enabled";s:0:"";s:9:"userfield";s:0:"";}</default_value>
       <edit_format_params>onoff=enabled
 value=userfield
 type=textbox
@@ -334,7 +334,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			</dd>
 		</xen:if>
 	</dl>
-	
+
 	<xen:if is="{$newProviderHtml}">
 		<xen:comment>Shows validation input field if Threema ID was changed.</xen:comment>
 		{xen:raw $newProviderHtml}
@@ -352,7 +352,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			<dd>
 				<input class="textCtrl inputThreemaId" type="text" name="threemaid" id="ctrl_threemagw_conventional_threemaid" placeholder="ECHOECHO" required="" maxlength="8" class="textCtrl" pattern="{xen:helper threemaregex, 'personal'}" value="{$threemaId}" />
 			</dd>
-			
+
 			<xen:if is="{$context} == 'manage'">
 				<dt><label></label></dt>
 				<dd>
@@ -360,7 +360,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 				</dd>
 			</xen:if>
 		</dl>
-		
+
 		<dl class="ctrlUnit">
 			<dt><label>{xen:phrase more_options}:</label></dt>
 			<dd><ul>
@@ -369,7 +369,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
                     <p class="explain">{xen:phrase tfa_threemagw_use_number_smilies_explain}</p>
 				</li>
 			</ul></dd>
-			
+
 			<dt></dt>
 			<dd><ul>
 				<li>
@@ -378,7 +378,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 				</li>
 			</ul></dd>
 		</dl>
-		
+
 		<dl class="ctrlUnit submitUnit">
 			<dt></dt>
 			<xen:if is="{$context} == 'firstsetup'">
@@ -388,7 +388,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			</xen:if>
 		</dl>
 	</xen:if>
-	
+
 	<input type="hidden" name="provider" value="{$providerId}" />
 	<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'">
 		<xen:comment>Add special parameters if this is in setup.</xen:comment>
