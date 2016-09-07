@@ -1,3 +1,3 @@
 [submodule "msgapiphpsdk"]
 	path = src/library/ThreemaGateway/threema-msgapi-sdk-php
-	url = D:/Users/***REMOVED***/GitHub/threema-msgapi-sdk-php
+	url = ../threema-msgapi-sdk-php
