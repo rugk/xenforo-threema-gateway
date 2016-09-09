@@ -109,6 +109,7 @@ Note that the health check displays an error for the edited file afterwards. If 
 ### Can I get this add-on to use the Threema IDs from user fields?
 
 Yes, you can! Your custom user field just have to has the ID `threemaid` and this add-on will automatically use it. In the 2FA methods it is however only entered as the default value and users can override it if they want.
+The best thing is: This user field will be added automatically when installing this add-on so you do not even have to set it up manually.
 
 ### How can I setup the option to lookup the phone number automatically?
 1. Create a custom user field where your users can put their phone number in. You may configure this to be publicly visible or not.
