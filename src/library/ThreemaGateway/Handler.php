@@ -279,7 +279,6 @@ class ThreemaGateway_Handler
      * returned.
      * Note that "credits" is an admin permission and is therefore only avaliable
      * to admins.
-     * However
      *
      * @param  string     $action  (optional) The action you want to do
      * @param  string     $noCache (optional) Forces the cache to reload
