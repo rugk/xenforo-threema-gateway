@@ -4,6 +4,7 @@ build
 # private files
 privkey.txt
 privatekey.txt
+PrivateKey.txt
 
 # ignore Salt git submodule issue
 src/library/ThreemaGateway/threema-msgapi-sdk-php/source/Salt
