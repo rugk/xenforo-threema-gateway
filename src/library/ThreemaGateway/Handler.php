@@ -252,8 +252,6 @@ class ThreemaGateway_Handler
             }
         }
 
-        echo "ok";
-
         return true;
     }
 
