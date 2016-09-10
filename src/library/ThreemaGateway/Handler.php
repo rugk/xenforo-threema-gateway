@@ -245,7 +245,6 @@ class ThreemaGateway_Handler
         }
 
         //check whether sending and receiving is possible
-        var_dump($this->PrivateKey);
         if ($this->isEndToEnd()) {
             if (!$this->PrivateKey ||
                 !ThreemaGateway_Handler_Key::check($this->PrivateKey, 'private:')) {
