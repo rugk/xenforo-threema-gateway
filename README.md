@@ -14,7 +14,7 @@
 
 * Sensitive settings are hidden in the ACP.
 * You can set permissions which users can send or receive messages with the Threema Gateway.
-* You can hardcode your private key and other details into the PHP file instead of using the XenForo settings, which store the secrets in your database.
+* You can hardcode your private key and other details into the PHP file instead of using the XenForo settings, which stores the secrets in your database.
 * You can generate the private key on the server and leave it there by just specifying the file where it is saved.
 * Permissions allow you to control every aspect of your Gateway.
 * The only external calls this add-on makes are the ones to Threema.

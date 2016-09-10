@@ -17,14 +17,14 @@
 
 1. If you installed everything correctly you should already see no error messages in the ACP anymore. Now you need to generate your private key.
 2. On your server navigate to `library/ThreemaGateway/threema-msgapi-sdk-php` in the installation of XenForo. Now continue with [step 4](https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#user-content-4-generate-a-keypair-by-running-the-tool) of the official guide to create a public and private key.
-3. Also follow [step 5](https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#5-request-custom-threema-id-and-submit-key) to request a new Gateway ID on <https://gateway.threema.ch>.
+3. Protect your private key file, so it is only readable by the process running PHP/XenForo and no other server user can read your private key file.
+4. Also follow [step 5](https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#5-request-custom-threema-id-and-submit-key) to request a new Gateway ID on <https://gateway.threema.ch>.
 
 ## 3. Continue setup with approved Gateway ID
 
 1. When you got your Gateway ID, please go back to the ACP and enter the Gateway ID and the Gateway ID secret there.
 2. Select the mode you used for your ID.
-3. If you used the end-to-end encrypted mode you also have to add the path to your private key path into the input box under the "operation mode". When you followed the guide above and did not moved the private key file to another location the path might e.g. be this one:
-4. threema-msgapi-sdk-php/privateKey.txt
+3. If you used the end-to-end encrypted mode you also have to add the path to your private key path into the input box under the "operation mode". When you followed the guide above and did not moved the private key file to another location the path might e.g. be this one: `threema-msgapi-sdk-php/privateKey.txt`
 5. Now save your changes and when everything worked you should not see any error messages in the status area. Additionally you should be able to see your credits count there.
 
 ## 4. Enable two-factor-authentication

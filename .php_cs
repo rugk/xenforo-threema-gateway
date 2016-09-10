@@ -2,8 +2,8 @@
 /**
  * Configuration file for PHP Coding Standards Fixer (php-cs-fixer).
  *
- * On GitHub: https://github.com/FriendsOfPhp/php-cs-fixer
- * More information: http://cs.sensiolabs.org/
+ * On GitHub: {@link https://github.com/FriendsOfPhp/php-cs-fixer}
+ * More information: {@link http://cs.sensiolabs.org/}
  *
  * @author rugk
  * @copyright Copyright (c) 2015-2016 rugk

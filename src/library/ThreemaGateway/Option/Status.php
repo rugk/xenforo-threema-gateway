@@ -63,10 +63,11 @@ class ThreemaGateway_Option_Status
                 $status['credits']['descr']     = new XenForo_Phrase('option_threema_gateway_status_credits_permission');
                 $status['credits']['descclass'] = 'warning';
             } elseif ($handler->isAvaliable()) {
-                // if avaliable show credits
+                // if available show credits
                 try {
                     $credits = $handler->getCredits();
                 } catch (Exception $e) {
+                    // TODO: show error message instead of discarding it, helps for debugging
                     $credits = 'N/A';
                 }
 
@@ -99,7 +100,7 @@ class ThreemaGateway_Option_Status
             'preparedOption' => $preparedOption,
             'editLink' => $editLink,
             'status' => $status,
-            'additionaltext' => $additionalerror,
+            'additionalerror' => $additionalerror,
             'isConfError' => $isConfError,
         ]);
     }

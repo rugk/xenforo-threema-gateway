@@ -245,12 +245,15 @@ class ThreemaGateway_Handler
         }
 
         //check whether sending and receiving is possible
+        var_dump($this->PrivateKey);
         if ($this->isEndToEnd()) {
             if (!$this->PrivateKey ||
                 !ThreemaGateway_Handler_Key::check($this->PrivateKey, 'private:')) {
                 return false;
             }
         }
+
+        echo "ok";
 
         return true;
     }
@@ -279,7 +282,6 @@ class ThreemaGateway_Handler
      * returned.
      * Note that "credits" is an admin permission and is therefore only avaliable
      * to admins.
-     * However
      *
      * @param  string     $action  (optional) The action you want to do
      * @param  string     $noCache (optional) Forces the cache to reload

@@ -6,7 +6,7 @@ Range reserved: `TfaBasePriority-5` to `TfaBasePriority`
 name         | server                                       | client                                     | user                                             | implemented (class)            | priority
 ------------ | -------------------------------------------- | ------------------------------------------ | ------------------------------------------------ | ------------------------------ | --------
 Conventional | send 6 digits code                           | receive code                               | enter code into website                          | ThreemaGateway_Tfa_Conventional | 25
-Reversed     | receives 6 digits code                       | sends 6 digits code                        | types code from website into phone/scans QR code | not yet                        | 27
+Reversed     | receives 6 digits code                       | sends 6 digits code                        | types code from website into phone/scans QR code | not yet <br> (QR code scanning not yet implemented)                       | 27
 Fast login   | sends login message, receives status updates | receives message, sends status update back | taps on accept/decline on their phone            | not yet                        | 30
 
 ### Conventional
@@ -22,7 +22,7 @@ This is as secure as the first methods, but it may be more confident for the use
 ![send code sketch](images/Reversed.svg)
 
 ### Fast login
-The user gets a message showing them a user requested a login. They can now accept or decline the message. If the message is accepted the user is granted access.  
+The user gets a message telling them a user requested to login. They can now accept or decline the message. If the message is accepted the user is granted access.  
 This is the most confident mode for the user, but it does not depend on a secret code anymore. Similar methods are used for Twitter and Microsoft's 2FA, but they use their own apps for this.
 
 ![accept login sketch](images/AcceptLogin.svg)

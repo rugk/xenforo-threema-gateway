@@ -40,7 +40,7 @@ class ThreemaGateway_Installer
      */
     public static function install($installedAddon)
     {
-        /* @var array An array with the modells of all providers */
+        /* @var array An array with the models of all providers */
         $ProviderModells = self::getProviderModells();
 
         // check requirements of Gateway
@@ -133,7 +133,7 @@ class ThreemaGateway_Installer
     {
         // check XenForo version
         if (XenForo_Application::$versionId < 1050051) {
-            $error = 'This add-on requires XenForo 1.5.0 RC 1 or higher.';
+            $error = 'This add-on requires XenForo 1.5.0 or higher.';
             return false;
         }
 
