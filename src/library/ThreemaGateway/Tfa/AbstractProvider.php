@@ -28,6 +28,13 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     protected $GatewayHandlerServer;
 
     /**
+     * Variable, which will be filled with object of Gateway Handler for sending actions later.
+     *
+     * @var ThreemaGateway_Handler_Sender
+     */
+    protected $GatewayHandlerSender;
+
+    /**
      * Create provider.
      *
      * @param string $id Provider id
@@ -36,6 +43,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     {
         parent::__construct($id);
         $this->GatewayHandler = ThreemaGateway_Handler::getInstance();
+        $this->GatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
         $this->GatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
     }
 
@@ -179,10 +187,10 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         $messageText = ThreemaGateway_Handler_Emoji::parseUnicode($messageText);
 
         // send message
-        if ($this->GatewayHandler->isEndToEnd()) {
-            return $this->GatewayHandler->sendE2EText($receiverId, $messageText);
+        if ($this->GatewayHandlerSender->isEndToEnd()) {
+            return $this->GatewayHandlerSender->sendE2EText($receiverId, $messageText);
         } else {
-            return $this->GatewayHandler->sendSimple($receiverId, $messageText);
+            return $this->GatewayHandlerSender->sendSimple($receiverId, $messageText);
         }
     }
 
