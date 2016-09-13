@@ -311,7 +311,6 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <template title="account_two_step_threemagw_conventional_manage" version_id="1" version_string="0.1.0"><![CDATA[<xen:title>{xen:phrase two_step_verification_setup}: {$provider.title}</xen:title>
 
 <xen:require css="threemagw.css" />
-
 <form method="post" class="xenForm {xen:if $newProviderHtml, AutoValidator}"
 <xen:comment>Use /enable link when setting provider up and use /manage link when changing setting later.</xen:comment>
 action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'">
@@ -383,6 +382,8 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			<dt></dt>
 			<xen:if is="{$context} == 'firstsetup'">
 				<dd><input type="submit" name="save" value="{xen:phrase confirm}" accesskey="s" class="button primary" /></dd>
+			<xen:elseif is="{$context} == 'setup'" />
+				<dd><input type="submit" name="save" value="{xen:phrase save}" accesskey="s" class="button primary" /></dd>
 			<xen:else />
 				<dd><input type="submit" name="save" value="{xen:phrase sendto_threema}" accesskey="s" class="button primary" /></dd>
 			</xen:if>
