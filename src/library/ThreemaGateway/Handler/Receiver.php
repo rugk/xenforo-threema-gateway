@@ -1,6 +1,6 @@
 <?php
 /**
- * Responsible for allowing applications to get received messages.
+ * Allows one to get received messages.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -17,7 +17,6 @@ class ThreemaGateway_Handler_Receiver
 
     /**
      * Startup.
-     *
      */
     public function __construct()
     {
@@ -25,10 +24,10 @@ class ThreemaGateway_Handler_Receiver
     }
 
     /**
-     * Check whether a specific message was received and returns it.
+     * Check whether a specific message has been received and returns it.
      *
-     * @param  string            $senderId
-     * @param  string            $message
+     * @param string $senderId
+     * @param string $keyword
      *
      * @throws XenForo_Exception
      * @return ???
@@ -39,5 +38,7 @@ class ThreemaGateway_Handler_Receiver
         if (!$this->mainHandler->hasPermission('receive')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
+
+        // TODO
     }
 }

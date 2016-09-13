@@ -18,7 +18,6 @@ class ThreemaGateway_Handler_GatewayServer
 
     /**
      * Startup SDK.
-     *
      */
     public function __construct()
     {

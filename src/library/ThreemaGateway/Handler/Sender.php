@@ -17,7 +17,6 @@ class ThreemaGateway_Handler_Sender
 
     /**
      * Startup.
-     *
      */
     public function __construct()
     {
@@ -27,8 +26,8 @@ class ThreemaGateway_Handler_Sender
     /**
      * Send a message without end-to-end encryption.
      *
-     * @param  string            $threemaId
-     * @param  string            $message
+     * @param string $threemaId
+     * @param string $message
      *
      * @throws XenForo_Exception
      * @return int               The message ID
@@ -91,11 +90,10 @@ class ThreemaGateway_Handler_Sender
         }
     }
 
-
     /**
      * Get status of a message, which has previously been sent.
      *
-     * @param  string            $messageId
+     * @param string $messageId The id you got when sending the message.
      *
      * @throws XenForo_Exception
      * @return ???
