@@ -30,7 +30,7 @@ class ThreemaGateway_Handler_Sender
      * @param string $message
      *
      * @throws XenForo_Exception
-     * @return int               The message ID
+     * @return int The message ID
      */
     public function sendSimple($threemaId, $message)
     {
@@ -61,7 +61,7 @@ class ThreemaGateway_Handler_Sender
      * @param string $message   The message to send (max 3500 characters)
      *
      * @throws XenForo_Exception
-     * @return int
+     * @return int The message ID
      */
     public function sendE2EText($threemaId, $message)
     {
@@ -87,6 +87,32 @@ class ThreemaGateway_Handler_Sender
             return $result->getMessageId();
         } else {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_sending_failed') . ' ' . $result->getErrorMessage());
+        }
+    }
+
+    /**
+     * Sends a message to a Threema ID in the preferred mode.
+     *
+     * Attention: You actually may want to distinguish whether a message can be/
+     * has been sent in an E2E way or not as the features and of course the
+     * security level differ.
+     * Therefore only use this method if you do not care how your message is
+     * transported or you already evaluated in which mode the message will be
+     * sent.
+     *
+     * @param string $threemaId The id where the message should be send to
+     * @param string $message   The message to send (max 3500 characters)
+     *
+     * @throws XenForo_Exception
+     * @return int The message ID
+     */
+    public function sendAuto($threemaId, $message)
+    {
+        // send message
+        if ($this->mainHandler->isEndToEnd()) {
+            return $this->sendE2EText($receiverId, $messageText);
+        } else {
+            return $this->sendSimple($receiverId, $messageText);
         }
     }
 

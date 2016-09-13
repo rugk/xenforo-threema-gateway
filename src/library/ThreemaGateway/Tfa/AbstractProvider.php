@@ -187,11 +187,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         $messageText = ThreemaGateway_Handler_Emoji::parseUnicode($messageText);
 
         // send message
-        if ($this->GatewayHandlerSender->isEndToEnd()) {
-            return $this->GatewayHandlerSender->sendE2EText($receiverId, $messageText);
-        } else {
-            return $this->GatewayHandlerSender->sendSimple($receiverId, $messageText);
-        }
+        return $this->GatewayHandlerSender->sendAuto($receiverId, $messageText);
     }
 
     /**
