@@ -26,13 +26,13 @@ class ThreemaGateway_Handler_Receiver
     /**
      * Check whether a specific message has been received and returns it.
      *
-     * @param string $senderId
-     * @param string $keyword
+     * @param string $senderId The ID where you expect a message from.
+     * @param string $keyword (optional) A keyword you look for.
      *
      * @throws XenForo_Exception
      * @return ???
      */
-    public function getMessage($senderId, $keyword)
+    public function getMessage($senderId, $keyword = null)
     {
         // check permission
         if (!$this->mainHandler->hasPermission('receive')) {
