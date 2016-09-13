@@ -246,7 +246,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
      * Called when setting up the provider before the setup page is shown.
      *
      * Currently this is not correctly implemented in XenForo.
-     * See https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047
+     * See {@link https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047}
      *
      * @param XenForo_Input $input
      * @param array         $user
@@ -402,7 +402,9 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
             'threemaId' => $threemaId
         ];
         return $controller->responseView(
-            'ThreemaGateway_ViewPublic_TfaManage', 'account_two_step_threemagw_conventional_manage', $viewParams
+            'ThreemaGateway_ViewPublic_TfaManage',
+            'account_two_step_threemagw_conventional_manage',
+            $viewParams
         );
     }
 }

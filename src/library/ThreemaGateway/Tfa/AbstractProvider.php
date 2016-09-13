@@ -43,7 +43,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     {
         parent::__construct($id);
         $this->GatewayHandler = ThreemaGateway_Handler::getInstance();
-        $this->GatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
+        $this->GatewayHandlerSender = new ThreemaGateway_Handler_Sender;
         $this->GatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
     }
 

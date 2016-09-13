@@ -27,7 +27,7 @@ class ThreemaGateway_Helper_PublicKey
         }
 
         /** @var ThreemaGateway_Handler_GatewayServer $gatewayHandlerServer */
-        $gatewayHandlerServer = ThreemaGateway_Handler_GatewayServer::getInstance();
+        $gatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
 
         try {
             $publicKey = $gatewayHandlerServer->fetchPublicKey($threemaid);

@@ -154,7 +154,7 @@ class ThreemaGateway_Handler_GatewayServer
         }
 
         /** @var Threema\MsgApi\Commands\Results\FetchPublicKeyResult $result */
-        $result = $this->connector->fetchPublicKey($threemaId);
+        $result = $this->mainHandler->getConnector()->fetchPublicKey($threemaId);
         if ($result->isSuccess()) {
             return $result->getPublicKey();
         } else {

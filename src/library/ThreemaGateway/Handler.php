@@ -59,6 +59,12 @@ class ThreemaGateway_Handler
     protected $connector;
 
     /**
+     * @var E2EHelper The Threema E2E helper, which is neccessary when sending
+     *                end-to-end-encrypted messages.
+     */
+    protected $e2eHelper;
+
+    /**
      * @var array|null User who is using the Threema Gateway
      */
     protected $user = null;
@@ -153,6 +159,14 @@ class ThreemaGateway_Handler
         $connector = $connectorHelper->create($keystore);
 
         $this->connector = $connector;
+
+        //create E2E helper if E2E mode is used
+        if ($this->isEndToEnd()) {
+            $this->e2eHelper = new E2EHelper(
+                ThreemaGateway_Handler_Key::hexToBin($this->PrivateKey),
+                $this->connector
+            );
+        }
     }
 
     /**
@@ -382,7 +396,7 @@ class ThreemaGateway_Handler
      * Returns the connector to the Threema Gateway.
      *
      * If you want to use the Gateway for your add-on, please try to avoid to
-     * use the PHP-SDK directl, so please avoid this function. It is mostly
+     * use the PHP-SDK directly, so please avoid this function. It is mostly
      * used internally only.
      *
      * @return ThreemaGateway_Handler_Connection The connector to the PHP-SDK
@@ -390,6 +404,37 @@ class ThreemaGateway_Handler
     public function getConnector()
     {
         return $this->connector;
+    }
+
+    /**
+     * Returns the E2EHelper to the Threema Gateway.
+     *
+     * If you want to use the Gateway for your add-on, please try to avoid to
+     * use the PHP-SDK directly, so please avoid this function. It is mostly
+     * used internally only.
+     *
+     * @return E2EHelper The connector to the PHP-SDK
+     */
+    public function getE2EHelper()
+    {
+        return $this->e2eHelper;
+    }
+
+    /**
+     * Returns a Receiver of the Threema Gateway.
+     *
+     * If you want to use the Gateway for your add-on, please try to avoid to
+     * use the PHP-SDK directly, so please avoid this function. It is mostly
+     * used internally only.
+     *
+     * @param string $threemaId
+     *
+     * @return E2EHelper
+     */
+    public function getReceiver($threemaId)
+    {
+        /** @var Threema\MsgApi\Receiver */
+        return new Receiver($threemaId, Receiver::TYPE_ID);
     }
 
     /**

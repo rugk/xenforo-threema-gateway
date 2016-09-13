@@ -42,6 +42,7 @@ class ThreemaGateway_Handler_Validation
             /** @var string $publicKey */
             $publicKey = $gatewayHandlerServer->fetchPublicKey($threemaid);
         } catch (Exception $e) {
+            // to show detailed error messages: $error = new XenForo_Phrase('threemagw_threema_id_does_not_exist') . ' ' . $e->getMessage();
             $error = new XenForo_Phrase('threemagw_threema_id_does_not_exist');
             return false;
         }

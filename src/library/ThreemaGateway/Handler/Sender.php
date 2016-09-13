@@ -41,8 +41,7 @@ class ThreemaGateway_Handler_Sender
 
         $threemaId = strtoupper($threemaId);
 
-        /** @var Threema\MsgApi\Receiver $receiver */
-        $receiver = new Receiver($threemaId, Receiver::TYPE_ID);
+        $receiver = $this->mainHandler->getReceiver($threemaId);
 
         /** @var Threema\MsgApi\Commands\Results\SendSimpleResult $result */
         $result = $this->mainHandler->getConnector()->sendSimple($receiver, $message);
@@ -72,13 +71,9 @@ class ThreemaGateway_Handler_Sender
 
         $threemaId = strtoupper($threemaId);
 
-        $e2eHelper = new E2EHelper(
-            ThreemaGateway_Handler_Key::hexToBin($this->PrivateKey),
-            $this->mainHandler->getConnector()
-        );
         try {
             /** @var Threema\MsgApi\Commands\Results\SendE2EResult $result */
-            $result = $e2eHelper->sendTextMessage($threemaId, $message);
+            $result = $this->mainHandler->getE2EHelper()->sendTextMessage($threemaId, $message);
         } catch (Exception $e) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_sending_failed') . ' ' . $e->getMessage());
         }
@@ -110,9 +105,9 @@ class ThreemaGateway_Handler_Sender
     {
         // send message
         if ($this->mainHandler->isEndToEnd()) {
-            return $this->sendE2EText($receiverId, $messageText);
+            return $this->sendE2EText($threemaId, $message);
         } else {
-            return $this->sendSimple($receiverId, $messageText);
+            return $this->sendSimple($threemaId, $message);
         }
     }
 
