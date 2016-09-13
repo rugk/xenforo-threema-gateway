@@ -43,7 +43,7 @@ class ThreemaGateway_Helper_General
         /** @var array $error */
         $error = []; //error array is not used anyway
         /** @var ThreemaGateway_Handler $gatewayHandler */
-        $gatewayHandler = new ThreemaGateway_Handler;
+        $gatewayHandler = ThreemaGateway_Handler::getInstance();
         return $gatewayHandler->checkThreemaId($threemaid, $type, $error, $checkExistence);
     }
 

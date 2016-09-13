@@ -34,13 +34,13 @@ class ThreemaGateway_Handler_Validation
             return true;
         }
 
-        /** @var ThreemaGateway_Handler $gatewayHandler */
-        $gatewayHandler = new ThreemaGateway_Handler;
+        /** @var ThreemaGateway_Handler_GatewayServer $gatewayHandlerServer */
+        $gatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
 
         // fetches public key of an id to check whether it exists
         try {
             /** @var string $publicKey */
-            $publicKey = $gatewayHandler->fetchPublicKey($threemaid);
+            $publicKey = $gatewayHandlerServer->fetchPublicKey($threemaid);
         } catch (Exception $e) {
             $error = new XenForo_Phrase('threemagw_threema_id_does_not_exist');
             return false;

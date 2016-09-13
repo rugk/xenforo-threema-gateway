@@ -12,7 +12,8 @@ We follow [Semantic Versioning](http://semver.org/) to maintain backward compati
 
 The file [`Handler.php`](../Handler.php) and all files in the directory `Handler` are the files you have to look at. This matches the classes `ThreemaGateway_Handler` and `ThreemaGateway_Handler_*`. These are also the only ones covered by the "Semantic Versioning" (as an API) as  all others are not intended to be extended or called by other add-ons.
 
-All files are PHPDOC documented and contain all necessary notes to find out what methods and other things you can use. Basically you most only need to use `ThreemaGateway_Handler` as this class has implements all important functions of the Threema Gateway like sending messages or fetching public keys.
+All files are PHPDOC documented and contain all necessary notes to find out what methods and other things you can use.
+Note that `ThreemaGateway_Handler` cannot be constructed by calling `new ThreemaGateway_Handler`, but needs to be accessed with `ThreemaGateway_Handler::getInstance` as it is implemented in a Singleton-way. All other Handler functions can be accessed in the "usual" way.
 
 #### Recommendations
 

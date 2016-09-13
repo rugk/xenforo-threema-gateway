@@ -54,7 +54,8 @@ class ThreemaGateway_Option_Status
         //only go on if all checked requirements are okay to prevent PHP errors when accessing the SDK
         if (!$isConfError) {
             //show PHP SDK version
-            $handler                  = new ThreemaGateway_Handler;
+            $handler                  = ThreemaGateway_Handler::getInstance();
+            $handlerServer            = new ThreemaGateway_Handler_GatewayServer;
             $status['phpsdk']['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $handler->SdkVersion]);
 
             // check permissions
@@ -65,7 +66,7 @@ class ThreemaGateway_Option_Status
             } elseif ($handler->isAvaliable()) {
                 // if available show credits
                 try {
-                    $credits = $handler->getCredits();
+                    $credits = $handlerServer->getCredits();
                 } catch (Exception $e) {
                     // TODO: show error message instead of discarding it, helps for debugging
                     $credits = 'N/A';

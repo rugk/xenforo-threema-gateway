@@ -1,6 +1,7 @@
 <?php
 /**
- * Gateway handler.
+ * Gateway handler. Cares about handling data, the connection to
+ * the PHP SDK and permissions.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -17,6 +18,11 @@ use Threema\MsgApi\Helpers\E2EHelper;
  */
 class ThreemaGateway_Handler
 {
+    /**
+     * @var Singleton
+     */
+    private static $instance = null;
+
     /**
      * @var XenForo_Options $xenOptions XenForo options
      */
@@ -53,7 +59,7 @@ class ThreemaGateway_Handler
     protected $connector;
 
     /**
-     * @var array|null User whose using the Threema Gateway
+     * @var array|null User who is using the Threema Gateway
      */
     protected $user = null;
 
@@ -63,26 +69,20 @@ class ThreemaGateway_Handler
     protected $permissions;
 
     /**
-     * SDK startup.
+     * Private constructor so nobody else can instance it.
+     * Use {@link getInstance()} instead.
      *
-     * @param  array|null        $newUser (optional) User array (passed to
-     *                                    {@link setUserId()})
      * @throws XenForo_Exception
      * @return void
      */
-    public function __construct($user = null)
+    private function __construct()
     {
-        // optionally set user
-        if ($user !== null) {
-            $this->setUserId($user);
-        };
-
         // get options
         /** @var XenForo_Options $options */
         $options          = XenForo_Application::getOptions();
         $this->xenOptions = $options;
 
-        // evaluate options
+        // get options (if not hard-coded)
         if (!$this->GatewayId) {
             $this->GatewayId = $options->threema_gateway_threema_id;
         }
@@ -153,6 +153,29 @@ class ThreemaGateway_Handler
         $connector = $connectorHelper->create($keystore);
 
         $this->connector = $connector;
+    }
+
+    /**
+     * Prevent cloning for Singleton.
+     */
+    private function __clone()
+    {
+        // I smash clones!
+    }
+
+    /**
+     * SDK startup as a Singleton.
+     *
+     * @throws XenForo_Exception
+     * @return void
+     */
+    public static function getInstance()
+    {
+        if (!isset(static::$instance)) {
+            static::$instance = new static;
+        }
+
+        return static::$instance;
     }
 
     /**
@@ -356,98 +379,6 @@ class ThreemaGateway_Handler
     }
 
     /**
-     * Returns the Threema ID associated to a phone number.
-     *
-     * In case of an error this does not throw an exception, but just returns false.
-     *
-     * @param  string            $phone Phone number (the best way is in international E.164
-     *                                  format without `+`, e.g. 41791234567)
-     * @throws XenForo_Exception
-     * @return string|false
-     */
-    public function lookupPhone($phone)
-    {
-        // check permission
-        if (!$this->hasPermission('lookup')) {
-            throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
-        }
-
-        //adjust phone number
-        $phone = preg_replace('/\s+/', '', $phone); //strip whitespace
-        if (substr($phone, 0, 1) == '+') {
-            //remove leading +
-            $phone = substr($phone, 1);
-        }
-
-        /** @var array $threemaId Return value */
-        $threemaId = false;
-
-        /** @var Threema\MsgApi\Commands\Results\LookupIdResult $result */
-        $result = $this->connector->keyLookupByPhoneNumber($phone);
-        if ($result->isSuccess()) {
-            $threemaId = $result->getId();
-        }
-
-        return $threemaId;
-    }
-
-    /**
-     * Returns the Threema ID associated to a mail address.
-     *
-     * In case of an error this does not throw an exception, but just returns false.
-     *
-     * @param  string            $mail E-mail
-     * @throws XenForo_Exception
-     * @return string|false
-     */
-    public function lookupMail($mail)
-    {
-        // check permission
-        if (!$this->hasPermission('lookup')) {
-            throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
-        }
-
-        /** @var array Return value $threemaId */
-        $threemaId = false;
-
-        /** @var Threema\MsgApi\Commands\Results\LookupIdResult $result */
-        $result = $this->connector->keyLookupByEmail($mail);
-        if ($result->isSuccess()) {
-            $threemaId = $result->getId();
-        }
-
-        return $threemaId;
-    }
-
-    /**
-     * Returns the capabilities of a Threema ID.
-     *
-     * In case of an error this does not throw an exception, but just returns false.
-     *
-     * @param  string                                           $threemaId
-     * @throws XenForo_Exception
-     * @return Threema\MsgApi\Commands\Results\CapabilityResult
-     */
-    public function getCapabilities($threemaId)
-    {
-        // check permission
-        if (!$this->hasPermission('lookup')) {
-            throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
-        }
-
-        /** @var array $return Return value */
-        $return = false;
-
-        /** @var Threema\MsgApi\Commands\Results\LookupIdResult $result */
-        $result = $this->connector->keyCapability($threemaId);
-        if ($result->isSuccess()) {
-            $return = $result;
-        }
-
-        return $return;
-    }
-
-    /**
      * Send a message without end-to-end encryption.
      *
      * @param  string            $threemaId
@@ -514,50 +445,17 @@ class ThreemaGateway_Handler
     }
 
     /**
-     * Fetches the public key of an ID from the Threema server.
+     * Returns the connector to the Threema Gateway.
      *
-     * @param string $threemaId The id whose public key should be fetched
+     * If you want to use the Gateway for your add-on, please try to avoid to
+     * use the PHP-SDK directl, so please avoid this function. It is mostly
+     * used internally only.
      *
-     * @throws XenForo_Exception
-     * @return string
+     * @return ThreemaGateway_Handler_Connection The connector to the PHP-SDK
      */
-    public function fetchPublicKey($threemaId)
+    public function getConnector()
     {
-        // check permission
-        if (!$this->hasPermission('fetch')) {
-            throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
-        }
-
-        /** @var Threema\MsgApi\Commands\Results\FetchPublicKeyResult $result */
-        $result = $this->connector->fetchPublicKey($threemaId);
-        if ($result->isSuccess()) {
-            return $result->getPublicKey();
-        } else {
-            throw new XenForo_Exception(new XenForo_Phrase('threemagw_fetching_publickey_failed') . ' ' . $result->getErrorMessage());
-        }
-    }
-
-    /**
-     * Returns the remaining credits of the Gateway account.
-     *
-     * @throws XenForo_Exception
-     * @return string
-     */
-    public function getCredits()
-    {
-        // check permission
-        if (!$this->hasPermission('credits')) {
-            throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
-        }
-
-        /** @var Threema\MsgApi\Commands\Results\CreditsResult $result */
-        $result = $this->connector->credits();
-
-        if ($result->isSuccess()) {
-            return $result->getCredits();
-        } else {
-            throw new XenForo_Exception(new XenForo_Phrase('threemagw_getting_credits_failed') . ' ' . $result->getErrorMessage());
-        }
+        return $this->connector;
     }
 
     /**

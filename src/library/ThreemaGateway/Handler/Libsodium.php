@@ -24,7 +24,7 @@ class ThreemaGateway_Handler_Libsodium
     }
 
     /**
-     * Tests whetheer this libsodium library can be used.
+     * Tests whether this libsodium library can be used.
      *
      * In comparision to {@link __construct()} this does not throw an exception
      * when you cannot use libsodium.

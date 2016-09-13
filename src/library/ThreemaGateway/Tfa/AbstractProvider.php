@@ -21,6 +21,13 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     protected $GatewayHandler;
 
     /**
+     * Variable, which will be filled with object of Gateway Handler for server actions later.
+     *
+     * @var ThreemaGateway_Handler_GatewayServer
+     */
+    protected $GatewayHandlerServer;
+
+    /**
      * Create provider.
      *
      * @param string $id Provider id
@@ -28,9 +35,9 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     public function __construct($id)
     {
         parent::__construct($id);
-        $this->GatewayHandler = new ThreemaGateway_Handler;
+        $this->GatewayHandler = ThreemaGateway_Handler::getInstance();
+        $this->GatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
     }
-
 
     /**
      * Called when activated. Returns inital data of 2FA methode.
@@ -234,7 +241,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
 
             //lookup mail
             try {
-                $threemaId = $this->GatewayHandler->lookupMail($user['email']);
+                $threemaId = $this->GatewayHandlerServer->lookupMail($user['email']);
             } catch (Exception $e) {
                 //ignore failure
             }
@@ -248,7 +255,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
 
             //lookup phone number
             try {
-                $threemaId = $this->GatewayHandler->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
+                $threemaId = $this->GatewayHandlerServer->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
             } catch (Exception $e) {
                 //ignore failure
             }

@@ -25,14 +25,12 @@ class ThreemaGateway_Helper_PublicKey
         if ($threemaid == '') {
             return '';
         }
-        // TODO: try to reuse existing ThreemaGateway_Handler here.
-        // see \threema-msgapi-sdk-php\source\Threema\MsgApi\PublicKeyStores\PhpFile.php
 
-        /** @var ThreemaGateway_Handler $gatewayHandler */
-        $gatewayHandler = new ThreemaGateway_Handler;
+        /** @var ThreemaGateway_Handler_GatewayServer $gatewayHandlerServer */
+        $gatewayHandlerServer = ThreemaGateway_Handler_GatewayServer::getInstance();
 
         try {
-            $publicKey = $gatewayHandler->fetchPublicKey($threemaid);
+            $publicKey = $gatewayHandlerServer->fetchPublicKey($threemaid);
         } catch (Exception $e) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_threema_id_does_not_exist') . ' ' . $e->getMessage());
         }
