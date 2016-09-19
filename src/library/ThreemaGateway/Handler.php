@@ -31,12 +31,12 @@ class ThreemaGateway_Handler
     /**
      * @var string $GatewayId Your own Threema Gateway ID
      */
-    private $GatewayId = '';
+    public $GatewayId = '';
 
     /**
      * @var string $GatewaySecret Your own Threema Gateway Secret
      */
-    private $GatewaySecret = '';
+    public $GatewaySecret = '';
 
     /**
      * @var string $PrivateKey Your own private key
@@ -47,6 +47,16 @@ class ThreemaGateway_Handler
      * @var string Version of Threema Gateway PHP SDK
      */
     public $SdkVersion;
+
+    /**
+     * @var int Feature level of PHP SDK
+     */
+    public $SdkFeatureLevel;
+
+    /**
+     * @var Threema\MsgApi\Tools\CryptTool
+     */
+    protected $cryptTool;
 
     /**
      * @var string Path to Threema Gateway PHP SDK
@@ -139,6 +149,8 @@ class ThreemaGateway_Handler
 
         // Set (missing) properties.
         $this->SdkVersion = MSGAPI_SDK_VERSION;
+        $this->SdkFeatureLevel = MSGAPI_SDK_FEATURE_LEVEL;
+        $this->cryptTool = $cryptTool;
 
         //create keystore
         /** @var array $phpKeystore The setting for an optional PHP keystore */
@@ -429,12 +441,22 @@ class ThreemaGateway_Handler
      *
      * @param string $threemaId
      *
-     * @return E2EHelper
+     * @return Receiver
      */
     public function getReceiver($threemaId)
     {
         /** @var Threema\MsgApi\Receiver */
         return new Receiver($threemaId, Receiver::TYPE_ID);
+    }
+
+    /**
+     * Returns a Receiver of the Threema Gateway.
+     *
+     * @return Threema\MsgApi\Tools\CryptTool
+     */
+    public function getCryptTool()
+    {
+        return $this->cryptTool;
     }
 
     /**

@@ -11,9 +11,29 @@
 class ThreemaGateway_Handler_Receiver
 {
     /**
-     * @var ThreemaGateway_Handler $mainHandler
+     * @var ThreemaGateway_Handler
      */
     protected $mainHandler;
+
+    /**
+     * @var E2EHelper
+     */
+    protected $e2eHelper;
+
+    /**
+     * @var Threema\MsgApi\Tools\CryptTool
+     */
+    protected $cryptTool;
+
+    /**
+     * @var XenForo_Input raw parameters
+     */
+    protected $input;
+
+    /**
+     * @var array filtered parameters
+     */
+    protected $filtered;
 
     /**
      * Startup.
@@ -21,6 +41,8 @@ class ThreemaGateway_Handler_Receiver
     public function __construct()
     {
         $this->mainHandler = ThreemaGateway_Handler::getInstance();
+        $this->e2eHelper = $this->mainHandler->getE2EHelper();
+        $this->cryptTool = $this->mainHandler->getCryptTool();
     }
 
     /**
@@ -40,5 +62,75 @@ class ThreemaGateway_Handler_Receiver
         }
 
         // TODO
+    }
+
+    /**
+	 * Initializes handling for processing a request callback.
+	 *
+	 * @param Zend_Controller_Request_Http $request
+	 */
+	public function initCallbackHandling(Zend_Controller_Request_Http $request)
+	{
+		$this->request = $request;
+		$this->input = new XenForo_Input($request);
+
+		$this->filtered = $this->_input->filter(array(
+			'from' => XenForo_Input::STRING,
+			'to' => XenForo_Input::STRING,
+			'messageId' => XenForo_Input::STRING,
+			'date' => XenForo_Input::DATE_TIME,
+			'nonce' => XenForo_Input::STRING,
+			'box' => XenForo_Input::STRING,
+			'mac' => XenForo_Input::UNUM
+		));
+
+        var_dump($this->filtered);
+	}
+
+    /**
+     * Validates the callback request. In case of failure let Gateway server
+     * retry.
+     *
+     * @param string $errorString Output error string
+     *
+     * @return boolean
+     */
+    public function validateRequest(&$errorString)
+    {
+        return true;
+    }
+
+    /**
+     * Validates the callback request. In case of failure let Gateway server
+     * should not retry here as it likely would not help anyway.
+     *
+     * @param string $errorString Output error string
+     *
+     * @return boolean
+     */
+    public function validatePreConditions(&$errorString)
+    {
+        // simple, formal validation
+        if ($this->cryptTool->stringCompare($this->filtered['to'], $this->mainHandler->GatewayId)) {
+            $errorString = 'Invalid request';
+            return false;
+        }
+
+        // HMAC validation
+        if ($this->e2eHelper->checkMac(
+            $this->filtered['from'],
+            $this->filtered['to'],
+            $this->filtered['messageId'],
+            $this->filtered['date'],
+            $this->filtered['nonce'],
+            $this->filtered['box'],
+            $this->filtered['mac'],
+            $this->mainHandler->GatewaySecret
+            )) {
+            $errorString = 'Unverifified request';
+            return false;
+        }
+
+        return true;
     }
 }
