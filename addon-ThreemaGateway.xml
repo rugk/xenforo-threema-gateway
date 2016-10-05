@@ -11,13 +11,16 @@
 <xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
 	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
 	<xen:html>
-		<p>{xen:raw $status.libsodium.text}</p>
+		<p>{xen:raw $status.libsodium.text} <span class="addnote">{xen:raw $status.libsodium.addition}</span></p>
 		<p class="explain {$status.libsodium.descclass}">{xen:raw $status.libsodium.descr}</p>
 
-		<p>{xen:raw $status.phpsdk.text}</p>
+		<p>{xen:raw $status.libsodiumphp.text} <span class="addnote">{xen:raw $status.libsodiumphp.addition}</span></p>
+		<p class="explain {$status.libsodiumphp.descclass}">{xen:raw $status.libsodiumphp.descr}</p>
+
+		<p>{xen:raw $status.phpsdk.text} <span class="addnote">{xen:raw $status.phpsdk.addition}</span></p>
 		<p class="explain {$status.phpsdk.descclass}">{xen:raw $status.phpsdk.descr}</p>
 
-		<p>{xen:raw $status.credits.text}</p>
+		<p>{xen:raw $status.credits.text} <span class="addnote">{xen:raw $status.credits.addition}</span></p>
 		<p class="explain {$status.credits.descclass}">{xen:raw $status.credits.descr}</p>
 
 		<xen:if is="{$additionalerror}">
@@ -41,7 +44,10 @@
 .error {
   color: rgb(195, 0, 0) !important;
 }
-]]></template>
+
+.addnote {
+  font-size: 85%;
+}]]></template>
     <template title="two_step_threemagw_conventional"><![CDATA[<p>{xen:phrase tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login, 'threemaid={$data.threemaid}'}</p>
 
 <dl class="ctrlUnit">
@@ -201,21 +207,25 @@ Note that the file must be stored in <code>library/ThreemaGateway</code>, but yo
     <phrase title="option_threema_gateway_status_credits_low" version_id="1" version_string="0.1"><![CDATA[Your credits are getting low. Please consider recharging them.]]></phrase>
     <phrase title="option_threema_gateway_status_credits_out" version_id="1" version_string="0.1"><![CDATA[You have no credits (anymore). Without any credits you cannot send messages any more.]]></phrase>
     <phrase title="option_threema_gateway_status_credits_permission" version_id="1" version_string="0.1.0"><![CDATA[You are not allowed to view the remaining credits.]]></phrase>
+    <phrase title="option_threema_gateway_status_credits_recharge" version_id="1" version_string="0.1.0"><![CDATA[(<a href="https://gateway.threema.ch/en/load" target="_blank">recharge</a>)]]></phrase>
     <phrase title="option_threema_gateway_status_error" version_id="1" version_string="0.1"><![CDATA[You have some errors in your configuration. Until you resolve them it will not be possible to use this addon properly.]]></phrase>
     <phrase title="option_threema_gateway_status_explain" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodiumphp_outdated" version_id="1" version_string="0.1.0"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium-php (at least v1.0.1).]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodiumphp_version" version_id="1" version_string="0.1.0"><![CDATA[<a href="https://github.com/jedisct1/libsodium-php" target="_blank">Sodium-PHP</a> version: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_not_installed" version_id="1" version_string="0.1"><![CDATA[Libsodium is not installed.]]></phrase>
-    <phrase title="option_threema_gateway_status_libsodium_not_installed_recommend" version_id="1" version_string="0.1"><![CDATA[For performance and security reasons it is very much recommend to install libsodium. You can follow <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">this guide</a> for doing so.]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_not_installed_recommend" version_id="1" version_string="0.1.0"><![CDATA[For performance and security reasons it is very much recommend to install <a href="https://download.libsodium.org/doc/" target="_blank">libsodium</a> and the <a href="https://github.com/jedisct1/libsodium-php" target="_blank">php extension</a>. You can follow <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">this guide</a> for doing so.<br />
+Additionally many 2FA methods will be disabled if you do not install libsodium.]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_not_installed_required_64bit" version_id="1" version_string="0.1.0"><![CDATA[You can only use the pure PHP implementation with a 64bit version of PHP, so you either have to install PHP x64 or <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">install libsodium</a>, which also provides more speed and security advantages.]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_outdated" version_id="1" version_string="0.1"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium.]]></phrase>
-    <phrase title="option_threema_gateway_status_libsodium_version" version_id="1" version_string="0.1"><![CDATA[Sodium version: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_version" version_id="1" version_string="0.1.0"><![CDATA[<a href="https://download.libsodium.org/doc/" target="_blank">Sodium</a> version: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_missing_private_key" version_id="1" version_string="0.1.0"><![CDATA[Currently it is not possible to use the Threema Gateway, because the private key is malformed or not specified.]]></phrase>
-    <phrase title="option_threema_gateway_status_phpsdk_version" version_id="1" version_string="0.1.0"><![CDATA[Version of <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blanK">Threema PHP SDK</a>: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_status_phpsdk_version" version_id="1" version_string="0.1.0"><![CDATA[Version of <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blank">Threema PHP SDK</a>: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupmail" version_id="1" version_string="0.1.0"><![CDATA[Automatically lookup mail addresses]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupmail_explain" version_id="1" version_string="0.1.0"><![CDATA[When the user activates a 2FA mode this option automatically tries to get the Threema ID associated with the mail address of the user. The mail address is hashed before it is send to the Threema server.]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupphone" version_id="1" version_string="0.1.0"><![CDATA[Automatically lookup phone numbers]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupphone_explain" version_id="1" version_string="0.1.0"><![CDATA[When the user activates a 2FA mode this option automatically tries to get the Threema ID associated with the mobile phone number of the user. The phone number is hashed before it is send to the Threema server.<br />
 Add the ID of the custom user field in the input box, where it should be looked for phone numbers.<br />
-<b>Note:</b> When the phone number in this custom user field is not verified when saved this allows forum users to lookup any phone number they like.]]></phrase>
+<b>Important:</b> When the phone number in this custom user field is not verified when it is saved. This allows forum users to lookup arbitrary phone number of any Threema user.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional" version_id="1" version_string="0.1.0"><![CDATA[Activate Threema Gateway: Conventional]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_explain" version_id="1" version_string="0.1.0"><![CDATA[Allow users to use the "Conventional" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_vadility" version_id="1" version_string="0.1.0"><![CDATA[Vadility time]]></phrase>

@@ -23,7 +23,7 @@ class ThreemaGateway_Option_Status
     public static function renderHtml(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
         $isConfError     = false;
-        $status          = ['libsodium', 'phpsdk', 'credits'];
+        $status          = ['libsodium', 'libsodiumphp', 'phpsdk', 'credits'];
         $additionalerror = '';
 
         //get old options
@@ -38,6 +38,13 @@ class ThreemaGateway_Option_Status
                 $status['libsodium']['descclass'] = 'warning';
             } else {
                 $status['libsodium']['text'] = new XenForo_Phrase('option_threema_gateway_status_libsodium_version', ['version' => \Sodium\version_string()]);
+            }
+
+            // & libsodium-php
+            $status['libsodiumphp']['text'] = new XenForo_Phrase('option_threema_gateway_status_libsodiumphp_version', ['version' => phpversion('libsodium')]);
+            if (version_compare(phpversion('libsodium'), '1.0.1', '<')) {
+                $status['libsodiumphp']['descr']     = new XenForo_Phrase('option_threema_gateway_status_libsodiumphp_outdated');
+                $status['libsodiumphp']['descclass'] = 'warning';
             }
         } else {
             $status['libsodium']['text'] = new XenForo_Phrase('option_threema_gateway_status_libsodium_not_installed');
@@ -83,6 +90,8 @@ class ThreemaGateway_Option_Status
                     $status['credits']['descr']     = new XenForo_Phrase('option_threema_gateway_status_credits_low');
                     $status['credits']['descclass'] = 'warning';
                 }
+
+                $status['credits']['addition'] = new XenForo_Phrase('option_threema_gateway_status_credits_recharge');
 
                 if (!$handler->isReady()) {
                     $additionalerror = new XenForo_Phrase('option_threema_gateway_status_missing_private_key');
