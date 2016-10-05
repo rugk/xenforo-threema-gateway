@@ -8,21 +8,8 @@
  * @license MIT
  */
 
-class ThreemaGateway_Handler_Sender
+class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action_Abstract
 {
-    /**
-     * @var ThreemaGateway_Handler $mainHandler
-     */
-    protected $mainHandler;
-
-    /**
-     * Startup.
-     */
-    public function __construct()
-    {
-        $this->mainHandler = ThreemaGateway_Handler::getInstance();
-    }
-
     /**
      * Send a message without end-to-end encryption.
      *
@@ -35,16 +22,16 @@ class ThreemaGateway_Handler_Sender
     public function sendSimple($threemaId, $message)
     {
         // check permission
-        if (!$this->mainHandler->hasPermission('send')) {
+        if (!$this->permissions->hasPermission('send')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
         $threemaId = strtoupper($threemaId);
 
-        $receiver = $this->mainHandler->getReceiver($threemaId);
+        $receiver = $this->getReceiver($threemaId);
 
         /** @var Threema\MsgApi\Commands\Results\SendSimpleResult $result */
-        $result = $this->mainHandler->getConnector()->sendSimple($receiver, $message);
+        $result = $this->getConnector()->sendSimple($receiver, $message);
 
         if ($result->isSuccess()) {
             return $result->getMessageId();
@@ -65,7 +52,7 @@ class ThreemaGateway_Handler_Sender
     public function sendE2EText($threemaId, $message)
     {
         // check permission
-        if (!$this->mainHandler->hasPermission('send')) {
+        if (!$this->permissions->hasPermission('send')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
@@ -73,7 +60,7 @@ class ThreemaGateway_Handler_Sender
 
         try {
             /** @var Threema\MsgApi\Commands\Results\SendE2EResult $result */
-            $result = $this->mainHandler->getE2EHelper()->sendTextMessage($threemaId, $message);
+            $result = $this->getE2EHelper()->sendTextMessage($threemaId, $message);
         } catch (Exception $e) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_sending_failed') . ' ' . $e->getMessage());
         }
@@ -104,7 +91,7 @@ class ThreemaGateway_Handler_Sender
     public function sendAuto($threemaId, $message)
     {
         // send message
-        if ($this->mainHandler->isEndToEnd()) {
+        if ($this->settings->isEndToEnd()) {
             return $this->sendE2EText($threemaId, $message);
         } else {
             return $this->sendSimple($threemaId, $message);

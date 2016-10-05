@@ -29,7 +29,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     {
         /** @var array $params */
         $params = [];
-        if ($this->GatewayHandler->isEndToEnd()) {
+        if ($this->GatewaySettings->isEndToEnd()) {
             $params['e2e'] = new XenForo_Phrase('threemagw_message_is_sent_e2e');
         } else {
             $params['e2e'] = '';
@@ -56,8 +56,8 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         }
 
         // check specific permissions
-        if (!$this->GatewayHandler->hasPermission('send') ||
-            !$this->GatewayHandler->hasPermission('fetch')
+        if (!$this->GatewayPermissions->hasPermission('send') ||
+            !$this->GatewayPermissions->hasPermission('fetch')
         ) {
             return false;
         }
@@ -118,7 +118,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
 
         // add options
         if ($providerData['useNumberSmilies']) {
-            $code = ThreemaGateway_Handler_Emoji::replaceNumbers($code);
+            $code = ThreemaGateway_Handler_Emoji::replaceDigits($code);
         }
 
         $template = 'tfa_threemagw_conventional_message';

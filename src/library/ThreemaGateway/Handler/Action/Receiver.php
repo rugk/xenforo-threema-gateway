@@ -8,23 +8,8 @@
  * @license MIT
  */
 
-class ThreemaGateway_Handler_Receiver
+class ThreemaGateway_Handler_Receiver extends ThreemaGateway_Handler_Action_Abstract
 {
-    /**
-     * @var ThreemaGateway_Handler
-     */
-    protected $mainHandler;
-
-    /**
-     * @var E2EHelper
-     */
-    protected $e2eHelper;
-
-    /**
-     * @var Threema\MsgApi\Tools\CryptTool
-     */
-    protected $cryptTool;
-
     /**
      * @var XenForo_Input raw parameters
      */
@@ -34,16 +19,6 @@ class ThreemaGateway_Handler_Receiver
      * @var array filtered parameters
      */
     protected $filtered;
-
-    /**
-     * Startup.
-     */
-    public function __construct()
-    {
-        $this->mainHandler = ThreemaGateway_Handler::getInstance();
-        $this->e2eHelper = $this->mainHandler->getE2EHelper();
-        $this->cryptTool = $this->mainHandler->getCryptTool();
-    }
 
     /**
      * Check whether a specific message has been received and returns it.
@@ -57,7 +32,7 @@ class ThreemaGateway_Handler_Receiver
     public function getMessage($senderId, $keyword = null)
     {
         // check permission
-        if (!$this->mainHandler->hasPermission('receive')) {
+        if (!$this->permissions->hasPermission('receive')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
@@ -111,7 +86,7 @@ class ThreemaGateway_Handler_Receiver
     public function validatePreConditions(&$errorString)
     {
         // simple, formal validation
-        if ($this->cryptTool->stringCompare($this->filtered['to'], $this->mainHandler->GatewayId)) {
+        if ($this->cryptTool->stringCompare($this->filtered['to'], $this->settings->getId())) {
             $errorString = 'Invalid request';
             return false;
         }
@@ -125,7 +100,7 @@ class ThreemaGateway_Handler_Receiver
             $this->filtered['nonce'],
             $this->filtered['box'],
             $this->filtered['mac'],
-            $this->mainHandler->GatewaySecret
+            $this->settings->getSecret()
             )) {
             $errorString = 'Unverifified request';
             return false;

@@ -9,21 +9,8 @@
  * @license MIT
  */
 
-class ThreemaGateway_Handler_GatewayServer
+class ThreemaGateway_Handler_Action_GatewayServer extends ThreemaGateway_Handler_Action_Abstract
 {
-    /**
-     * @var ThreemaGateway_Handler $mainHandler
-     */
-    protected $mainHandler;
-
-    /**
-     * Startup SDK.
-     */
-    public function __construct()
-    {
-        $this->mainHandler = ThreemaGateway_Handler::getInstance();
-    }
-
     /**
      * Returns the Threema ID associated to a phone number.
      *
@@ -37,7 +24,7 @@ class ThreemaGateway_Handler_GatewayServer
     public function lookupPhone($phone)
     {
         // check permission
-        if (!$this->mainHandler->hasPermission('lookup')) {
+        if (!$this->permissions->hasPermission('lookup')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
@@ -52,7 +39,7 @@ class ThreemaGateway_Handler_GatewayServer
         $threemaId = false;
 
         /** @var Threema\MsgApi\Commands\Results\LookupIdResult $result */
-        $result = $this->mainHandler->getConnector()->keyLookupByPhoneNumber($phone);
+        $result = $this->getConnector()->keyLookupByPhoneNumber($phone);
         if ($result->isSuccess()) {
             $threemaId = $result->getId();
         }
@@ -72,7 +59,7 @@ class ThreemaGateway_Handler_GatewayServer
     public function lookupMail($mail)
     {
         // check permission
-        if (! $this->mainHandler->hasPermission('lookup')) {
+        if (! $this->permissions->hasPermission('lookup')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
@@ -80,7 +67,7 @@ class ThreemaGateway_Handler_GatewayServer
         $threemaId = false;
 
         /** @var Threema\MsgApi\Commands\Results\LookupIdResult $result */
-        $result =  $this->mainHandler->getConnector()->keyLookupByEmail($mail);
+        $result = $this->getConnector()->keyLookupByEmail($mail);
         if ($result->isSuccess()) {
             $threemaId = $result->getId();
         }
@@ -99,7 +86,7 @@ class ThreemaGateway_Handler_GatewayServer
     public function getCapabilities($threemaId)
     {
         // check permission
-        if (! $this->mainHandler->hasPermission('lookup')) {
+        if (! $this->permissions->hasPermission('lookup')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
@@ -107,7 +94,7 @@ class ThreemaGateway_Handler_GatewayServer
         $return = false;
 
         /** @var Threema\MsgApi\Commands\Results\LookupIdResult $result */
-        $result =  $this->mainHandler->getConnector()->keyCapability($threemaId);
+        $result = $this->getConnector()->keyCapability($threemaId);
         if ($result->isSuccess()) {
             $return = $result;
         }
@@ -124,12 +111,12 @@ class ThreemaGateway_Handler_GatewayServer
     public function getCredits()
     {
         // check permission
-        if (!$this->mainHandler->hasPermission('credits')) {
+        if (!$this->permissions->hasPermission('credits')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
         /** @var Threema\MsgApi\Commands\Results\CreditsResult $result */
-        $result =  $this->mainHandler->getConnector()->credits();
+        $result = $this->getConnector()->credits();
 
         if ($result->isSuccess()) {
             return $result->getCredits();
@@ -149,12 +136,12 @@ class ThreemaGateway_Handler_GatewayServer
     public function fetchPublicKey($threemaId)
     {
         // check permission
-        if (!$this->mainHandler->hasPermission('fetch')) {
+        if (!$this->permissions->hasPermission('fetch')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
         /** @var Threema\MsgApi\Commands\Results\FetchPublicKeyResult $result */
-        $result = $this->mainHandler->getConnector()->fetchPublicKey($threemaId);
+        $result = $this->getConnector()->fetchPublicKey($threemaId);
         if ($result->isSuccess()) {
             return $result->getPublicKey();
         } else {

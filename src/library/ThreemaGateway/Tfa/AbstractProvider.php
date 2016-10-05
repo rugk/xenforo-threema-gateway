@@ -14,25 +14,42 @@
 abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractProvider
 {
     /**
+     * Variable, which will be filled with object of the Gateway Permissions class.
+     *
+     * @var ThreemaGateway_Handler_Permissions
+     */
+    protected $GatewayPermissions;
+
+    /**
+     * Variable, which will be filled with object of Gateway Settings later.
+     *
+     * @var ThreemaGateway_Handler_Settings
+     */
+    protected $GatewaySettings;
+
+    /**
      * Variable, which will be filled with object of Gateway Handler later.
      *
-     * @var ThreemaGateway_Handler
+     * It is private as {@link getSdk()} should be used. This makes sure the SDK
+     * is only initialized when it is really needed.
+     *
+     * @var ThreemaGateway_Handler_PhpSdk
      */
-    protected $GatewayHandler;
+    private $GatewaySdk = null;
 
     /**
      * Variable, which will be filled with object of Gateway Handler for server actions later.
      *
-     * @var ThreemaGateway_Handler_GatewayServer
+     * @var ThreemaGateway_Handler_Action_GatewayServer
      */
-    protected $GatewayHandlerServer;
+    protected $GatewayServer;
 
     /**
      * Variable, which will be filled with object of Gateway Handler for sending actions later.
      *
-     * @var ThreemaGateway_Handler_Sender
+     * @var ThreemaGateway_Handler_Action_Sender
      */
-    protected $GatewayHandlerSender;
+    protected $GatewaySender;
 
     /**
      * Create provider.
@@ -42,9 +59,10 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     public function __construct($id)
     {
         parent::__construct($id);
-        $this->GatewayHandler = ThreemaGateway_Handler::getInstance();
-        $this->GatewayHandlerSender = new ThreemaGateway_Handler_Sender;
-        $this->GatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
+        $this->GatewayPermissions = ThreemaGateway_Handler_Permissions::getInstance();
+        $this->GatewaySettings = new ThreemaGateway_Handler_Settings;
+        $this->GatewayServer = new ThreemaGateway_Handler_Action_GatewayServer;
+        $this->GatewaySender = new ThreemaGateway_Handler_Action_Sender;
     }
 
     /**
@@ -55,7 +73,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     public function generateInitialData(array $user, array $setupData)
     {
-        $this->GatewayHandler->setUserId($user);
+        $this->GatewayPermissions->setUserId($user);
     }
 
     /**
@@ -68,7 +86,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     public function triggerVerification($context, array $user, $ip, array &$providerData)
     {
-        $this->GatewayHandler->setUserId($user);
+        $this->GatewayPermissions->setUserId($user);
     }
 
     /**
@@ -83,7 +101,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     public function renderVerification(XenForo_View $view, $context, array $user,
                                         array $providerData, array $triggerData)
     {
-        $this->GatewayHandler->setUserId($user);
+        $this->GatewayPermissions->setUserId($user);
     }
 
     /**
@@ -98,7 +116,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     public function verifyFromInput($context, XenForo_Input $input, array $user, array &$providerData)
     {
-        $this->GatewayHandler->setUserId($user);
+        $this->GatewayPermissions->setUserId($user);
     }
 
     /**
@@ -112,7 +130,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     public function verifySetupFromInput(XenForo_Input $input, array $user, &$error)
     {
-        $this->GatewayHandler->setUserId($user);
+        $this->GatewayPermissions->setUserId($user);
     }
 
     /**
@@ -126,7 +144,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     public function handleManage(XenForo_Controller $controller, array $user, array $providerData)
     {
-        $this->GatewayHandler->setUserId($user);
+        $this->GatewayPermissions->setUserId($user);
     }
 
     /**
@@ -154,10 +172,10 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     public function canEnable()
     {
         // get neccessary permissions
-        $permission = $this->GatewayHandler->hasPermission('use');
-        $permission &= $this->GatewayHandler->hasPermission('tfa');
+        $permission = $this->GatewayPermissions->hasPermission('use');
+        $permission &= $this->GatewayPermissions->hasPermission('tfa');
 
-        return $this->GatewayHandler->isReady() && $permission;
+        return $this->GatewaySettings->isReady() && $permission;
     }
 
     /**
@@ -187,7 +205,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         $messageText = ThreemaGateway_Handler_Emoji::parseUnicode($messageText);
 
         // send message
-        return $this->GatewayHandlerSender->sendAuto($receiverId, $messageText);
+        return $this->GatewaySender->sendAuto($receiverId, $messageText);
     }
 
     /**
@@ -245,7 +263,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
 
             //lookup mail
             try {
-                $threemaId = $this->GatewayHandlerServer->lookupMail($user['email']);
+                $threemaId = $this->GatewaySdkServer->lookupMail($user['email']);
             } catch (Exception $e) {
                 //ignore failure
             }
@@ -259,12 +277,27 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
 
             //lookup phone number
             try {
-                $threemaId = $this->GatewayHandlerServer->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
+                $threemaId = $this->GatewaySdkServer->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
             } catch (Exception $e) {
                 //ignore failure
             }
         }
 
         return $threemaId;
+    }
+
+
+    /**
+     * Returns the PHP SDK object.
+     *
+     * @param ThreemaGateway_Handler_PhpSdk
+     */
+    protected function getSdk()
+    {
+        if ($this->GatewaySdk === null) {
+            $this->GatewaySdk = ThreemaGateway_Handler_PhpSdk::getInstance($this->GatewaySettings);
+        }
+
+        return $this->GatewaySdk;
     }
 }

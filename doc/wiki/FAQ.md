@@ -52,7 +52,7 @@ See [Setup](../doc/setup.md).
 At first note that this is not needed as the database is used by default to store the public keys of Threema IDs.
 However when you think you want to use a PHP keystore follow this steps:
 
-1. Create a php file in `library\ThreemaGateway`, e.g. `library\ThreemaGateway\mykeystore.php`.
+1. Create a php file in `library/ThreemaGateway`, e.g. `library/ThreemaGateway/mykeystore.php`.
 2. Make sure it is writable. If not e.g. use `chmod` to make it writable. You will get an error later if it is not writable.  
     Also make sure to make it "read-only" for other users on the system, so only the process running PHGP with XenForo can read (& write) to it.
 3. Go to the Threema Gateway settings in the ACP and select "Use PHP Keystore (not recommend)".
@@ -63,7 +63,7 @@ However when you think you want to use a PHP keystore follow this steps:
 
 When you do so, please be aware that every update of this addon overwrites these changes and therefore you have to do them again when updating this add-on.
 
-1. Open the file `library\ThreemaGateway\Handler.php` and scroll near line 25. There you see the following code snippet:
+1. Open the file `library/ThreemaGateway/Handler/Settings.php`. There you see the following code snippet:
 
    ```php
    /**

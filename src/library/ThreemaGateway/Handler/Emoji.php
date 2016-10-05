@@ -30,7 +30,7 @@
     }
 
     /**
-     * Replaces numbers with their corresponding unicode characters
+     * Replaces digits with their corresponding unicode characters
      * (surrogate pairs).
      *
      * Only replaces one digit numbers. "10" is therefore replaced by two unicode
@@ -39,7 +39,7 @@
      * @param  string $string
      * @return string
      */
-    public static function replaceNumbers($string)
+    public static function replaceDigits($string)
     {
         // add \u20e3 to every number
         // https://regex101.com/r/aQ3eA3/1

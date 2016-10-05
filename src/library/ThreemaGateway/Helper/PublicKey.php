@@ -26,8 +26,8 @@ class ThreemaGateway_Helper_PublicKey
             return '';
         }
 
-        /** @var ThreemaGateway_Handler_GatewayServer $gatewayHandlerServer */
-        $gatewayHandlerServer = new ThreemaGateway_Handler_GatewayServer;
+        /** @var ThreemaGateway_Handler_Action_GatewayServer */
+        $gatewayHandlerServer = new ThreemaGateway_Handler_Action_GatewayServer;
 
         try {
             $publicKey = $gatewayHandlerServer->fetchPublicKey($threemaid);

@@ -60,21 +60,24 @@ class ThreemaGateway_Option_Status
 
         //only go on if all checked requirements are okay to prevent PHP errors when accessing the SDK
         if (!$isConfError) {
+            $sdk = ThreemaGateway_Handler_PhpSdk::getInstance();
+            $permissions = ThreemaGateway_Handler_Permissions::getInstance();
+            $gwSettings = new ThreemaGateway_Handler_Settings;
+
             //show PHP SDK version
-            $handler                  = ThreemaGateway_Handler::getInstance();
-            $handlerServer            = new ThreemaGateway_Handler_GatewayServer;
-            $status['phpsdk']['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $handler->SdkVersion]);
-            $status['phpsdk']['addition'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_featurelevel', ['level' => $handler->SdkFeatureLevel]);
+            $status['phpsdk']['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $sdk->getVersion()]);
+            $status['phpsdk']['addition'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_featurelevel', ['level' => $sdk->getFeatureLevel()]);
 
             // check permissions
-            if (!$handler->hasPermission('credits')) {
+            if (!$permissions->hasPermission('credits')) {
                 $status['credits']['text']      = new XenForo_Phrase('option_threema_gateway_status_credits', ['credits' => 'No permission']);
                 $status['credits']['descr']     = new XenForo_Phrase('option_threema_gateway_status_credits_permission');
                 $status['credits']['descclass'] = 'warning';
-            } elseif ($handler->isAvaliable()) {
+            } elseif ($gwSettings->isAvaliable()) {
                 // if available show credits
                 try {
-                    $credits = $handlerServer->getCredits();
+                    $gwServer = new ThreemaGateway_Handler_Action_GatewayServer;
+                    $credits = $gwServer->getCredits();
                 } catch (Exception $e) {
                     // TODO: show error message instead of discarding it, helps for debugging
                     $credits = 'N/A';
@@ -94,7 +97,7 @@ class ThreemaGateway_Option_Status
 
                 $status['credits']['addition'] = new XenForo_Phrase('option_threema_gateway_status_credits_recharge');
 
-                if (!$handler->isReady()) {
+                if (!$gwSettings->isReady()) {
                     $additionalerror = new XenForo_Phrase('option_threema_gateway_status_missing_private_key');
                 }
             }
