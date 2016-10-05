@@ -64,6 +64,7 @@ class ThreemaGateway_Option_Status
             $handler                  = ThreemaGateway_Handler::getInstance();
             $handlerServer            = new ThreemaGateway_Handler_GatewayServer;
             $status['phpsdk']['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $handler->SdkVersion]);
+            $status['phpsdk']['addition'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_featurelevel', ['level' => $handler->SdkFeatureLevel]);
 
             // check permissions
             if (!$handler->hasPermission('credits')) {
