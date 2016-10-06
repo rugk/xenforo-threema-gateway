@@ -11,7 +11,7 @@
 class ThreemaGateway_Handler_Validation
 {
     /**
-     * Checks whether a Threema ID is valid ande exists.
+     * Checks whether a Threema ID is valid and exists.
      *
      * @param  string $threemaid      The Threema ID to check.
      * @param  string $type           The type of the Threema ID (personal, gateway, any)
@@ -34,14 +34,15 @@ class ThreemaGateway_Handler_Validation
             return true;
         }
 
-        /** @var ThreemaGateway_Handler $gatewayHandler */
-        $gatewayHandler = new ThreemaGateway_Handler;
+        /** @var ThreemaGateway_Handler_Action_GatewayServer $gwServer */
+        $gwServer = new ThreemaGateway_Handler_Action_GatewayServer;
 
         // fetches public key of an id to check whether it exists
         try {
             /** @var string $publicKey */
-            $publicKey = $gatewayHandler->fetchPublicKey($threemaid);
+            $publicKey = $gwServer->fetchPublicKey($threemaid);
         } catch (Exception $e) {
+            // to show detailed error messages: $error = new XenForo_Phrase('threemagw_threema_id_does_not_exist') . ' ' . $e->getMessage();
             $error = new XenForo_Phrase('threemagw_threema_id_does_not_exist');
             return false;
         }

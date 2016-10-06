@@ -2,6 +2,10 @@
 /**
  * Provides an interface to the Libsodium library.
  *
+ * @deprecated Please use the crypt tool of teh PHP SDK, which provides PHP
+ *             fallbacks and is therefore always usable, no matter whether
+ *             libsodium is installed.
+ *
  * @package ThreemaGateway
  * @author rugk
  * @copyright Copyright (c) 2016 rugk
@@ -24,7 +28,7 @@ class ThreemaGateway_Handler_Libsodium
     }
 
     /**
-     * Tests whetheer this libsodium library can be used.
+     * Tests whether this libsodium library can be used.
      *
      * In comparision to {@link __construct()} this does not throw an exception
      * when you cannot use libsodium.

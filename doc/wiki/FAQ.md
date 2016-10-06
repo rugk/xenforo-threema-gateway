@@ -16,24 +16,23 @@ However SMS is insecure (see "Why not just SMS?") and the Threema Gateway is jus
 The reason is that XenForo 1.5 introduced two-factor-authenticatio and this add-on works as a 2FA provider internally. As the add-on depends on this feature, it does not work with earlier versions of XenForo.
 
 ### Why did you choose Threema? I'd like to have WhatsApp instead!
-
 This has several reasons:
 1. WhatsApp is not privacy aware.
-2. WhatsApp does not yet have APIs which allow sending of such messages.
+2. WhatsApp does not yet have secure APIs which allow sending of such messages.
 
 The advantages of Threema (Gateway) are:
 1. The messages can be send end-to-end encrypted.
 2. It is cheap. (cheaper than SMS)
 3. The messages are all send through servers in Switzerland.
-3. Threema allows you to accept/decline messages, which is used in the "Fast login" method
+4. Threema allows you to accept/decline messages, which is used in the "Fast login" method
 
 More advantages of the Threema Gateway can be found [on the official website](https://gateway.threema.ch).
 
 ### And why no other messenger such as Telegram or Signal?
-These messengers also have no secure API to send messages to users.
+These messengers also have no secure API for sending messages to users.
 
 ### Why not just SMS?
-SMS is [insecure](https://stackoverflow.com/questions/1374979/mobile-programming-how-secure-is-sms), [especially for 2FA](https://www.fredericjacobs.com/blog/2016/01/14/sms-login/) and the Threema Gateway is just perfectly suitable for such a task as sending OTP (one time passwords) to users.
+SMS is [insecure](https://stackoverflow.com/questions/1374979/mobile-programming-how-secure-is-sms), [especially for 2FA](https://www.fredericjacobs.com/blog/2016/01/14/sms-login/). Even the NIST [advocates not to use SMS for 2FA](https://www.iansresearch.com/insights/blog/blog-insights/2016/07/28/sending-out-sms-nist-recommends-shifting-to-alternative-2fa-methods). The Threema Gateway is just perfectly suitable for such a task as sending OTP (one time passwords) to users.
 Additionally sending messages with the Threema Gateway is cheaper than sending SMS messages and it works internationally without any problems.
 
 ### But the code generation method via app is more secure, isn't it?
@@ -53,7 +52,7 @@ See [Setup](../doc/setup.md).
 At first note that this is not needed as the database is used by default to store the public keys of Threema IDs.
 However when you think you want to use a PHP keystore follow this steps:
 
-1. Create a php file in `library\ThreemaGateway`, e.g. `library\ThreemaGateway\mykeystore.php`.
+1. Create a php file in `library/ThreemaGateway`, e.g. `library/ThreemaGateway/mykeystore.php`.
 2. Make sure it is writable. If not e.g. use `chmod` to make it writable. You will get an error later if it is not writable.  
     Also make sure to make it "read-only" for other users on the system, so only the process running PHGP with XenForo can read (& write) to it.
 3. Go to the Threema Gateway settings in the ACP and select "Use PHP Keystore (not recommend)".
@@ -64,45 +63,45 @@ However when you think you want to use a PHP keystore follow this steps:
 
 When you do so, please be aware that every update of this addon overwrites these changes and therefore you have to do them again when updating this add-on.
 
-- Open the file `library\ThreemaGateway\Handler.php` and scroll near line 25. There you see the following code snippet:
+1. Open the file `library/ThreemaGateway/Handler/Settings.php`. There you see the following code snippet:
 
-  ```php
-  /**
-  * @var string $GatewayId Your own Threema Gateway ID
-  */
-  private $GatewayId = '';
+   ```php
+   /**
+   * @var string $GatewayId Your own Threema Gateway ID
+   */
+   private $GatewayId = '';
 
-  /**
-  * @var string $GatewaySecret Your own Threema Gateway Secret
-  */
-  private $GatewaySecret = '';
+   /**
+   * @var string $GatewaySecret Your own Threema Gateway Secret
+   */
+   private $GatewaySecret = '';
 
-  /**
-  * @var string $PrivateKey Your own private key
-  */
-  private $PrivateKey = '';
-  ```
+   /**
+   * @var string $PrivateKey Your own private key
+   */
+   private $PrivateKey = '';
+   ```
 
-- Replace the values in such a way that they e.g. look like this:
+2. Replace the values in such a way that they e.g. look like this:
 
-  ```php
-  /**
-  * @var string $GatewayId Your own Threema Gateway ID
-  */
-  private $GatewayId = '*MYAPIID';
+   ```php
+   /**
+   * @var string $GatewayId Your own Threema Gateway ID
+   */
+   private $GatewayId = '*MYAPIID';
 
-  /**
-  * @var string $GatewaySecret Your own Threema Gateway Secret
-  */
-  private $GatewaySecret = 'ab2defghijKlmnOp';
+   /**
+   * @var string $GatewaySecret Your own Threema Gateway Secret
+   */
+   private $GatewaySecret = 'ab2defghijKlmnOp';
 
-  /**
-  * @var string $PrivateKey Your own private key
-  */
-  private $PrivateKey = 'private:94af3260fa2a19adc8e82e82be598be15bc6ad6f47c8ee303cb185ef860e16d2';
-  ```
+   /**
+   * @var string $PrivateKey Your own private key
+   */
+   private $PrivateKey = 'private:94af3260fa2a19adc8e82e82be598be15bc6ad6f47c8ee303cb185ef860e16d2';
+   ```
 
-1. Now you can remove all data in the ACP options (just set them to a blank field) and if everything is correct you will still see your remaining credits. If not, there will be an error.
+3. Now you can remove all data in the ACP options (just set them to a blank field) and if everything is correct you will still see your remaining credits. If not, there will be an error.
 
 Note that the health check displays an error for the edited file afterwards. If you do not want this you can calculate the checksum of the changed file and replace it in `library\ThreemaGateway\Listener\FileHealthCheck.php`.
 
@@ -157,9 +156,9 @@ There are multiple way to do this. You can hide it...
 
 When you disable a 2FA mode this only prevents users from activating this mode. Users, who had this mode activated before, do not notice any difference and can still login with this mode. This makes sure that no users get locked out.
 
-If you want to prevent users from using the 2FA at all, you can only limit the permissions for the user/user group, so that they cannot use the Threema Gateway or the 2FA of the Threema Gateway anymore. However be **careful when doing so** as this may cause serious problems, because when users do not use any other 2FA method, they will not only get errors, but will also have no way to login anymore. So be careful when disabling 2FA modes!
+If you want to prevent users from using the 2FA at all, you can limit the permissions for the user/user group, so that they cannot use the Threema Gateway or the 2FA of the Threema Gateway anymore. However be **careful when doing so** as this may cause serious problems, because when users do not use any other 2FA method, they will not only get errors, but will also have no way to login anymore. So be careful when disabling 2FA modes!
 
 ### What happens if I lose my Threema ID as a 2FA user?
-If you lose access to your Threema ID you cannot use the 2FA method setup by using this ID anymore. You may use a backup code in XenFOro or another 2FA method if set up.
+If you lose access to your Threema ID you cannot use the 2FA method setup by using this ID anymore. You may use a backup code of XenForo or another 2FA method if set one up.
 
-Always remember to [create a backup](https://threema.ch/en/faq/id_backup_expl) of your Threema ID to prevent such issues. If you have a backup you can just restore it and receive all messages again.
+Always remember to [create a backup](https://threema.ch/en/faq/id_backup_expl) of your Threema ID to prevent such issues. If you have a backup you can just restore it and receive and send messages again.

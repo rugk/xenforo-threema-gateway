@@ -29,7 +29,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     {
         /** @var array $params */
         $params = [];
-        if ($this->GatewayHandler->isEndToEnd()) {
+        if ($this->GatewaySettings->isEndToEnd()) {
             $params['e2e'] = new XenForo_Phrase('threemagw_message_is_sent_e2e');
         } else {
             $params['e2e'] = '';
@@ -56,8 +56,8 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         }
 
         // check specific permissions
-        if (!$this->GatewayHandler->hasPermission('send') ||
-            !$this->GatewayHandler->hasPermission('fetch')
+        if (!$this->GatewayPermissions->hasPermission('send') ||
+            !$this->GatewayPermissions->hasPermission('fetch')
         ) {
             return false;
         }
@@ -118,7 +118,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
 
         // add options
         if ($providerData['useNumberSmilies']) {
-            $code = ThreemaGateway_Handler_Emoji::replaceNumbers($code);
+            $code = ThreemaGateway_Handler_Emoji::replaceDigits($code);
         }
 
         $template = 'tfa_threemagw_conventional_message';
@@ -246,7 +246,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
      * Called when setting up the provider before the setup page is shown.
      *
      * Currently this is not correctly implemented in XenForo.
-     * See https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047
+     * See {@link https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047}
      *
      * @param XenForo_Input $input
      * @param array         $user
@@ -319,6 +319,36 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         $context         = 'setup';
         $threemaId       = '';
 
+        /* Possible values of $context in order of usual appearance
+        firstsetup      Input=Threema ID    User enables 2FA provider the first time.
+        setupvalidation Input=2FA code      Confirming 2FA in initial setup. (2FA input context: setup)
+
+        setup           Input=Threema ID    UI to change settings of 2FA provider (shows when user clicks on "Manage")
+        update          Input=2FA code      Confirming 2FA when settings changed. (2FA input context: setup)
+
+        <not here>      Input=2FA c. only   Login page, where code requested (2FA input context: login)
+
+        The usual template is account_two_step_threemagw_conventional_manage, which includes
+        account_two_step_threemagw_conventional every time when a 2FA code is requested. If so
+        this "subtemplate" always gets the context "setup".
+        Only when logging in this template is included by itself and gets the context "login".
+        */
+
+        /* Ways this function can go: Input (filterSingle) --> action --> output ($context)
+        Initial setup:
+            no $providerData --> set default options & Threema ID --> firstsetup
+            step = setup --> show page where user can enter 2FA code --> setupvalidation
+            <verification not done in method>
+
+        Manage:
+            ... (last else block) --> manage page: show setup --> setup
+            manage --> show page where user can enter 2FA code --> update
+            confirm --> check 2FA code & use settings if everything is right --> <null>
+
+        Login:
+            <not manmaged in this function>
+        */
+
         if ($controller->isConfirmedPost()) {
             $sessionKey = 'tfaData_' . $this->_providerId;
 
@@ -340,7 +370,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
                     return null;
                 }
 
-                //validation is required, revalidate this things...
+                //validation is required, revalidate this thing...
                 $newTriggerData = $this->triggerVerification('setup', $user, $request->getClientIp(false), $newProviderData);
 
                 $session->set($sessionKey, $newProviderData);
@@ -374,6 +404,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
                 $newTriggerData = []; //is not used anyway...
                 $showSetup      = true;
             } else {
+                echo "NULL";
                 return null;
             }
         } elseif (empty($providerData)) { //no previous settings
@@ -386,7 +417,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
 
             $threemaId = $this->getDefaultThreemaId($user);
         } else {
-            //first manage page
+            //first manage page ($context = setup)
             $threemaId = $providerData['threemaid'];
         }
 
@@ -402,7 +433,9 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
             'threemaId' => $threemaId
         ];
         return $controller->responseView(
-            'ThreemaGateway_ViewPublic_TfaManage', 'account_two_step_threemagw_conventional_manage', $viewParams
+            'ThreemaGateway_ViewPublic_TfaManage',
+            'account_two_step_threemagw_conventional_manage',
+            $viewParams
         );
     }
 }
