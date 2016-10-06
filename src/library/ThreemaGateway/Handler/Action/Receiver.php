@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-class ThreemaGateway_Handler_Receiver extends ThreemaGateway_Handler_Action_Abstract
+class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Action_Abstract
 {
     /**
      * @var XenForo_Input raw parameters
@@ -24,7 +24,7 @@ class ThreemaGateway_Handler_Receiver extends ThreemaGateway_Handler_Action_Abst
      * Check whether a specific message has been received and returns it.
      *
      * @param string $senderId The ID where you expect a message from.
-     * @param string $keyword (optional) A keyword you look for.
+     * @param string $keyword  (optional) A keyword you look for.
      *
      * @throws XenForo_Exception
      * @return ???
@@ -35,32 +35,30 @@ class ThreemaGateway_Handler_Receiver extends ThreemaGateway_Handler_Action_Abst
         if (!$this->permissions->hasPermission('receive')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
-
-        // TODO
     }
 
     /**
-	 * Initializes handling for processing a request callback.
-	 *
-	 * @param Zend_Controller_Request_Http $request
-	 */
-	public function initCallbackHandling(Zend_Controller_Request_Http $request)
-	{
-		$this->request = $request;
-		$this->input = new XenForo_Input($request);
+     * Initializes handling for processing a request callback.
+     *
+     * @param Zend_Controller_Request_Http $request
+     */
+    public function initCallbackHandling(Zend_Controller_Request_Http $request)
+    {
+        $this->request = $request;
+        $this->input   = new XenForo_Input($request);
 
-		$this->filtered = $this->_input->filter(array(
-			'from' => XenForo_Input::STRING,
-			'to' => XenForo_Input::STRING,
-			'messageId' => XenForo_Input::STRING,
-			'date' => XenForo_Input::DATE_TIME,
-			'nonce' => XenForo_Input::STRING,
-			'box' => XenForo_Input::STRING,
-			'mac' => XenForo_Input::UNUM
-		));
+        $this->filtered = $this->input->filter([
+            'from' => XenForo_Input::STRING,
+            'to' => XenForo_Input::STRING,
+            'messageId' => XenForo_Input::STRING,
+            'date' => XenForo_Input::DATE_TIME,
+            'nonce' => XenForo_Input::STRING,
+            'box' => XenForo_Input::STRING,
+            'mac' => XenForo_Input::UNUM
+        ]);
 
         var_dump($this->filtered);
-	}
+    }
 
     /**
      * Validates the callback request. In case of failure let Gateway server
@@ -68,7 +66,7 @@ class ThreemaGateway_Handler_Receiver extends ThreemaGateway_Handler_Action_Abst
      *
      * @param string $errorString Output error string
      *
-     * @return boolean
+     * @return bool
      */
     public function validateRequest(&$errorString)
     {
@@ -81,18 +79,18 @@ class ThreemaGateway_Handler_Receiver extends ThreemaGateway_Handler_Action_Abst
      *
      * @param string $errorString Output error string
      *
-     * @return boolean
+     * @return bool
      */
     public function validatePreConditions(&$errorString)
     {
         // simple, formal validation
-        if ($this->cryptTool->stringCompare($this->filtered['to'], $this->settings->getId())) {
+        if (!$this->getCryptTool()->stringCompare($this->filtered['to'], $this->settings->getId())) {
             $errorString = 'Invalid request';
             return false;
         }
 
         // HMAC validation
-        if ($this->e2eHelper->checkMac(
+        if ($this->getE2EHelper()->checkMac(
             $this->filtered['from'],
             $this->filtered['to'],
             $this->filtered['messageId'],
@@ -107,5 +105,41 @@ class ThreemaGateway_Handler_Receiver extends ThreemaGateway_Handler_Action_Abst
         }
 
         return true;
+    }
+
+    /**
+     * Receive the message, decrypt it and save it.
+     *
+     * @return string the message, whcih should be shown
+     */
+    public function processMessage()
+    {
+        /* @var XenForo_Options */
+        $options = XenForo_Application::getOptions();
+
+        try {
+            /* ReceiveMessageResult */
+            $receiveResult = $this->getE2EHelper()->receiveMessage(
+                $this->settings->getId(),
+                $this->filtered['messageId'],
+                $this->filtered['box'],
+                $this->filtered['nonce'],
+                $options->threema_gateway_downloadpath
+            );
+        } catch (Exception $e) {
+            throw new XenForo_Exception('Message cannot be processed: '.$e->getMessage());
+        }
+
+        if (!$receiveResult->isSuccess()) {
+            throw new XenForo_Exception('Message cannot be processed.'.implode('|', var_dump($receiveResult->getErrors())));
+        }
+
+        //debug
+        $EOL='<br>'.PHP_EOL;
+        $message = "ID: ".implode('|', $receiveResult->getMessageId()).$EOL;
+        $message &= "message: ".implode('|', $receiveResult->getThreemaMessage()).$EOL;
+        $message &= "files: ".implode('|', $receiveResult->getFiles()).$EOL;
+
+        return $message;
     }
 }

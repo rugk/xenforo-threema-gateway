@@ -42,6 +42,9 @@ class ThreemaGateway_Handler_Action_Abstract
     /**
      * Returns the PHP SDK object.
      *
+     * This is meant for lazy loading the SDK, so it is only loaded when it is
+     * actually accessed.
+     *
      * @return ThreemaGateway_Handler_PhpSdk
      */
     protected function getSdk()

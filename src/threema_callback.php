@@ -24,10 +24,10 @@ $deps = new XenForo_Dependencies_Public();
 $deps->preLoadData();
 
 $response = new Zend_Controller_Response_Http();
-$receiver = new XThreemaGateway_Handler_Receiver();
-$processor->initCallbackHandling(new Zend_Controller_Request_Http());
+$receiver = new ThreemaGateway_Handler_Action_Receiver();
+$receiver->initCallbackHandling(new Zend_Controller_Request_Http());
 
-$logExtra = array();
+$logExtra   = [];
 $logMessage = false;
 
 try {
@@ -35,11 +35,11 @@ try {
         $logType = 'error';
 
         $response->setHttpResponseCode(500);
-    } elseif (!$processor->validatePreConditions($logMessage)) {
+    } elseif (!$receiver->validatePreConditions($logMessage)) {
         $logType = 'error';
     } else {
         $logType    = 'info';
-        $logMessage = $processor->processMessage();
+        $logMessage = $receiver->processMessage();
     }
 
     if (is_array($logMessage)) {
