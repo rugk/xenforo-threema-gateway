@@ -13,6 +13,10 @@
 
 $startTime = microtime(true);
 $fileDir   = dirname(__FILE__);
+if (!file_exists($fileDir . '/library/XenForo/Autoloader.php')) {
+    // second try
+    $fileDir = '.';
+}
 
 require($fileDir . '/library/XenForo/Autoloader.php');
 XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
@@ -55,5 +59,16 @@ try {
     $logExtra['_e'] = $e;
 }
 
-$response->setBody(htmlspecialchars($logMessage));
+// debug: write log file
+const fpath='internal_data/threemagateway.log';
+date_default_timezone_set('Europe/Berlin');
+
+$fhandle=fopen(fpath, 'a');
+fwrite($fhandle, '['.date('Y-m-d H:i:s').']'.PHP_EOL.$logMessage.PHP_EOL);
+fclose($fhandle);
+
+$logMessage = str_replace(PHP_EOL, '<br />'.PHP_EOL, $logMessage);
+
+$response->setBody($logMessage);
+// $response->setBody(htmlspecialchars($logMessage));
 $response->sendResponse();

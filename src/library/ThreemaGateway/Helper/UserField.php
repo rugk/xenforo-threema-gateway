@@ -17,7 +17,7 @@ class ThreemaGateway_Helper_UserField
      * Checks the custom Threema ID user field.
      *
      * This basically only passes the request to
-     * ThreemaGateway_Handler->checkThreemaId().
+     * ThreemaGateway_Handler_Verification->checkThreemaId().
      *
      * @param  string $field The field id
      * @param  string $value The entered value

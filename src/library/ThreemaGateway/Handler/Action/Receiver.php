@@ -54,10 +54,10 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             'date' => XenForo_Input::DATE_TIME,
             'nonce' => XenForo_Input::STRING,
             'box' => XenForo_Input::STRING,
-            'mac' => XenForo_Input::UNUM
+            'mac' => XenForo_Input::STRING
         ]);
 
-        var_dump($this->filtered);
+        // var_dump($this->filtered);
     }
 
     /**
@@ -73,7 +73,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // HMAC validation
         // (retrying allowed as messages would otherwise get lost when
         // the secret is changed)
-        if ($this->getE2EHelper()->checkMac(
+        if (!$this->getE2EHelper()->checkMac(
             $this->filtered['from'],
             $this->filtered['to'],
             $this->filtered['messageId'],
@@ -83,7 +83,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             $this->filtered['mac'],
             $this->settings->getSecret()
             )) {
-            $errorString = 'Unverifified request';
+            $errorString = 'Unverified request';
             return false;
         }
 
@@ -112,7 +112,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     /**
      * Receive the message, decrypt it and save it.
      *
-     * @return string the message, whcih should be shown
+     * @return string the message, which should be shown
      */
     public function processMessage()
     {
@@ -122,10 +122,10 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         try {
             /* ReceiveMessageResult */
             $receiveResult = $this->getE2EHelper()->receiveMessage(
-                $this->settings->getId(),
+                $this->filtered['from'],
                 $this->filtered['messageId'],
-                $this->filtered['box'],
-                $this->filtered['nonce'],
+                $this->getCryptTool()->hex2bin($this->filtered['box']),
+                $this->getCryptTool()->hex2bin($this->filtered['nonce']),
                 $options->threema_gateway_downloadpath
             );
         } catch (Exception $e) {
@@ -133,14 +133,36 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         }
 
         if (!$receiveResult->isSuccess()) {
-            throw new XenForo_Exception('Message cannot be processed.'.implode('|', var_dump($receiveResult->getErrors())));
+            throw new XenForo_Exception('Message cannot be processed.'.implode('|', $receiveResult->getErrors()));
         }
 
         //debug
-        $EOL='<br>'.PHP_EOL;
-        $message = "ID: ".implode('|', $receiveResult->getMessageId()).$EOL;
-        $message &= "message: ".implode('|', $receiveResult->getThreemaMessage()).$EOL;
-        $message &= "files: ".implode('|', $receiveResult->getFiles()).$EOL;
+        // $EOL='<br>'.PHP_EOL;
+        $EOL=PHP_EOL;
+        $message = "ID: ".$receiveResult->getMessageId().$EOL;
+        $message .= "message.type: ".$receiveResult->getThreemaMessage()->getTypeCode().$EOL;
+        $message .= "files: ".implode('|', $receiveResult->getFiles()).$EOL;
+
+        if ($receiveResult->getThreemaMessage() instanceof Threema\MsgApi\Messages\TextMessage) {
+            $message .= "message.text: ".$receiveResult->getThreemaMessage()->getText().$EOL;
+        }
+        if ($receiveResult->getThreemaMessage() instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
+            $message .= "message.receipttype: ".$receiveResult->getThreemaMessage()->getReceiptType().$EOL;
+            $message .= "message.receipttypename: ".$receiveResult->getThreemaMessage()->getReceiptTypeName().$EOL;
+        }
+        if ($receiveResult->getThreemaMessage() instanceof Threema\MsgApi\Messages\FileMessage) {
+            $message .= "message.getBlobId: ".$receiveResult->getThreemaMessage()->getBlobId().$EOL;
+            $message .= "message.receipttypename: ".$receiveResult->getThreemaMessage()->getEncryptionKey().$EOL;
+            $message .= "message.getFilename: ".$receiveResult->getThreemaMessage()->getFilename().$EOL;
+            $message .= "message.getMimeType: ".$receiveResult->getThreemaMessage()->getMimeType().$EOL;
+            $message .= "message.getSize: ".$receiveResult->getThreemaMessage()->getSize().$EOL;
+            $message .= "message.getThumbnailBlobId: ".$receiveResult->getThreemaMessage()->getThumbnailBlobId().$EOL;
+        }
+        if ($receiveResult->getThreemaMessage() instanceof Threema\MsgApi\Messages\ImageMessage) {
+            $message .= "message.getBlobId: ".$receiveResult->getThreemaMessage()->getBlobId().$EOL;
+            $message .= "message.getLength: ".$receiveResult->getThreemaMessage()->getLength().$EOL;
+            $message .= "message.getNonce: ".$receiveResult->getThreemaMessage()->getNonce().$EOL;
+        }
 
         return $message;
     }
