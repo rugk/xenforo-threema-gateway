@@ -71,6 +71,12 @@
   <optiongroups>
     <group group_id="threemagw" display_order="1" debug_only="0"/>
     <group group_id="threemagw_tfa" display_order="2" debug_only="0"/>
+    <option option_id="threema_gateway_downloadpath" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>internal_data/threemagateway/recfiles</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="190"/>
+    </option>
     <option option_id="threema_gateway_e2e" edit_format="radio" data_type="string" can_backup="1">
       <default_value></default_value>
       <edit_format_params>basic={xen:phrase option_threema_gateway_mode_basic}
@@ -195,6 +201,8 @@ userfield</sub_options>
     <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank">Threema Gateway</a>.]]></phrase>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
     <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the two-factor-authentication modes of the Threema Gateway. Please note that the general Threema Gateway settings must be configured before.]]></phrase>
+    <phrase title="option_threema_gateway_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[Download path for files]]></phrase>
+    <phrase title="option_threema_gateway_downloadpath_explain" version_id="1" version_string="0.1.0"><![CDATA[This is the path where files send to your ID should be saved (in decrypted form!). When no path is given the files are not downloaded.]]></phrase>
     <phrase title="option_threema_gateway_e2e" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
     <phrase title="option_threema_gateway_e2e_explain" version_id="1" version_string="0.1.0"><![CDATA[Select the mode you chose when setting up your Threema ID. Without the end-to-end encrypted mode many options may not be available.]]></phrase>
     <phrase title="option_threema_gateway_httpshardening" version_id="1" version_string="0.1.0"><![CDATA[Hardened HTTPS connection (recommend)]]></phrase>
