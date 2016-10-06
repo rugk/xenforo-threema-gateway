@@ -142,8 +142,8 @@ userfield</sub_options>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="115"/>
     </option>
-    <option option_id="threema_gateway_tfa_usesodiumran" edit_format="onoff" data_type="boolean" can_backup="1">
-      <default_value>0</default_value>
+    <option option_id="threema_gateway_tfa_useimprovedsrng" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="25"/>
@@ -240,15 +240,16 @@ Additionally many 2FA methods will be disabled if you do not install libsodium.]
     <phrase title="option_threema_gateway_tfa_autolookupphone" version_id="1" version_string="0.1.0"><![CDATA[Automatically lookup phone numbers]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupphone_explain" version_id="1" version_string="0.1.0"><![CDATA[When the user activates a 2FA mode this option automatically tries to get the Threema ID associated with the mobile phone number of the user. The phone number is hashed before it is send to the Threema server.<br />
 Add the ID of the custom user field in the input box, where it should be looked for phone numbers.<br />
-<b>Important:</b> When the phone number in this custom user field is not verified when it is saved. This allows forum users to lookup arbitrary phone number of any Threema user.]]></phrase>
+<b>Important:</b> When the phone number in this custom user field is not verified when it is saved this allows forum users to lookup arbitrary phone number of any Threema user.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional" version_id="1" version_string="0.1.0"><![CDATA[Activate Threema Gateway: Conventional]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_explain" version_id="1" version_string="0.1.0"><![CDATA[Allow users to use the "Conventional" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_vadility" version_id="1" version_string="0.1.0"><![CDATA[Vadility time]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_vadility_explain" version_id="1" version_string="0.1.0"><![CDATA[How long the one time code should be valid. (in minutes)]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_vadility_setup" version_id="1" version_string="0.1.0"><![CDATA[Vadility time when setting up]]></phrase>
-    <phrase title="option_threema_gateway_tfa_conventional_vadility_setup_explain" version_id="1" version_string="0.1.0"><![CDATA[How long the one time code should be  valid when setting up the 2FA method. (in minutes)]]></phrase>
-    <phrase title="option_threema_gateway_tfa_usesodiumran" version_id="1" version_string="0.1.0"><![CDATA[Use libsodiums random number generator instead of XenForos internal one]]></phrase>
-    <phrase title="option_threema_gateway_tfa_usesodiumran_explain" version_id="1" version_string="0.1.0"><![CDATA[When this setting is activated all 2FA methods use <a href="https://download.libsodium.org/doc/generating_random_data/index.html" target="_blank">libsodium's random number generator</a> instead of XenForo's internal one. This may provide better security, but it only works when libsodium >= v0.2.0 is installed.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_conventional_vadility_setup_explain" version_id="1" version_string="0.1.0"><![CDATA[How long the one time code should be valid when setting up the 2FA method. (in minutes)<br>
+It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_useimprovedsrng" version_id="1" version_string="0.1.0"><![CDATA[Use libsodiums random number generator instead of XenForo's internal one (recommend)]]></phrase>
+    <phrase title="option_threema_gateway_tfa_useimprovedsrng_explain" version_id="1" version_string="0.1.0"><![CDATA[When this setting is activated all 2FA methods try to use <a href="https://download.libsodium.org/doc/generating_random_data/index.html" target="_blank">libsodium's random number generator</a> instead of XenForo's internal one. This may provide better security.]]></phrase>
     <phrase title="option_threema_gateway_threema_id" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway ID]]></phrase>
     <phrase title="option_threema_gateway_threema_id_explain" version_id="1" version_string="0.1"><![CDATA[Enter the Threema ID of your Gateway account here. (e.g. <code>*MYAPIID</code>)]]></phrase>
     <phrase title="option_threema_gateway_threema_id_secret" version_id="1" version_string="0.1"><![CDATA[Threema ID secret]]></phrase>

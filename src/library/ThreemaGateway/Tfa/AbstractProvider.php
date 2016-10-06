@@ -216,15 +216,24 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     protected function generateRandomString($length = 6)
     {
+        /** @var XenForo_Options */
         $options = XenForo_Application::getOptions();
+        /** @var string */
+        $code = '';
 
-        if ($options->threema_gateway_tfa_usesodiumran) {
-            //use own Sodium method
-            /* @var ThreemaGateway_Handler_Libsodium */
-            $sodiumHelper = new ThreemaGateway_Handler_Libsodium;
-            $code         = $sodiumHelper->getRandomNumeric($length);
-        } else {
-            //use XenForo method
+        if ($options->threema_gateway_tfa_useimprovedsrng) {
+            try {
+                //use own Sodium method
+                /* @var ThreemaGateway_Handler_Libsodium */
+                $sodiumHelper = new ThreemaGateway_Handler_Libsodium;
+                $code         = $sodiumHelper->getRandomNumeric($length);
+            } catch (Exception $e) {
+                // ignore errors
+            }
+        }
+
+        if (!$code) {
+            //use XenForo method as a fallback
             $random = XenForo_Application::generateRandomString(4, true);
 
             $code = (
