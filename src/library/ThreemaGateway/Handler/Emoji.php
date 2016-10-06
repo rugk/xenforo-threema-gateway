@@ -23,9 +23,9 @@
         // uses json_decode as a hackish way to encode unicode strings
         // https://stackoverflow.com/questions/6058394/unicode-character-in-php-string
 
-        // RegEx: https://regex101.com/r/yS2zX8/1
-        return preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
-            return json_decode('"\u' . $match[1] . '"');
+        // RegEx: https://regex101.com/r/yS2zX8/2
+        return preg_replace_callback('/(\\\\u([0-9a-fA-F]{4}))+/', function ($match) {
+            return json_decode('"' . $match[0] . '"');
         }, $string);
     }
 
