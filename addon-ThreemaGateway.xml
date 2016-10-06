@@ -11,21 +11,23 @@
 <xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
 	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
 	<xen:html>
-		<p>{xen:raw $status.libsodium.text} <span class="addnote">{xen:raw $status.libsodium.addition}</span></p>
+		<p>{xen:raw $status.libsodium.text} <span class="explain addnote">{xen:raw $status.libsodium.addition}</span></p>
 		<p class="explain {$status.libsodium.descclass}">{xen:raw $status.libsodium.descr}</p>
 
-		<p>{xen:raw $status.libsodiumphp.text} <span class="addnote">{xen:raw $status.libsodiumphp.addition}</span></p>
+		<p>{xen:raw $status.libsodiumphp.text} <span class="explain addnote">{xen:raw $status.libsodiumphp.addition}</span></p>
 		<p class="explain {$status.libsodiumphp.descclass}">{xen:raw $status.libsodiumphp.descr}</p>
 
-		<p>{xen:raw $status.phpsdk.text} <span class="addnote">{xen:raw $status.phpsdk.addition}</span></p>
+		<p>{xen:raw $status.phpsdk.text} <span class="explain addnote">{xen:raw $status.phpsdk.addition}</span></p>
 		<p class="explain {$status.phpsdk.descclass}">{xen:raw $status.phpsdk.descr}</p>
 
-		<p>{xen:raw $status.credits.text} <span class="addnote">{xen:raw $status.credits.addition}</span></p>
+		<p>{xen:raw $status.credits.text} <span class="explain addnote">{xen:raw $status.credits.addition}</span></p>
 		<p class="explain {$status.credits.descclass}">{xen:raw $status.credits.descr}</p>
 
 		<xen:if is="{$additionalerror}">
-			<br />
-			<p class="error">{$additionalerror}</p>
+			<xen:foreach loop="$additionalerror" value="$error" i="$i">
+				<br />
+				<p class="<xen:if is="{$error.descclass}">{$error.descclass}<xen:else />error</xen:if>">{xen:raw $error.text}<span class="explain addnote">{xen:raw $error.addition}</span></p>
+			</xen:foreach>
 		</xen:if>
 
 		<xen:if is="{$isConfError}">
@@ -46,7 +48,6 @@
 }
 
 .addnote {
-  font-size: 85%;
 }]]></template>
     <template title="two_step_threemagw_conventional"><![CDATA[<p>{xen:phrase tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login, 'threemaid={$data.threemaid}'}</p>
 
@@ -200,7 +201,8 @@ Note that the file must be stored in <code>library/ThreemaGateway</code>, but yo
     <phrase title="option_threema_gateway_mode_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic mode]]></phrase>
     <phrase title="option_threema_gateway_mode_e2e" version_id="1" version_string="0.1.0"><![CDATA[End-to-end encrypted mode]]></phrase>
     <phrase title="option_threema_gateway_privatekeyfile" version_id="1" version_string="0.1.0"><![CDATA[Private key file]]></phrase>
-    <phrase title="option_threema_gateway_privatekeyfile_explain" version_id="1" version_string="0.1.0"><![CDATA[If you use the end-to-end encrypted mode enter the path to your private key file here. The file must be placed in <code>library/ThreemaGateway</code>. You can however use relative paths to place it somewhere else.]]></phrase>
+    <phrase title="option_threema_gateway_privatekeyfile_explain" version_id="1" version_string="0.1.0"><![CDATA[If you use the end-to-end encrypted mode enter the path to your private key file here. The file must be placed in <code>library/ThreemaGateway</code>. You can however use relative paths to place it somewhere else.<br />
+<a href="https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#4-generate-a-keypair-by-running-the-tool" target="_blank">In the wiki</a> you can find an explanation how to do this. You can begin with step 4 as the msgapi tool is already included in <code>library/ThreemaGateway/threema-msgapi-sdk-php/threema-msgapi-tool.php</code>.]]></phrase>
     <phrase title="option_threema_gateway_status" version_id="1" version_string="0.1"><![CDATA[Status]]></phrase>
     <phrase title="option_threema_gateway_status_credits" version_id="1" version_string="0.1"><![CDATA[Remaining credits: <b>{credits}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_credits_error" version_id="1" version_string="0.1.0"><![CDATA[There was an error when fetching credits. You probably have entered an incorrect Threema Gateway ID or secret. There could also have been a connection error.]]></phrase>
@@ -208,6 +210,8 @@ Note that the file must be stored in <code>library/ThreemaGateway</code>, but yo
     <phrase title="option_threema_gateway_status_credits_out" version_id="1" version_string="0.1"><![CDATA[You have no credits (anymore). Without any credits you cannot send messages any more.]]></phrase>
     <phrase title="option_threema_gateway_status_credits_permission" version_id="1" version_string="0.1.0"><![CDATA[You are not allowed to view the remaining credits.]]></phrase>
     <phrase title="option_threema_gateway_status_credits_recharge" version_id="1" version_string="0.1.0"><![CDATA[(<a href="https://gateway.threema.ch/en/load" target="_blank">recharge</a>)]]></phrase>
+    <phrase title="option_threema_gateway_status_custom_gwserver_error" version_id="1" version_string="0.1.0"><![CDATA[Gateway Server error: ]]></phrase>
+    <phrase title="option_threema_gateway_status_custom_phpsdk_error" version_id="1" version_string="0.1.0"><![CDATA[Error in PHP-SDK: ]]></phrase>
     <phrase title="option_threema_gateway_status_error" version_id="1" version_string="0.1"><![CDATA[You have some errors in your configuration. Until you resolve them it will not be possible to use this addon properly.]]></phrase>
     <phrase title="option_threema_gateway_status_explain" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
     <phrase title="option_threema_gateway_status_libsodiumphp_outdated" version_id="1" version_string="0.1.0"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium-php (at least v1.0.1).]]></phrase>
@@ -219,6 +223,9 @@ Additionally many 2FA methods will be disabled if you do not install libsodium.]
     <phrase title="option_threema_gateway_status_libsodium_outdated" version_id="1" version_string="0.1"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium.]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_version" version_id="1" version_string="0.1.0"><![CDATA[<a href="https://download.libsodium.org/doc/" target="_blank">Sodium</a> version: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_missing_private_key" version_id="1" version_string="0.1.0"><![CDATA[Currently it is not possible to use the Threema Gateway, because the private key is malformed or not specified.]]></phrase>
+    <phrase title="option_threema_gateway_status_phpsdk_featurelevel" version_id="1" version_string="0.1.0"><![CDATA[(feature level: <b>{level}</b>)]]></phrase>
+    <phrase title="option_threema_gateway_status_phpsdk_not_ready" version_id="1" version_string="0.1.0"><![CDATA[The PHP-SDK is not ready and cannot be used. You may need to check your setup.]]></phrase>
+    <phrase title="option_threema_gateway_status_phpsdk_not_ready_yet" version_id="1" version_string="0.1.0"><![CDATA[The PHP-SDK is not ready yet and cannot be used. You may need to setup it first.]]></phrase>
     <phrase title="option_threema_gateway_status_phpsdk_version" version_id="1" version_string="0.1.0"><![CDATA[Version of <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blank">Threema PHP SDK</a>: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupmail" version_id="1" version_string="0.1.0"><![CDATA[Automatically lookup mail addresses]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupmail_explain" version_id="1" version_string="0.1.0"><![CDATA[When the user activates a 2FA mode this option automatically tries to get the Threema ID associated with the mail address of the user. The mail address is hashed before it is send to the Threema server.]]></phrase>
@@ -305,6 +312,7 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_message_is_sent_e2e" version_id="1" version_string="0.1.0"><![CDATA[The message is sent end-to-end encrypted.]]></phrase>
     <phrase title="threemagw_minute" version_id="1" version_string="0.1"><![CDATA[minute]]></phrase>
     <phrase title="threemagw_minutes" version_id="1" version_string="0.1"><![CDATA[minutes]]></phrase>
+    <phrase title="threemagw_missing_e2e_helper" version_id="1" version_string="0.1.0"><![CDATA[The E2E helper is missing. Probably it was tried to use it although the Gateway is not used in E2E mode.]]></phrase>
     <phrase title="threemagw_missing_sdk" version_id="1" version_string="0.1.0"><![CDATA[The PHP SDK for Threema Gateway is missing.]]></phrase>
     <phrase title="threemagw_not_writable_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[The PHP keystore file is not writable.]]></phrase>
     <phrase title="threemagw_permission_error" version_id="1" version_string="0.1.0"><![CDATA[There was a permission error.]]></phrase>

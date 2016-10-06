@@ -59,27 +59,32 @@ class ThreemaGateway_Option_Status
         }
 
         //only go on if all checked requirements are okay to prevent PHP errors when accessing the SDK
+        $gwSettings = new ThreemaGateway_Handler_Settings;
         if (!$isConfError) {
-            $sdk = ThreemaGateway_Handler_PhpSdk::getInstance();
             $permissions = ThreemaGateway_Handler_Permissions::getInstance();
-            $gwSettings = new ThreemaGateway_Handler_Settings;
 
             //show PHP SDK version
-            $status['phpsdk']['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $sdk->getVersion()]);
-            $status['phpsdk']['addition'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_featurelevel', ['level' => $sdk->getFeatureLevel()]);
+            try {
+                $sdk = ThreemaGateway_Handler_PhpSdk::getInstance($gwSettings);
+                //Note: When the SDK throws an exception the two lines below cannot be executed, so the version number cannot be determinated
+                $status['phpsdk']['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $sdk->getVersion()]);
+                $status['phpsdk']['addition'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_featurelevel', ['level' => $sdk->getFeatureLevel()]);
+            } catch (Exception $e) {
+                $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_phpsdk_error').$e->getMessage();
+            }
 
             // check permissions
             if (!$permissions->hasPermission('credits')) {
                 $status['credits']['text']      = new XenForo_Phrase('option_threema_gateway_status_credits', ['credits' => 'No permission']);
                 $status['credits']['descr']     = new XenForo_Phrase('option_threema_gateway_status_credits_permission');
                 $status['credits']['descclass'] = 'warning';
-            } elseif ($gwSettings->isAvaliable()) {
+            } elseif ($gwSettings->isReady()) {
                 // if available show credits
                 try {
                     $gwServer = new ThreemaGateway_Handler_Action_GatewayServer;
                     $credits = $gwServer->getCredits();
                 } catch (Exception $e) {
-                    // TODO: show error message instead of discarding it, helps for debugging
+                    $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_gwserver_error').$e->getMessage();
                     $credits = 'N/A';
                 }
 
@@ -96,9 +101,17 @@ class ThreemaGateway_Option_Status
                 }
 
                 $status['credits']['addition'] = new XenForo_Phrase('option_threema_gateway_status_credits_recharge');
-
-                if (!$gwSettings->isReady()) {
-                    $additionalerror = new XenForo_Phrase('option_threema_gateway_status_missing_private_key');
+            } else {
+                // SDK not ready
+                if ($gwSettings->isAvaliable()) {
+                    // presumambly an error in setup
+                    $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_not_ready');
+                } else {
+                    // presumambly not yet setup (default settings or so)
+                    $additionalerror[] = [
+                        'text' => new XenForo_Phrase('option_threema_gateway_status_phpsdk_not_ready_yet'),
+                        'descclass' => 'warning'
+                    ];
                 }
             }
         }
