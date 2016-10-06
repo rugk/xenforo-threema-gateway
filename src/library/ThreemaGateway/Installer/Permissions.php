@@ -43,7 +43,7 @@ class ThreemaGateway_Installer_Permissions
     }
 
     /**
-     * Deletes all permissons of the sepcified group id.
+     * Deletes all permissons of the specified group id.
      */
     public function deleteAll()
     {

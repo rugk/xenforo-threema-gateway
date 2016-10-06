@@ -22,13 +22,18 @@ class ThreemaGateway_Option_Status
      */
     public static function renderHtml(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
+        /** @var bool */
         $isConfError     = false;
+        /** @var bool */
+        $isPhpSdkError   = false;
+        /** @var array */
         $status          = ['libsodium', 'libsodiumphp', 'phpsdk', 'credits'];
+        /** @var string */
         $additionalerror = '';
 
-        //get old options
+        //get XenForo required things
+        /** @var XenForo_Visitor */
         $visitor = XenForo_Visitor::getInstance();
-        $options = XenForo_Application::getOptions();
 
         //libsodium
         if (extension_loaded('libsodium')) {
@@ -71,6 +76,7 @@ class ThreemaGateway_Option_Status
                 $status['phpsdk']['addition'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_featurelevel', ['level' => $sdk->getFeatureLevel()]);
             } catch (Exception $e) {
                 $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_phpsdk_error').$e->getMessage();
+                $isPhpSdkError = true;
             }
 
             // check permissions
@@ -84,7 +90,13 @@ class ThreemaGateway_Option_Status
                     $gwServer = new ThreemaGateway_Handler_Action_GatewayServer;
                     $credits = $gwServer->getCredits();
                 } catch (Exception $e) {
-                    $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_gwserver_error').$e->getMessage();
+                    if (!$isPhpSdkError) {
+                        // only add error if it really includes some useful information
+                        // if the SDK already has an error it is clear that this will
+                        // also fail. Mostly it just fails with "Undefined variable:
+                        // cryptTool".
+                        $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_gwserver_error').$e->getMessage();
+                    }
                     $credits = 'N/A';
                 }
 
@@ -129,6 +141,7 @@ class ThreemaGateway_Option_Status
             'status' => $status,
             'additionalerror' => $additionalerror,
             'isConfError' => $isConfError,
+            'isPhpSdkError' => $isPhpSdkError,
         ]);
     }
 }

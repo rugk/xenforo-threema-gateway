@@ -78,6 +78,14 @@ e2e={xen:phrase option_threema_gateway_mode_e2e}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="120"/>
     </option>
+    <option option_id="threema_gateway_httpshardening" edit_format="select" data_type="integer" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params>0={xen:phrase option_threema_gateway_httpshardening_no}
+1={xen:phrase option_threema_gateway_httpshardening_basic}
+2={xen:phrase option_threema_gateway_httpshardening_enhanced}</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="240"/>
+    </option>
     <option option_id="threema_gateway_keystorefile" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_PhpKeyStorePath" validation_method="verifyOption">
       <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path";s:0:"";}</default_value>
       <edit_format_params>onoff=enabled
@@ -90,7 +98,7 @@ path</sub_options>
     </option>
     <option option_id="threema_gateway_privatekeyfile" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_PrivateKeyPath" validation_method="verifyOption">
       <default_value></default_value>
-      <edit_format_params></edit_format_params>
+      <edit_format_params>placeholder={xen:phrase threemagw_privatekeyfile_example}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="180"/>
     </option>
@@ -152,12 +160,6 @@ userfield</sub_options>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="110"/>
     </option>
-    <option option_id="threema_gateway_usehttps" edit_format="onoff" data_type="boolean" can_backup="1">
-      <default_value>1</default_value>
-      <edit_format_params></edit_format_params>
-      <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="240"/>
-    </option>
     <option option_id="threema_gateway_userfield_verifyexist" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
@@ -195,6 +197,12 @@ userfield</sub_options>
     <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the two-factor-authentication modes of the Threema Gateway. Please note that the general Threema Gateway settings must be configured before.]]></phrase>
     <phrase title="option_threema_gateway_e2e" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
     <phrase title="option_threema_gateway_e2e_explain" version_id="1" version_string="0.1.0"><![CDATA[Select the mode you chose when setting up your Threema ID. Without the end-to-end encrypted mode many options may not be available.]]></phrase>
+    <phrase title="option_threema_gateway_httpshardening" version_id="1" version_string="0.1.0"><![CDATA[Hardened HTTPS connection (recommend)]]></phrase>
+    <phrase title="option_threema_gateway_httpshardening_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic hardening]]></phrase>
+    <phrase title="option_threema_gateway_httpshardening_enhanced" version_id="1" version_string="0.1.0"><![CDATA[Enhanced hardening]]></phrase>
+    <phrase title="option_threema_gateway_httpshardening_explain" version_id="1" version_string="0.1.0"><![CDATA[When sending messages this prevents fallback attacks on the TLS/HTTPS connection by limiting the TLS version and ciphers to modern ones.
+You may try to set this as high as possible. If you experience problems connecting to the Threema server (e.g. when the credits are not fetched correctly) you know your limit.]]></phrase>
+    <phrase title="option_threema_gateway_httpshardening_no" version_id="1" version_string="0.1.0"><![CDATA[No hardening]]></phrase>
     <phrase title="option_threema_gateway_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[Use PHP Keystore (not recommend)]]></phrase>
     <phrase title="option_threema_gateway_keystorefile_explain" version_id="1" version_string="0.1.0"><![CDATA[By default the database is used to store the public keys of Threema users. When enabling this option you can specify a php file to use. This file <b>must already exist</b>!
 Note that the file must be stored in <code>library/ThreemaGateway</code>, but you can use relative paths to change this location.]]></phrase>
@@ -247,9 +255,6 @@ Add the ID of the custom user field in the input box, where it should be looked 
     <phrase title="option_threema_gateway_threema_id_secret_explain" version_id="1" version_string="0.1.0"><![CDATA[Enter your secret for accessing the Threema Gateway here.{note}]]></phrase>
     <phrase title="option_threema_gateway_threema_id_secret_explain_note" version_id="1" version_string="0.1.0"><![CDATA[<br >
 <b>Note:</b> For security reasons your secret is mostly hidden and will only be changed when you replace the value here.]]></phrase>
-    <phrase title="option_threema_gateway_usehttps" version_id="1" version_string="0.1.0"><![CDATA[Use hardened HTTPS connection (recommend)]]></phrase>
-    <phrase title="option_threema_gateway_usehttps_explain" version_id="1" version_string="0.1.0"><![CDATA[When sending messages this prevents fallback attacks on the TLS/HTTPS connection by limiting the TLS version and ciphers to modern ones.
-Only disable this if you experience problems connecting to the Threema server (e.g. when the credits are not fetched correctly).]]></phrase>
     <phrase title="option_threema_gateway_userfield_verifyexist" version_id="1" version_string="0.1.0"><![CDATA[Verify existence of Threema IDs entered in custom user fields]]></phrase>
     <phrase title="option_threema_gateway_userfield_verifyexist_explain" version_id="1" version_string="0.1.0"><![CDATA[When this option is deactivated only the format of the Threema ID is verified. If it is activated the Threema server is also queried to check whether the ID really exists.]]></phrase>
     <phrase title="option_threema_gateway_usesource" version_id="1" version_string="0.1.0"><![CDATA[Use source code of PHP SDK]]></phrase>
@@ -303,6 +308,7 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_confirmation_code" version_id="1" version_string="0.1"><![CDATA[Threema Confirmation Code]]></phrase>
     <phrase title="threemagw_fetching_publickey_failed" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
     <phrase title="threemagw_getting_credits_failed" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
+    <phrase title="threemagw_invalid_httpshardening_option" version_id="1" version_string="0.1.0"><![CDATA[The HTTPS hardening option is invalid.]]></phrase>
     <phrase title="threemagw_invalid_keystorepath" version_id="1" version_string="0.1.0"><![CDATA[The path to the PHP keystore file is invalid.]]></phrase>
     <phrase title="threemagw_invalid_privatekey" version_id="1" version_string="0.1.0"><![CDATA[The private key is invalid or could not be found.]]></phrase>
     <phrase title="threemagw_invalid_privkeypath" version_id="1" version_string="0.1.0"><![CDATA[The path to the private key file is invalid.]]></phrase>
@@ -317,6 +323,7 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_not_writable_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[The PHP keystore file is not writable.]]></phrase>
     <phrase title="threemagw_permission_error" version_id="1" version_string="0.1.0"><![CDATA[There was a permission error.]]></phrase>
     <phrase title="threemagw_phpkeystore_example" version_id="1" version_string="0.1.0"><![CDATA[keystore.php]]></phrase>
+    <phrase title="threemagw_privatekeyfile_example" version_id="1" version_string="0.1.0"><![CDATA[privateKey.txt]]></phrase>
     <phrase title="threemagw_sending_failed" version_id="1" version_string="0.1.0"><![CDATA[Sending message failed.]]></phrase>
     <phrase title="threemagw_threemaid" version_id="1" version_string="0.1.0"><![CDATA[Threema ID]]></phrase>
     <phrase title="threemagw_threema_id_does_not_exist" version_id="1" version_string="0.1"><![CDATA[Threema ID does not exist.]]></phrase>

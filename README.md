@@ -24,3 +24,4 @@
 * Permissions allow you to control every aspect of your Gateway.
 * The only external calls this add-on makes are the ones to Threema.
 * By default the add-on uses the [advanced settings](https://github.com/rugk/threema-msgapi-sdk-php#user-content-creating-a-connection-with-advanced-options) of the PHP SDK, which provide better HTTPS security when sending messages.
+* You can further improve the advanced connection settings the PHP-SDK uses just with a small switch in the ACP.

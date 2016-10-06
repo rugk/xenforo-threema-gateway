@@ -265,21 +265,43 @@ class ThreemaGateway_Handler_PhpSdk
      * @param string $GatewayId     Your own gateway ID
      * @param string $GatewaySecret Your own gateway secret
      *
+     * @throws XenForoException
      * @return ConnectionSettings
      */
     protected function createConnectionSettings($GatewayId, $GatewaySecret)
     {
-        if ($this->xenOptions->threema_gateway_usehttps) {
+        /** @var null|object */
+        $setting = null;
+        if ($this->xenOptions->threema_gateway_httpshardening) {
             //create a connection with advanced options
+            /** @var array */
+            $tlsSettings = [];
+            switch ($this->xenOptions->threema_gateway_httpshardening) {
+                case 1:
+                    // only force TLS v1.2
+                    $tlsSettings = [
+                            'forceHttps' => true,
+                            'tlsVersion' => '1.2'
+                        ];
+                    break;
+                case 2:
+                    // also force cipher
+                    $tlsSettings = [
+                            'forceHttps' => true,
+                            'tlsVersion' => '1.2',
+                            'tlsCipher' => 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384'
+                        ];
+                    break;
+                default:
+                    throw new XenForo_Exception(new XenForo_Phrase('threemagw_invalid_httpshardening_option'));
+                    break;
+            }
+
             $settings = new ConnectionSettings(
                 $GatewayId,
                 $GatewaySecret,
                 null,
-                [
-                    'forceHttps' => true,
-                    'tlsVersion' => '1.2',
-                    'tlsCipher' => 'ECDHE-RSA-AES128-GCM-SHA256'
-                ]
+                $tlsSettings
             );
         } else {
             //create a connection with default options
