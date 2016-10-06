@@ -70,6 +70,23 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      */
     public function validateRequest(&$errorString)
     {
+        // HMAC validation
+        // (retrying allowed as messages would otherwise get lost when
+        // the secret is changed)
+        if ($this->getE2EHelper()->checkMac(
+            $this->filtered['from'],
+            $this->filtered['to'],
+            $this->filtered['messageId'],
+            $this->filtered['date'],
+            $this->filtered['nonce'],
+            $this->filtered['box'],
+            $this->filtered['mac'],
+            $this->settings->getSecret()
+            )) {
+            $errorString = 'Unverifified request';
+            return false;
+        }
+
         return true;
     }
 
@@ -86,21 +103,6 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // simple, formal validation
         if (!$this->getCryptTool()->stringCompare($this->filtered['to'], $this->settings->getId())) {
             $errorString = 'Invalid request';
-            return false;
-        }
-
-        // HMAC validation
-        if ($this->getE2EHelper()->checkMac(
-            $this->filtered['from'],
-            $this->filtered['to'],
-            $this->filtered['messageId'],
-            $this->filtered['date'],
-            $this->filtered['nonce'],
-            $this->filtered['box'],
-            $this->filtered['mac'],
-            $this->settings->getSecret()
-            )) {
-            $errorString = 'Unverifified request';
             return false;
         }
 
