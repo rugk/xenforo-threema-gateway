@@ -119,6 +119,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         /* @var XenForo_Options */
         $options = XenForo_Application::getOptions();
         // TODO: create dir $options->threema_gateway_downloadpath
+        // TODO: it seems this always refetches public keys, check keystore!
 
         try {
             /* ReceiveMessageResult */
