@@ -17,6 +17,7 @@ if (!file_exists($fileDir . '/library/XenForo/Autoloader.php')) {
     // second try
     $fileDir = '.';
 }
+chdir($fileDir);
 
 require($fileDir . '/library/XenForo/Autoloader.php');
 XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
@@ -31,6 +32,10 @@ $response = new Zend_Controller_Response_Http();
 $receiver = new ThreemaGateway_Handler_Action_Receiver();
 $receiver->initCallbackHandling(new Zend_Controller_Request_Http());
 
+/* @var XenForo_Options */
+$options = XenForo_Application::getOptions();
+$debugMode = XenForo_Application::debugMode();
+
 $logExtra   = [];
 $logMessage = false;
 
@@ -43,7 +48,10 @@ try {
         $logType = 'error';
     } else {
         $logType    = 'info';
-        $logMessage = $receiver->processMessage();
+        $logMessage = $receiver->processMessage(
+            $options->threema_gateway_downloadpath,
+            ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode)
+        );
     }
 
     if (is_array($logMessage)) {
@@ -60,15 +68,28 @@ try {
 }
 
 // debug: write log file
-const fpath='internal_data/threemagateway.log';
-date_default_timezone_set('Europe/Berlin');
+if ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode) {
+    try {
+        // check & create dir
+        if (!ThreemaGateway_Handler_Validation::checkDir(dirname($options->threema_gateway_logreceivedmsgs['path']))) {
+            throw new XenForo_Exception('Download dir ' . dirname($options->threema_gateway_logreceivedmsgs['path']) . ' cannot be accessed.');
+        }
 
-$fhandle=fopen(fpath, 'a');
-fwrite($fhandle, '['.date('Y-m-d H:i:s').']'.PHP_EOL.$logMessage.PHP_EOL);
-fclose($fhandle);
+        $logheader  = '[' . date('Y-m-d H:i:s') . ']' . PHP_EOL;
+        $logheader .= 'UA: ' . $_SERVER['HTTP_USER_AGENT'] . PHP_EOL;
 
-$logMessage = str_replace(PHP_EOL, '<br />'.PHP_EOL, $logMessage);
+        $fhandle = fopen($options->threema_gateway_logreceivedmsgs['path'], 'a');
+        fwrite($fhandle, $logheader . $logMessage . PHP_EOL);
+        if ($logExtra) {
+            fwrite($fhandle, PHP_EOL . var_export($logExtra, true) . PHP_EOL);
+        }
+        fclose($fhandle);
+    } catch (Exception $e) {
+        XenForo_Error::logException($e);
+        $logMessage .= PHP_EOL . ' Error when trying to write log file: ' . $e->getMessage();
+    }
+}
 
-$response->setBody($logMessage);
-// $response->setBody(htmlspecialchars($logMessage));
+$response->setBody(htmlspecialchars($logMessage));
+$response->setHeader('Content-type', 'text/plain');
 $response->sendResponse();

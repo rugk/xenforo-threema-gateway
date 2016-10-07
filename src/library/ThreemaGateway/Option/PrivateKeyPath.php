@@ -24,6 +24,12 @@ class ThreemaGateway_Option_PrivateKeyPath
      */
     public static function verifyOption(&$filepath, XenForo_DataWriter $dw, $fieldName)
     {
+        // correct path
+        if (substr($filepath, 0, 1) == '/') {
+            $filepath = substr($filepath, 1);
+        }
+
+        // check path
         if (!file_exists(__DIR__ . '/../' . $filepath) &&
             $filepath != '' &&
             !ThreemaGateway_Handler_Key::check($filepath, 'private:')

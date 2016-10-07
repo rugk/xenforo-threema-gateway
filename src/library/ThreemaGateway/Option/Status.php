@@ -29,7 +29,7 @@ class ThreemaGateway_Option_Status
         /** @var array */
         $status          = ['libsodium', 'libsodiumphp', 'phpsdk', 'credits'];
         /** @var string */
-        $additionalerror = '';
+        $additionalerrors = '';
 
         //get XenForo required things
         /** @var XenForo_Visitor */
@@ -75,7 +75,7 @@ class ThreemaGateway_Option_Status
                 $status['phpsdk']['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $sdk->getVersion()]);
                 $status['phpsdk']['addition'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_featurelevel', ['level' => $sdk->getFeatureLevel()]);
             } catch (Exception $e) {
-                $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_phpsdk_error').$e->getMessage();
+                $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_phpsdk_error').$e->getMessage();
                 $isPhpSdkError = true;
             }
 
@@ -95,7 +95,7 @@ class ThreemaGateway_Option_Status
                         // if the SDK already has an error it is clear that this will
                         // also fail. Mostly it just fails with "Undefined variable:
                         // cryptTool".
-                        $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_gwserver_error').$e->getMessage();
+                        $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_gwserver_error').$e->getMessage();
                     }
                     $credits = 'N/A';
                 }
@@ -117,14 +117,31 @@ class ThreemaGateway_Option_Status
                 // SDK not ready
                 if ($gwSettings->isAvaliable()) {
                     // presumambly an error in setup
-                    $additionalerror[]['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_not_ready');
+                    $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_not_ready');
                 } else {
                     // presumambly not yet setup (default settings or so)
-                    $additionalerror[] = [
+                    $additionalerrors[] = [
                         'text' => new XenForo_Phrase('option_threema_gateway_status_phpsdk_not_ready_yet'),
                         'descclass' => 'warning'
                     ];
                 }
+            }
+        }
+
+        /* @var XenForo_Options */
+        $options = XenForo_Application::getOptions();
+
+        if ($options->threema_gateway_logreceivedmsgs['enabled']) {
+            if (XenForo_Application::debugMode()) {
+                $additionalerrors[] = [
+                    'text' => new XenForo_Phrase('option_threema_gateway_status_debug_mode_active'),
+                    'descclass' => 'warning'
+                ];
+            } else {
+                $additionalerrors[] = [
+                    'text' => new XenForo_Phrase('option_threema_gateway_status_debug_mode_potentially_active'),
+                    'descclass' => 'warning'
+                ];
             }
         }
 
@@ -139,7 +156,7 @@ class ThreemaGateway_Option_Status
             'preparedOption' => $preparedOption,
             'editLink' => $editLink,
             'status' => $status,
-            'additionalerror' => $additionalerror,
+            'additionalerror' => $additionalerrors,
             'isConfError' => $isConfError,
             'isPhpSdkError' => $isPhpSdkError,
         ]);

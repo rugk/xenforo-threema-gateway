@@ -71,11 +71,11 @@
   <optiongroups>
     <group group_id="threemagw" display_order="1" debug_only="0"/>
     <group group_id="threemagw_tfa" display_order="2" debug_only="0"/>
-    <option option_id="threema_gateway_downloadpath" edit_format="textbox" data_type="string" can_backup="1">
+    <option option_id="threema_gateway_downloadpath" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_DownloadPath" validation_method="verifyOption">
       <default_value>internal_data/threemagateway/recfiles</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="190"/>
+      <relation group_id="threemagw" display_order="140"/>
     </option>
     <option option_id="threema_gateway_e2e" edit_format="radio" data_type="string" can_backup="1">
       <default_value></default_value>
@@ -102,11 +102,21 @@ placeholder={xen:phrase threemagw_phpkeystore_example}</edit_format_params>
 path</sub_options>
       <relation group_id="threemagw" display_order="230"/>
     </option>
+    <option option_id="threema_gateway_logreceivedmsgs" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_DebugModeLog" validation_method="verifyOption">
+      <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path";s:45:"internal_data/threemagateway/receivedmsgs.log";}</default_value>
+      <edit_format_params>onoff=enabled
+value=path
+type=textbox
+placeholder=internal_data/threemagateway/receivedmsgs.log</edit_format_params>
+      <sub_options>enabled
+path</sub_options>
+      <relation group_id="threemagw" display_order="360"/>
+    </option>
     <option option_id="threema_gateway_privatekeyfile" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_PrivateKeyPath" validation_method="verifyOption">
       <default_value></default_value>
       <edit_format_params>placeholder={xen:phrase threemagw_privatekeyfile_example}</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="180"/>
+      <relation group_id="threemagw" display_order="130"/>
     </option>
     <option option_id="threema_gateway_status" edit_format="callback" data_type="boolean" can_backup="1">
       <default_value>true</default_value>
@@ -164,7 +174,7 @@ userfield</sub_options>
       <default_value></default_value>
       <edit_format_params>ThreemaGateway_Option_ThreemaGatewaySecret::renderOption</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="110"/>
+      <relation group_id="threemagw" display_order="115"/>
     </option>
     <option option_id="threema_gateway_userfield_verifyexist" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
@@ -202,7 +212,7 @@ userfield</sub_options>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
     <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the two-factor-authentication modes of the Threema Gateway. Please note that the general Threema Gateway settings must be configured before.]]></phrase>
     <phrase title="option_threema_gateway_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[Download path for files]]></phrase>
-    <phrase title="option_threema_gateway_downloadpath_explain" version_id="1" version_string="0.1.0"><![CDATA[This is the path where files send to your ID should be saved (in decrypted form!). When no path is given the files are not downloaded.]]></phrase>
+    <phrase title="option_threema_gateway_downloadpath_explain" version_id="1" version_string="0.1.0"><![CDATA[This is the path where files send to your ID should be saved (in decrypted form!). When no path is given the files are not downloaded (not recommend!). The path must be relative to the XenForo root.]]></phrase>
     <phrase title="option_threema_gateway_e2e" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
     <phrase title="option_threema_gateway_e2e_explain" version_id="1" version_string="0.1.0"><![CDATA[Select the mode you chose when setting up your Threema ID. Without the end-to-end encrypted mode many options may not be available.]]></phrase>
     <phrase title="option_threema_gateway_httpshardening" version_id="1" version_string="0.1.0"><![CDATA[Hardened HTTPS connection (recommend)]]></phrase>
@@ -214,6 +224,11 @@ You may try to set this as high as possible. If you experience problems connecti
     <phrase title="option_threema_gateway_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[Use PHP Keystore (not recommend)]]></phrase>
     <phrase title="option_threema_gateway_keystorefile_explain" version_id="1" version_string="0.1.0"><![CDATA[By default the database is used to store the public keys of Threema users. When enabling this option you can specify a php file to use. This file <b>must already exist</b>!
 Note that the file must be stored in <code>library/ThreemaGateway</code>, but you can use relative paths to change this location.]]></phrase>
+    <phrase title="option_threema_gateway_logreceivedmsgs" version_id="1" version_string="0.1.0"><![CDATA[Log received messages (debug mode)]]></phrase>
+    <phrase title="option_threema_gateway_logreceivedmsgs_explain" version_id="1" version_string="0.1.0"><![CDATA[When activated this logs all received messages to a path you specify. The path must be relative to the XenForo root.<br>
+<b>Note:</b> Please only use this for temporarily for debugging purposes as it dumps secret information to disk (possibly including Gateway secrets) and shows them in the Threema callback.<br>
+When the path is publicly accessible everyone can see every message!
+For security reasons this setting is ignored when XenForo is not running in debug mode.]]></phrase>
     <phrase title="option_threema_gateway_mode_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic mode]]></phrase>
     <phrase title="option_threema_gateway_mode_e2e" version_id="1" version_string="0.1.0"><![CDATA[End-to-end encrypted mode]]></phrase>
     <phrase title="option_threema_gateway_privatekeyfile" version_id="1" version_string="0.1.0"><![CDATA[Private key file]]></phrase>
@@ -228,6 +243,8 @@ Note that the file must be stored in <code>library/ThreemaGateway</code>, but yo
     <phrase title="option_threema_gateway_status_credits_recharge" version_id="1" version_string="0.1.0"><![CDATA[(<a href="https://gateway.threema.ch/en/load" target="_blank">recharge</a>)]]></phrase>
     <phrase title="option_threema_gateway_status_custom_gwserver_error" version_id="1" version_string="0.1.0"><![CDATA[Gateway Server error: ]]></phrase>
     <phrase title="option_threema_gateway_status_custom_phpsdk_error" version_id="1" version_string="0.1.0"><![CDATA[Error in PHP-SDK: ]]></phrase>
+    <phrase title="option_threema_gateway_status_debug_mode_active" version_id="1" version_string="0.1.0"><![CDATA[The debug mode is currently enabled, which means some or all messages are logged into a text file! You should disable this below after you finished debugging.]]></phrase>
+    <phrase title="option_threema_gateway_status_debug_mode_potentially_active" version_id="1" version_string="0.1.0"><![CDATA[The debug mode of this add-on is currently enabled, which means some or all messages may be logged when you enable XenForo's debug mode! If this is not intentional, please disable this mode below.]]></phrase>
     <phrase title="option_threema_gateway_status_error" version_id="1" version_string="0.1"><![CDATA[You have some errors in your configuration. Until you resolve them it will not be possible to use this addon properly.]]></phrase>
     <phrase title="option_threema_gateway_status_explain" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
     <phrase title="option_threema_gateway_status_libsodiumphp_outdated" version_id="1" version_string="0.1.0"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium-php (at least v1.0.1).]]></phrase>
@@ -317,6 +334,8 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_confirmation_code" version_id="1" version_string="0.1"><![CDATA[Threema Confirmation Code]]></phrase>
     <phrase title="threemagw_fetching_publickey_failed" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
     <phrase title="threemagw_getting_credits_failed" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
+    <phrase title="threemagw_invalid_debuglogpath" version_id="1" version_string="0.1.0"><![CDATA[The path of the message debug log file is invalid. Please check your permissions.]]></phrase>
+    <phrase title="threemagw_invalid_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[The directory cannot be used. Please check the directory and it's permissions.]]></phrase>
     <phrase title="threemagw_invalid_httpshardening_option" version_id="1" version_string="0.1.0"><![CDATA[The HTTPS hardening option is invalid.]]></phrase>
     <phrase title="threemagw_invalid_keystorepath" version_id="1" version_string="0.1.0"><![CDATA[The path to the PHP keystore file is invalid.]]></phrase>
     <phrase title="threemagw_invalid_privatekey" version_id="1" version_string="0.1.0"><![CDATA[The private key is invalid or could not be found.]]></phrase>

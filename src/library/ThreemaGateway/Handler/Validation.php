@@ -13,11 +13,11 @@ class ThreemaGateway_Handler_Validation
     /**
      * Checks whether a Threema ID is valid and exists.
      *
-     * @param  string $threemaid      The Threema ID to check.
-     * @param  string $type           The type of the Threema ID (personal, gateway, any)
+     * @param  string         $threemaid      The Threema ID to check.
+     * @param  string         $type           The type of the Threema ID (personal, gateway, any)
      * @param  XenForo_Phrase $error
-     * @param  bool   $checkExistence Whether not only formal aspects should
-     *                                be checked, but also the existence of the ID.
+     * @param  bool           $checkExistence Whether not only formal aspects should
+     *                                        be checked, but also the existence of the ID.
      * @return bool
      */
     public static function checkThreemaId(&$threemaid, $type, &$error, $checkExistence = true)
@@ -55,12 +55,16 @@ class ThreemaGateway_Handler_Validation
      * It also automatically creates it if neccessary.
      *
      * @param  string $dir directory to check
-     * @return string
+     * @return bool
      */
     public static function checkDir($dir)
     {
         if (!file_exists($dir)) {
-            mkdir($dir, 0777, true);
+            try {
+                mkdir($dir, 0777, true);
+            } catch (Exception $e) {
+                return false;
+            }
         }
         return (is_readable($dir) && is_writable($dir));
     }
