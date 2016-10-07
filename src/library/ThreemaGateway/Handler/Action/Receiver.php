@@ -112,14 +112,16 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     /**
      * Receive the message, decrypt it and save it.
      *
+     * @param bool $debugMode Whether debugging information should be returned
+     *                        (default: false)
+     *
      * @return string the message, which should be shown
      */
-    public function processMessage()
+    public function processMessage($debugMode = false)
     {
         /* @var XenForo_Options */
         $options = XenForo_Application::getOptions();
         // TODO: create dir $options->threema_gateway_downloadpath
-        // TODO: it seems this always refetches public keys, check keystore!
 
         try {
             /* ReceiveMessageResult */
@@ -139,31 +141,31 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         }
 
         //debug
-        // $EOL='<br>'.PHP_EOL;
+        $threemaMsg = $receiveResult->getThreemaMessage();
         $EOL=PHP_EOL;
         $message = "ID: ".$receiveResult->getMessageId().$EOL;
-        $message .= "message.type: ".$receiveResult->getThreemaMessage()->getTypeCode().$EOL;
+        $message .= "message.type: ".$threemaMsg->getTypeCode().$EOL;
         $message .= "files: ".implode('|', $receiveResult->getFiles()).$EOL;
 
-        if ($receiveResult->getThreemaMessage() instanceof Threema\MsgApi\Messages\TextMessage) {
-            $message .= "message.text: ".$receiveResult->getThreemaMessage()->getText().$EOL;
+        if ($threemaMsg instanceof Threema\MsgApi\Messages\TextMessage) {
+            $message .= "message.getText: ".$threemaMsg->getText().$EOL;
         }
-        if ($receiveResult->getThreemaMessage() instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
-            $message .= "message.receipttype: ".$receiveResult->getThreemaMessage()->getReceiptType().$EOL;
-            $message .= "message.receipttypename: ".$receiveResult->getThreemaMessage()->getReceiptTypeName().$EOL;
+        if ($threemaMsg instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
+            $message .= "message.getReceiptType: ".$threemaMsg->getReceiptType().$EOL;
+            $message .= "message.getReceiptTypeName: ".$threemaMsg->getReceiptTypeName().$EOL;
         }
-        if ($receiveResult->getThreemaMessage() instanceof Threema\MsgApi\Messages\FileMessage) {
-            $message .= "message.getBlobId: ".$receiveResult->getThreemaMessage()->getBlobId().$EOL;
-            $message .= "message.receipttypename: ".$receiveResult->getThreemaMessage()->getEncryptionKey().$EOL;
-            $message .= "message.getFilename: ".$receiveResult->getThreemaMessage()->getFilename().$EOL;
-            $message .= "message.getMimeType: ".$receiveResult->getThreemaMessage()->getMimeType().$EOL;
-            $message .= "message.getSize: ".$receiveResult->getThreemaMessage()->getSize().$EOL;
-            $message .= "message.getThumbnailBlobId: ".$receiveResult->getThreemaMessage()->getThumbnailBlobId().$EOL;
+        if ($threemaMsg instanceof Threema\MsgApi\Messages\FileMessage) {
+            $message .= "message.getBlobId: ".$threemaMsg->getBlobId().$EOL;
+            $message .= "message.receipttypename: ".$threemaMsg->getEncryptionKey().$EOL;
+            $message .= "message.getFilename: ".$threemaMsg->getFilename().$EOL;
+            $message .= "message.getMimeType: ".$threemaMsg->getMimeType().$EOL;
+            $message .= "message.getSize: ".$threemaMsg->getSize().$EOL;
+            $message .= "message.getThumbnailBlobId: ".$threemaMsg->getThumbnailBlobId().$EOL;
         }
-        if ($receiveResult->getThreemaMessage() instanceof Threema\MsgApi\Messages\ImageMessage) {
-            $message .= "message.getBlobId: ".$receiveResult->getThreemaMessage()->getBlobId().$EOL;
-            $message .= "message.getLength: ".$receiveResult->getThreemaMessage()->getLength().$EOL;
-            $message .= "message.getNonce: ".$receiveResult->getThreemaMessage()->getNonce().$EOL;
+        if ($threemaMsg instanceof Threema\MsgApi\Messages\ImageMessage) {
+            $message .= "message.getBlobId: ".$threemaMsg->getBlobId().$EOL;
+            $message .= "message.getLength: ".$threemaMsg->getLength().$EOL;
+            $message .= "message.getNonce: ".$threemaMsg->getNonce().$EOL;
         }
 
         return $message;

@@ -24,7 +24,7 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
     }
 
     /**
-     * Find public key. Returns null if the public key not found in the store.
+     * Find public key. Returns null if the public key is not found in the store.
      *
      * @param  string      $threemaId
      * @return null|string

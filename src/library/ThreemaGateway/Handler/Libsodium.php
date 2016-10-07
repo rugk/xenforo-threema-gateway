@@ -2,7 +2,7 @@
 /**
  * Provides an interface to the Libsodium library.
  *
- * @deprecated Please use the crypt tool of teh PHP SDK, which provides PHP
+ * @deprecated Please use the crypt tool of the PHP SDK, which provides PHP
  *             fallbacks and is therefore always usable, no matter whether
  *             libsodium is installed.
  *

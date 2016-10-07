@@ -49,4 +49,19 @@ class ThreemaGateway_Handler_Validation
 
         return true;
     }
+
+    /**
+     * Checks whether the directory is read- and writable.
+     * It also automatically creates it if neccessary.
+     *
+     * @param  string $dir directory to check
+     * @return string
+     */
+    public static function checkDir($dir)
+    {
+        if (!file_exists($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        return (is_readable($dir) && is_writable($dir));
+    }
 }
