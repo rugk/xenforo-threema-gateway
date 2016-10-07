@@ -112,7 +112,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     /**
      * Receive the message, decrypt it and save it.
      *
-     * @param string $downloadPath THe directory where to store received files
+     * @param string $downloadPath The directory where to store received files
      * @param bool   $debugMode    Whether debugging information should be returned
      *                             (default: false)
      *
