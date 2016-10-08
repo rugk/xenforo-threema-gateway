@@ -137,7 +137,9 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
                 $downloadPath
             );
         } catch (Exception $e) {
-            throw new XenForo_Exception('Message cannot be processed: ' . $e->getMessage());
+            // as XenForo does not allow Exception chaing, we better log the exception right now
+            XenForo_Error::logException($e);
+            throw new Exception('Message cannot be processed: ' . $e->getMessage());
         }
 
         if (!$receiveResult->isSuccess()) {
@@ -146,7 +148,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
 
         /* @var ThreemaMessage */
         $threemaMsg = $receiveResult->getThreemaMessage();
-        
+
         if ($debugMode) {
             $EOL        = PHP_EOL;
 
