@@ -11,6 +11,48 @@
 class ThreemaGateway_Option_DebugModeLog
 {
     /**
+     * @var string Default file path
+     */
+    const DefaultPath = 'internal_data/threemagateway/receivedmsgs.log';
+
+    /**
+     * Renders the debug mode log setting.
+     *
+     * Basically it just hides the setting if the debug mode of XenFOro is disabled.
+     *
+     * @param XenForo_View $view           View object
+     * @param string       $fieldPrefix    Prefix for the HTML form field name
+     * @param array        $preparedOption Prepared option info
+     * @param bool         $canEdit        True if an "edit" link should appear
+     *
+     * @return XenForo_Template_Abstract Template object
+     */
+    public static function renderOption(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
+    {
+        $preparedOption['option_value'] = self::correctOption($preparedOption['option_value']);
+
+        $options = XenForo_Application::getOptions();
+
+        // hide option when disabled and debug mode is off (so that users are not confused)
+        if (!$options->threema_gateway_logreceivedmsgs['enabled'] && !XenForo_Application::debugMode()) {
+            return XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal('threemagateway_option_list_option_hidden', $view, $fieldPrefix, $preparedOption, $canEdit);
+        }
+
+        // set options
+        $preparedOption['edit_format']  = 'onofftextbox';
+        $preparedOption['formatParams'] = [
+            'onoff' => 'enabled',
+            'value' => 'path',
+            'type' => 'textbox',
+            'default' => self::DefaultPath,
+            'placeholder' => self::DefaultPath
+        ];
+
+        //pass this to the default handler
+        return XenForo_ViewAdmin_Helper_Option::renderPreparedOptionHtml($view, $preparedOption, $canEdit);
+    }
+
+    /**
      * Verifies whether the dir of the file is valid (can be created) and is writable.
      *
      * @param string             $filepath  Input
@@ -21,25 +63,7 @@ class ThreemaGateway_Option_DebugModeLog
      */
     public static function verifyOption(&$filepath, XenForo_DataWriter $dw, $fieldName)
     {
-        // correct value
-        if (empty($filepath)) {
-            /* @var XenForo_Options */
-            $options = XenForo_Application::getOptions();
-
-            // save file path even if disabled
-            $filepath['enabled'] = 0;
-            $filepath['path']    = $options->threema_gateway_logreceivedmsgs['path'];
-        }
-
-        // set default value
-        if (empty($filepath['path'])) {
-            $filepath['path'] = 'internal_data/threemagateway/receivedmsgs.log';
-        }
-
-        // correct path
-        if (substr($filepath['path'], 0, 1) == '/') {
-            $filepath['path'] = substr($filepath['path'], 1);
-        }
+        $filepath = self::correctOption($filepath);
 
         // check path
         $dirpath     = dirname($filepath['path']);
@@ -55,5 +79,36 @@ class ThreemaGateway_Option_DebugModeLog
         }
 
         return true;
+    }
+
+    /**
+     * Corrects the option array.
+     *
+     * @param string $option
+     * @return string
+     */
+    protected static function correctOption($option)
+    {
+        // correct value
+        if (empty($option)) {
+            /* @var XenForo_Options */
+            $xenOptions = XenForo_Application::getOptions();
+
+            // save file path even if disabled
+            $option['enabled'] = 0;
+            $option['path']    = $xenOptions->threema_gateway_logreceivedmsgs['path'];
+        }
+
+        // set default value
+        if (empty($option['path'])) {
+            $option['path'] = self::DefaultPath;
+        }
+
+        // correct path
+        if (substr($option['path'], 0, 1) == '/') {
+            $option['path'] = substr($option['path'], 1);
+        }
+
+        return $option;
     }
 }

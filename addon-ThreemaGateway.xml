@@ -6,6 +6,14 @@
   </admin_permissions>
   <admin_style_properties/>
   <admin_templates>
+    <template title="threemagateway_option_list_option_hidden"><![CDATA[<xen:require css="threemagateway_option_list_option_hidden.css" />
+
+<xen:controlunit label="" class="threemagateway_option_hidden">
+	<xen:include template="option_list_option_uneditable" />
+</xen:controlunit>]]></template>
+    <template title="threemagateway_option_list_option_hidden.css"><![CDATA[.threemagateway_option_hidden {
+  display: none;
+}]]></template>
     <template title="threemagw_option_list_receivecallback"><![CDATA[<xen:require css="threemagw_option_list_receivecallback.css" />
 <xen:require js="js/ThreemaGateway/options.js" />
 
@@ -151,14 +159,9 @@ placeholder={xen:phrase threemagw_phpkeystore_example}</edit_format_params>
 path</sub_options>
       <relation group_id="threemagw" display_order="230"/>
     </option>
-    <option option_id="threema_gateway_logreceivedmsgs" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_DebugModeLog" validation_method="verifyOption">
+    <option option_id="threema_gateway_logreceivedmsgs" edit_format="callback" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_DebugModeLog" validation_method="verifyOption">
       <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path";s:45:"internal_data/threemagateway/receivedmsgs.log";}</default_value>
-      <edit_format_params>ThreemaGateway_Option_DebugModeLog::
-onoff=enabled
-value=path
-type=textbox
-default=internal_data/threemagateway/receivedmsgs.log
-placeholder=internal_data/threemagateway/receivedmsgs.log</edit_format_params>
+      <edit_format_params>ThreemaGateway_Option_DebugModeLog::renderOption</edit_format_params>
       <sub_options>enabled
 path</sub_options>
       <relation group_id="threemagw" display_order="360"/>
@@ -285,7 +288,7 @@ Note that the file must be stored in <code>library/ThreemaGateway</code>, but yo
     <phrase title="option_threema_gateway_logreceivedmsgs_explain" version_id="1" version_string="0.1.0"><![CDATA[When activated this logs all received messages to a path you specify. The path must be relative to the XenForo root.<br>
 <b>Note:</b> Please only use this for temporarily for debugging purposes as it dumps secret information to disk (possibly including Gateway secrets) and shows them in the Threema callback.<br>
 When the path is publicly accessible everyone can see every message!
-For security reasons this setting is ignored when XenForo is not running in debug mode.]]></phrase>
+For security reasons this setting <b>is ignored</b> when XenForo is not running in debug mode.]]></phrase>
     <phrase title="option_threema_gateway_mode_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic mode]]></phrase>
     <phrase title="option_threema_gateway_mode_e2e" version_id="1" version_string="0.1.0"><![CDATA[End-to-end encrypted mode]]></phrase>
     <phrase title="option_threema_gateway_privatekeyfile" version_id="1" version_string="0.1.0"><![CDATA[Private key file]]></phrase>
