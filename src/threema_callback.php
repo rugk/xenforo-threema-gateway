@@ -34,6 +34,7 @@ $receiver->initCallbackHandling(new Zend_Controller_Request_Http());
 
 /* @var XenForo_Options */
 $options = XenForo_Application::getOptions();
+/* @var bool */
 $debugMode = XenForo_Application::debugMode();
 
 $logExtra   = [];

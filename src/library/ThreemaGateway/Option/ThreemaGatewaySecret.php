@@ -31,7 +31,7 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
             //censor option
             $preparedOption['option_value'] = ThreemaGateway_Helper_General::censorString($preparedOption['option_value'], self::notCensorChars);
 
-            // add note to explanation
+            // add note to explain *** in field
             $preparedOption['explain']->setParams([
                 'note' => new XenForo_Phrase('option_threema_gateway_threema_id_secret_explain_note')
             ]);

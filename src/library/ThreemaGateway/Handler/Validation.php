@@ -61,7 +61,7 @@ class ThreemaGateway_Handler_Validation
     {
         if (!file_exists($dir)) {
             try {
-                mkdir($dir, 0777, true);
+                mkdir($dir, 0770, true);
             } catch (Exception $e) {
                 return false;
             }

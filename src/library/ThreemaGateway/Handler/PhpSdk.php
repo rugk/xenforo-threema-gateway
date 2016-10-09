@@ -232,7 +232,7 @@ class ThreemaGateway_Handler_PhpSdk
         if (!$phpKeystore || !$phpKeystore['enabled']) {
             $keystore = new ThreemaGateway_Handler_DbKeystore();
         } else {
-            $keystore = new Threema\MsgApi\PublicKeyStores\PhpFile(__DIR__ . $phpKeystore['path']);
+            $keystore = new Threema\MsgApi\PublicKeyStores\PhpFile(__DIR__ . '/../' . $phpKeystore['path']);
         }
         $this->keystore = $keystore;
     }

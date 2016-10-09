@@ -48,6 +48,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         $this->input   = new XenForo_Input($request);
 
         $this->filtered = $this->input->filter([
+            'accesstoken' => XenForo_Input::STRING,
             'from' => XenForo_Input::STRING,
             'to' => XenForo_Input::STRING,
             'messageId' => XenForo_Input::STRING,
@@ -70,6 +71,22 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      */
     public function validateRequest(&$errorString)
     {
+        // access token validation
+        /* @var XenForo_Options */
+        $options = XenForo_Application::getOptions();
+        if (!$options->threema_gateway_receivecallback) {
+            $errorString = 'Unverified request';
+            return false;
+        }
+
+        if (!$this->getCryptTool()->stringCompare(
+            $options->threema_gateway_receivecallback,
+            $this->filtered['accesstoken']
+            )) {
+            $errorString = 'Unverified request';
+            return false;
+        }
+
         // HMAC validation
         // (retrying allowed as messages would otherwise get lost when
         // the secret is changed)
@@ -121,10 +138,9 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     public function processMessage($downloadPath, $debugMode = false)
     {
         $output = '';
-        /* @var XenForo_Options */
-        $options = XenForo_Application::getOptions();
-        if (!ThreemaGateway_Handler_Validation::checkDir($options->threema_gateway_downloadpath)) {
-            throw new XenForo_Exception('Download dir ' . $options->threema_gateway_downloadpath . ' cannot be accessed.');
+
+        if (!ThreemaGateway_Handler_Validation::checkDir($downloadPath)) {
+            throw new XenForo_Exception('Download dir ' . $downloadPath . ' cannot be accessed.');
         }
 
         try {
@@ -152,7 +168,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         if ($debugMode) {
             $EOL        = PHP_EOL;
 
-            $output  = 'New message from ' . $this->filtered['from'] . $EOL.$EOL;
+            $output  = 'New message from ' . $this->filtered['from'] . $EOL . $EOL;
             $output .= 'ID: ' . $receiveResult->getMessageId() . $EOL;
             $output .= 'message.type: ' . $threemaMsg->getTypeCode() . ' (' . $threemaMsg . ')' . $EOL;
             $output .= 'files: ' . implode('|', $receiveResult->getFiles()) . $EOL;

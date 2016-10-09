@@ -31,4 +31,9 @@ class ThreemaGateway_Constants
         'personal' => '^([A-Za-z0-9]{8})$', // https://regex101.com/r/sX9pY0/3
         'any' => '^((\*[A-Za-z0-9]{7})|([A-Za-z0-9]{8}))$' // https://regex101.com/r/bF6xV5/7
     ];
+
+    /**
+     * @var string file path of threema callback php file
+     */
+    const CallbackFile = 'threema_callback.php';
 }

@@ -28,21 +28,23 @@ class ThreemaGateway_Option_DebugModeLog
 
             // save file path even if disabled
             $filepath['enabled'] = 0;
-            $filepath['path'] = $options->threema_gateway_logreceivedmsgs['path'];
+            $filepath['path']    = $options->threema_gateway_logreceivedmsgs['path'];
+        }
+
+        // set default value
+        if (empty($filepath['path'])) {
+            $filepath['path'] = 'internal_data/threemagateway/receivedmsgs.log';
         }
 
         // correct path
         if (substr($filepath['path'], 0, 1) == '/') {
             $filepath['path'] = substr($filepath['path'], 1);
         }
-        $dirpath = $filepath['path'];
 
         // check path
+        $dirpath     = dirname($filepath['path']);
         $absoluteDir = XenForo_Application::getInstance()->getRootDir() . '/' . $dirpath;
-        var_dump($absoluteDir);
-        if ($dirpath != '' &&
-            !ThreemaGateway_Handler_Validation::checkDir($absoluteDir)
-        ) {
+        if (!ThreemaGateway_Handler_Validation::checkDir($absoluteDir)) {
             $dw->error(new XenForo_Phrase('threemagw_invalid_debuglogpath'), $fieldName);
             return false;
         }

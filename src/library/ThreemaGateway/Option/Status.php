@@ -35,6 +35,10 @@ class ThreemaGateway_Option_Status
         /** @var XenForo_Visitor */
         $visitor = XenForo_Visitor::getInstance();
 
+        if (!XenForo_Application::$secure) {
+            $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_no_https');
+        }
+
         //libsodium
         if (extension_loaded('libsodium')) {
             if (method_exists('Sodium', 'sodium_version_string')) {

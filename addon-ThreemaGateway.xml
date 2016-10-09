@@ -6,6 +6,55 @@
   </admin_permissions>
   <admin_style_properties/>
   <admin_templates>
+    <template title="threemagw_option_list_receivecallback"><![CDATA[<xen:require css="threemagw_option_list_receivecallback.css" />
+<xen:require js="js/ThreemaGateway/options.js" />
+
+<xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<div class="threemagw_receivecallback_container">
+			<span class="threemagw_receivecallback_nonedit">
+				{xen:raw $formatParams.basetext}<span contentEditable="true" class="threemagw_receivecallback_input">{$preparedOption.option_value}</span><span class="threemagw_receivecallback_fakecharacter">&nbsp;</span>
+			</span>
+		</div>
+		<input id="{$fieldPrefix}{$preparedOption.option_id}" class="threemagw_receivecallback_hiddeninput" type="hidden" name="{$fieldPrefix}[{$preparedOption.option_id}]" value="{$preparedOption.option_value}" />
+				
+		<xen:include template="option_list_option_editlink" />
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>]]></template>
+    <template title="threemagw_option_list_receivecallback.css"><![CDATA[.threemagw_receivecallback_container {
+  word-break: break-all;
+}
+
+.threemagw_receivecallback_nonedit {
+  
+}
+
+.threemagw_receivecallback_input{
+  margin-left: -1px;
+  border: 1px dashed;
+  border-color: rgba(255, 255, 255, 0);
+}
+
+.threemagw_receivecallback_input:hover,
+.threemagw_receivecallback_input:active,
+.threemagw_receivecallback_input:focus{
+  color: {xen:property primaryDarker};
+  background-color: {xen:property textCtrlBackground};
+  border-color: {xen:property primaryDarker};
+}
+
+.threemagw_receivecallback_input:focus{
+  background-color: {xen:property inlineMod};
+}
+
+
+/* This space gets hidden and is a hack to make the string better selectable */
+.threemagw_receivecallback_fakecharacter {
+  opacity: 0;
+}]]></template>
     <template title="threemagw_option_list_status"><![CDATA[<xen:require css="threemagw_option_list_status.css" />
 
 <xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
@@ -73,9 +122,9 @@
     <group group_id="threemagw_tfa" display_order="2" debug_only="0"/>
     <option option_id="threema_gateway_downloadpath" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_DownloadPath" validation_method="verifyOption">
       <default_value>internal_data/threemagateway/recfiles</default_value>
-      <edit_format_params></edit_format_params>
+      <edit_format_params>placeholder=internal_data/threemagateway/recfiles</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="140"/>
+      <relation group_id="threemagw" display_order="180"/>
     </option>
     <option option_id="threema_gateway_e2e" edit_format="radio" data_type="string" can_backup="1">
       <default_value></default_value>
@@ -104,9 +153,11 @@ path</sub_options>
     </option>
     <option option_id="threema_gateway_logreceivedmsgs" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_DebugModeLog" validation_method="verifyOption">
       <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path";s:45:"internal_data/threemagateway/receivedmsgs.log";}</default_value>
-      <edit_format_params>onoff=enabled
+      <edit_format_params>ThreemaGateway_Option_DebugModeLog::
+onoff=enabled
 value=path
 type=textbox
+default=internal_data/threemagateway/receivedmsgs.log
 placeholder=internal_data/threemagateway/receivedmsgs.log</edit_format_params>
       <sub_options>enabled
 path</sub_options>
@@ -117,6 +168,12 @@ path</sub_options>
       <edit_format_params>placeholder={xen:phrase threemagw_privatekeyfile_example}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="130"/>
+    </option>
+    <option option_id="threema_gateway_receivecallback" edit_format="callback" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_ReceiveCallback" validation_method="verifyOption">
+      <default_value></default_value>
+      <edit_format_params>ThreemaGateway_Option_ReceiveCallback::renderOption</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="170"/>
     </option>
     <option option_id="threema_gateway_status" edit_format="callback" data_type="boolean" can_backup="1">
       <default_value>true</default_value>
@@ -234,6 +291,9 @@ For security reasons this setting is ignored when XenForo is not running in debu
     <phrase title="option_threema_gateway_privatekeyfile" version_id="1" version_string="0.1.0"><![CDATA[Private key file]]></phrase>
     <phrase title="option_threema_gateway_privatekeyfile_explain" version_id="1" version_string="0.1.0"><![CDATA[If you use the end-to-end encrypted mode enter the path to your private key file here. The file must be placed in <code>library/ThreemaGateway</code>. You can however use relative paths to place it somewhere else.<br />
 <a href="https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#4-generate-a-keypair-by-running-the-tool" target="_blank">In the wiki</a> you can find an explanation how to do this. You can begin with step 4 as the msgapi tool is already included in <code>library/ThreemaGateway/threema-msgapi-sdk-php/threema-msgapi-tool.php</code>.]]></phrase>
+    <phrase title="option_threema_gateway_receivecallback" version_id="1" version_string="0.1.0"><![CDATA[Callback for Threema Gateway server]]></phrase>
+    <phrase title="option_threema_gateway_receivecallback_explain" version_id="1" version_string="0.1.0"><![CDATA[Here you can find your callback URL for the Threema Gateway server, which you need for receiving messages. The access token you can change here should be a random string.
+It has been randomly generated at the installation of this add-on. You can regenerate it by leaving this field empty.]]></phrase>
     <phrase title="option_threema_gateway_status" version_id="1" version_string="0.1"><![CDATA[Status]]></phrase>
     <phrase title="option_threema_gateway_status_credits" version_id="1" version_string="0.1"><![CDATA[Remaining credits: <b>{credits}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_credits_error" version_id="1" version_string="0.1.0"><![CDATA[There was an error when fetching credits. You probably have entered an incorrect Threema Gateway ID or secret. There could also have been a connection error.]]></phrase>
@@ -243,8 +303,8 @@ For security reasons this setting is ignored when XenForo is not running in debu
     <phrase title="option_threema_gateway_status_credits_recharge" version_id="1" version_string="0.1.0"><![CDATA[(<a href="https://gateway.threema.ch/en/load" target="_blank">recharge</a>)]]></phrase>
     <phrase title="option_threema_gateway_status_custom_gwserver_error" version_id="1" version_string="0.1.0"><![CDATA[Gateway Server error: ]]></phrase>
     <phrase title="option_threema_gateway_status_custom_phpsdk_error" version_id="1" version_string="0.1.0"><![CDATA[Error in PHP-SDK: ]]></phrase>
-    <phrase title="option_threema_gateway_status_debug_mode_active" version_id="1" version_string="0.1.0"><![CDATA[The debug mode is currently enabled, which means some or all messages are logged into a text file! You should disable this below after you finished debugging.]]></phrase>
-    <phrase title="option_threema_gateway_status_debug_mode_potentially_active" version_id="1" version_string="0.1.0"><![CDATA[The debug mode of this add-on is currently enabled, which means some or all messages may be logged when you enable XenForo's debug mode! If this is not intentional, please disable this mode below.]]></phrase>
+    <phrase title="option_threema_gateway_status_debug_mode_active" version_id="1" version_string="0.1.0"><![CDATA[The debug mode is currently enabled, which means some or all messages are logged into a text file! You should <a href="#_threema_gateway_logreceivedmsgs">disable this below</a> after you finished debugging.]]></phrase>
+    <phrase title="option_threema_gateway_status_debug_mode_potentially_active" version_id="1" version_string="0.1.0"><![CDATA[The debug mode of this add-on is currently enabled, which means some or all messages may be logged when you enable XenForo's debug mode! If this is not intentional, please <a href="#_threema_gateway_logreceivedmsgs">disable this mode below</a>.]]></phrase>
     <phrase title="option_threema_gateway_status_error" version_id="1" version_string="0.1"><![CDATA[You have some errors in your configuration. Until you resolve them it will not be possible to use this addon properly.]]></phrase>
     <phrase title="option_threema_gateway_status_explain" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
     <phrase title="option_threema_gateway_status_libsodiumphp_outdated" version_id="1" version_string="0.1.0"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium-php (at least v1.0.1).]]></phrase>
@@ -256,6 +316,7 @@ Additionally many 2FA methods will be disabled if you do not install libsodium.]
     <phrase title="option_threema_gateway_status_libsodium_outdated" version_id="1" version_string="0.1"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium.]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_version" version_id="1" version_string="0.1.0"><![CDATA[<a href="https://download.libsodium.org/doc/" target="_blank">Sodium</a> version: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_missing_private_key" version_id="1" version_string="0.1.0"><![CDATA[Currently it is not possible to use the Threema Gateway, because the private key is malformed or not specified.]]></phrase>
+    <phrase title="option_threema_gateway_status_no_https" version_id="1" version_string="0.1.0"><![CDATA[You do not use HTTPS. Without HTTPS not only the secrets you enter here are unprotected, but also some settings and 2FA methods may not be available. Especially you will not be able to receive messages as Threema requires HTTPS for their callback.]]></phrase>
     <phrase title="option_threema_gateway_status_phpsdk_featurelevel" version_id="1" version_string="0.1.0"><![CDATA[(feature level: <b>{level}</b>)]]></phrase>
     <phrase title="option_threema_gateway_status_phpsdk_not_ready" version_id="1" version_string="0.1.0"><![CDATA[The PHP-SDK is not ready and cannot be used. You may need to check your setup.]]></phrase>
     <phrase title="option_threema_gateway_status_phpsdk_not_ready_yet" version_id="1" version_string="0.1.0"><![CDATA[The PHP-SDK is not ready yet and cannot be used. You may need to setup it first.]]></phrase>
