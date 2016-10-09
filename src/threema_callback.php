@@ -36,6 +36,8 @@ $receiver->initCallbackHandling(new Zend_Controller_Request_Http());
 $options = XenForo_Application::getOptions();
 /* @var bool */
 $debugMode = XenForo_Application::debugMode();
+// could use ThreemaGateway_Handler_Settings::isDebug() here, but that's not
+// really neccessary and does the same thing. We stay low-level here.
 
 $logExtra   = [];
 $logMessage = false;

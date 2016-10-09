@@ -5,7 +5,7 @@
  * Please do not use this directly. Better use
  * {@link ThreemaGateway_Handler_PhpSdk->getSettings()}. If you want to use the
  * settings before initiating the SDK, you can use this class before, but please
- * pass an instance of it to ThreemaGateway_Handler_PhpSdk in this case.
+ * pass an instance of it to {@link ThreemaGateway_Handler_PhpSdk} in this case.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -146,6 +146,19 @@ class ThreemaGateway_Handler_Settings
     public function isEndToEnd()
     {
         return ($this->xenOptions->threema_gateway_e2e == 'e2e');
+    }
+
+    /**
+     * Checks whether the Gateway is running in debug mode.
+     *
+     * You may use this to show scary messages to the admins ;-) or to
+     * conditionally disable functionality.
+     *
+     * @return bool
+     */
+    public function isDebug()
+    {
+        return ($this->xenOptions->threema_gateway_logreceivedmsgs['enabled'] && XenForo_Application::debugMode());
     }
 
     /**

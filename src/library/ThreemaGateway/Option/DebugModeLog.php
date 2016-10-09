@@ -31,10 +31,10 @@ class ThreemaGateway_Option_DebugModeLog
     {
         $preparedOption['option_value'] = self::correctOption($preparedOption['option_value']);
 
-        $options = XenForo_Application::getOptions();
+        $gwSettings = new ThreemaGateway_Handler_Settings();
 
         // hide option when disabled and debug mode is off (so that users are not confused)
-        if (!$options->threema_gateway_logreceivedmsgs['enabled'] && !XenForo_Application::debugMode()) {
+        if (!$gwSettings->isDebug()) {
             return XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal('threemagateway_option_list_option_hidden', $view, $fieldPrefix, $preparedOption, $canEdit);
         }
 
