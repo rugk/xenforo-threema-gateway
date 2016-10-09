@@ -58,7 +58,6 @@ class ThreemaGateway_Option_ReceiveCallback
      */
     public static function verifyOption(&$input, XenForo_DataWriter $dw, $fieldName)
     {
-        var_dump($input);
         // set default value
         if (empty($input)) {
             $input = self::generateDefault();
