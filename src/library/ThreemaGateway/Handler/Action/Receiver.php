@@ -178,7 +178,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         }
 
         /* @var XenForo_Options */
-        $options = XenForo_Application::getOptions();
+        $options   = XenForo_Application::getOptions();
         $rejectOld = false;
         if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
             $rejectOld = $options->threema_gateway_verify_receive_time['time'];
@@ -189,7 +189,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
 
         // discard too old messages
         if ($this->filtered['date'] < strtotime($rejectOld)) {
-            $errorString = [null, 'Message cannot be processed: Message is too old', 'Message cannot be processed'];
+            $errorString = [null, 'Message cannot be processed: Message is too old (send at ' . date('Y-m-d H:i:s', $this->filtered['date']) . ', messages older than ' . $rejectOld . ' are rejected)', 'Message cannot be processed'];
             return false;
         }
 
@@ -242,6 +242,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             $publicLog  = 'New message from ' . $this->filtered['from'] . $EOL . $EOL;
             $publicLog .= 'ID: ' . $receiveResult->getMessageId() . $EOL;
             $publicLog .= 'message.type: ' . $threemaMsg->getTypeCode() . ' (' . $threemaMsg . ')' . $EOL;
+            $publicLog .= 'message.date: ' . date('Y-m-d H:i:s', $this->filtered['date']) . $EOL;
             $debugLog = $publicLog;
             $publicLog .= '[...]' . $EOL;
 
