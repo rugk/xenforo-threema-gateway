@@ -87,7 +87,7 @@ class ThreemaGateway_Installer
             $userFieldWriter->save();
 
             // create tables for messages
-            /** @var ThreemaGateway_Installer_MessagesDb */
+            /* @var ThreemaGateway_Installer_MessagesDb */
             $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
             $messageDbInstaller->create();
         }
@@ -99,7 +99,7 @@ class ThreemaGateway_Installer
     public static function uninstall()
     {
         // remove message tables
-        /** @var ThreemaGateway_Installer_MessagesDb */
+        /* @var ThreemaGateway_Installer_MessagesDb */
         $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
         $messageDbInstaller->destroy();
 

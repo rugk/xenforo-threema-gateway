@@ -164,7 +164,7 @@ path</sub_options>
       <edit_format_params>ThreemaGateway_Option_DebugModeLog::renderOption</edit_format_params>
       <sub_options>enabled
 path</sub_options>
-      <relation group_id="threemagw" display_order="360"/>
+      <relation group_id="threemagw" display_order="380"/>
     </option>
     <option option_id="threema_gateway_privatekeyfile" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_PrivateKeyPath" validation_method="verifyOption">
       <default_value></default_value>
@@ -285,8 +285,8 @@ You may try to set this as high as possible. If you experience problems connecti
     <phrase title="option_threema_gateway_keystorefile_explain" version_id="1" version_string="0.1.0"><![CDATA[By default the database is used to store the public keys of Threema users. When enabling this option you can specify a php file to use. This file <b>must already exist</b>!
 Note that the file must be stored in <code>library/ThreemaGateway</code>, but you can use relative paths to change this location.]]></phrase>
     <phrase title="option_threema_gateway_logreceivedmsgs" version_id="1" version_string="0.1.0"><![CDATA[Log received messages (debug mode)]]></phrase>
-    <phrase title="option_threema_gateway_logreceivedmsgs_explain" version_id="1" version_string="0.1.0"><![CDATA[When activated this logs all received messages to a path you specify. The path must be relative to the XenForo root.<br>
-<b>Note:</b> Please only use this for temporarily for debugging purposes as it dumps secret information to disk (possibly including Gateway secrets) and shows them in the Threema callback.<br>
+    <phrase title="option_threema_gateway_logreceivedmsgs_explain" version_id="2" version_string="0.2.0"><![CDATA[When activated this logs all received messages to a path you specify. The path must be relative to the XenForo root.<br>
+<b>Note:</b> Please only use this for temporarily for debugging purposes as it dumps secret information to disk to your disk.<br>
 When the path is publicly accessible everyone can see every message!
 For security reasons this setting <b>is ignored</b> when XenForo is not running in debug mode.]]></phrase>
     <phrase title="option_threema_gateway_mode_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic mode]]></phrase>

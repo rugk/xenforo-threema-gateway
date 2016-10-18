@@ -34,21 +34,29 @@ $receiver->initCallbackHandling(new Zend_Controller_Request_Http());
 
 /* @var XenForo_Options */
 $options = XenForo_Application::getOptions();
-/* @var bool */
+/* @var bool whether XenForo is running in debug mode */
 $debugMode = XenForo_Application::debugMode();
 // could use ThreemaGateway_Handler_Settings::isDebug() here, but that's not
 // really neccessary and does the same thing. We stay low-level here.
 
-$logExtra   = [];
-$logMessage = false;
+$logExtra         = [];
+$logMessage       = false;
+$logMessagePublic = false;
 
 try {
-    if (!$receiver->validateRequest($logMessage)) {
+    if (!$receiver->validatePreConditions($logMessage)) {
         $logType = 'error';
 
-        $response->setHttpResponseCode(500);
-    } elseif (!$receiver->validatePreConditions($logMessage)) {
+        // 200 error code = ignore errors
+    } elseif (!$receiver->validateRequest($logMessage)) {
         $logType = 'error';
+
+        // on security error, let Gateway Server retry
+        $response->setHttpResponseCode(500);
+    } elseif (!$receiver->validateFormalities($logMessage)) {
+        $logType = 'error';
+
+        // 200 error code = ignore errors
     } else {
         $logType    = 'info';
         $logMessage = $receiver->processMessage(
@@ -57,17 +65,24 @@ try {
         );
     }
 
+    // split log message if neccessary
     if (is_array($logMessage)) {
-        $temp                       = $logMessage;
-        list($logType, $logMessage) = $temp;
+        $logTypeBackup                                 = $logType;
+        $temp                                          = $logMessage;
+        list($logType, $logMessage, $logMessagePublic) = $temp;
+
+        if (!$logType) {
+            $logType = $logTypeBackup;
+        }
     }
 } catch (Exception $e) {
     $response->setHttpResponseCode(500);
     XenForo_Error::logException($e);
 
-    $logType        = 'error';
-    $logMessage     = 'Exception: ' . $e->getMessage();
-    $logExtra['_e'] = $e;
+    $logType               = 'error';
+    $logMessage            = 'Exception: ' . $e->getMessage();
+    $logMessagePublic      = 'Message cannot be processed';
+    $logExtra['exception'] = $e;
 }
 
 // debug: write log file
@@ -78,8 +93,10 @@ if ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode) {
             throw new XenForo_Exception('Download dir ' . dirname($options->threema_gateway_logreceivedmsgs['path']) . ' cannot be accessed.');
         }
 
-        $logheader  = '[' . date('Y-m-d H:i:s') . ']' . PHP_EOL;
+        $logheader  = PHP_EOL;
+        $logheader .= '[' . date('Y-m-d H:i:s') . ']' . PHP_EOL;
         $logheader .= 'UA: ' . $_SERVER['HTTP_USER_AGENT'] . PHP_EOL;
+        $logheader .= 'time: ' . sprintf('%f', microtime(true) - $startTime) . 's' . PHP_EOL;
 
         $fhandle = fopen($options->threema_gateway_logreceivedmsgs['path'], 'a');
         fwrite($fhandle, $logheader . $logMessage . PHP_EOL);
@@ -91,6 +108,11 @@ if ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode) {
         XenForo_Error::logException($e);
         $logMessage .= PHP_EOL . ' Error when trying to write log file: ' . $e->getMessage();
     }
+}
+
+// hide details (which could be useful for an attacker) if neccessary
+if ($logMessagePublic) {
+    $logMessage = $logMessagePublic;
 }
 
 $response->setBody(htmlspecialchars($logMessage));

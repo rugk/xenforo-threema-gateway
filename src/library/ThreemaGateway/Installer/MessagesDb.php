@@ -26,7 +26,7 @@ class ThreemaGateway_Installer_MessagesDb
         $db = XenForo_Application::get('db');
 
         // set charset
-        $db->query("SET NAMES utf8mb4");
+        $db->query('SET NAMES utf8mb4');
 
         // main table
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages`

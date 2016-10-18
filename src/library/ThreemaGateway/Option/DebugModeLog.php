@@ -74,7 +74,7 @@ class ThreemaGateway_Option_DebugModeLog
         }
 
         // auto-remove existing file if disabled
-        if (!$option['enabled'] && file_exists($filepath['path'])) {
+        if (!$filepath['enabled'] && file_exists($filepath['path'])) {
             self::removeLog($filepath['path']);
         }
 
