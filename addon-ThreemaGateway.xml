@@ -361,7 +361,7 @@ It is useful that this value is a bit higher than the previous one, to give the 
     <phrase title="option_threema_gateway_usesource_explain" version_id="1" version_string="0.1.0"><![CDATA[Instead of using the .phar file this forces the add-on to use the source code of the PHP SDK. This is in most cases only useful for debugging.]]></phrase>
     <phrase title="option_threema_gateway_verify_receive_time" version_id="2" version_string="0.2.0"><![CDATA[Reject old messages when receiving]]></phrase>
     <phrase title="option_threema_gateway_verify_receive_time_explain" version_id="2" version_string="0.2.0"><![CDATA[When activated, this verifies the time, when messages are received, so old messages are rejected. The format of the date must be a valid one, which can be processed by <a href="https://secure.php.net/manual/function.strtotime.php" target="_blank"><code>strtotime</code></a>. The date must be a <a href="https://secure.php.net/manual/datetime.formats.relative.php" target="_blank">relative one</a>.
-A recommend value is 20 minutes (<code>-20 min</code>) as the Gateway server retries sending a message for a maximum of 15 minutes.
+The recommend minimum value is 20 minutes (<code>-20 min</code>) as the Gateway server retries sending a message for a maximum of 15 minutes. 5 minutes should be a minimum tolerance for server delays.
 <br>
 When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, as messages can never be older than 14 days as they are deleted from the Gateway server.]]></phrase>
     <phrase title="permission_group_threemagw" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
