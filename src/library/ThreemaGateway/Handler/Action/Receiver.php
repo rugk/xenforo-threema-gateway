@@ -8,8 +8,19 @@
  * @license MIT
  */
 
+use Threema\MsgApi\Messages;
+
 class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Action_Abstract
 {
+    /**
+     * @var string String parsable by strtotime(), which deteminates the oldest
+     *             message, which is being accepted.
+     *
+     * @todo Allow this value to be configured and make it less strict (default = maxmium = 14d)
+     * as this restriction is not recommend by Threema.
+     */
+    const AllowedDelay='-20 min'; // 3*5 min (retries of Gateway server) + 5min tolerance
+
     /**
      * @var XenForo_Input raw parameters
      */
@@ -117,9 +128,15 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      */
     public function validatePreConditions(&$errorString)
     {
-        // simple, formal validation
+        // simple, formal validation of Gateway ID
         if (!$this->getCryptTool()->stringCompare($this->filtered['to'], $this->settings->getId())) {
             $errorString = 'Invalid request';
+            return false;
+        }
+
+        // discard too old messages
+        if ($this->filtered['date'] < strtotime(self::AllowedDelay)) {
+            $errorString = 'Message is too old';
             return false;
         }
 
@@ -173,22 +190,22 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             $output .= 'message.type: ' . $threemaMsg->getTypeCode() . ' (' . $threemaMsg . ')' . $EOL;
             $output .= 'files: ' . implode('|', $receiveResult->getFiles()) . $EOL;
 
-            if ($threemaMsg instanceof Threema\MsgApi\Messages\TextMessage) {
+            if ($threemaMsg instanceof TextMessage) {
                 $output .= 'message.getText: ' . $threemaMsg->getText() . $EOL;
             }
-            if ($threemaMsg instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
+            if ($threemaMsg instanceof DeliveryReceipt) {
                 $output .= 'message.getReceiptType: ' . $threemaMsg->getReceiptType() . $EOL;
                 $output .= 'message.getReceiptTypeName: ' . $threemaMsg->getReceiptTypeName() . $EOL;
             }
-            if ($threemaMsg instanceof Threema\MsgApi\Messages\FileMessage) {
+            if ($threemaMsg instanceof FileMessage) {
                 $output .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $EOL;
-                $output .= 'message.receipttypename: ' . $threemaMsg->getEncryptionKey() . $EOL;
+                $output .= 'message.getEncryptionKey: ' . $threemaMsg->getEncryptionKey() . $EOL;
                 $output .= 'message.getFilename: ' . $threemaMsg->getFilename() . $EOL;
                 $output .= 'message.getMimeType: ' . $threemaMsg->getMimeType() . $EOL;
                 $output .= 'message.getSize: ' . $threemaMsg->getSize() . $EOL;
                 $output .= 'message.getThumbnailBlobId: ' . $threemaMsg->getThumbnailBlobId() . $EOL;
             }
-            if ($threemaMsg instanceof Threema\MsgApi\Messages\ImageMessage) {
+            if ($threemaMsg instanceof ImageMessage) {
                 $output .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $EOL;
                 $output .= 'message.getLength: ' . $threemaMsg->getLength() . $EOL;
                 $output .= 'message.getNonce: ' . $threemaMsg->getNonce() . $EOL;

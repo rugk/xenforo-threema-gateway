@@ -86,6 +86,12 @@ class ThreemaGateway_Installer
             $userFieldWriter->set('max_length', 8);
             $userFieldWriter->save();
         }
+
+        // create tables for messages
+        /** @var ThreemaGateway_Installer_MessagesDb */
+        $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
+        $messageDbInstaller->create();
+        // TODO: move into first install sec
     }
 
     /**
@@ -93,6 +99,11 @@ class ThreemaGateway_Installer
      */
     public static function uninstall()
     {
+        // remove message tables
+        /** @var ThreemaGateway_Installer_MessagesDb */
+        $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
+        $messageDbInstaller->destroy();
+
         /* @var array An array with the modells of all providers */
         $ProviderModells = self::getProviderModells();
 
@@ -119,6 +130,12 @@ class ThreemaGateway_Installer
             $userFieldWriter->setExistingData('threemaid');
             $userFieldWriter->delete();
         }
+
+        /* @var XenForo_Options */
+        $xenOptions = XenForo_Application::getOptions();
+
+        //delete debug log files
+        ThreemaGateway_Option_DebugModeLog::removeLog($xenOptions->threema_gateway_logreceivedmsgs['path']);
     }
 
     /**

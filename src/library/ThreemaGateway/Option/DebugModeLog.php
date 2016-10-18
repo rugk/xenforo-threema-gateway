@@ -65,7 +65,7 @@ class ThreemaGateway_Option_DebugModeLog
     {
         $filepath = self::correctOption($filepath);
 
-        // check path
+        // check path & (create) dir
         $dirpath     = dirname($filepath['path']);
         $absoluteDir = XenForo_Application::getInstance()->getRootDir() . '/' . $dirpath;
         if (!ThreemaGateway_Handler_Validation::checkDir($absoluteDir)) {
@@ -74,11 +74,28 @@ class ThreemaGateway_Option_DebugModeLog
         }
 
         // auto-remove existing file if disabled
-        if (!$filepath['enabled'] && file_exists($filepath['path'])) {
-            unlink(realpath($filepath['path']));
+        if (!$option['enabled'] && file_exists($filepath['path'])) {
+            self::removeLog($filepath['path']);
         }
 
         return true;
+    }
+
+    /**
+     * Remove the log file.
+     *
+     * Attention: This does not check whether it is good/useful to remove the
+     * file! Please do so before.
+     *
+     * @param string $filepath log file to remove
+     * @return bool
+     */
+    protected static function removeLog($filepath)
+    {
+        // to be sure check the path again
+        $filepath = self::correctOption($filepath);
+
+        return unlink(realpath($filepath));
     }
 
     /**

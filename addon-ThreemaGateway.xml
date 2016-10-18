@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="ThreemaGateway" title="Threema Gateway (2FA)" version_string="0.1.0" version_id="1" url="" install_callback_class="ThreemaGateway_Installer" install_callback_method="install" uninstall_callback_class="ThreemaGateway_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="ThreemaGateway" title="Threema Gateway (2FA)" version_string="0.2.0" version_id="2" url="" install_callback_class="ThreemaGateway_Installer" install_callback_method="install" uninstall_callback_class="ThreemaGateway_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions>
     <admin_permission admin_permission_id="threemagw_showcredits" display_order="620"/>

@@ -1,5 +1,3 @@
-Issue description:
-
 ## Steps to reproduce
 
 1.
@@ -7,7 +5,9 @@ Issue description:
 
 ### What happens:
 
+
 ### What should happen:
+
 
 ## Status
 
@@ -22,8 +22,9 @@ cURL version:
 ```
 Sodium version: x.y.z
 Version of Threema PHP SDK: x.y.z
+...
 ```
 
 <!--
-_Note:_ You can find more information on how to create issues in [the contributing guide](../CONTRIBUTING.md). If you only propose an enhancement and things like "steps to reproduce" do not matter in this case, you can of course `Ctrl+A` everything a delete it. :smiley:
+_Note:_ You can find more information on how to create issues in [the contributing guide](../CONTRIBUTING.md). If you only propose an enhancement and things like "steps to reproduce" do not matter in this case, you can of course `Ctrl+A` everything and delete it. :smiley:
 -->
