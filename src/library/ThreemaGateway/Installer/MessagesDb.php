@@ -61,7 +61,7 @@ class ThreemaGateway_Installer_MessagesDb
             (`message_id` CHAR(16) NOT NULL,
             `receipt_type` TINYINT(3) UNSIGNED,
             PRIMARY KEY (`message_id`),
-            FOREIGN KEY (`message_id`) REFERENCES AA_test_messages(`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
 
         // file message
@@ -71,16 +71,15 @@ class ThreemaGateway_Installer_MessagesDb
             `file_name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
             `mime_type` VARCHAR(255),
             PRIMARY KEY (`message_id`),
-            FOREIGN KEY (`message_id`) REFERENCES AA_test_messages(`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
 
         // image message
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_image`
-            CREATE TABLE `AA_test_messages_image`
             (`message_id` CHAR(16) NOT NULL,
             `file_size` INT(10) UNSIGNED,
             PRIMARY KEY (`message_id`),
-            FOREIGN KEY (`message_id`) REFERENCES AA_test_messages(`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
     }
 
@@ -90,11 +89,11 @@ class ThreemaGateway_Installer_MessagesDb
     public function destroy()
     {
         $db = XenForo_Application::get('db');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages`');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_files`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_delivery`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_file`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_image`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_text`');
+        $db->query('DROP TABLE `' . self::DbTablePrefix . '_files`');
+        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages`');
     }
 }

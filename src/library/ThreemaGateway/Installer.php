@@ -85,13 +85,12 @@ class ThreemaGateway_Installer
             $userFieldWriter->set('match_callback_method', 'verifyThreemaId');
             $userFieldWriter->set('max_length', 8);
             $userFieldWriter->save();
-        }
 
-        // create tables for messages
-        /** @var ThreemaGateway_Installer_MessagesDb */
-        $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
-        $messageDbInstaller->create();
-        // TODO: move into first install sec
+            // create tables for messages
+            /** @var ThreemaGateway_Installer_MessagesDb */
+            $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
+            $messageDbInstaller->create();
+        }
     }
 
     /**
