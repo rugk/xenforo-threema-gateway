@@ -248,6 +248,16 @@ userfield</sub_options>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="220"/>
     </option>
+    <option option_id="threema_gateway_verify_receive_time" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_VerifyReceiveTime" validation_method="verifyOption">
+      <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"time";s:0:"";}</default_value>
+      <edit_format_params>onoff=enabled
+value=time
+type=textbox
+placeholder=-14 days</edit_format_params>
+      <sub_options>enabled
+time</sub_options>
+      <relation group_id="threemagw" display_order="330"/>
+    </option>
   </optiongroups>
   <permissions>
     <permission_groups>
@@ -349,6 +359,11 @@ It is useful that this value is a bit higher than the previous one, to give the 
     <phrase title="option_threema_gateway_userfield_verifyexist_explain" version_id="1" version_string="0.1.0"><![CDATA[When this option is deactivated only the format of the Threema ID is verified. If it is activated the Threema server is also queried to check whether the ID really exists.]]></phrase>
     <phrase title="option_threema_gateway_usesource" version_id="1" version_string="0.1.0"><![CDATA[Use source code of PHP SDK]]></phrase>
     <phrase title="option_threema_gateway_usesource_explain" version_id="1" version_string="0.1.0"><![CDATA[Instead of using the .phar file this forces the add-on to use the source code of the PHP SDK. This is in most cases only useful for debugging.]]></phrase>
+    <phrase title="option_threema_gateway_verify_receive_time" version_id="2" version_string="0.2.0"><![CDATA[Reject old messages when receiving]]></phrase>
+    <phrase title="option_threema_gateway_verify_receive_time_explain" version_id="2" version_string="0.2.0"><![CDATA[When activated, this verifies the time, when messages are received, so old messages are rejected. The format of the date must be a valid one, which can be processed by <a href="https://secure.php.net/manual/function.strtotime.php" target="_blank"><code>strtotime</code></a>. The date must be a <a href="https://secure.php.net/manual/datetime.formats.relative.php" target="_blank">relative one</a>.
+A recommend value is 20 minutes (<code>-20 min</code>) as the Gateway server retries sending a message for a maximum of 15 minutes.
+<br>
+When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, as messages can never be older than 14 days as they are deleted from the Gateway server.]]></phrase>
     <phrase title="permission_group_threemagw" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
     <phrase title="permission_interface_threemagw" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
     <phrase title="permission_threemagw_fetch" version_id="1" version_string="0.1.0"><![CDATA[Fetch public key (based on ID)]]></phrase>
@@ -399,6 +414,7 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_fetching_publickey_failed" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
     <phrase title="threemagw_getting_credits_failed" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
     <phrase title="threemagw_invalid_debuglogpath" version_id="1" version_string="0.1.0"><![CDATA[The path of the message debug log file is invalid. Please check your permissions.]]></phrase>
+    <phrase title="threemagw_invalid_discard_old_date" version_id="2" version_string="0.2.0"><![CDATA[The date given for discarding old messages is invalid.]]></phrase>
     <phrase title="threemagw_invalid_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[The directory cannot be used. Please check the directory and it's permissions.]]></phrase>
     <phrase title="threemagw_invalid_httpshardening_option" version_id="1" version_string="0.1.0"><![CDATA[The HTTPS hardening option is invalid.]]></phrase>
     <phrase title="threemagw_invalid_keystorepath" version_id="1" version_string="0.1.0"><![CDATA[The path to the PHP keystore file is invalid.]]></phrase>

@@ -11,15 +11,6 @@
 class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Action_Abstract
 {
     /**
-     * @var string String parsable by strtotime(), which determinates the oldest
-     *             message, which is being accepted.
-     *
-     * @todo Allow this value to be configured and make it less strict (default = maxmium = 14d)
-     * as this restriction is not recommend by Threema.
-     */
-    const AllowedDelay = '-20 min'; // 3*5 min (retries of Gateway server) + 5min tolerance
-
-    /**
      * @var XenForo_Input raw parameters
      */
     protected $input;
@@ -186,10 +177,20 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             return false;
         }
 
+        /* @var XenForo_Options */
+        $options = XenForo_Application::getOptions();
+        $rejectOld = false;
+        if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
+            $rejectOld = $options->threema_gateway_verify_receive_time['time'];
+        } else {
+            // fallback to 14 days
+            $rejectOld = '-14 days';
+        }
+
         // discard too old messages
-        if ($this->filtered['date'] < strtotime(self::AllowedDelay)) {
+        if ($this->filtered['date'] < strtotime($rejectOld)) {
             $errorString = [null, 'Message cannot be processed: Message is too old', 'Message cannot be processed'];
-            // return false;
+            return false;
         }
 
         return true;

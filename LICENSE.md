@@ -10,9 +10,6 @@ Third party software used:
 
 software                    | copyright                       | license
 :-------------------------- | :------------------------------ | :--------------------------------------
-[threema-msgapi-sdk-php](1) | Copyright (c) 2015 Threema GmbH | license file in corresponding directory
-
-[test](id)
+[threema-msgapi-sdk-php](1) | Copyright (c) Threema GmbH | MIT license, license file in corresponding directory
 
 [1]: https://github.com/threema-ch/threema-msgapi-sdk-php
-[id]: https://example.com
