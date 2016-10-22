@@ -128,6 +128,12 @@
   <optiongroups>
     <group group_id="threemagw" display_order="1" debug_only="0"/>
     <group group_id="threemagw_tfa" display_order="2" debug_only="0"/>
+    <option option_id="threema_gateway_allow_get_receive" edit_format="callback" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params>ThreemaGateway_Option_AllowGet::renderOption</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="370"/>
+    </option>
     <option option_id="threema_gateway_downloadpath" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_DownloadPath" validation_method="verifyOption">
       <default_value>internal_data/threemagateway/recfiles</default_value>
       <edit_format_params>placeholder=internal_data/threemagateway/recfiles</edit_format_params>
@@ -164,7 +170,7 @@ path</sub_options>
       <edit_format_params>ThreemaGateway_Option_DebugModeLog::renderOption</edit_format_params>
       <sub_options>enabled
 path</sub_options>
-      <relation group_id="threemagw" display_order="380"/>
+      <relation group_id="threemagw" display_order="360"/>
     </option>
     <option option_id="threema_gateway_privatekeyfile" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_PrivateKeyPath" validation_method="verifyOption">
       <default_value></default_value>
@@ -281,6 +287,8 @@ time</sub_options>
     <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank">Threema Gateway</a>.]]></phrase>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
     <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the two-factor-authentication modes of the Threema Gateway. Please note that the general Threema Gateway settings must be configured before.]]></phrase>
+    <phrase title="option_threema_gateway_allow_get_receive" version_id="2" version_string="0.2.0"><![CDATA[Allow GET requests when receiving messages (debug mode)]]></phrase>
+    <phrase title="option_threema_gateway_allow_get_receive_explain" version_id="2" version_string="0.2.0"><![CDATA[Usually the Gateway server only sends data via POST request. This option also allows GET requests, which may be useful for debugging.]]></phrase>
     <phrase title="option_threema_gateway_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[Download path for files]]></phrase>
     <phrase title="option_threema_gateway_downloadpath_explain" version_id="1" version_string="0.1.0"><![CDATA[This is the path where files send to your ID should be saved (in decrypted form!). When no path is given the files are not downloaded (not recommend!). The path must be relative to the XenForo root.]]></phrase>
     <phrase title="option_threema_gateway_e2e" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
@@ -296,7 +304,7 @@ You may try to set this as high as possible. If you experience problems connecti
 Note that the file must be stored in <code>library/ThreemaGateway</code>, but you can use relative paths to change this location.]]></phrase>
     <phrase title="option_threema_gateway_logreceivedmsgs" version_id="1" version_string="0.1.0"><![CDATA[Log received messages (debug mode)]]></phrase>
     <phrase title="option_threema_gateway_logreceivedmsgs_explain" version_id="2" version_string="0.2.0"><![CDATA[When activated this logs all received messages to a path you specify. The path must be relative to the XenForo root.<br>
-<b>Note:</b> Please only use this for temporarily for debugging purposes as it dumps secret information to disk to your disk.<br>
+<b>Note:</b> Please only use this for temporarily for debugging purposes as it dumps secret information to your disk.<br>
 When the path is publicly accessible everyone can see every message!
 For security reasons this setting <b>is ignored</b> when XenForo is not running in debug mode.]]></phrase>
     <phrase title="option_threema_gateway_mode_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic mode]]></phrase>
@@ -316,8 +324,8 @@ It has been randomly generated at the installation of this add-on. You can regen
     <phrase title="option_threema_gateway_status_credits_recharge" version_id="1" version_string="0.1.0"><![CDATA[(<a href="https://gateway.threema.ch/en/load" target="_blank">recharge</a>)]]></phrase>
     <phrase title="option_threema_gateway_status_custom_gwserver_error" version_id="1" version_string="0.1.0"><![CDATA[Gateway Server error: ]]></phrase>
     <phrase title="option_threema_gateway_status_custom_phpsdk_error" version_id="1" version_string="0.1.0"><![CDATA[Error in PHP-SDK: ]]></phrase>
-    <phrase title="option_threema_gateway_status_debug_mode_active" version_id="1" version_string="0.1.0"><![CDATA[The debug mode is currently enabled, which means some or all messages are logged into a text file! You should <a href="#_threema_gateway_logreceivedmsgs">disable this below</a> after you finished debugging.]]></phrase>
-    <phrase title="option_threema_gateway_status_debug_mode_potentially_active" version_id="1" version_string="0.1.0"><![CDATA[The debug mode of this add-on is currently enabled, which means some or all messages may be logged when you enable XenForo's debug mode! If this is not intentional, please <a href="#_threema_gateway_logreceivedmsgs">disable this mode below</a>.]]></phrase>
+    <phrase title="option_threema_gateway_status_debug_mode_active" version_id="2" version_string="0.2.0"><![CDATA[The debug mode is currently enabled, which means some or all messages are logged into a text file or other advanced settings are activated! You should <a href="#_threema_gateway_logreceivedmsgs">disable this below</a> after you finished debugging.]]></phrase>
+    <phrase title="option_threema_gateway_status_debug_mode_potentially_active" version_id="2" version_string="0.2.0"><![CDATA[The debug mode of this add-on is currently enabled, which means some or all messages may be logged when you enable XenForo's debug mode or other advanced settings are activated! If this is not intentional, please <a href="#_threema_gateway_logreceivedmsgs">disable this mode below</a>.]]></phrase>
     <phrase title="option_threema_gateway_status_error" version_id="1" version_string="0.1"><![CDATA[You have some errors in your configuration. Until you resolve them it will not be possible to use this addon properly.]]></phrase>
     <phrase title="option_threema_gateway_status_explain" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
     <phrase title="option_threema_gateway_status_libsodiumphp_outdated" version_id="1" version_string="0.1.0"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium-php (at least v1.0.1).]]></phrase>

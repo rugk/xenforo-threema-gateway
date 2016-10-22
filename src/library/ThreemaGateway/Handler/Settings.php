@@ -158,7 +158,9 @@ class ThreemaGateway_Handler_Settings
      */
     public function isDebug()
     {
-        return ($this->xenOptions->threema_gateway_logreceivedmsgs['enabled'] && XenForo_Application::debugMode());
+        return (($this->xenOptions->threema_gateway_logreceivedmsgs['enabled'] ||
+            $this->xenOptions->threema_gateway_allow_get_receive) &&
+            XenForo_Application::debugMode());
     }
 
     /**

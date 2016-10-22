@@ -29,37 +29,37 @@ $deps = new XenForo_Dependencies_Public();
 $deps->preLoadData();
 
 $response = new Zend_Controller_Response_Http();
-$receiver = new ThreemaGateway_Handler_Action_Receiver();
-$receiver->initCallbackHandling(new Zend_Controller_Request_Http());
+$callback = new ThreemaGateway_Handler_Action_Callback();
+$callback->initCallbackHandling(new Zend_Controller_Request_Http());
 
 /* @var XenForo_Options */
 $options = XenForo_Application::getOptions();
 /* @var bool whether XenForo is running in debug mode */
 $debugMode = XenForo_Application::debugMode();
-// could use ThreemaGateway_Handler_Settings::isDebug() here, but that's not
-// really neccessary and does the same thing. We stay low-level here.
+// could use ThreemaGateway_Handler_Settings->isDebug() here, but that would
+// not be good here as we really only need the RAW debug mode setting.
 
 $logExtra         = [];
 $logMessage       = false;
 $logMessagePublic = false;
 
 try {
-    if (!$receiver->validatePreConditions($logMessage)) {
+    if (!$callback->validatePreConditions($logMessage)) {
         $logType = 'error';
 
         // 200 error code = ignore errors
-    } elseif (!$receiver->validateRequest($logMessage)) {
+    } elseif (!$callback->validateRequest($logMessage)) {
         $logType = 'error';
 
         // on security error, let Gateway Server retry
         $response->setHttpResponseCode(500);
-    } elseif (!$receiver->validateFormalities($logMessage)) {
+    } elseif (!$callback->validateFormalities($logMessage)) {
         $logType = 'error';
 
         // 200 error code = ignore errors
     } else {
         $logType    = 'info';
-        $logMessage = $receiver->processMessage(
+        $logMessage = $callback->processMessage(
             $options->threema_gateway_downloadpath,
             ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode)
         );
@@ -68,8 +68,8 @@ try {
     // split log message if neccessary
     if (is_array($logMessage)) {
         $logTypeBackup                                 = $logType;
-        $temp                                          = $logMessage;
-        list($logType, $logMessage, $logMessagePublic) = $temp;
+        $logMessageBackup                              = $logMessage;
+        list($logType, $logMessage, $logMessagePublic) = $logMessageBackup;
 
         if (!$logType) {
             $logType = $logTypeBackup;
@@ -88,13 +88,8 @@ try {
 // debug: write log file
 if ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode) {
     try {
-        // check & create dir
-        if (!ThreemaGateway_Handler_Validation::checkDir(dirname($options->threema_gateway_logreceivedmsgs['path']))) {
-            throw new XenForo_Exception('Download dir ' . dirname($options->threema_gateway_logreceivedmsgs['path']) . ' cannot be accessed.');
-        }
-
         $logheader  = PHP_EOL;
-        $logheader .= '[' . date('Y-m-d H:i:s') . ']' . PHP_EOL;
+        $logheader .= '[' . date('Y-m-d H:i:s', XenForo_Application::$time) . ']' . PHP_EOL;
         $logheader .= 'UA: ' . $_SERVER['HTTP_USER_AGENT'] . PHP_EOL;
         $logheader .= 'time: ' . sprintf('%f', microtime(true) - $startTime) . 's' . PHP_EOL;
 
@@ -106,15 +101,17 @@ if ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode) {
         fclose($fhandle);
     } catch (Exception $e) {
         XenForo_Error::logException($e);
-        $logMessage .= PHP_EOL . ' Error when trying to write log file: ' . $e->getMessage();
+        $logMessage .= PHP_EOL . 'Error when trying to write log file: ' . $e->getMessage();
+        $logMessagePublic .= PHP_EOL . 'Error when trying to write log file.';
     }
 }
 
-// hide details (which could be useful for an attacker) if neccessary
-if ($logMessagePublic) {
-    $logMessage = $logMessagePublic;
+// only show details (which could be useful for an attacker) if no public-only
+// information is available
+if (!is_string($logMessagePublic)) {
+    $logMessagePublic = $logMessage;
 }
 
-$response->setBody(htmlspecialchars($logMessage));
+$response->setBody(htmlspecialchars($logMessagePublic));
 $response->setHeader('Content-type', 'text/plain');
 $response->sendResponse();

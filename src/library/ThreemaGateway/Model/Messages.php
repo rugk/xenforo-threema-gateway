@@ -11,9 +11,9 @@
 class ThreemaGateway_Model_Messages extends XenForo_Model
 {
     /**
-     * @var string database table name
+     * @var string database table (prefix) for messages
      */
-    const DbTable = 'xf_threemagw_messages';
+    const DbTableMessages = 'xf_threemagw_messages';
 
     /**
      * Initialises the model..

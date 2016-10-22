@@ -1,6 +1,6 @@
 <?php
 /**
- * Private key path option.
+ * Debug mode log option.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -18,7 +18,7 @@ class ThreemaGateway_Option_DebugModeLog
     /**
      * Renders the debug mode log setting.
      *
-     * Basically it just hides the setting if the debug mode of XenFOro is disabled.
+     * Basically it just hides the setting if the debug mode of XenForo is disabled.
      *
      * @param XenForo_View $view           View object
      * @param string       $fieldPrefix    Prefix for the HTML form field name
@@ -34,7 +34,7 @@ class ThreemaGateway_Option_DebugModeLog
         $gwSettings = new ThreemaGateway_Handler_Settings();
 
         // hide option when disabled and debug mode is off (so that users are not confused)
-        if (!$gwSettings->isDebug()) {
+        if (!$gwSettings->isDebug() && !$preparedOption['option_value']['enabled']) {
             return XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal('threemagateway_option_list_option_hidden', $view, $fieldPrefix, $preparedOption, $canEdit);
         }
 
@@ -85,7 +85,7 @@ class ThreemaGateway_Option_DebugModeLog
      * Remove the log file.
      *
      * Attention: This does not check whether it is good/useful to remove the
-     * file! Please do so before.
+     * file! Please do so before or just catch all exceptions.
      *
      * @param string $filepath log file to remove
      * @return bool

@@ -31,19 +31,20 @@ class ThreemaGateway_Installer_MessagesDb
         // main table
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages`
             (`message_id` CHAR(16),
-            `message_type_code` CHAR(64) NOT NULL COMMENT \'determinates type of message\',
-            `sender_treema_id` CHAR(8) NOT NULL,
-            `date_send` DATETIME NOT NULL COMMENT \'the date/time delivered by the Gateway server\',
-            `date_received` DATETIME NOT NULL COMMENT \'the date/time when msg was received by this server\',
+            `message_type_code` TINYINT UNSIGNED NOT NULL COMMENT \'determinates type of message\',
+            `sender_threema_id` CHAR(8) NOT NULL,
+            `date_send` INT UNSIGNED NOT NULL COMMENT \'the date/time delivered by the Gateway server stored as unix timestamp\',
+            `date_received` INT UNSIGNED NOT NULL COMMENT \'the date/time when msg was received by this server stored as unix timestamp\',
             PRIMARY KEY (`message_id`)
             )');
 
         // files associated with messages
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_files`
-            (`file_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+            (`file_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
             `message_id` CHAR(16) NOT NULL,
-            `file_path` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-            `is_saved` BOOLEAN DEFAULT true,
+            `file_path` VARCHAR(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+            `file_type` VARCHAR(100) NOT NULL,
+            `is_saved` BOOLEAN NOT NULL DEFAULT true,
             PRIMARY KEY (`file_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
@@ -51,7 +52,7 @@ class ThreemaGateway_Installer_MessagesDb
         // text messages
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_text`
             (`message_id` CHAR(16) NOT NULL,
-            `text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+            `text` TEXT NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
             PRIMARY KEY (`message_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
@@ -59,7 +60,7 @@ class ThreemaGateway_Installer_MessagesDb
         // delivery receipt
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_delivery_receipt`
             (`message_id` CHAR(16) NOT NULL,
-            `receipt_type` TINYINT(3) UNSIGNED,
+            `receipt_type` TINYINT NOT NULL UNSIGNED,
             PRIMARY KEY (`message_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
@@ -67,9 +68,9 @@ class ThreemaGateway_Installer_MessagesDb
         // file message
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_file`
             (`message_id` CHAR(16) NOT NULL,
-            `file_size` INT(10) UNSIGNED,
-            `file_name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-            `mime_type` VARCHAR(255),
+            `file_size` INT NOT NULL UNSIGNED,
+            `file_name` VARCHAR(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+            `mime_type` VARCHAR(255) NOT NULL,
             PRIMARY KEY (`message_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
@@ -77,7 +78,7 @@ class ThreemaGateway_Installer_MessagesDb
         // image message
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_image`
             (`message_id` CHAR(16) NOT NULL,
-            `file_size` INT(10) UNSIGNED,
+            `file_size` INT NOT NULL UNSIGNED,
             PRIMARY KEY (`message_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');

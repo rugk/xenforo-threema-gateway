@@ -132,10 +132,10 @@ class ThreemaGateway_Option_Status
             }
         }
 
-        /* @var XenForo_Options */
-        $options = XenForo_Application::getOptions();
+        /* @var ThreemaGateway_Handler_Settings */
+        $settings = new ThreemaGateway_Handler_Settings;
 
-        if ($options->threema_gateway_logreceivedmsgs['enabled']) {
+        if ($settings->isDebug()) {
             if (XenForo_Application::debugMode()) {
                 $additionalerrors[] = [
                     'text' => new XenForo_Phrase('option_threema_gateway_status_debug_mode_active'),

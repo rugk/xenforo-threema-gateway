@@ -1,6 +1,6 @@
 <?php
 /**
- * Private key path option.
+ * Download path option.
  *
  * @package ThreemaGateway
  * @author rugk

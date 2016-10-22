@@ -1,6 +1,6 @@
 <?php
 /**
- * Private key path option.
+ * Receive callback option/display for admins to copy link.
  *
  * @package ThreemaGateway
  * @author rugk

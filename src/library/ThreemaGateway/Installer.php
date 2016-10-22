@@ -122,7 +122,7 @@ class ThreemaGateway_Installer
         $permissionsInstaller->deleteAll();
 
         // delete custom user field (if it exists)
-        $userFieldModel = new XenForo_Model_UserField;
+        $userFieldModel = XenForo_Model::create('XenForo_Model_UserField');
         if ($userFieldModel->getUserFieldById('threemaid')) {
             /** @var XenForo_DataWriter $userFieldWriter  */
             $userFieldWriter = XenForo_DataWriter::create('XenForo_DataWriter_UserField');

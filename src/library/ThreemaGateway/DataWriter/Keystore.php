@@ -21,6 +21,7 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
     /**
      * Gets the fields that are defined for the table. See parent for explanation.
      *
+     * @see XenForo_DataWriter::_getFields()
      * @return array
      */
     protected function _getFields()
@@ -49,11 +50,11 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
      *
      * @param mixed
      * @see XenForo_DataWriter::_getExistingData()
-     * @return array|false
+     * @return array
      */
     protected function _getExistingData($data)
     {
-        return false;
+        return [];
     }
 
     /**
@@ -78,26 +79,5 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
     protected function _getKeystoreModel()
     {
         return $this->getModelFromCache('ThreemaGateway_Model_Keystore');
-    }
-
-    /**
-     * Save a public key.
-     *
-     * @deprecated No longer used as real DataWriter is used instead.
-     *             Removed in stable.
-     * @param  string    $threemaId
-     * @param  string    $publicKey
-     * @throws Exception
-     * @return bool
-     */
-    public function savePublicKey($threemaId, $publicKey)
-    {
-        $db = $this->_getDb();
-        $db->query('INSERT IGNORE INTO `' . self::DbTable . '`
-                  (`threemaid`, `publickey`)
-                  VALUES (?, ?)',
-                  [$threemaId, $publicKey]);
-
-        return true;
     }
 }

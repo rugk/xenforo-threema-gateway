@@ -52,7 +52,7 @@ class ThreemaGateway_Installer_TfaProvider
     public function add($activated = true)
     {
         $db = XenForo_Application::get('db');
-        $db->query('INSERT INTO `xf_tfa_provider`
+        $db->query('INSERT ' . (XenForo_Application::get('options')->enableInsertDelayed ? 'DELAYED' : '') . ' INTO `xf_tfa_provider`
                   (`provider_id`, `provider_class`, `priority`, `active`)
                   VALUES (?, ?, ?, ?)',
                   [$this->TfaId, $this->TfaClass, $this->TfaPriority, (int) $activated]);
