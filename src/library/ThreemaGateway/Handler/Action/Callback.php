@@ -21,6 +21,11 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     const DbTableFiles = 'xf_threemagw_files';
 
     /**
+     * @var string database table for acknowledged messages
+     */
+    const DbTableAckMsgs = 'xf_threemagw_ackmsgs';
+
+    /**
      * @var XenForo_Input raw parameters
      */
     protected $input;
@@ -294,6 +299,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         if ($threemaMsg instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
             $debugLog .= 'message.getReceiptType: ' . $threemaMsg->getReceiptType() . $EOL;
             $debugLog .= 'message.getReceiptTypeName: ' . $threemaMsg->getReceiptTypeName() . $EOL;
+            $debugLog .= 'message.getAckedMessageIds: ' . implode('|', $this->bin2hexArray($threemaMsg->getAckedMessageIds())) . $EOL;
         }
         if ($threemaMsg instanceof Threema\MsgApi\Messages\FileMessage) {
             $debugLog .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $EOL;
@@ -306,7 +312,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         if ($threemaMsg instanceof Threema\MsgApi\Messages\ImageMessage) {
             $debugLog .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $EOL;
             $debugLog .= 'message.getLength: ' . $threemaMsg->getLength() . $EOL;
-            $debugLog .= 'message.getNonce: ' . $threemaMsg->getNonce() . $EOL;
+            $debugLog .= 'message.getNonce: ' . $this->bin2hex($threemaMsg->getNonce()) . $EOL;
         }
 
         return [null, $debugLog, $publicLog];
@@ -332,18 +338,32 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         // $dataWriter->set('date_received', XenForo_Application::$time); //= default
 
         // files
-        if (count($receiveResult->getFiles()) == 1) {
-            $dataWriter->set('message_id', $receiveResult->getMessageId(), self::DbTableFiles);
-            $dataWriter->set('file_type', key($receiveResult->getFiles()), self::DbTableFiles);
-            $dataWriter->set('file_path', $this->normalizeFilePath(current($receiveResult->getFiles())), self::DbTableFiles);
+        if (count($receiveResult->getFiles()) >= 1) {
+            $fileList = $receiveResult->getFiles();
+            // set current (first) type/path
+            $dataWriter->set('file_type', key($fileList), self::DbTableFiles);
+            $dataWriter->set('file_path', $this->normalizeFilePath(current($fileList)), self::DbTableFiles);
+            // remove current value from array
+            unset($fileList[key($fileList)]);
+            // pass as extra data for later saving
+            $dataWriter->setExtraData(ThreemaGateway_DataWriter_Messages::DataFiles, $fileList);
         }
-        // if there are more than one file, we'll handle this later (TODO!!)
 
         // set values for each message type
         if ($threemaMsg instanceof Threema\MsgApi\Messages\TextMessage) {
             $dataWriter->set('text', $threemaMsg->getText(), self::DbTableMessages . '_text');
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
             $dataWriter->set('receipt_type', $threemaMsg->getReceiptType(), self::DbTableMessages . '_delivery_receipt');
+
+            $ackedMsgIds = $this->bin2hexArray($threemaMsg->getAckedMessageIds());
+            if (count($ackedMsgIds) >= 1) {
+                // set current (first) type/path
+                $dataWriter->set('ack_message_id', $ackedMsgIds[0], self::DbTableAckMsgs);
+                // remove current value from array
+                unset($ackedMsgIds[0]);
+                // pass as extra data for later saving
+                $dataWriter->setExtraData(ThreemaGateway_DataWriter_Messages::DataAckedMsgIds, $ackedMsgIds);
+            }
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\FileMessage) {
             $dataWriter->set('file_size', $threemaMsg->getSize(), self::DbTableMessages . '_file');
             $dataWriter->set('file_name', $threemaMsg->getFilename(), self::DbTableMessages . '_file');
@@ -359,11 +379,39 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      * Normalizes the file path to be
      *
      * @param string $filepath
-     *
+     * @todo Move this somewhere else, so it can be used in the data writer too.
      * @return string
      */
     protected function normalizeFilePath($filepath)
     {
         return basename($filepath);
+    }
+
+    /**
+     * Converts binary data to hex.
+     *
+     * @param string $bin binary string
+     *
+     * @return string
+     */
+    protected function bin2hex($bin)
+    {
+        return Threema\MsgApi\Tools\CryptTool::getInstance()->bin2hex($bin);
+    }
+
+    /**
+     * Converts binary data in an array to hex.
+     *
+     * @param array $bin binary array
+     *
+     * @return array
+     */
+    protected function bin2hexArray($bin)
+    {
+        $output = [];
+		foreach ($bin as $item) {
+			$output[] = $this->bin2hex($item);
+		}
+        return  $output;
     }
 }

@@ -36,7 +36,7 @@ var ReceiveCallback = (function (window, document) {
     }
 
     /**
-     * setOrgData - Sets the value of the input fgield the user can see.
+     * setOrgData - Sets the value of the input field the user can see.
      *
      * @private
      * @param  {string} data The data to set.
@@ -81,7 +81,8 @@ var ReceiveCallback = (function (window, document) {
     };
 
     /**
-     * update - Stop propagation of event.
+     * update - Update the output field (and, if neccessary, also the output
+     * field)
      *
      * @param {object} event jQuery event
      */

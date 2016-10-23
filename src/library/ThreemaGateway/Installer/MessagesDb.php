@@ -42,17 +42,17 @@ class ThreemaGateway_Installer_MessagesDb
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_files`
             (`file_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
             `message_id` CHAR(16) NOT NULL,
-            `file_path` VARCHAR(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+            `file_path` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
             `file_type` VARCHAR(100) NOT NULL,
             `is_saved` BOOLEAN NOT NULL DEFAULT true,
             PRIMARY KEY (`file_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
-            )');
+            ) COMMENT=\'Stores files associated with messages.\'');
 
         // text messages
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_text`
             (`message_id` CHAR(16) NOT NULL,
-            `text` TEXT NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+            `text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
             PRIMARY KEY (`message_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
@@ -60,16 +60,15 @@ class ThreemaGateway_Installer_MessagesDb
         // delivery receipt
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_delivery_receipt`
             (`message_id` CHAR(16) NOT NULL,
-            `receipt_type` TINYINT NOT NULL UNSIGNED,
-            PRIMARY KEY (`message_id`),
-            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
+            `receipt_type` TINYINT UNSIGNED NOT NULL,
+            PRIMARY KEY (`message_id`)
             )');
 
         // file message
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_file`
             (`message_id` CHAR(16) NOT NULL,
-            `file_size` INT NOT NULL UNSIGNED,
-            `file_name` VARCHAR(255) NOT NULL CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+            `file_size` INT UNSIGNED NOT NULL,
+            `file_name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
             `mime_type` VARCHAR(255) NOT NULL,
             PRIMARY KEY (`message_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
@@ -78,10 +77,19 @@ class ThreemaGateway_Installer_MessagesDb
         // image message
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_image`
             (`message_id` CHAR(16) NOT NULL,
-            `file_size` INT NOT NULL UNSIGNED,
+            `file_size` INT UNSIGNED NOT NULL,
             PRIMARY KEY (`message_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
+
+        // acknowledged messages associated with delivery receipt messages
+        $db->query('CREATE TABLE `' . self::DbTablePrefix . '_ackmsgs`
+            (`ack_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            `message_id` CHAR(16) NOT NULL COMMENT \'the id of the delivery receipt message, which acknowledges other messages\',
+            `ack_message_id` CHAR(16) NOT NULL COMMENT \'the id of the message, which has been acknowledged \',
+            PRIMARY KEY(`ack_id`),
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
+            ) COMMENT=\'Stores acknowledged message IDs.\'');
     }
 
     /**
@@ -90,8 +98,9 @@ class ThreemaGateway_Installer_MessagesDb
     public function destroy()
     {
         $db = XenForo_Application::get('db');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_delivery`');
+        $db->query('DROP TABLE `' . self::DbTablePrefix . '_ackmsgs`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_file`');
+        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_delivery_receipt`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_image`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_text`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_files`');

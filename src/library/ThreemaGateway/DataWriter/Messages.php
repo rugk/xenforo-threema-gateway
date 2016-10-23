@@ -21,6 +21,21 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     const DbTableFiles = 'xf_threemagw_files';
 
     /**
+     * @var string database table for acknowledged messages
+     */
+    const DbTableAckMsgs = 'xf_threemagw_ackmsgs';
+
+    /**
+     * @var string extra data - files
+     */
+    const DataFiles = 'files';
+
+    /**
+     * @var string extra data - acknowledged message IDs
+     */
+    const DataAckedMsgIds = 'ack_message_id';
+
+    /**
      * Gets the fields that are defined for the table. See parent for explanation.
      *
      * @see XenForo_DataWriter::_getFields()
@@ -37,8 +52,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 ],
                 'message_type_code' => [
                     'type' => self::TYPE_UINT,
-                    'required'  => true,
-                    'maxLength' => 10
+                    'required'  => true
                 ],
                 'sender_threema_id' => [
                     'type' => self::TYPE_STRING,
@@ -58,7 +72,6 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
             self::DbTableFiles => [
                 'file_id' => [
                     'type' => self::TYPE_UINT,
-                    'maxLength' => 10,
                     'autoIncrement' => true
                 ],
                 'message_id' => [
@@ -83,6 +96,22 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'default' => true
                 ]
             ],
+            self::DbTableAckMsgs => [
+                'ack_id' => [
+                    'type' => self::TYPE_UINT,
+                    'autoIncrement' => true
+                ],
+                'message_id' => [
+                    'type' => self::TYPE_STRING,
+                    'required'  => true,
+                    'maxLength' => 16
+                ],
+                'ack_message_id' => [
+                    'type' => self::TYPE_STRING,
+                    'required'  => true,
+                    'maxLength' => 16
+                ]
+            ],
             self::DbTableMessages . '_delivery_receipt' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
@@ -91,8 +120,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 ],
                 'receipt_type' => [
                     'type' => self::TYPE_UINT,
-                    'required'  => true,
-                    'maxLength' => 3
+                    'required'  => true
                 ]
             ],
             self::DbTableMessages . '_file' => [
@@ -103,8 +131,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 ],
                 'file_size' => [
                     'type' => self::TYPE_UINT,
-                    'required'  => true,
-                    'maxLength' => 10
+                    'required'  => true
                 ],
                 'file_name' => [
                     'type' => self::TYPE_STRING,
@@ -125,8 +152,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 ],
                 'file_size' => [
                     'type' => self::TYPE_UINT,
-                    'required'  => true,
-                    'maxLength' => 10
+                    'required'  => true
                 ]
             ],
             self::DbTableMessages . '_text' => [
@@ -173,7 +199,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     }
 
     /**
-     * Removes tables, which should not be touched.
+     * Pre-save: Removes tables, which should not be touched.
      *
      * The function searches for invalid tables and removes them from the query.
      * This is neccessary as a message can only be an instance of one message
@@ -204,6 +230,64 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         $this->_db->query('SET NAMES utf8mb4');
 
         return '';
+    }
+
+    /**
+     * Post-save: Add additional data supplied as extra data.
+     *
+     * This function writes the missing datasets into the files and the
+     * acknowleged messages table.
+     *
+     * @see XenForo_DataWriter::_postSave()
+     */
+    protected function _postSave()
+    {
+        // get data
+        $allFiles = $this->getExtraData(self::DataFiles);
+        $ackedMsgIds = $this->getExtraData(self::DataAckedMsgIds);
+
+        // add additional data
+        if ($allFiles) {
+            foreach ($allFiles as $fileType => $filePath) {
+                // get table keys
+                $tableFields = $this->_getFields()[self::DbTableFiles];
+                // remove keys, which are automatically set
+                unset($tableFields['file_id']);  // (auto increment)
+                unset($tableFields['is_saved']); // (default value=1)
+                // we do only care about the keys
+                $tableKeys = array_keys($tableFields);
+
+                // create insert query for this item
+                $this->_db->query('INSERT INTO `' .  self::DbTableFiles . '`
+                    ( `' . implode('`, `',  $tableKeys) . '`)
+                    VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
+                    [
+                        $this->get('message_id'), //message_id
+                        basename($filePath), //file_path //TODO: Use common normalizeFilePath func. here!
+                        $fileType, //file_type
+                    ]);
+            }
+        }
+
+        if ($ackedMsgIds) {
+            foreach ($ackedMsgIds as $ackedMessageId) {
+                // get table keys
+                $tableFields = $this->_getFields()[self::DbTableAckMsgs];
+                // remove key(s), which are automatically set
+                unset($tableFields['ack_id']); // (auto increment)
+                // we do only care about the keys
+                $tableKeys = array_keys($tableFields);
+
+                // create insert query for this item
+                $this->_db->query('INSERT INTO `' .  self::DbTableAckMsgs . '`
+                    ( `' . implode('`, `',  $tableKeys) . '`)
+                    VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
+                    [
+                        $this->get('message_id'), //message_id
+                        $ackedMessageId, //ack_message_id
+                    ]);
+            }
+        }
     }
 
     /**
