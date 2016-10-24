@@ -31,10 +31,8 @@ class ThreemaGateway_Option_DebugModeLog
     {
         $preparedOption['option_value'] = self::correctOption($preparedOption['option_value']);
 
-        $gwSettings = new ThreemaGateway_Handler_Settings();
-
         // hide option when disabled and debug mode is off (so that users are not confused)
-        if (!$gwSettings->isDebug() && !$preparedOption['option_value']['enabled']) {
+        if (!XenForo_Application::debugMode() && !$preparedOption['option_value']['enabled']) {
             return XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal('threemagateway_option_list_option_hidden', $view, $fieldPrefix, $preparedOption, $canEdit);
         }
 
@@ -75,7 +73,7 @@ class ThreemaGateway_Option_DebugModeLog
 
         // auto-remove existing file if disabled
         if (!$filepath['enabled'] && file_exists($filepath['path'])) {
-            self::removeLog($filepath['path']);
+            self::removeLog($filepath);
         }
 
         return true;
@@ -87,7 +85,7 @@ class ThreemaGateway_Option_DebugModeLog
      * Attention: This does not check whether it is good/useful to remove the
      * file! Please do so before or just catch all exceptions.
      *
-     * @param string $filepath log file to remove
+     * @param array $filepath option setting
      * @return bool
      */
     protected static function removeLog($filepath)
@@ -95,7 +93,7 @@ class ThreemaGateway_Option_DebugModeLog
         // to be sure check the path again
         $filepath = self::correctOption($filepath);
 
-        return unlink(realpath($filepath));
+        return unlink(realpath($filepath['path']));
     }
 
     /**

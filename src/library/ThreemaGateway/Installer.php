@@ -134,7 +134,7 @@ class ThreemaGateway_Installer
         $xenOptions = XenForo_Application::getOptions();
 
         //delete debug log files
-        ThreemaGateway_Option_DebugModeLog::removeLog($xenOptions->threema_gateway_logreceivedmsgs['path']);
+        ThreemaGateway_Option_DebugModeLog::removeLog($xenOptions->threema_gateway_logreceivedmsgs);
     }
 
     /**

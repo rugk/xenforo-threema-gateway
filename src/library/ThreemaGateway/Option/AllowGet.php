@@ -24,10 +24,8 @@ class ThreemaGateway_Option_AllowGet
      */
     public static function renderOption(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
-        $gwSettings = new ThreemaGateway_Handler_Settings();
-
         // hide option when disabled and debug mode is off (so that users are not confused)
-        if (!$gwSettings->isDebug() && !$preparedOption['option_value']) {
+        if (!XenForo_Application::debugMode() && !$preparedOption['option_value']) {
             return XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal('threemagateway_option_list_option_hidden', $view, $fieldPrefix, $preparedOption, $canEdit);
         }
 
