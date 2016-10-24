@@ -1,6 +1,6 @@
 <?php
 /**
- * Common constants of Add-on.
+ * Common constants of add-on.
  *
  * @package ThreemaGateway
  * @author rugk

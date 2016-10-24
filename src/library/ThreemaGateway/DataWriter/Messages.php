@@ -44,7 +44,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     protected function _getFields()
     {
         return [
-            self::DbTableMessages => [
+            ThreemaGateway_Model_Messages::DbTableMessages => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -69,7 +69,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'default' => XenForo_Application::$time
                 ]
             ],
-            self::DbTableFiles => [
+            ThreemaGateway_Model_Messages::DbTableFiles => [
                 'file_id' => [
                     'type' => self::TYPE_UINT,
                     'autoIncrement' => true
@@ -96,7 +96,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'default' => true
                 ]
             ],
-            self::DbTableAckMsgs => [
+            ThreemaGateway_Model_Messages::DbTableAckMsgs => [
                 'ack_id' => [
                     'type' => self::TYPE_UINT,
                     'autoIncrement' => true
@@ -112,7 +112,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'maxLength' => 16
                 ]
             ],
-            self::DbTableMessages . '_delivery_receipt' => [
+            ThreemaGateway_Model_Messages::DbTableMessages . '_delivery_receipt' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -123,7 +123,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'required'  => true
                 ]
             ],
-            self::DbTableMessages . '_file' => [
+            ThreemaGateway_Model_Messages::DbTableMessages . '_file' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -144,7 +144,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'maxLength' => 255
                 ]
             ],
-            self::DbTableMessages . '_image' => [
+            ThreemaGateway_Model_Messages::DbTableMessages . '_image' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -155,7 +155,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'required'  => true
                 ]
             ],
-            self::DbTableMessages . '_text' => [
+            ThreemaGateway_Model_Messages::DbTableMessages . '_text' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -250,7 +250,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         if ($allFiles) {
             foreach ($allFiles as $fileType => $filePath) {
                 // get table keys
-                $tableFields = $this->_getFields()[self::DbTableFiles];
+                $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableFiles];
                 // remove keys, which are automatically set
                 unset($tableFields['file_id']);  // (auto increment)
                 unset($tableFields['is_saved']); // (default value=1)
@@ -258,7 +258,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 $tableKeys = array_keys($tableFields);
 
                 // create insert query for this item
-                $this->_db->query('INSERT INTO `' .  self::DbTableFiles . '`
+                $this->_db->query('INSERT INTO `' .  ThreemaGateway_Model_Messages::DbTableFiles . '`
                     ( `' . implode('`, `',  $tableKeys) . '`)
                     VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
                     [
@@ -272,14 +272,14 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         if ($ackedMsgIds) {
             foreach ($ackedMsgIds as $ackedMessageId) {
                 // get table keys
-                $tableFields = $this->_getFields()[self::DbTableAckMsgs];
+                $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableAckMsgs];
                 // remove key(s), which are automatically set
                 unset($tableFields['ack_id']); // (auto increment)
                 // we do only care about the keys
                 $tableKeys = array_keys($tableFields);
 
                 // create insert query for this item
-                $this->_db->query('INSERT INTO `' .  self::DbTableAckMsgs . '`
+                $this->_db->query('INSERT INTO `' .  ThreemaGateway_Model_Messages::DbTableAckMsgs . '`
                     ( `' . implode('`, `',  $tableKeys) . '`)
                     VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
                     [

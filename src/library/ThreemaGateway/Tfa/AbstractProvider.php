@@ -295,7 +295,6 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         return $threemaId;
     }
 
-
     /**
      * Returns the PHP SDK object.
      *

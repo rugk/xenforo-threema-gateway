@@ -14,11 +14,6 @@
 class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
 {
     /**
-     * @var string database table name
-     */
-    const DbTable = 'xf_threemagw_keystore';
-
-    /**
      * Gets the fields that are defined for the table. See parent for explanation.
      *
      * @see XenForo_DataWriter::_getFields()
@@ -27,7 +22,7 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
     protected function _getFields()
     {
         return [
-            self::DbTable => [
+            ThreemaGateway_Model_Keystore::DbTable => [
                 'threemaid' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,

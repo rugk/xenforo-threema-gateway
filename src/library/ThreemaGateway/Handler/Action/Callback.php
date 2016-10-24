@@ -264,6 +264,10 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             throw $e;
         }
 
+        // delete decrypted data from memory
+        $this->getCryptTool()->removeVar($receiveResult);
+        $this->getCryptTool()->removeVar($threemaMsg);
+
         return $output;
     }
 
