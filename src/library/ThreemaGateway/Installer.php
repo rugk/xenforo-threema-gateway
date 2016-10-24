@@ -14,25 +14,6 @@
 class ThreemaGateway_Installer
 {
     /**
-     * Returns the provider models needed for modifying the database.
-     *
-     * @return array
-     */
-    public static function getProviderModells()
-    {
-        /* @var array An array with the modells of all providers */
-        $ProviderModels = [];
-
-        // add provider
-        $ProviderModels['conventional'] = new ThreemaGateway_Installer_TfaProvider(
-            ThreemaGateway_Constants::TfaIDprefix . 'conventional',
-            'ThreemaGateway_Tfa_Conventional',
-            ThreemaGateway_Constants::TfaBasePriority - 5);
-
-        return $ProviderModels;
-    }
-
-    /**
      * At the installation this will check the XenForo version and
      * add the 2FA provider to the table.
      *
@@ -138,6 +119,25 @@ class ThreemaGateway_Installer
     }
 
     /**
+     * Returns the provider models needed for modifying the database.
+     *
+     * @return array
+     */
+    protected static function getProviderModells()
+    {
+        /* @var array An array with the models of all providers */
+        $ProviderModels = [];
+
+        // add provider
+        $ProviderModels['conventional'] = new ThreemaGateway_Installer_TfaProvider(
+            ThreemaGateway_Constants::TfaIDprefix . 'conventional',
+            'ThreemaGateway_Tfa_Conventional',
+            ThreemaGateway_Constants::TfaBasePriority - 5);
+
+        return $ProviderModels;
+    }
+
+    /**
      * At the installation this will check the XenForo version and
      * remove the 2FA provider to the table.
      *
@@ -145,7 +145,7 @@ class ThreemaGateway_Installer
      *                       when an error occurs
      * @return bool
      */
-    public static function meetsRequirements(&$error)
+    protected static function meetsRequirements(&$error)
     {
         // check XenForo version
         if (XenForo_Application::$versionId < 1050051) {
@@ -156,6 +156,12 @@ class ThreemaGateway_Installer
         // check PHP version
         if (version_compare(PHP_VERSION, '5.4', '<')) {
             $error = 'Threema Gateway requires PHP version 5.4 or higher. Current version: ' . PHP_VERSION;
+            return false;
+        }
+
+        // check MySql version
+        if (mysqli_get_server_version() < 50503) { //require v5.5.3
+            $error = 'Threema Gateway requires MySQL version 5.5.3 or higher. Current version: ' . mysqli_get_server_info();
             return false;
         }
 
