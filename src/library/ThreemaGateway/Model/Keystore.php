@@ -16,10 +16,12 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
     const DbTable = 'xf_threemagw_keystore';
 
     /**
-     * Find public key. Returns null if the public key is not found in the store.
+     * Find public key. Returns false if the public key is not found in the
+     * store.
      *
      * @param  string      $threemaId
-     * @return null|string
+     *
+     * @return false|string
      */
     public function findPublicKey($threemaId)
     {
@@ -32,6 +34,6 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
             return (string) $result['publickey'];
         }
 
-        return null;
+        return false;
     }
 }

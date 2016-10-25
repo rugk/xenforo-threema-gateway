@@ -43,6 +43,19 @@ $logExtra         = [];
 $logMessage       = false;
 $logMessagePublic = false;
 
+/* test */
+header('Content-type: text/plain');
+$model = new ThreemaGateway_Model_Messages;
+$model->preQuery();
+// txt: ebabee3cb79e586b
+// img: 5559672441898bc3
+var_dump(
+    $model->getMessageData('5559672441898bc3')
+);
+exit;
+
+/* test end */
+
 try {
     if (!$callback->validatePreConditions($logMessage)) {
         $logType = 'error';
