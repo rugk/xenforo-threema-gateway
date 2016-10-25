@@ -106,7 +106,6 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                 break;
 
             case self::TypeCode_FileMessage:
-                //TODO: Investigate nicer array.
                 $result = $this->_getDb()->fetchAll('
                     SELECT filemessage.*, filelist.*
                     FROM `' . self::DbTableMessages . '_file` AS `filemessage`
@@ -121,13 +120,12 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                 }
 
                 $output = $this->pushArrayKeys($metaData, $result, [
-                    'message_id' => '',
-                    'file_name' => '',
-                    'mime_type' => '',
-                    'file_size' => ''
+                    'message_id',
+                    'file_name',
+                    'mime_type',
+                    'file_size'
                 ]);
                 $output['files'] = $result;
-
                 break;
 
             case self::TypeCode_ImageMessage:
@@ -217,32 +215,27 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * the first base array.
      * The subarray must be indexed by integers, where each index contains an
      * associative array with the keys to remove.
+     * It does not validate the data and assumes that the 0-index of $subArray
+     * there, including the data, whcih should be pushed to $baseArray.
      *
      * @param array $baseArray the main array, where the key/value pairs get to
      * @param array $subArray the array, which keys should be removed
-     * @param array $removeKeys the keys & values, which should be removed
+     * @param array $removeKeys an array of keys, which should be removed
      *
      * @return array
      */
     protected function pushArrayKeys(&$baseArray, &$subArray, $removeKeys)
     {
-        // split sub array from base array
         foreach ($removeKeys as $key) {
+            // move value from subarray to base array
             $baseArray[$key] = $subArray[0][$key];
-            $baseArray['mime_type'] = $subArray[0]['mime_type'];
-            $baseArray['file_size'] = $subArray[0]['file_size'];
 
-            // then delete from file list
-            for ($i=0; $i < count($result); $i++) {
-                $output['files'][$i] = array_diff_key($result[$i], [
-                    'message_id' => '',
-                    'file_name' => '',
-                    'mime_type' => '',
-                    'file_size' => ''
-                ]);
+            // then delete from sub array
+            for ($i=0; $i < count($subArray); $i++) {
+                unset($subArray[$i][$key]);
             }
         }
 
-        return $output;
+        return $baseArray;
     }
 }
