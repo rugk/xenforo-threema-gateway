@@ -31,7 +31,7 @@ class ThreemaGateway_Installer_MessagesDb
         // main table
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages`
             (`message_id` CHAR(16),
-            `message_type_code` TINYINT UNSIGNED NOT NULL COMMENT \'determinates type of message\',
+            `message_type_code` ENUM(' . $this->getMsgTypes() . ') NOT NULL COMMENT \'determinates type of message\',
             `sender_threema_id` CHAR(8) NOT NULL,
             `date_send` INT UNSIGNED NOT NULL COMMENT \'the date/time delivered by the Gateway server stored as unix timestamp\',
             `date_received` INT UNSIGNED NOT NULL COMMENT \'the date/time when msg was received by this server stored as unix timestamp\',
@@ -89,6 +89,7 @@ class ThreemaGateway_Installer_MessagesDb
             `ack_message_id` CHAR(16) NOT NULL COMMENT \'the id of the message, which has been acknowledged \',
             PRIMARY KEY(`ack_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
+            ADD INDEX(`ack_message_id`)
             ) COMMENT=\'Stores acknowledged message IDs.\'');
     }
 
@@ -105,5 +106,16 @@ class ThreemaGateway_Installer_MessagesDb
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_text`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_files`');
         $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages`');
+    }
+
+    /**
+     * Returns a string of all available message types.
+     *
+     * @return string
+     */
+    protected function getMsgTypes()
+    {
+        $receiver = new ThreemaGateway_Handler_Action_Receiver;
+        return implode(', ', $receiver->getTypeCodeArray());
     }
 }

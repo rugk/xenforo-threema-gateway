@@ -42,7 +42,7 @@ class ThreemaGateway_Handler_Permissions
      * Use {@link getInstance()} instead.
      *
      * @throws XenForo_Exception
-     * @return void
+     * @return true
      */
     private function __construct()
     {
@@ -61,7 +61,7 @@ class ThreemaGateway_Handler_Permissions
      * SDK startup as a Singleton.
      *
      * @throws XenForo_Exception
-     * @return void
+     * @return ThreemaGateway_Handler_Permissions
      */
     public static function getInstance()
     {
