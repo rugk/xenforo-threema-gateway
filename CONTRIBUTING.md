@@ -71,7 +71,7 @@ Additionally there some other rules:
 - When adding an regular expression add a link to a sample/test set on https://regex101.com/ in the comments. When modifying the RegExp edit this test set and update the link.
 
 ### MySQL
-* Always use prepared statements.
+* Always use prepared statements if possible.
 
 ### XenForo
 * Intend templates correctly with tabs.

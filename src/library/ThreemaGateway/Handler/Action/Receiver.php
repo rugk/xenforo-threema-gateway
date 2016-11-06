@@ -362,6 +362,8 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * ID could be inserted again into the database and would therefore be
      * considered a new message, which has just been received altghough it
      * actually had been received two times.
+     * However the message ID alone does not reveal any data (as all data &
+     * meta data, even including the message type is deleted).
      *
      * @param string $messageId
      */
