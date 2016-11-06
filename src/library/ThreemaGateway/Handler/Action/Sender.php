@@ -97,17 +97,4 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
             return $this->sendSimple($threemaId, $message);
         }
     }
-
-    /**
-     * Get status of a message, which has previously been sent.
-     *
-     * @param string $messageId The id you got when sending the message.
-     *
-     * @throws XenForo_Exception
-     * @return ???
-     */
-    public function getStatus($messageId)
-    {
-        // TODO
-    }
 }

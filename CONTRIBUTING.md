@@ -2,7 +2,7 @@
 It's great you want to contribute to this project. You can do this in many ways, so keep on reading. :smiley: :tada:
 
 ## Bug reporting (Issues)
-If you experience any issues you can use the [GitHubs Issue Tracker]() to report these. Please  include the following details:
+If you experience any issues you can use the [GitHubs Issue Tracker](issues) to report these. Please  include the following details:
 - Operation system
 - PHP version
 - XenForo version
@@ -10,6 +10,7 @@ If you experience any issues you can use the [GitHubs Issue Tracker]() to report
 - whether you installed libsodium and if so:
   - which version of libsodium you installed
 - cURL version if relevant (if you experience connection/sending errors)
+- any settings, which may influence the issue you have
 
 An issue template will be shown when you create a new issue in this repo.
 
@@ -40,7 +41,7 @@ Use the **[PHP Coding Style Fixer](http://cs.sensiolabs.org/)** to clean up your
 
 Additionally there some other rules:
 - Use **PHPdoc**
-- Do **not require** a **higher PHP version** as described in the current [system requirements]() without prior discussion this. Actually I think the current required PHP version is already quite high, so you should be able to use most of the nice features of recent PHP versions.
+- Do **not require** a **higher PHP version** as described in the current [system requirements](./README.md#Requirements) without prior discussion this. Actually I think the current required PHP version is already quite high, so you should be able to use most of the nice features of recent PHP versions.
 - **Test your changes!** (except when you only edit the documentation)
 - use **camelCase** for variable and function names
 - start any new file like this:
@@ -70,7 +71,7 @@ Additionally there some other rules:
 - When adding an regular expression add a link to a sample/test set on https://regex101.com/ in the comments. When modifying the RegExp edit this test set and update the link.
 
 ### MySQL
-* Use prepared statements.
+* Always use prepared statements.
 
 ### XenForo
 * Intend templates correctly with tabs.

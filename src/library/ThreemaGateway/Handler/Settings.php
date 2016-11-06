@@ -136,7 +136,7 @@ class ThreemaGateway_Handler_Settings
     }
 
     /**
-     * Checks whether sending uses end-to-end mode.
+     * Checks whether sending uses the end-to-end encrypted mode.
      *
      * Note: When E2E mode is not used it is also not possible to receive
      * messages.
@@ -198,7 +198,8 @@ class ThreemaGateway_Handler_Settings
     }
 
     /**
-     * Checks and proces private key. Throws an exception if something is wrong.
+     * Checks and processes the private key. Throws an exception if something
+     * is wrong.
      *
      * @throws XenForo_Exception
      */

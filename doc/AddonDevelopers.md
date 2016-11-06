@@ -47,3 +47,4 @@ However if you want to use the message model here are the basic steps you should
 Notes:
 *   For performance reasons `getAllMessageData` does one query for each message type of the messages, which is determinated by the meta data you have to pass to it. That's why it is always recommend to limit the amount of different message types you query. In the best case you already know the message type and can use `getMessageDataByType`.
 *   Note that `setMessageId` may need a table prefix as the second parameter unless you only query the meta data via `getMessageMetaData`. What prefix to use (`message` or `metamessage`) depends on your query data. As a rule of thumb `metamessage` is good as long as your query includes the meta data.
+* The Handler `ThreemaGateway_Handler_Action_Receiver` can also serve as a good example  on how to query the message model. So if you want to do so, you may have a look at it.

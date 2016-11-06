@@ -2,7 +2,7 @@
 /**
  * Allows one to query received Threema messages and to delete them.
  *
- * This class is basically a wrapper around the different Models used for
+ * This class is basically a wrapper around the message model used for
  * querying the messages and tries to make it easier to access them.
  *
  * @package ThreemaGateway
@@ -24,12 +24,24 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     protected $groupByMessageType = false;
 
     /**
+     * Startup.
+     *
+     * @param bool $alreadyPrepared If the Message Model is already prepared you
+     *                              may set this to true.
+     */
+    public function __construct($alreadyPrepared = false)
+    {
+        parent::__construct();
+        $this->isPrepared = $alreadyPrepared;
+    }
+
+    /**
      * Sets whether the result should be grouped by the message type.
      *
      * The option is ignored when you specify the message type in a function
      * as grouping in this case would not make any sense.
      *
-     * @param  bool     $groupByMessageType
+     * @param  bool       $groupByMessageType
      * @return null|array
      */
     public function groupByMessageType($groupByMessageType)
@@ -108,9 +120,12 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     /**
      * Returns the message data for a particular message ID.
      *
-     * @param  string $messageId
-     * @param  string $messageType If you know the message type it is very much
-     *                             recommend to specify it here.
+     * Note that when the database is corrupt and e.g. for a message some
+     * datasets are missing, thsi will return null.
+     *
+     * @param  string     $messageId
+     * @param  string     $messageType If you know the message type it is very much
+     *                                 recommend to specify it here.
      * @return null|array
      */
     public function getMessageData($messageId, $messageType = null)
@@ -130,40 +145,181 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     }
 
     /**
-     * Returns the list of all files .
+     * Returns the list of all files.
+     *
+     * Grouping this result ({@see groupByMessageType()}) is not supported.
+     * Note that the result is still the usual array of all other message
+     * queries here.
+     * Note: When passing a message ID please avoid using other parameters as
+     * it may produce errors. When you have a message ID it is also not
+     * really neccessary to specify other conditions.
      *
      * @param  string     $threemaId filter by Threema ID (optional)
      * @param  string     $mimeType  Filter by mime type (optional).
+     * @param  string     $fileType  The file type, e.g. thumbnail/file or image (optional).
+     *                               This is a Threema-internal type and may not
+     *                               be particular useful.
      * @param  string     $messageId If you know the message ID you can skip
-     *                               the previous steps and just use this one
-     *                               to get all data.
+     *                               the previous paeameters and just use this
+     *                               one to get all data.
+     * @param  bool   $queryMetaData Set to false, to prevent querying for meta
+     *                              data, which might speed up the query. (default: true)
      * @return null|array
      */
-    public function getFileList($mimeType = null, $threemaId = null, $messageId = null)
+    public function getFileList($mimeType = null, $fileType = null, $threemaId = null, $messageId = null, $queryMetaData = true)
     {
-        // TODO: implement
+        $this->initiate();
+        $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
+
+        // determinate, which message types may be affected
+        $messageType = null;
+        if ($mimeType !== null &&
+            $mimeType !== 'image/jpeg') {
+            // we can skip the image table as it is impossible that image files
+            // would be returned in this query
+            $messageType = ThreemaGateway_Model_Messages::TypeCode_FileMessage;
+
+            // and we can already set the mime type as a condition
+            $model->injectFetchOption('where', 'message.mime_type = ?', true);
+            $model->injectFetchOption('params', $mimeType, true);
+        }
+
+        // set options
+        if ($messageType) {
+            $model->setTypeCode($messageType);
+        }
+        if ($threemaId) {
+            $model->setSenderId($threemaId);
+        }
+
+        if ($fileType) {
+            $model->injectFetchOption('where', 'filelist.file_type = ?', true);
+            $model->injectFetchOption('params', $fileType, true);
+        }
+
+        // reset grouping as it cannot be processed
+        $this->groupByMessageType = false;
+
+        // a message id overtrumps them all :)
+        if ($messageId) {
+            $model->setMessageId($messageId, 'metamessage');
+            // direct query
+            $result = $this->execute($model, $messageType);
+        } else {
+            if ($messageType) {
+                // this can only be done when the mime type is set to something
+                // different than image/jpeg, as now all images are already
+                // excluded
+                $result = $model->getMessageDataByType($messageType, true);
+            } else {
+                // It's more complex if we want to query image & file messages
+                // together, as the mime type includes image files.
+                //
+                // Forunately this problem can be solved by just querying each
+                // message type individually. This does also only do 2 queries,
+                // which is even less than if we would use getAllMessageData, as
+                // there we need 3 queries: metadata + msg type 1 + msg type 2.
+                // As we know the possible message types this is possible. In
+                // all other ways one must query the metadata and filter or split
+                // it accordingly, to later execute the queries.
+
+                // first we query the image files
+                // (without mime type setting as images can only have one
+                // message type anyway)
+                $images = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TypeCode_ImageMessage, true);
+
+                // now set the MIME type if there is one
+                if ($mimeType) {
+                    $model->injectFetchOption('where', 'message.mime_type = ?', true);
+                    $model->injectFetchOption('params', $mimeType, true);
+                }
+
+                // and now query all other files
+                $files = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TypeCode_FileMessage, true);
+                $model->resetFetchOptions();
+
+                // handle empty queries transparently
+                if (!$images) {
+                    $images = [];
+                }
+                if (!$files) {
+                    $files = [];
+                }
+                // and combine results
+                $result = array_merge($images, $files);
+            }
+        }
+
+        return $result;
     }
 
     /**
      * Returns the current state of a particular message.
      *
+     * Only the state of *send* messages can be queried.
+     * Note: In contrast to most other methods here, this already returns the
+     * message/delivery state as an integer.
+     *
      * @param  string     $messageSentId The ID of message, which has been send to a user
-     * @return null|array
+     * @return null|int
      */
     public function getMessageState($messageSentId)
     {
-        // TODO: implement
+        $this->initiate();
+
+        // reset grouping as it cannot be processed
+        $this->groupByMessageType = false;
+
+        $result = $this->getMessageStateHistory($messageSentId, false, 1);
+        if (!$result) {
+            return null;
+        }
+
+        // dig into array
+        $result = reset($result)['ackmsgs'];
+
+        // as theoretically one delivery message could include multiple
+        // delivery receipts we formally have to walk through the result
+        $deliveryReceipt = 0;
+        foreach ($result as $i => $content) {
+            if ($content['receipt_type'] > $deliveryReceipt) {
+                $deliveryReceipt = $content['receipt_type'];
+            }
+        }
+
+        // finally return the state integer
+        return $deliveryReceipt;
     }
 
     /**
      * Returns the history of all state changes of a particular message.
      *
+     * Only the state of *send* messages can be queried.
+     * The result is already ordered from the not so important state to the most
+     * important one.
+     *
      * @param  string     $messageSentId The ID of message, which has been send to a user
+     * @param  bool       $getMetaData   Set to false, to speed up the query by not
+     *                                   asking for meta data (when the state was received etc).
+     *                                  (default: false)
+     * @param int   $limitQuery         When set, only the last x states are returned.
      * @return null|array
      */
-    public function getMessageStateHistory($messageSentId)
+    public function getMessageStateHistory($messageSentId, $getMetaData = true, $limitQuery = null)
     {
-        // TODO: implement
+        $this->initiate();
+        $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
+
+        $model->injectFetchOption('where', 'ack_messages.ack_message_id = ?', true);
+        $model->injectFetchOption('params', $messageSentId, true);
+
+        $model->setOrder('delivery_state', 'desc');
+
+        if ($limitQuery) {
+            $model->setResultLimit($limitQuery);
+        }
+
+        return $model->getMessageDataByType(ThreemaGateway_Model_Messages::TypeCode_DeliveryMessage, $getMetaData);
     }
 
     /**
@@ -205,7 +361,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * Queries the meta data and the main data of the messages itself.
      *
      * @param ThreemaGateway_Model_Messages $model
-     * @param int $messageType The type of the message (optional)
+     * @param int                           $messageType The type of the message (optional)
      */
     protected function execute($model, $messageType = null)
     {
@@ -228,7 +384,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     /**
      * Replace usual wildcards (?, *) with the ones used by MySQL (%, _).
      *
-     * @param string $string The string to replace
+     * @param  string $string The string to replace
      * @return string
      */
     protected function replaceWildcards($string)

@@ -65,6 +65,7 @@ class ThreemaGateway_Installer_MessagesDb
             (`message_id` CHAR(16) NOT NULL,
             `receipt_type` TINYINT UNSIGNED NOT NULL,
             PRIMARY KEY (`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
             )');
 
         // file message

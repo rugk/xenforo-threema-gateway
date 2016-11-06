@@ -46,16 +46,17 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     const TypeCode_TextMessage = 0x01;
 
     /**
-     * @var int constant for type code
+     * @var array constant for type code
      */
     const OrderChoice = [
         'id' => 'message_id',
         'date_send' => 'date_send',
         'date_received' => 'date_received',
+        'delivery_state' => 'message.receipt_type',
     ];
 
     /**
-     * @var array[string] data used when querying
+     * @var array data used when querying
      */
     protected $fetchOptions = [
         'where' => [],
@@ -278,7 +279,6 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                 if (array_key_exists('message_id', $mergedArrays)) {
                     unset($mergedArrays['message_id']);
                 }
-
 
                 // save as output
                 if ($groupByMessageType) {
@@ -555,7 +555,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * Groups an array by using the value of a specific index in it.
      *
      * @param array      $array       the array, which is sued as the base
-     * @param string|int $index       the value of the key, which should be used
+     * @param string|int $indexKey    the value of the key, which should be used
      *                                for indexing
      * @param bool       $ignoreIndex Set to true to ignore multiple values in
      *                                $array. If activated only the last key of
@@ -566,7 +566,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      *
      * @return array
      */
-    protected function groupArray($array, $indexKey, $ignoreIndex = false)
+    public function groupArray($array, $indexKey, $ignoreIndex = false)
     {
         $output = [];
         foreach ($array as $i => $value) {
