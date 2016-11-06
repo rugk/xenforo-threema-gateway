@@ -27,8 +27,23 @@ You may also consider checking `ThreemaGateway_Handler_Settings->isEndToEnd()` f
 ### Emoticons
 
 The only handler you may want to call before sending a message is the [`Emoji`](../Handler/Emoji.php) handler. It allows you to add, respectively convert, all the smilies used in Threema. An example implementation of this can be found in the traditional 2FA method (see [`ThreemaGateway_Tfa_AbstractProvider->sendMessage()`](../Tfa/AbstractProvider.php).
+Smileys of received messages are stored as-is, which means they are stored as UTF-8-enocoded as Unicode smileys.
 
 ## Helpers
 
 The template helpers are also considered an "API" according to "Semantic Versioning". You can find them in the "Helper" dir. There also the name is mentioned you can use to access it in a template. They are available globally and obviously you can use them both in templates and in PHP files.  
 Currently there are helpers for showing some regular expressions to evaluate Threema IDs and some helpers for displaying and converting public keys.
+
+## Models
+
+Usually you should only need to interact with the messages model (`ThreemaGateway_Model_Messages`). However you can (and should) even avoid this as there is also a Handler for it: `ThreemaGateway_Handler_Action_Receiver`. The handler can be used for the mayority of the cases.
+
+However if you want to use the message model here are the basic steps you should keep in mind:
+1. First you need to create the model and call `preQuery` if not already done before
+2. Later you need to set all conditions you know via the `set...` methods.  
+3. To receive the data you finally either need to call `getMessageDataByType` if you know the message type or (which is slightly slower) `getMessageMetaData` and afterwards pass the result to `getAllMessageData`.  
+   If you only care about the message metadata you can however of course also only call `getMessageMetaData` (propably with `getMessageMetaData(true)` so that messages are grouped by their ID).
+
+Notes:
+*   For performance reasons `getAllMessageData` does one query for each message type of the messages, which is determinated by the meta data you have to pass to it. That's why it is always recommend to limit the amount of different message types you query. In the best case you already know the message type and can use `getMessageDataByType`.
+*   Note that `setMessageId` may need a table prefix as the second parameter unless you only query the meta data via `getMessageMetaData`. What prefix to use (`message` or `metamessage`) depends on your query data. As a rule of thumb `metamessage` is good as long as your query includes the meta data.

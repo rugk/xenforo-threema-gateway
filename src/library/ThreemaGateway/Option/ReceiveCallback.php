@@ -27,7 +27,7 @@ class ThreemaGateway_Option_ReceiveCallback
      */
     public static function renderOption(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
-        /* @var XenForo_Options */
+        /** @var XenForo_Options */
         $options = XenForo_Application::getOptions();
 
         // set default value
@@ -76,7 +76,7 @@ class ThreemaGateway_Option_ReceiveCallback
         $code = '';
         //try using Sodium first
         try {
-            /* @var ThreemaGateway_Handler_Libsodium */
+            /** @var ThreemaGateway_Handler_Libsodium */
             $sodiumHelper = new ThreemaGateway_Handler_Libsodium;
             $code         = $sodiumHelper->getRandomString(self::AccessTokenLength);
         } catch (Exception $e) {

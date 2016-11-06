@@ -106,7 +106,7 @@ class ThreemaGateway_Option_DebugModeLog
     {
         // correct value
         if (empty($option)) {
-            /* @var XenForo_Options */
+            /** @var XenForo_Options */
             $xenOptions = XenForo_Application::getOptions();
 
             // save file path even if disabled

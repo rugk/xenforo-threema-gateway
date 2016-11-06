@@ -31,12 +31,15 @@ class ThreemaGateway_Installer_MessagesDb
         // main table
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages`
             (`message_id` CHAR(16),
-            `message_type_code` ENUM(' . $this->getMsgTypes() . ') NOT NULL COMMENT \'determinates type of message\',
-            `sender_threema_id` CHAR(8) NOT NULL,
-            `date_send` INT UNSIGNED NOT NULL COMMENT \'the date/time delivered by the Gateway server stored as unix timestamp\',
-            `date_received` INT UNSIGNED NOT NULL COMMENT \'the date/time when msg was received by this server stored as unix timestamp\',
+            `message_type_code` ENUM(' . $this->getMsgTypes() . ') COMMENT \'determinates type of message\',
+            `sender_threema_id` CHAR(8),
+            `date_send` INT UNSIGNED COMMENT \'the date/time delivered by the Gateway server stored as unix timestamp\',
+            `date_received` INT UNSIGNED COMMENT \'the date/time when msg was received by this server stored as unix timestamp\',
             PRIMARY KEY (`message_id`)
             )');
+        // here "null" is allowed as for deleted messages the message ID is
+        // still stored, which prevents replay attacks as a message ID cannot
+        // be reused in this case
 
         // files associated with messages
         $db->query('CREATE TABLE `' . self::DbTablePrefix . '_files`

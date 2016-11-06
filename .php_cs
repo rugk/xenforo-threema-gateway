@@ -21,8 +21,8 @@ return Symfony\CS\Config\Config::create()
               'phpdoc_params', 'operators_spaces', 'duplicate_semicolon',
               'remove_leading_slash_use', 'align_equals', 'phpdoc_params',
               'single_array_no_trailing_comma', 'phpdoc_indent', 'phpdoc_scalar',
-              'phpdoc_short_description', 'phpdoc_to_comment', 'phpdoc_trim',
+              'phpdoc_short_description', 'phpdoc_trim', 'phpdoc_order',
               'phpdoc_types', 'print_to_echo', 'self_accessor', 'single_quote',
-              'spaces_cast', 'ternary_spaces', 'phpdoc_order'])
+              'spaces_cast', 'ternary_spaces', 'phpdoc_to_comment'])
     ->finder($finder)
 ;

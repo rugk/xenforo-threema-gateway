@@ -132,7 +132,7 @@ class ThreemaGateway_Option_Status
             }
         }
 
-        /* @var ThreemaGateway_Handler_Settings */
+        /** @var ThreemaGateway_Handler_Settings */
         $settings = new ThreemaGateway_Handler_Settings;
 
         if ($settings->isDebug()) {

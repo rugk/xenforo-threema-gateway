@@ -224,7 +224,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         if ($options->threema_gateway_tfa_useimprovedsrng) {
             try {
                 //use own Sodium method
-                /* @var ThreemaGateway_Handler_Libsodium */
+                /** @var ThreemaGateway_Handler_Libsodium */
                 $sodiumHelper = new ThreemaGateway_Handler_Libsodium;
                 $code         = $sodiumHelper->getRandomNumeric($length);
             } catch (Exception $e) {

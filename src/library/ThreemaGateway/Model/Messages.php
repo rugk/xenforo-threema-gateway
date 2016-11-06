@@ -46,14 +46,21 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     const TypeCode_TextMessage = 0x01;
 
     /**
-     * @var array[string] conditions for the data query for meta data
+     * @var int constant for type code
      */
-    protected $whereMetaData = [];
+    const OrderChoice = [
+        'id' => 'message_id',
+        'date_send' => 'date_send',
+        'date_received' => 'date_received',
+    ];
 
     /**
-     * @var array[string] the values, whcih should be inserted
+     * @var array[string] data used when querying
      */
-    protected $fetchMetaData = [];
+    protected $fetchOptions = [
+        'where' => [],
+        'params' => []
+    ];
 
     /**
      * Execute this before any query.
@@ -67,80 +74,199 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     }
 
     /**
-     * Sets the message ID for querying it.
+     * Inject or modify a fetch option manually.
      *
-     * @param string $messageId
+     * Sets internal values neccessary for a correct connection to the database.
+     * This should best be avoided, when it is not really neccessary to change
+     * the value directly.
+     * It can e.g. be used to reset data. WHen you e.g. want to reset the where
+     * caluse call it this way: injectFetchOption('where', []).
+     *
+     * @param string $option The option name to inject
+     * @param mixed  $value  The value of the option to set.
+     * @param mixed  $append If set to true, the value is not overriden, but
+     *                       just appended as an array. (default: false)
      */
-    public function setMessageId($messageId)
+    public function injectFetchOption($option, $value, $append = false)
     {
-        $this->whereMetaData[] = 'message_id = ?';
-        $this->fetchMetaData[] = $messageId;
+        if ($append) {
+            $this->fetchOptions[$option][] = $value;
+        } else {
+            $this->fetchOptions[$option] = $value;
+        }
     }
 
     /**
-     * Execute this before any query.
-     *
-     * @param string $threemaId
+     * Rests all fetch options. This is useful to prevent incorrect or
+     * unexpected results when using one model for multiple queries (not
+     * recommend) or for e.g. resetting the options before calling
+     * {@link fetchAll()};.
      */
-    public function setSenderId($threemaId)
+    public function resetFetchOptions()
     {
-        $this->whereMetaData[] = 'sender_threema_id = ?';
-        $this->fetchMetaData[] = $threemaId;
+        $this->fetchOptions = [];
+        // set empty data, which is required to prevent failing
+        $this->fetchOptions['where']  = [];
+        $this->fetchOptions['params'] = [];
     }
 
     /**
-     * Execute this before any query.
+     * Sets the message ID(s) for the query.
      *
-     * @param string $threemaId
+     * @param string|array $messageIds one (string) or more (array) message IDs
+     * @param string $tablePrefix The table prefix (optional)
      */
-    public function setTypeCode($typeCode)
+    public function setMessageId($messageIds, $tablePrefix = null)
     {
-        $this->whereMetaData[] = 'message_type_code = ?';
-        $this->fetchMetaData[] = $typeCode;
+        return $this->appendMixedCondition(
+            ($tablePrefix ? $tablePrefix . '.' : '') . 'message_id',
+            $messageIds
+        );
     }
 
     /**
-     * Execute this before any query.
+     * Sets the sender Threema ID(s) for querying it.
+     *
+     * @param string $threemaIds one (string) or more (array) Threema IDs
+     */
+    public function setSenderId($threemaIds)
+    {
+        return $this->appendMixedCondition(
+            'metamessage.sender_threema_id',
+            $threemaIds
+        );
+    }
+
+    /**
+     * Sets the type code(s) for querying only one type.
+     *
+     * Please use the TypeCode_* constants for specifying the type code(s).
+     * You should avoid using this and rather use {@link getMessageDataByType()}
+     * directly if you know the type code.
+     * If you want to limit the types you want to query this method would be a
+     * good way for you to use.
+     *
+     * @param string $typeCode one (string) or more (array) mtype codes
+     */
+    public function setTypeCode($typeCodes)
+    {
+        return $this->appendMixedCondition(
+            'metamessage.message_type_code',
+            $typeCodes
+        );
+    }
+
+    /**
+     * Sets a string to look for when querying text messages.
+     *
+     * The string is processed by MySQL via the `LIKE` command and may
+     * therefore contain some wildcards: % for none or any character and
+     * _ for exactly one character.
+     * Attention: This is only possible when using the text message type!
+     * Otherwise your query will fail.
+     *
+     * @param string $keyword a keyword to look for
+     */
+    public function setKeyword($keyword)
+    {
+        $this->fetchOptions['where'][]  = 'message.text LIKE ?';
+        $this->fetchOptions['params'][] = $keyword;
+    }
+
+    /**
+     * Sets the type code for querying only one type.
      *
      * @param int $date_min oldest date of messages
      * @param int $date_max latest date of messages (optional)
      */
     public function setTimeLimit($date_min, $date_max = null)
     {
-        $this->whereMetaData[] = 'date_send >= ?';
-        $this->fetchMetaData[] = $date_min;
+        $this->fetchOptions['where'][]  = 'metamessage.date_send >= ?';
+        $this->fetchOptions['params'][] = $date_min;
         if ($date_max) {
-            $this->whereMetaData[] = 'date_send <= ?';
-            $this->fetchMetaData[] = $date_max;
+            $this->fetchOptions['where'][]  = 'metamessage.date_send <= ?';
+            $this->fetchOptions['params'][] = $date_max;
         }
+    }
+
+    /**
+     * Limit the result to a number of datasets.
+     *
+     * @param int $limit    oldest date of messages
+     * @param int $date_max latest date of messages (optional)
+     */
+    public function setResultLimit($limit)
+    {
+        $this->fetchOptions['limit'] = $limit;
+    }
+
+    /**
+     * Sets an order for the query.
+     *
+     * This function overwrites previous values if they were set as ordering by
+     * multiple columns is not possible.
+     *
+     * @param int    $column    the column to order by (see {@link OrderChoice} for valid values)
+     * @param string $direction asc or desc
+     */
+    public function setOrder($column, $direction = 'asc')
+    {
+        $this->fetchOptions['order']     = $column;
+        $this->fetchOptions['direction'] = $direction;
     }
 
     /**
      * Queries all available data from a list of message IDs.
      *
-     * @param  array[string]     $messageIds         The message IDs
-     * @param  bool              $groupByMessageType Set to true to group the return value via
-     *                                               message types. (default: false)
+     * Note that this requires one to have the meta data of the messages already
+     * and therefore you have to run {@link getMessageMetaData()} before and
+     * submit it as the first parameter.
+     * This method also resets the conditions of the where clause
+     * ($fetchOptions['where']) and the params ($fetchOptions['params']) based
+     * on the results included in the meta data. Other fetch options however
+     * remain and are still applied, so if you want to avoid this, use
+     * {@link resetFetchOptions()}.
+     * Note that the ordering values of different message types will not work as
+     * this function internally needs to handle each message type differently.
+     *
+     * @param  array[string]     $metaData           The message meta data from
+     *                                               {@link getMessageMetaData()}
+     *                                               (without grouping)
+     * @param  bool              $groupByMessageType Set to true to group the
+     *                                               return value via message
+     *                                               types. (default: false)
      * @throws XenForo_Exception
      * @return null|array
      */
-    public function getFullData($messageIds, $groupByMessageType = false)
+    public function getAllMessageData($metaData, $groupByMessageType = false)
     {
         // get grouped messages by type
-        $messageTypesIds = $this->groupArray($messageIds, 'message_type_code');
+        $messageTypes = $this->groupArray($metaData, 'message_type_code');
         // we always need to do this (regardless of message_type_code) as each
         // message type needs to be handled individually
 
         // query message types individually
-        $output = [];
-        foreach ($messageTypesIds as $messageType => $messages) {
-            // get messages of current data type in groups & query results
+        $output = null;
+        foreach ($messageTypes as $messageType => $messages) {
+            // get messages of current data type in groups
             $groupedMessages = $this->groupArray($messages, 'message_id', true);
-            $groupedResult   = $this->getMessageDataByType($this->getMessageIdsFromResult($messages), $messageType);
+
+            // overwrite conditions with message IDs we already know
+            $this->fetchOptions['params'] = [];
+            $this->fetchOptions['where']  = [];
+            $this->setMessageId($this->getMessageIdsFromResult($messages), 'message');
+
+            // query data
+            $groupedResult = $this->getMessageDataByType($messageType, false);
+            // skip processing if there are no results (most likely all
+            // messages of this type have been deleted)
+            if (!is_array($groupedResult)) {
+                continue;
+            }
 
             // go through each message to merge result with meta data
             foreach ($groupedMessages as $msgId => $msgMetaData) {
-                // ignore non-exisiting keys
+                // ignore non-exisiting key (might be deleted messages)
                 if (!array_key_exists($msgId, $groupedResult)) {
                     continue;
                 }
@@ -153,12 +279,13 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                     unset($mergedArrays['message_id']);
                 }
 
+
                 // save as output
                 if ($groupByMessageType) {
                     // remove unneccessary message_type_code (as it is already
                     // grouped by it)
-                    if (array_key_exists('message_id', $mergedArrays)) {
-                        unset($mergedArrays['message_id']);
+                    if (array_key_exists('message_type_code', $mergedArrays)) {
+                        unset($mergedArrays['message_type_code']);
                     }
 
                     $output[$messageType][$msgId] = $mergedArrays;
@@ -168,25 +295,39 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
             }
         }
 
-        // reorder messages if neccessary
-        if (!$groupByMessageType && count($messageTypesIds) > 1) {
-            //TODO: reorder!
-        }
-
         return $output;
     }
 
     /**
      * Queries all available data for a message type.
      *
-     * @param  array[string]     $messageIds  The message IDs
-     * @param  int               $messageType The message type the messages belong to
+     * The return value should be an array in the same format as the one
+     * returned by {@link getAllMessageData()} when $groupByMessageType is set
+     * to false. Of course, however, only one message type is returned here.
+     *
+     * @param  int               $messageType     The message type the messages belong to
+     * @param  bool              $includeMetaData Set to true to also include the main
+     *                                            message table in your query. If you do so you
+     *                                            will also get the meta data of the message.
+     *                                            (default: true)
      * @throws XenForo_Exception
      * @return null|array
      */
-    public function getMessageDataByType($messageIds, $messageType)
+    public function getMessageDataByType($messageType, $includeMetaData = true)
     {
-        $whereClause = 'message.message_id IN (' . implode(', ', array_fill(0, count($messageIds), '?')) . ')';
+        // add table if neccessary
+        $extraSelect = '';
+        $extraJoin   = '';
+        if ($includeMetaData) {
+            $extraSelect = ', metamessage.*';
+            $extraJoin   = 'INNER JOIN `' . self::DbTableMessages . '` AS `metamessage` ON
+                (message.message_id = metamessage.message_id)';
+        }
+
+        // prepare query
+        $limitOptions     = $this->prepareLimitFetchOptions($this->fetchOptions);
+        $conditionsClause = $this->getConditionsForClause($this->fetchOptions['where']);
+        $orderByClause    = $this->getOrderByClause(self::OrderChoice, $this->fetchOptions);
 
         // query data
         $output      = null;
@@ -194,49 +335,67 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         $resultindex = '';
         switch ($messageType) {
             case self::TypeCode_DeliveryMessage:
-                $result = $this->_getDb()->fetchAll('
-                    SELECT message.*, ack_messages.*
-                    FROM `' . self::DbTableMessages . '_delivery_receipt` AS `message`
-                    INNER JOIN `' . self::DbTableAckMsgs . '` AS `ack_messages` ON
-                        (message.message_id = ack_messages.message_id)
-                    WHERE ' . $whereClause . '
-                    ', $messageIds);
+                $result = $this->_getDb()->fetchAll(
+                    $this->limitQueryResults('
+                        SELECT message.*, ack_messages.* ' . $extraSelect . '
+                        FROM `' . self::DbTableMessages . '_delivery_receipt` AS `message`
+                        ' . $extraJoin . '
+                        INNER JOIN `' . self::DbTableAckMsgs . '` AS `ack_messages` ON
+                            (message.message_id = ack_messages.message_id)
+                        WHERE ' . $conditionsClause . '
+                        ' . $orderByClause . '
+                    ', $limitOptions['limit'], $limitOptions['offset']),
+                $this->fetchOptions['params']);
 
                 $resultindex = 'ackmsgs';
                 break;
 
             case self::TypeCode_FileMessage:
-                $result = $this->_getDb()->fetchAll('
-                    SELECT message.*, filelist.*
-                    FROM `' . self::DbTableMessages . '_file` AS `message`
-                    INNER JOIN `' . self::DbTableFiles . '` AS `filelist` ON
-                        (filelist.message_id = message.message_id)
-                    WHERE ' . $whereClause . '
-                    ', $messageIds);
+                $result = $this->_getDb()->fetchAll(
+                    $this->limitQueryResults('
+                        SELECT message.*, filelist.* ' . $extraSelect . '
+                        FROM `' . self::DbTableMessages . '_file` AS `message`
+                        ' . $extraJoin . '
+                        INNER JOIN `' . self::DbTableFiles . '` AS `filelist` ON
+                            (filelist.message_id = message.message_id)
+                        WHERE ' . $conditionsClause . '
+                        ' . $orderByClause . '
+                    ', $limitOptions['limit'], $limitOptions['offset']),
+                $this->fetchOptions['params']);
 
                 $resultindex = 'files';
                 break;
 
             case self::TypeCode_ImageMessage:
-                $result = $this->_getDb()->fetchAll('
-                    SELECT message.*, filelist.*
-                    FROM `' . self::DbTableMessages . '_image` AS `message`
-                    INNER JOIN `' . self::DbTableFiles . '` AS `filelist` ON
-                        (filelist.message_id = message.message_id)
-                    WHERE ' . $whereClause . '
-                    ', $messageIds);
+                $result = $this->_getDb()->fetchAll(
+                    $this->limitQueryResults('
+                        SELECT message.*, filelist.* ' . $extraSelect . '
+                        FROM `' . self::DbTableMessages . '_image` AS `message`
+                        ' . $extraJoin . '
+                        INNER JOIN `' . self::DbTableFiles . '` AS `filelist` ON
+                            (filelist.message_id = message.message_id)
+                        WHERE ' . $conditionsClause . '
+                        ' . $orderByClause . '
+                    ', $limitOptions['limit'], $limitOptions['offset']),
+                $this->fetchOptions['params']);
 
                 $resultindex = 'files';
                 break;
 
             case self::TypeCode_TextMessage:
-                // text messages do not have any additional data associated, so
-                // we can do a simple query here
-                $result = $this->_getDb()->fetchAll('
-                    SELECT * FROM `' . self::DbTableMessages . '_text` AS `message`
-                    WHERE ' . $whereClause,
-                    $messageIds);
-                $output = $result;
+                $result = $this->_getDb()->fetchAll(
+                    $this->limitQueryResults('
+                        SELECT message.* ' . $extraSelect . '
+                        FROM `' . self::DbTableMessages . '_text` AS `message`
+                        ' . $extraJoin . '
+                        WHERE ' . $conditionsClause . '
+                        ' . $orderByClause . '
+                    ', $limitOptions['limit'], $limitOptions['offset']),
+                $this->fetchOptions['params']);
+
+                // although this is not strictly neccessary for the ease of
+                // processing the data later, we also index this
+                $resultindex = 'text';
                 break;
 
             default:
@@ -256,16 +415,39 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         // group array by message ID
         $result = $this->groupArray($result, 'message_id');
 
-        // push general properties one array up
-        if (!$output && $resultindex) {
-            foreach ($result as $msgId => $resultForId) {
-                $output[$msgId] = $this->pushArrayKeys($output[$msgId], $resultForId, [
-                    'message_id',
-                    'file_name',
-                    'mime_type',
-                    'file_size'
-                ]);
-                $output[$msgId][$resultindex] = $resultForId;
+        // attributes to remove/push
+        $removeAttributes = [
+            'message_id',
+            'file_name',
+            'mime_type',
+            'file_size'
+        ];
+        if ($includeMetaData) {
+            $removeAttributes = array_merge($removeAttributes, [
+                'message_type_code',
+                'sender_threema_id',
+                'date_send',
+                'date_received'
+            ]);
+        }
+
+        // push general attributes one array up
+        if (!$resultindex) {
+            throw new XenForo_Exception(new XenForo_Phrase('threemagw_unknown_message_type'));
+            break;
+        }
+
+        // go through each message
+        foreach ($result as $msgId => $resultForId) {
+            // $output = [];
+            $output[$msgId] = $this->pushArrayKeys($output[$msgId],
+                                    $resultForId,
+                                    $removeAttributes);
+            $output[$msgId][$resultindex] = $resultForId;
+
+            // remove unneccessary message_id (the ID is already the key)
+            if (array_key_exists('message_id', $output[$msgId])) {
+                unset($output[$msgId]['message_id']);
             }
         }
 
@@ -276,24 +458,43 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * Returns only the meta data of one or more messages not depending on the
      * type of the message.
      *
+     * @param  bool       $groupById Set to true to group the data by the message ID
      * @return null|array
      */
-    public function getMessageMetaData()
+    public function getMessageMetaData($groupById = false)
     {
-        $result = $this->_getDb()->fetchAll('SELECT * FROM `' . self::DbTableMessages . '` AS `message`
-            WHERE ' . $this->getConditionsForClause($this->whereMetaData),
-            $this->fetchMetaData);
+        $limitOptions = $this->prepareLimitFetchOptions($this->fetchOptions);
+
+        $result = $this->_getDb()->fetchAll(
+        $this->limitQueryResults('SELECT * FROM `' . self::DbTableMessages . '` AS `metamessage`
+            WHERE ' . $this->getConditionsForClause($this->fetchOptions['where']) . '
+            ' . $this->getOrderByClause(self::OrderChoice, $this->fetchOptions),
+        $limitOptions['limit'], $limitOptions['offset']),
+        $this->fetchOptions['params']);
 
         // fail if there is no data
         if (!is_array($result) || !$result) {
             return null;
         }
 
+        // remove invalid data sets (where message might be deleted)
+        foreach ($result as $i => $msgData) {
+            if (!array_key_exists('message_type_code', $msgData) ||
+                !$msgData['message_type_code']) {
+                    unset($result[$i]);
+            }
+        }
+
+        // group array by message ID if wanted
+        if ($groupById) {
+            $result = $this->groupArray($result, 'message_id');
+        }
+
         return $result;
     }
 
     /**
-     * Queries all available data from a list of message IDs.
+     * Returns all available data from a list of message IDs.
      *
      * @param  array[string]     $messages The message result
      * @throws XenForo_Exception
@@ -334,9 +535,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     {
         foreach ($removeKeys as $key) {
             // skip invalid keys
-            if (!is_array($baseArray) ||
-                !array_key_exists($key, $baseArray) ||
-                !array_key_exists($key, $subArray[0])) {
+            if (!array_key_exists($key, $subArray[0])) {
                 continue;
             }
 
@@ -379,5 +578,32 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         }
 
         return $output;
+    }
+
+    /**
+     * Appends a WHERE condition for either a string or an array.
+     *
+     * It automatically chooses between a simple `this = ?` or a more complex
+     * `this IN (?, ?, ...)`.
+     *
+     * @param string $attName the name of the required attribut
+     * @param string|array $attValue the value, which should be required
+     *
+     * @return array
+     */
+    protected function appendMixedCondition($attName, $attValue)
+    {
+        // convert arrays with only one value
+        if (is_array($attValue) && count($attValue) == 1) {
+            $attValue = $attValue[0];
+        }
+
+        if (!is_array($attValue)) {
+            $this->fetchOptions['where'][]  = $attName . ' = ?';
+            $this->fetchOptions['params'][] = $attValue;
+        } else {
+            $this->fetchOptions['where'][]  = $attName . ' IN (' . implode(', ', array_fill(0, count($attValue), '?')) . ')';
+            $this->fetchOptions['params'] += $attValue;
+        }
     }
 }

@@ -32,9 +32,9 @@ $response = new Zend_Controller_Response_Http();
 $callback = new ThreemaGateway_Handler_Action_Callback();
 $callback->initCallbackHandling(new Zend_Controller_Request_Http());
 
-/* @var XenForo_Options */
+/** @var XenForo_Options $options */
 $options = XenForo_Application::getOptions();
-/* @var bool whether XenForo is running in debug mode */
+/** @var bool whether XenForo is running in debug mode */
 $debugMode = XenForo_Application::debugMode();
 // could use ThreemaGateway_Handler_Settings->isDebug() here, but that would
 // not be good here as we really only need the RAW debug mode setting.
@@ -42,8 +42,6 @@ $debugMode = XenForo_Application::debugMode();
 $logExtra         = [];
 $logMessage       = false;
 $logMessagePublic = false;
-
-/* test end */
 
 try {
     if (!$callback->validatePreConditions($logMessage)) {

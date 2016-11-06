@@ -63,7 +63,7 @@ class ThreemaGateway_Option_DownloadPath
      */
     protected static function moveDir($newDir)
     {
-        /* @var XenForo_Options */
+        /** @var XenForo_Options */
         $xenOptions = XenForo_Application::getOptions();
         // get absolute old dir
         $orgDir = XenForo_Application::getInstance()->getRootDir() . '/' . $xenOptions->threema_gateway_downloadpath;

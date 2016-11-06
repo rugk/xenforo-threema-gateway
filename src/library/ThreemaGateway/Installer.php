@@ -21,7 +21,7 @@ class ThreemaGateway_Installer
      */
     public static function install($installedAddon)
     {
-        /* @var array An array with the models of all providers */
+        /** @var array An array with the models of all providers */
         $ProviderModells = self::getProviderModells();
 
         // check requirements of Gateway
@@ -68,7 +68,7 @@ class ThreemaGateway_Installer
             $userFieldWriter->save();
 
             // create tables for messages
-            /* @var ThreemaGateway_Installer_MessagesDb */
+            /** @var ThreemaGateway_Installer_MessagesDb */
             $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
             $messageDbInstaller->create();
         }
@@ -80,11 +80,11 @@ class ThreemaGateway_Installer
     public static function uninstall()
     {
         // remove message tables
-        /* @var ThreemaGateway_Installer_MessagesDb */
+        /** @var ThreemaGateway_Installer_MessagesDb */
         $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
         $messageDbInstaller->destroy();
 
-        /* @var array An array with the modells of all providers */
+        /** @var array An array with the modells of all providers */
         $ProviderModells = self::getProviderModells();
 
         // delete tfa provider from database
@@ -111,7 +111,7 @@ class ThreemaGateway_Installer
             $userFieldWriter->delete();
         }
 
-        /* @var XenForo_Options */
+        /** @var XenForo_Options */
         $xenOptions = XenForo_Application::getOptions();
 
         //delete debug log files
@@ -125,7 +125,7 @@ class ThreemaGateway_Installer
      */
     protected static function getProviderModells()
     {
-        /* @var array An array with the models of all providers */
+        /** @var array An array with the models of all providers */
         $ProviderModels = [];
 
         // add provider

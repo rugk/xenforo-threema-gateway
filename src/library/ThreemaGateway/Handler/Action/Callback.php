@@ -72,7 +72,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      */
     public function validatePreConditions(&$errorString)
     {
-        /* @var XenForo_Options */
+        /** @var XenForo_Options */
         $options = XenForo_Application::getOptions();
 
         // only allow POST requests (unless GET is allowed in ACP)
@@ -128,7 +128,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     public function validateRequest(&$errorString)
     {
         // access token validation (authentication of Gateway server)
-        /* @var XenForo_Options */
+        /** @var XenForo_Options */
         $options = XenForo_Application::getOptions();
         if (!$options->threema_gateway_receivecallback) {
             $errorString = [null, 'Unverified request: access token is not configured', 'Unverified request'];
@@ -185,7 +185,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             return false;
         }
 
-        /* @var XenForo_Options */
+        /** @var XenForo_Options */
         $options   = XenForo_Application::getOptions();
         $rejectOld = false;
         if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
@@ -241,7 +241,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             throw new XenForo_Exception('Message cannot be processed: [ResultErrors] ' . implode('|', $receiveResult->getErrors()));
         }
 
-        /* @var ThreemaMessage */
+        /** @var ThreemaMessage */
         $threemaMsg = $receiveResult->getThreemaMessage();
 
         // create detailed log when debug mode is enabled
