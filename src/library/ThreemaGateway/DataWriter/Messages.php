@@ -172,8 +172,6 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     /**
      * Gets the actual existing data out of data that was passed in. See parent for explanation.
      *
-     * As an update cannot happen in the message tables anyway, this function is
-     * not implemented in any way.
      *
      * @param mixed
      * @see XenForo_DataWriter::_getExistingData()
@@ -181,6 +179,17 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      */
     protected function _getExistingData($data)
     {
+        if (!$messageId = $this->_getExistingPrimaryKey($data, 'message_id'))
+		{
+			return false;
+		}
+
+        $this->_getMessagesModel()->setMessageId($messageId);
+        /** @var array $metaData */
+        $metaData = $this->_getMessagesModel()->getMessageMetaData();
+        var_dump($metaData);
+        exit;
+
         return [];
     }
 

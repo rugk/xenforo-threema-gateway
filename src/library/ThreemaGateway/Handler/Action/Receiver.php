@@ -61,6 +61,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     public function getLastMessage($threemaId = null, $messageType = null, $keyword = null)
     {
         $this->initiate();
+        /** @var ThreemaGateway_Model_Messages $model */
         $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
 
         // set options
@@ -95,6 +96,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     public function getMessages($threemaId = null, $messageType = null, $timeSpan = null, $keyword = null)
     {
         $this->initiate();
+        /** @var ThreemaGateway_Model_Messages $model */
         $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
 
         // set options
@@ -131,6 +133,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     public function getMessageData($messageId, $messageType = null)
     {
         $this->initiate();
+        /** @var ThreemaGateway_Model_Messages $model */
         $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
 
         // set options
@@ -154,16 +157,16 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * it may produce errors. When you have a message ID it is also not
      * really neccessary to specify other conditions.
      *
-     * @param  string     $threemaId filter by Threema ID (optional)
-     * @param  string     $mimeType  Filter by mime type (optional).
-     * @param  string     $fileType  The file type, e.g. thumbnail/file or image (optional).
-     *                               This is a Threema-internal type and may not
-     *                               be particular useful.
-     * @param  string     $messageId If you know the message ID you can skip
-     *                               the previous paeameters and just use this
-     *                               one to get all data.
-     * @param  bool   $queryMetaData Set to false, to prevent querying for meta
-     *                              data, which might speed up the query. (default: true)
+     * @param  string     $threemaId     filter by Threema ID (optional)
+     * @param  string     $mimeType      Filter by mime type (optional).
+     * @param  string     $fileType      The file type, e.g. thumbnail/file or image (optional).
+     *                                   This is a Threema-internal type and may not
+     *                                   be particular useful.
+     * @param  string     $messageId     If you know the message ID you can skip
+     *                                   the previous paeameters and just use this
+     *                                   one to get all data.
+     * @param  bool       $queryMetaData Set to false, to prevent querying for meta
+     *                                   data, which might speed up the query. (default: true)
      * @return null|array
      */
     public function getFileList($mimeType = null, $fileType = null, $threemaId = null, $messageId = null, $queryMetaData = true)
@@ -172,6 +175,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
 
         // determinate, which message types may be affected
+        /** @var string|null $messageType */
         $messageType = null;
         if ($mimeType !== null &&
             $mimeType !== 'image/jpeg') {
@@ -200,6 +204,9 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // reset grouping as it cannot be processed
         $this->groupByMessageType = false;
 
+        /** @var array $result */
+        $result = null;
+
         // a message id overtrumps them all :)
         if ($messageId) {
             $model->setMessageId($messageId, 'metamessage');
@@ -226,6 +233,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
                 // first we query the image files
                 // (without mime type setting as images can only have one
                 // message type anyway)
+                /** @var array|null $images */
                 $images = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TypeCode_ImageMessage, true);
 
                 // now set the MIME type if there is one
@@ -235,6 +243,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
                 }
 
                 // and now query all other files
+                /** @var array|null $files */
                 $files = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TypeCode_FileMessage, true);
                 $model->resetFetchOptions();
 
@@ -247,6 +256,10 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
                 }
                 // and combine results
                 $result = array_merge($images, $files);
+
+                if (empty($result)) {
+                    $result = null;
+                }
             }
         }
 
@@ -260,7 +273,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * Note: In contrast to most other methods here, this already returns the
      * message/delivery state as an integer.
      *
-     * @param  string     $messageSentId The ID of message, which has been send to a user
+     * @param  string   $messageSentId The ID of message, which has been send to a user
      * @return null|int
      */
     public function getMessageState($messageSentId)
@@ -270,6 +283,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // reset grouping as it cannot be processed
         $this->groupByMessageType = false;
 
+        /** @var array $result */
         $result = $this->getMessageStateHistory($messageSentId, false, 1);
         if (!$result) {
             return null;
@@ -280,6 +294,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
 
         // as theoretically one delivery message could include multiple
         // delivery receipts we formally have to walk through the result
+        /** @var int $deliveryReceipt */
         $deliveryReceipt = 0;
         foreach ($result as $i => $content) {
             if ($content['receipt_type'] > $deliveryReceipt) {
@@ -301,13 +316,14 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * @param  string     $messageSentId The ID of message, which has been send to a user
      * @param  bool       $getMetaData   Set to false, to speed up the query by not
      *                                   asking for meta data (when the state was received etc).
-     *                                  (default: false)
-     * @param int   $limitQuery         When set, only the last x states are returned.
+     *                                   (default: false)
+     * @param  int        $limitQuery    When set, only the last x states are returned.
      * @return null|array
      */
     public function getMessageStateHistory($messageSentId, $getMetaData = true, $limitQuery = null)
     {
         $this->initiate();
+        /** @var ThreemaGateway_Model_Messages $model */
         $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
 
         $model->injectFetchOption('where', 'ack_messages.ack_message_id = ?', true);
@@ -335,6 +351,27 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             ThreemaGateway_Model_Messages::TypeCode_ImageMessage,
             ThreemaGateway_Model_Messages::TypeCode_TextMessage
         ];
+    }
+
+    /**
+     * Remove a message from teh database (after processing).
+     *
+     * Note that the message is never completly removed and the message ID will
+     * stay in the database.
+     * This prevents replay attacks as otherwise a message with the same message
+     * ID could be inserted again into the database and would therefore be
+     * considered a new message, which has just been received altghough it
+     * actually had been received two times.
+     *
+     * @param string $messageId
+     */
+    public function removeMessage($messageId)
+    {
+        $this->initiate();
+        /** @var ThreemaGateway_DataWriter_Messages $dataWriter */
+        $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
+        $dataWriter->setExistingData($messageId);
+        $dataWriter->delete();
     }
 
     /**

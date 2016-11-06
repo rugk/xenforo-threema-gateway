@@ -316,7 +316,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         if ($threemaMsg instanceof Threema\MsgApi\Messages\ImageMessage) {
             $debugLog .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $EOL;
             $debugLog .= 'message.getLength: ' . $threemaMsg->getLength() . $EOL;
-            $debugLog .= 'message.getNonce: ' . $this->bin2hex($threemaMsg->getNonce()) . $EOL;
+            $debugLog .= 'message.getNonce: ' . $this->getCryptTool()->bin2hex($threemaMsg->getNonce()) . $EOL;
         }
 
         return [null, $debugLog, $publicLog];
@@ -392,18 +392,6 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     }
 
     /**
-     * Converts binary data to hex.
-     *
-     * @param string $bin binary string
-     *
-     * @return string
-     */
-    protected function bin2hex($bin)
-    {
-        return Threema\MsgApi\Tools\CryptTool::getInstance()->bin2hex($bin);
-    }
-
-    /**
      * Converts binary data in an array to hex.
      *
      * @param array $bin binary array
@@ -414,7 +402,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     {
         $output = [];
 		foreach ($bin as $item) {
-			$output[] = $this->bin2hex($item);
+			$output[] = $this->getCryptTool()->bin2hex($item);
 		}
         return  $output;
     }

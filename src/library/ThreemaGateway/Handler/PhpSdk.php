@@ -70,7 +70,6 @@ class ThreemaGateway_Handler_PhpSdk
     private function __construct($settings)
     {
         // get options
-        /** @var XenForo_Options */
         $this->xenOptions = XenForo_Application::getOptions();
         if ($settings !== null) {
             $this->settings = $settings;
@@ -147,14 +146,13 @@ class ThreemaGateway_Handler_PhpSdk
     /**
      * Returns the E2EHelper to the Threema Gateway.
      *
-     * @return E2EHelper The connector to the PHP-SDK
      * @throws XenForo_Exception
+     * @return E2EHelper         The connector to the PHP-SDK
      */
     public function getE2EHelper()
     {
         if (!is_object($this->e2eHelper)) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_missing_e2e_helper'));
-
         }
         return $this->e2eHelper;
     }
@@ -168,7 +166,6 @@ class ThreemaGateway_Handler_PhpSdk
      */
     public function getReceiver($threemaId)
     {
-        /** @var Threema\MsgApi\Receiver */
         return new Receiver($threemaId, Receiver::TYPE_ID);
     }
 
@@ -214,9 +211,9 @@ class ThreemaGateway_Handler_PhpSdk
         }
 
         // Set (missing) properties.
-        $this->sdkVersion = MSGAPI_SDK_VERSION;
+        $this->sdkVersion      = MSGAPI_SDK_VERSION;
         $this->sdkFeatureLevel = MSGAPI_SDK_FEATURE_LEVEL;
-        $this->cryptTool = $cryptTool;
+        $this->cryptTool       = $cryptTool;
     }
 
     /**
@@ -239,7 +236,6 @@ class ThreemaGateway_Handler_PhpSdk
 
     /**
      * Creates a keystore.
-     *
      */
     protected function createConnection()
     {
@@ -247,7 +243,6 @@ class ThreemaGateway_Handler_PhpSdk
             $this->settings->getId(),
             $this->settings->getSecret()
         );
-        /** @var Threema\MsgApi\Connection */
         $this->connector = new Connection($connectionSettings, $this->keystore);
 
         //create E2E helper if E2E mode is used
@@ -270,11 +265,11 @@ class ThreemaGateway_Handler_PhpSdk
      */
     protected function createConnectionSettings($GatewayId, $GatewaySecret)
     {
-        /** @var null|object */
+        /* @var null|object */
         $setting = null;
         if ($this->xenOptions->threema_gateway_httpshardening) {
             //create a connection with advanced options
-            /** @var array */
+            /* @var array */
             $tlsSettings = [];
             switch ($this->xenOptions->threema_gateway_httpshardening) {
                 case 1:
@@ -285,7 +280,7 @@ class ThreemaGateway_Handler_PhpSdk
                         ];
                     break;
                 case 2:
-                    // also force cipher
+                    // also force strong cipher
                     $tlsSettings = [
                             'forceHttps' => true,
                             'tlsVersion' => '1.2',
