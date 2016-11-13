@@ -254,7 +254,6 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      * Additionally it ses the correct character encoding.
      *
      * @see XenForo_DataWriter::_preSave()
-     * @return bool
      */
     protected function _preSave()
     {
@@ -273,8 +272,8 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         }
 
         // check whether there is other data in the main table
-        /** @var $isOtherData whether in the main table is other data than the message ID */
-        $isOtherData = false;
+        /** @var $isData whether in the main table is other data than the message ID */
+        $isData = false;
         foreach ($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages] as $field => $fieldData) {
             if ($field == 'message_id') {
                 // skip as requirement already checked
@@ -282,7 +281,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
             }
 
             if ($this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages)) {
-                $isOtherData = true;
+                $isData = true;
                 break;
             }
         }
@@ -294,26 +293,25 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 continue;
             }
 
-            if ($isOtherData) {
-                // table contains data, but required key is missing
-                if (!$this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages)) {
+            // table contains data
+            if ($isData) {
+                //but required key is missing
+                if (
+                    !$this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages) &&
+                    !isset($fieldData['default']) // exception: a default value is set
+                ) {
                     $this->_triggerRequiredFieldError(ThreemaGateway_Model_Messages::DbTableMessages, $field);
                 }
             } else {
-                // table does not contain data and key is given altghough it should not be given
-                if ($this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages)) {
-                    $this->error($field . ' is given altghough it must not be given.', $field, false);
-                } else {
-                    // make sure data is really "null" and not some other type of data by removing it completly from Model
-                    unset($this->_newData[ThreemaGateway_Model_Messages::DbTableMessages][$field]);
-                    unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages][$field]);
-                }
+                // table does not contain data,
+                // so make sure data is really "null" and not some other type of data by removing it completly from the model
+                unset($this->_newData[ThreemaGateway_Model_Messages::DbTableMessages][$field]);
+                unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages][$field]);
             }
         }
+
         // set correct character encoding
         $this->_db->query('SET NAMES utf8mb4');
-
-        return '';
     }
 
     /**

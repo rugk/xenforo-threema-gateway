@@ -1,6 +1,6 @@
 <?php
 /**
- * Threema message callback.
+ * Threema message callback listener. (example).
  *
  * @package ThreemaGateway
  * @author rugk
@@ -9,15 +9,12 @@
  */
 
 /**
- * Listeners for custom activity when.
+ * Listeners for custom activity when a text message is received.
  */
 class ThreemaGateway_Listener_MessageCallback
 {
     /**
      * Receives text messages.
-     *
-     * You should set the "event hint" to "1" to only pass text messages to the
-     * listener. Otherwise errors may happen.
      *
      * @param ThreemaGateway_Handler_Action_Callback $handler
      * @param ReceiveMessageResult                   $receiveResult
@@ -27,7 +24,6 @@ class ThreemaGateway_Listener_MessageCallback
      * @param bool                                   $debugMode
      *
      * @throws XenForo_Exception
-     * @return array $hashes
      */
     public static function testCallbackPreSave(ThreemaGateway_Handler_Action_Callback $handler,
                                         Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,
@@ -53,6 +49,7 @@ class ThreemaGateway_Listener_MessageCallback
             throw new XenForo_Exception('Message already received!');
         }
 
+        // it is useful to add some logging messages for easier debugging
         $handler->addLog($output, 'Message will not be saved to database!');
 
         // here you can do something with your text messages
@@ -68,8 +65,6 @@ class ThreemaGateway_Listener_MessageCallback
      * @param array                                  $output        [$logType, $debugLog, $publicLog]
      * @param bool                                   $saveMessage
      * @param bool                                   $debugMode
-     *
-     * @return array $hashes
      */
     public static function testCallbackPostSave(ThreemaGateway_Handler_Action_Callback $handler,
                                         Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,
@@ -79,6 +74,8 @@ class ThreemaGateway_Listener_MessageCallback
                                         $debugMode)
     {
         if (!$messageSaved) {
+            // this should only be shown when testCallbackPreSave has been executed
+            // or another listener prevented saving of the data.
             $handler->addLog($output, 'This is the message, which has not been saved!');
         }
     }

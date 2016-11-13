@@ -48,3 +48,13 @@ Notes:
 *   For performance reasons `getAllMessageData` does one query for each message type of the messages, which is determinated by the meta data you have to pass to it. That's why it is always recommend to limit the amount of different message types you query. In the best case you already know the message type and can use `getMessageDataByType`.
 *   Note that `setMessageId` may need a table prefix as the second parameter unless you only query the meta data via `getMessageMetaData`. What prefix to use (`message` or `metamessage`) depends on your query data. As a rule of thumb `metamessage` is good as long as your query includes the meta data.
 * The Handler `ThreemaGateway_Handler_Action_Receiver` can also serve as a good example  on how to query the message model. So if you want to do so, you may have a look at it.
+
+## Listeners
+It may be more effective to not always query the database for (new) messages, but to handle the messages directly after receiving them. Additionally if you have just some commands to handle you may even not want to save the messages in the database. Thanks to XenForo's Listeners model, both is easily possible.
+
+In the ACP you can find these listeners created by the add-on:
+* `threemagw_message_callback_presave`
+* `threemagw_message_callback_postsave`
+
+The name already shows when they run (before & after saving the message to the database) and they are also documented in the ACP. Usually you shouzld choose the post-save version over the pre-save one (as you do not have to pay attention to replay attacks there) unless you do not want to save the message in the database.
+An example implementation of a simple listener for text messages can be seen in [`examples/MessageCallback.php`](examples/MessageCallback.php). 
