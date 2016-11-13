@@ -117,9 +117,26 @@
   </admin_templates>
   <admin_template_modifications/>
   <code_events>
+    <event event_id="threemagw_message_callback_postsave"><![CDATA[<p>Called when the callback receives a message. It is called after the message has benn saved in the database.</p>
+
+<p>Callback signature:</p>
+<blockquote><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler, <em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult, <em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg, <em>array</em> &amp;$output, $messageSaved, $debugMode</code></blockquote>
+
+<p>Arguments:</p>
+<ol>
+	<li><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler</code> - the callback handler triggering this</li>
+	<li><code><em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult</code> - Threema PHP-SDK receive result.</li>
+	<li><code><em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg</code> - Threema PHP-SDK message result.</li>
+	<li><code><em>array</em> &amp;$output</code> - The output, which is later written to log and potentially shown to Threema. Can be modified, but please only append strings. Array format: [$logType, $debugLog, $publicLog].</li>
+	<li><code><em>bool</em> $messageSaved</code> - If true the message has been saved to the database.<br>
+	<b>Note:</b> Even when disabled, the message ID is always saved in the database (for security reasons).</li>
+	<li><code><em>bool</em> $debugMode</code> - Whether the debug mode is activated.</li>
+</ol>
+
+<p><b>Event Hint:</b> Message type ID (see <code>ThreemaGateway_Model_Messages</code>) of the message processed. As you cannot use constants here, enter the integer value here.</p>]]></event>
     <event event_id="threemagw_message_callback_presave"><![CDATA[<p>Called when the callback receives a message. It is called before the message is saved and therefore you can even prevent message savings if needed.</p>
 
-<p><b>Note:</b> Before the message is saved in the database it is not guaranteed that replay attacks do not happen. Depending on what you do, you may consider to query the database (<code>ThreemaGateway_Handler_Action_Receiver->getMessageData</code>) for the message ID to ensure that it is not already saved.</p>
+<p><b>Note:</b> Before the message is saved in the database it is not guaranteed that replay attacks do not happen. Depending on what you do, you may consider to query the database (<code>ThreemaGateway_Handler_Action_Receiver->messageIsReceived</code>) to ensure that it is not already saved.</p>
 
 <p>Callback signature:</p>
 <blockquote><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler, <em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult, <em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg, <em>array</em> &amp;$output, &amp;$saveMessage, $debugMode</code></blockquote>
@@ -131,7 +148,7 @@
 	<li><code><em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg</code> - Threema PHP-SDK message result.</li>
 	<li><code><em>array</em> &amp;$output</code> - The output, which is later written to log and potentially shown to Threema. Can be modified, but please only append strings. Array format: [$logType, $debugLog, $publicLog].</li>
 	<li><code><em>bool</em> &amp;$saveMessage</code> - If true the message is saved to the database (default). Can be manipulated to not save the message.<br>
-	<b>Note:</b> Even when disabled, the message ID always saved in the database (for security reasons).</li>
+	<b>Note:</b> Even when disabled, the message ID is always saved in the database (for security reasons).</li>
 	<li><code><em>bool</em> $debugMode</code> - Whether the debug mode is activated.</li>
 </ol>
 
@@ -141,7 +158,8 @@
     <listener event_id="file_health_check" execute_order="10" callback_class="ThreemaGateway_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description="Integrate add-on into health check"/>
     <listener event_id="init_dependencies" execute_order="10" callback_class="ThreemaGateway_Listener_InitDependencies" callback_method="addHelpers" active="1" hint="" description="Extend init_dependencies for template helpers"/>
     <listener event_id="load_class_controller" execute_order="5" callback_class="ThreemaGateway_Listener_LoadClassController" callback_method="extendAccountController" active="1" hint="XenForo_ControllerPublic_Account" description="Extend XF account controller"/>
-    <listener event_id="threemagw_message_callback_presave" execute_order="50" callback_class="ThreemaGateway_Listener_MessageCallback" callback_method="testCallback" active="1" hint="1" description="test callback"/>
+    <listener event_id="threemagw_message_callback_postsave" execute_order="50" callback_class="ThreemaGateway_Listener_MessageCallback" callback_method="testCallbackPostSave" active="1" hint="1" description="test callback (after saving message)"/>
+    <listener event_id="threemagw_message_callback_presave" execute_order="50" callback_class="ThreemaGateway_Listener_MessageCallback" callback_method="testCallbackPreSave" active="1" hint="1" description="test callback"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>

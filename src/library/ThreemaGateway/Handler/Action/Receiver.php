@@ -148,6 +148,40 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     }
 
     /**
+     * Checks whether a message is saved in the database.
+     *
+     * Note that this does not guarantee that other methods return any data as
+     * a message is also considered "received" when the actual data has
+     * already been deleted.
+     * All other methods return "null" in this case as they cannot return all of
+     * the requested data. This function however would return true.
+     *
+     * @param  string     $messageId
+     * @return bool
+     */
+    public function messageIsReceived($messageId)
+    {
+        $this->initiate();
+        /** @var ThreemaGateway_Model_Messages $model */
+        $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
+
+        // validate parameter
+        if (!$messageId) {
+            throw new XenForo_Exception('Parameter $messageId missing.');
+        }
+
+        // set options
+        $model->setMessageId($messageId, 'metamessage');
+
+        // query meta data
+        if ($model->getMessageMetaData(false, false)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Returns the list of all files.
      *
      * Grouping this result ({@see groupByMessageType()}) is not supported.

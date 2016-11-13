@@ -126,7 +126,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     }
 
     /**
-     * Sets the sender Threema ID(s) for querying it.
+     * Sets the sender Threema ID(s) for querying it/them.
      *
      * @param string $threemaIds one (string) or more (array) Threema IDs
      */
@@ -139,7 +139,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     }
 
     /**
-     * Sets the type code(s) for querying only one type.
+     * Sets the type code(s) for querying only one (or a few) type.
      *
      * Please use the TypeCode_* constants for specifying the type code(s).
      * You should avoid using this and rather use {@link getMessageDataByType()}
@@ -459,9 +459,10 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * type of the message.
      *
      * @param  bool       $groupById Set to true to group the data by the message ID
+     * @param  bool       $ignoreInvalid Set to true to remove data sets where the message content may be deleted
      * @return null|array
      */
-    public function getMessageMetaData($groupById = false)
+    public function getMessageMetaData($groupById = false, $ignoreInvalid = true)
     {
         $limitOptions = $this->prepareLimitFetchOptions($this->fetchOptions);
 
@@ -478,10 +479,12 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         }
 
         // remove invalid data sets (where message might be deleted)
-        foreach ($result as $i => $msgData) {
-            if (!array_key_exists('message_type_code', $msgData) ||
-                !$msgData['message_type_code']) {
-                    unset($result[$i]);
+        if ($ignoreInvalid) {
+            foreach ($result as $i => $msgData) {
+                if (!array_key_exists('message_type_code', $msgData) ||
+                    !$msgData['message_type_code']) {
+                        unset($result[$i]);
+                }
             }
         }
 

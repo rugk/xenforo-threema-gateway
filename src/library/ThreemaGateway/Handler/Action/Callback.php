@@ -246,26 +246,48 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             $debugMode
         ], $threemaMsg->getTypeCode());
 
-
         // save message in database
-        try {
-            if ($saveMessage) {
-                $this->saveMessage($receiveResult, $threemaMsg);
-            } else {
-                $this->saveMessageId($receiveResult->getMessageId());
-            }
-        } catch (Exception $e) {
-            $this->addLog($output, 'Saving message in database failed.', 'Saving message in database failed: ' . $e->getMessage());
-
-            // rethrow exception
-            throw $e;
+        if ($saveMessage) {
+            $this->saveMessage($receiveResult, $threemaMsg);
+        } else {
+            $this->saveMessageId($receiveResult->getMessageId());
         }
+
+        XenForo_CodeEvent::fire('threemagw_message_callback_postsave', [
+            $this,
+            $receiveResult,
+            $threemaMsg,
+            &$output,
+            $saveMessage,
+            $debugMode
+        ], $threemaMsg->getTypeCode());
 
         // delete decrypted data from memory
         // $this->getCryptTool()->removeVar($receiveResult);
         // $this->getCryptTool()->removeVar($threemaMsg);
 
         return $output;
+    }
+
+    /**
+     * Adds a string to the current log string or array.
+     *
+     * @param mixed $log string or array
+     * @param string $stringToAdd
+     */
+    public function addLog(&$log, $stringToAdd, $stringToAddDetail = null)
+    {
+        if (is_string($log)) {
+            $log .= PHP_EOL . $stringToAdd;
+        } else {
+            if ($stringToAddDetail) {
+                $log[1] .= PHP_EOL . $stringToAddDetail;
+            } else {
+                $log[1] .= PHP_EOL . $stringToAdd;
+            }
+
+            $log[2] .= PHP_EOL . $stringToAdd;
+        }
     }
 
     /**
@@ -402,27 +424,6 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     protected function normalizeFilePath($filepath)
     {
         return basename($filepath);
-    }
-
-    /**
-     * Adds a string to the current log string or array.
-     *
-     * @param mixed $log string or array
-     * @param string $stringToAdd
-     */
-    protected function addLog(&$log, $stringToAdd, $stringToAddDetail = null)
-    {
-        if (is_string($output)) {
-            $output .= PHP_EOL . $stringToAdd;
-        } else {
-            if ($stringToAddDetail) {
-                $output[1] .= PHP_EOL . $stringToAddDetail;
-            } else {
-                $output[1] .= PHP_EOL . $stringToAdd;
-            }
-
-            $output[2] .= PHP_EOL . $stringToAdd;
-        }
     }
 
     /**
