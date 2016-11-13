@@ -11,21 +11,6 @@
 class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
 {
     /**
-     * @var string database table (prefix) for messages
-     */
-    const DbTableMessages = 'xf_threemagw_messages';
-
-    /**
-     * @var string database table for files
-     */
-    const DbTableFiles = 'xf_threemagw_files';
-
-    /**
-     * @var string database table for acknowledged messages
-     */
-    const DbTableAckMsgs = 'xf_threemagw_ackmsgs';
-
-    /**
      * @var string extra data - files
      */
     const DataFiles = 'files';
@@ -51,21 +36,17 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'maxLength' => 16
                 ],
                 'message_type_code' => [
-                    'type' => self::TYPE_UINT,
-                    'required'  => true
+                    'type' => self::TYPE_UINT
                 ],
                 'sender_threema_id' => [
                     'type' => self::TYPE_STRING,
-                    'required'  => true,
                     'maxLength' => 8
                 ],
                 'date_send' => [
-                    'type' => self::TYPE_UINT,
-                    'required'  => true
+                    'type' => self::TYPE_UINT
                 ],
                 'date_received' => [
                     'type' => self::TYPE_UINT,
-                    'required'  => true,
                     'default' => XenForo_Application::$time
                 ]
             ],
@@ -284,13 +265,51 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
             if (
                 !array_key_exists($tableName, $newData) || // no data OR
                 !array_key_exists('message_id', $newData[$tableName]) || // missing message_id OR
-                count($newData[$tableName]) == 1 // message_id as the only data set
+                (count($newData[$tableName]) == 1 && $tableName != ThreemaGateway_Model_Messages::DbTableMessages) // message_id as the only data set (and it's not the main message table where this is valid<)
             ) {
                 // and remove them
                 unset($this->_fields[$tableName]);
             }
         }
 
+        // check whether there is other data in the main table
+        /** @var $isOtherData whether in the main table is other data than the message ID */
+        $isOtherData = false;
+        foreach ($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages] as $field => $fieldData) {
+            if ($field == 'message_id') {
+                // skip as requirement already checked
+                continue;
+            }
+
+            if ($this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages)) {
+                $isOtherData = true;
+                break;
+            }
+        }
+
+        // validate data (either main table contains only message ID *OR* it all required data fields)
+        foreach ($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages] as $field => $fieldData) {
+            if ($field == 'message_id') {
+                // skip as requirement already checked
+                continue;
+            }
+
+            if ($isOtherData) {
+                // table contains data, but required key is missing
+                if (!$this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages)) {
+                    $this->_triggerRequiredFieldError(ThreemaGateway_Model_Messages::DbTableMessages, $field);
+                }
+            } else {
+                // table does not contain data and key is given altghough it should not be given
+                if ($this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages)) {
+                    $this->error($field . ' is given altghough it must not be given.', $field, false);
+                } else {
+                    // make sure data is really "null" and not some other type of data by removing it completly from Model
+                    unset($this->_newData[ThreemaGateway_Model_Messages::DbTableMessages][$field]);
+                    unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages][$field]);
+                }
+            }
+        }
         // set correct character encoding
         $this->_db->query('SET NAMES utf8mb4');
 
@@ -406,11 +425,9 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         $tableKeys = array_keys($tableFields);
 
         // remove values from database
-        $sql = 'UPDATE `' .  ThreemaGateway_Model_Messages::DbTableMessages . '`
+        $this->_db->query('UPDATE `' .  ThreemaGateway_Model_Messages::DbTableMessages . '`
             SET `' . implode('`=null, `',  $tableKeys) . '`=null
-            WHERE ' . $this->getUpdateCondition(ThreemaGateway_Model_Messages::DbTableMessages);
-        var_dump($sql);
-        $this->_db->query($sql);
+            WHERE ' . $this->getUpdateCondition(ThreemaGateway_Model_Messages::DbTableMessages));
     }
 
     /**

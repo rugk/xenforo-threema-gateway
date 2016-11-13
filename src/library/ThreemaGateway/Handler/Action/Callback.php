@@ -11,21 +11,6 @@
 class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Action_Abstract
 {
     /**
-     * @var string database table (prefix) for messages
-     */
-    const DbTableMessages = 'xf_threemagw_messages';
-
-    /**
-     * @var string database table for files
-     */
-    const DbTableFiles = 'xf_threemagw_files';
-
-    /**
-     * @var string database table for acknowledged messages
-     */
-    const DbTableAckMsgs = 'xf_threemagw_ackmsgs';
-
-    /**
      * @var XenForo_Input raw parameters
      */
     protected $input;
@@ -223,7 +208,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         }
 
         try {
-            /* ReceiveMessageResult */
+            /** @var Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult */
             $receiveResult = $this->getE2EHelper()->receiveMessage(
                 $this->filtered['from'],
                 $this->filtered['messageId'],
@@ -241,7 +226,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             throw new XenForo_Exception('Message cannot be processed: [ResultErrors] ' . implode('|', $receiveResult->getErrors()));
         }
 
-        /** @var ThreemaMessage */
+        /** @var Threema\MsgApi\Messages\ThreemaMessage */
         $threemaMsg = $receiveResult->getThreemaMessage();
 
         // create detailed log when debug mode is enabled
@@ -249,24 +234,36 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             $output = $this->getLogData($receiveResult, $threemaMsg);
         }
 
+        /** @var bool $saveMessage whether to save the message to DB. */
+        $saveMessage = true;
+
+        XenForo_CodeEvent::fire('threemagw_message_callback_presave', [
+            $this,
+            $receiveResult,
+            $threemaMsg,
+            &$output,
+            &$saveMessage,
+            $debugMode
+        ], $threemaMsg->getTypeCode());
+
+
         // save message in database
         try {
-            $this->saveMessage($receiveResult, $threemaMsg);
-        } catch (Exception $e) {
-            if (is_string($output)) {
-                $output .= PHP_EOL . 'Saving message in database failed.';
+            if ($saveMessage) {
+                $this->saveMessage($receiveResult, $threemaMsg);
             } else {
-                $output[1] .= PHP_EOL . 'Saving message in database failed: ' . $e->getMessage();
-                $output[2] .= PHP_EOL . 'Saving message in database failed.';
+                $this->saveMessageId($receiveResult->getMessageId());
             }
+        } catch (Exception $e) {
+            $this->addLog($output, 'Saving message in database failed.', 'Saving message in database failed: ' . $e->getMessage());
 
             // rethrow exception
             throw $e;
         }
 
         // delete decrypted data from memory
-        $this->getCryptTool()->removeVar($receiveResult);
-        $this->getCryptTool()->removeVar($threemaMsg);
+        // $this->getCryptTool()->removeVar($receiveResult);
+        // $this->getCryptTool()->removeVar($threemaMsg);
 
         return $output;
     }
@@ -275,8 +272,8 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      * Returns an array with a not so detailed[2] and a very detailed[1] log
      * of the received message.
      *
-     * @param ReceiveMessageResult $receiveResult Threema MsgApi receive result
-     * @param ThreemaMessage $threemaMsg Threema MsgApi message
+     * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult Threema MsgApi receive result
+     * @param Threema\MsgApi\Messages\ThreemaMessage $threemaMsg Threema MsgApi message
      *
      * @return array[null, string, string]
      */
@@ -325,9 +322,8 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     /**
      * Saves a decrypted message in the database
      *
-     * @todo
-     * @param ReceiveMessageResult $receiveResult Threema MsgApi receive result
-     * @param ThreemaMessage $threemaMsg Threema MsgApi message
+     * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult Threema MsgApi receive result
+     * @param Threema\MsgApi\Messages\ThreemaMessage $threemaMsg Threema MsgApi message
      *
      * @throws XenForo_Exception
      */
@@ -336,17 +332,17 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
 
         $dataWriter->set('message_id', $receiveResult->getMessageId()); // this is set for all tables
-        $dataWriter->set('message_type_code', $threemaMsg->getTypeCode(), self::DbTableMessages);
-        $dataWriter->set('sender_threema_id', $this->filtered['from'], self::DbTableMessages);
-        $dataWriter->set('date_send', $this->filtered['date'], self::DbTableMessages);
+        $dataWriter->set('message_type_code', $threemaMsg->getTypeCode(), ThreemaGateway_Model_Messages::DbTableMessages);
+        $dataWriter->set('sender_threema_id', $this->filtered['from'], ThreemaGateway_Model_Messages::DbTableMessages);
+        $dataWriter->set('date_send', $this->filtered['date'], ThreemaGateway_Model_Messages::DbTableMessages);
         // $dataWriter->set('date_received', XenForo_Application::$time); //= default
 
         // files
         if (count($receiveResult->getFiles()) >= 1) {
             $fileList = $receiveResult->getFiles();
             // set current (first) type/path
-            $dataWriter->set('file_type', key($fileList), self::DbTableFiles);
-            $dataWriter->set('file_path', $this->normalizeFilePath(current($fileList)), self::DbTableFiles);
+            $dataWriter->set('file_type', key($fileList), ThreemaGateway_Model_Messages::DbTableFiles);
+            $dataWriter->set('file_path', $this->normalizeFilePath(current($fileList)), ThreemaGateway_Model_Messages::DbTableFiles);
             // remove current value from array
             unset($fileList[key($fileList)]);
             // pass as extra data for later saving
@@ -355,26 +351,43 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
 
         // set values for each message type
         if ($threemaMsg instanceof Threema\MsgApi\Messages\TextMessage) {
-            $dataWriter->set('text', $threemaMsg->getText(), self::DbTableMessages . '_text');
+            $dataWriter->set('text', $threemaMsg->getText(), ThreemaGateway_Model_Messages::DbTableMessages . '_text');
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
-            $dataWriter->set('receipt_type', $threemaMsg->getReceiptType(), self::DbTableMessages . '_delivery_receipt');
+            $dataWriter->set('receipt_type', $threemaMsg->getReceiptType(), ThreemaGateway_Model_Messages::DbTableMessages . '_delivery_receipt');
 
             $ackedMsgIds = $this->bin2hexArray($threemaMsg->getAckedMessageIds());
             if (count($ackedMsgIds) >= 1) {
                 // set current (first) type/path
-                $dataWriter->set('ack_message_id', $ackedMsgIds[0], self::DbTableAckMsgs);
+                $dataWriter->set('ack_message_id', $ackedMsgIds[0], ThreemaGateway_Model_Messages::DbTableAckMsgs);
                 // remove current value from array
                 unset($ackedMsgIds[0]);
                 // pass as extra data for later saving
                 $dataWriter->setExtraData(ThreemaGateway_DataWriter_Messages::DataAckedMsgIds, $ackedMsgIds);
             }
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\FileMessage) {
-            $dataWriter->set('file_size', $threemaMsg->getSize(), self::DbTableMessages . '_file');
-            $dataWriter->set('file_name', $threemaMsg->getFilename(), self::DbTableMessages . '_file');
-            $dataWriter->set('mime_type', $threemaMsg->getMimeType(), self::DbTableMessages . '_file');
+            $dataWriter->set('file_size', $threemaMsg->getSize(), ThreemaGateway_Model_Messages::DbTableMessages . '_file');
+            $dataWriter->set('file_name', $threemaMsg->getFilename(), ThreemaGateway_Model_Messages::DbTableMessages . '_file');
+            $dataWriter->set('mime_type', $threemaMsg->getMimeType(), ThreemaGateway_Model_Messages::DbTableMessages . '_file');
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\ImageMessage) {
-            $dataWriter->set('file_size', $threemaMsg->getLength(), self::DbTableMessages . '_image');
+            $dataWriter->set('file_size', $threemaMsg->getLength(), ThreemaGateway_Model_Messages::DbTableMessages . '_image');
         }
+
+        return $dataWriter->save();
+    }
+
+    /**
+     * Only saves a message ID to the database to prevent replay attacks.
+     *
+     * @param string $messageId
+     *
+     * @throws XenForo_Exception
+     */
+    protected function saveMessageId($messageId)
+    {
+        $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
+
+        $dataWriter->set('message_id', $messageId, ThreemaGateway_Model_Messages::DbTableMessages);
+        $dataWriter->set('date_received', null, ThreemaGateway_Model_Messages::DbTableMessages); // reset default value
 
         return $dataWriter->save();
     }
@@ -389,6 +402,27 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     protected function normalizeFilePath($filepath)
     {
         return basename($filepath);
+    }
+
+    /**
+     * Adds a string to the current log string or array.
+     *
+     * @param mixed $log string or array
+     * @param string $stringToAdd
+     */
+    protected function addLog(&$log, $stringToAdd, $stringToAddDetail = null)
+    {
+        if (is_string($output)) {
+            $output .= PHP_EOL . $stringToAdd;
+        } else {
+            if ($stringToAddDetail) {
+                $output[1] .= PHP_EOL . $stringToAddDetail;
+            } else {
+                $output[1] .= PHP_EOL . $stringToAdd;
+            }
+
+            $output[2] .= PHP_EOL . $stringToAdd;
+        }
     }
 
     /**

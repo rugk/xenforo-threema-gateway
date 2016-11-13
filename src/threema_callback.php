@@ -96,7 +96,9 @@ if ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode) {
         $fhandle = fopen($options->threema_gateway_logreceivedmsgs['path'], 'a');
         fwrite($fhandle, $logheader . $logMessage . PHP_EOL);
         if ($logExtra) {
-            fwrite($fhandle, PHP_EOL . var_export($logExtra, true) . PHP_EOL);
+            // error muted as circular refertence errors should be ignored (for
+            // some reason the output is still returned in this case)
+            fwrite($fhandle, PHP_EOL . @var_export($logExtra, true) . PHP_EOL);
         }
         fclose($fhandle);
     } catch (Exception $e) {
