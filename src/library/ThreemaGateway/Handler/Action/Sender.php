@@ -28,6 +28,7 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
 
         $threemaId = strtoupper($threemaId);
 
+        /** @var Threema\MsgApi\Receiver $receiver */
         $receiver = $this->getReceiver($threemaId);
 
         /** @var Threema\MsgApi\Commands\Results\SendSimpleResult $result */

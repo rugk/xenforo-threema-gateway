@@ -19,21 +19,21 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
      * Find public key. Returns false if the public key is not found in the
      * store.
      *
-     * @param  string      $threemaId
+     * @param string $threemaId
      *
-     * @return false|string
+     * @return null|string
      */
     public function findPublicKey($threemaId)
     {
-        /** @var mixed result of SQL query */
+        /** @var mixed $result result of SQL query */
         $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DbTable . '`
-                  WHERE `threemaid` = ?',
+                  WHERE `threema_id` = ?',
                   $threemaId);
 
-        if (is_array($result) && array_key_exists('publickey', $result)) {
-            return (string) $result['publickey'];
+        if (is_array($result) && array_key_exists('public_key', $result)) {
+            return (string) $result['public_key'];
         }
 
-        return false;
+        return null;
     }
 }

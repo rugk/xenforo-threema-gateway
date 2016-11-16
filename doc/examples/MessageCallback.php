@@ -16,12 +16,12 @@ class ThreemaGateway_Listener_MessageCallback
     /**
      * Receives text messages.
      *
-     * @param ThreemaGateway_Handler_Action_Callback $handler
-     * @param ReceiveMessageResult                   $receiveResult
-     * @param ThreemaMessage                         $threemaMsg
-     * @param array                                  $output        [$logType, $debugLog, $publicLog]
-     * @param bool                                   $saveMessage
-     * @param bool                                   $debugMode
+     * @param ThreemaGateway_Handler_Action_Callback      $handler
+     * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult
+     * @param Threema\MsgApi\Messages\ThreemaMessage      $threemaMsg
+     * @param array|string                                $output        [$logType, $debugLog, $publicLog]
+     * @param bool                                        $saveMessage
+     * @param bool                                        $debugMode
      *
      * @throws XenForo_Exception
      */
@@ -59,12 +59,12 @@ class ThreemaGateway_Listener_MessageCallback
     /**
      * Receives text messages after saving them.
      *
-     * @param ThreemaGateway_Handler_Action_Callback $handler
-     * @param ReceiveMessageResult                   $receiveResult
-     * @param ThreemaMessage                         $threemaMsg
-     * @param array                                  $output        [$logType, $debugLog, $publicLog]
-     * @param bool                                   $saveMessage
-     * @param bool                                   $debugMode
+     * @param ThreemaGateway_Handler_Action_Callback      $handler
+     * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult
+     * @param Threema\MsgApi\Messages\ThreemaMessage      $threemaMsg
+     * @param array|string                                $output        [$logType, $debugLog, $publicLog]
+     * @param bool                                        $saveMessage
+     * @param bool                                        $debugMode
      */
     public static function testCallbackPostSave(ThreemaGateway_Handler_Action_Callback $handler,
                                         Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,

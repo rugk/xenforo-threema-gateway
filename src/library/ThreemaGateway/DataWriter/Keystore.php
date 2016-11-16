@@ -23,12 +23,12 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
     {
         return [
             ThreemaGateway_Model_Keystore::DbTable => [
-                'threemaid' => [
+                'threema_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
                     'maxLength' => 8
                 ],
-                'publickey'    => [
+                'public_key'    => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
                     'maxLength' => 64
@@ -64,15 +64,5 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
     protected function _getUpdateCondition($tableName)
     {
         return '';
-    }
-
-    /**
-     * Get the keystore model.
-     *
-     * @return ThreemaGateway_Model_Keystore
-     */
-    protected function _getKeystoreModel()
-    {
-        return $this->getModelFromCache('ThreemaGateway_Model_Keystore');
     }
 }

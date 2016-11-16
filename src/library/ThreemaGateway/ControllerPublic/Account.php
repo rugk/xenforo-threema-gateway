@@ -12,6 +12,14 @@
 class ThreemaGateway_ControllerPublic_Account extends XFCP_ThreemaGateway_ControllerPublic_Account
 {
     /**
+     * @var array PROVIDER_ARRAY list of providers handled
+     */
+    const PROVIDER_ARRAY = [
+        'threemagw_conventional',
+        'threemagw_reversed'
+    ];
+
+    /**
      * Expand XenForos two factor enable managment as it is not properly implemented.
      *
      * https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047
@@ -33,7 +41,7 @@ class ThreemaGateway_ControllerPublic_Account extends XFCP_ThreemaGateway_Contro
                 $providerData = $params['providerData'];
             }
 
-            if ($providerId == 'threemagwconventional') {
+            if (in_array($providerId, self::PROVIDER_ARRAY)) {
                 //get additional data
                 $visitor = XenForo_Visitor::getInstance();
 

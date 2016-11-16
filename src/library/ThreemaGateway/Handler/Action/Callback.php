@@ -57,7 +57,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      */
     public function validatePreConditions(&$errorString)
     {
-        /** @var XenForo_Options */
+        /* @var XenForo_Options */
         $options = XenForo_Application::getOptions();
 
         // only allow POST requests (unless GET is allowed in ACP)
@@ -113,7 +113,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     public function validateRequest(&$errorString)
     {
         // access token validation (authentication of Gateway server)
-        /** @var XenForo_Options */
+        /* @var XenForo_Options */
         $options = XenForo_Application::getOptions();
         if (!$options->threema_gateway_receivecallback) {
             $errorString = [null, 'Unverified request: access token is not configured', 'Unverified request'];
@@ -170,7 +170,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             return false;
         }
 
-        /** @var XenForo_Options */
+        /* @var XenForo_Options */
         $options   = XenForo_Application::getOptions();
         $rejectOld = false;
         if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
@@ -196,8 +196,8 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      * @param bool   $debugMode    Whether debugging information should be returned
      *                             (default: false)
      *
-     * @return string|array the message, which should be shown
      * @throws XenForo_Exception
+     * @return string|array      the message, which should be shown
      */
     public function processMessage($downloadPath, $debugMode = false)
     {
@@ -226,7 +226,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             throw new XenForo_Exception('Message cannot be processed: [ResultErrors] ' . implode('|', $receiveResult->getErrors()));
         }
 
-        /** @var Threema\MsgApi\Messages\ThreemaMessage */
+        /* @var Threema\MsgApi\Messages\ThreemaMessage */
         $threemaMsg = $receiveResult->getThreemaMessage();
 
         // create detailed log when debug mode is enabled
@@ -272,7 +272,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     /**
      * Adds a string to the current log string or array.
      *
-     * @param mixed $log string or array
+     * @param mixed  $log         string or array
      * @param string $stringToAdd
      */
     public function addLog(&$log, $stringToAdd, $stringToAddDetail = null)
@@ -291,11 +291,34 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     }
 
     /**
+     * Get request data.
+     *
+     * If you obmit the $key parameter you get an array of all request parameters.
+     * If not, you'll get one specific entry.
+     * In case nothing could be found, this returns "null".
+     *
+     * @param string $key
+     * @return string|array|null
+     */
+    public function getRequest($key = null)
+    {
+        if ($key === null) {
+            return $this->filtered;
+        }
+
+        if (array_key_exists($key, $this->filtered)) {
+            return $this->filtered[$key];
+        }
+
+        return null;
+    }
+
+    /**
      * Returns an array with a not so detailed[2] and a very detailed[1] log
      * of the received message.
      *
      * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult Threema MsgApi receive result
-     * @param Threema\MsgApi\Messages\ThreemaMessage $threemaMsg Threema MsgApi message
+     * @param Threema\MsgApi\Messages\ThreemaMessage      $threemaMsg    Threema MsgApi message
      *
      * @return array[null, string, string]
      */
@@ -342,10 +365,10 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     }
 
     /**
-     * Saves a decrypted message in the database
+     * Saves a decrypted message in the database.
      *
      * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult Threema MsgApi receive result
-     * @param Threema\MsgApi\Messages\ThreemaMessage $threemaMsg Threema MsgApi message
+     * @param Threema\MsgApi\Messages\ThreemaMessage      $threemaMsg    Threema MsgApi message
      *
      * @throws XenForo_Exception
      */
@@ -415,7 +438,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     }
 
     /**
-     * Normalizes the file path to be
+     * Normalizes the file path to be.
      *
      * @param string $filepath
      * @todo Move this somewhere else, so it can be used in the data writer too.
@@ -436,9 +459,9 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     protected function bin2hexArray($bin)
     {
         $output = [];
-		foreach ($bin as $item) {
-			$output[] = $this->getCryptTool()->bin2hex($item);
-		}
+        foreach ($bin as $item) {
+            $output[] = $this->getCryptTool()->bin2hex($item);
+        }
         return  $output;
     }
 }

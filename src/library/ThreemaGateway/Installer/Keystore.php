@@ -25,8 +25,8 @@ class ThreemaGateway_Installer_Keystore
     {
         $db = XenForo_Application::get('db');
         $db->query('CREATE TABLE `' . self::DbTable . '`
-            (`threemaid` CHAR(8) NOT NULL PRIMARY KEY,
-            `publickey` CHAR(64) NOT NULL)
+            (`threema_id` CHAR(8) NOT NULL PRIMARY KEY,
+            `public_key` CHAR(64) NOT NULL)
             ');
     }
 

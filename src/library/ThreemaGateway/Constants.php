@@ -21,7 +21,7 @@ class ThreemaGateway_Constants
     /**
      * @var int Priority of 2FA methode in general
      */
-    const TfaBasePriority = 30;
+    const TfaBasePriority = 40;
 
     /**
      * @var string Regular expressions for Threema IDs

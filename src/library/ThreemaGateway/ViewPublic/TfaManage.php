@@ -8,7 +8,6 @@
  * @license MIT
  */
 
-// TODO: Use XFCP system here!(?)
 class ThreemaGateway_ViewPublic_TfaManage extends XenForo_ViewPublic_Base
 {
     public function renderHtml()

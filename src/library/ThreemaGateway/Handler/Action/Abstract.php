@@ -11,12 +11,12 @@
 class ThreemaGateway_Handler_Action_Abstract
 {
     /**
-     * Gateway PHP SDK
+     * Gateway PHP SDK Singleton
      *
      * This variable is private as {@link getSdk()} should be used. This makes
      * sure the SDK is only initialized when it is really needed.
      *
-     * @var ThreemaGateway_Handler_PhpSdk
+     * @var singleton
      */
     private $sdk = null;
 
@@ -59,7 +59,7 @@ class ThreemaGateway_Handler_Action_Abstract
     /**
      * Returns the PHP SDK E2EHelper.
      *
-     * @return E2EHelper
+     * @return Threema\MsgApi\Helpers\E2EHelper
      */
     protected function getE2EHelper()
     {

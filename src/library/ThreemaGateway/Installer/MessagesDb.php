@@ -92,8 +92,8 @@ class ThreemaGateway_Installer_MessagesDb
             `message_id` CHAR(16) NOT NULL COMMENT \'the id of the delivery receipt message, which acknowledges other messages\',
             `ack_message_id` CHAR(16) NOT NULL COMMENT \'the id of the message, which has been acknowledged \',
             PRIMARY KEY(`ack_id`),
-            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
-            ADD INDEX(`ack_message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`),
+            INDEX(`ack_message_id`)
             ) COMMENT=\'Stores acknowledged message IDs.\'');
     }
 

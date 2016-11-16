@@ -170,7 +170,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
 			return false;
 		}
 
-        /** @var array $existing Build array of existing data. */
+        /** @var array $existing Array of existing data. (filled below) */
         $existing = [];
 
         $this->_getMessagesModel()->setMessageId($messageId);

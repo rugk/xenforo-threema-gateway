@@ -325,13 +325,19 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         }
 
         // prepare query
+        /** @var string $limitOptions */
         $limitOptions     = $this->prepareLimitFetchOptions($this->fetchOptions);
+        /** @var string $conditionsClause */
         $conditionsClause = $this->getConditionsForClause($this->fetchOptions['where']);
+        /** @var string $orderByClause */
         $orderByClause    = $this->getOrderByClause(self::OrderChoice, $this->fetchOptions);
 
         // query data
+        /** @var array|null $output */
         $output      = null;
+        /** @var array|null $result database query result */
         $result      = null;
+        /** @var string $resultindex index to use for additional data from query */
         $resultindex = '';
         switch ($messageType) {
             case self::TypeCode_DeliveryMessage:
@@ -571,6 +577,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      */
     public function groupArray($array, $indexKey, $ignoreIndex = false)
     {
+        /** @var array $output */
         $output = [];
         foreach ($array as $i => $value) {
             if ($ignoreIndex) {

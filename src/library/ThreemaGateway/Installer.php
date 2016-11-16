@@ -21,8 +21,8 @@ class ThreemaGateway_Installer
      */
     public static function install($installedAddon)
     {
-        /** @var array An array with the models of all providers */
-        $ProviderModells = self::getProviderModells();
+        /** @var array $providerModells An array with the models of all providers */
+        $providerModells = self::getProviderModells();
 
         // check requirements of Gateway
         if (!self::meetsRequirements($error)) {
@@ -30,12 +30,13 @@ class ThreemaGateway_Installer
         }
 
         // Get installed add-on version
-        $OldAddonVersion = is_array($installedAddon) ? $installedAddon['version_id'] : 0;
+        /** @var int $oldAddonVersion internal version number of installed addon version */
+        $oldAddonVersion = is_array($installedAddon) ? $installedAddon['version_id'] : 0;
 
         // Not installed
-        if ($OldAddonVersion == 0) {
+        if ($oldAddonVersion == 0) {
             // add tfa providers to database
-            foreach ($ProviderModells as $provider) {
+            foreach ($providerModells as $provider) {
                 $provider->add();
             }
 
@@ -68,9 +69,14 @@ class ThreemaGateway_Installer
             $userFieldWriter->save();
 
             // create tables for messages
-            /** @var ThreemaGateway_Installer_MessagesDb */
+            /** @var ThreemaGateway_Installer_MessagesDb $messageDbInstaller */
             $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
             $messageDbInstaller->create();
+
+            // create tfa tables
+            /** @var ThreemaGateway_Installer_TfaPendingConfirmMsgs $prendingConfirmMsgInstaller */
+            $prendingConfirmMsgInstaller = new ThreemaGateway_Installer_TfaPendingConfirmMsgs;
+            $prendingConfirmMsgInstaller->create();
         }
     }
 
@@ -79,16 +85,21 @@ class ThreemaGateway_Installer
      */
     public static function uninstall()
     {
+        // delete tfa tables
+        /** @var ThreemaGateway_Installer_TfaPendingConfirmMsgs $prendingConfirmMsgInstaller */
+        $prendingConfirmMsgInstaller = new ThreemaGateway_Installer_TfaPendingConfirmMsgs;
+        $prendingConfirmMsgInstaller->destroy();
+
         // remove message tables
-        /** @var ThreemaGateway_Installer_MessagesDb */
+        /** @var ThreemaGateway_Installer_MessagesDb $messageDbInstaller */
         $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
         $messageDbInstaller->destroy();
 
-        /** @var array An array with the modells of all providers */
-        $ProviderModells = self::getProviderModells();
+        /** @var array $providerModells An array with the modells of all providers */
+        $providerModells = self::getProviderModells();
 
         // delete tfa provider from database
-        foreach ($ProviderModells as $provider) {
+        foreach ($providerModells as $provider) {
             $provider->delete();
         }
 
@@ -103,15 +114,16 @@ class ThreemaGateway_Installer
         $permissionsInstaller->deleteAll();
 
         // delete custom user field (if it exists)
+        /** @var XenForo_Model_UserField $userFieldModel */
         $userFieldModel = XenForo_Model::create('XenForo_Model_UserField');
         if ($userFieldModel->getUserFieldById('threemaid')) {
-            /** @var XenForo_DataWriter $userFieldWriter  */
+            /** @var XenForo_DataWriter $userFieldWriter */
             $userFieldWriter = XenForo_DataWriter::create('XenForo_DataWriter_UserField');
             $userFieldWriter->setExistingData('threemaid');
             $userFieldWriter->delete();
         }
 
-        /** @var XenForo_Options */
+        /** @var XenForo_Options $xenOptions */
         $xenOptions = XenForo_Application::getOptions();
 
         //delete debug log files
@@ -125,14 +137,18 @@ class ThreemaGateway_Installer
      */
     protected static function getProviderModells()
     {
-        /** @var array An array with the models of all providers */
+        /** @var array $ProviderModels An array with the models of all providers */
         $ProviderModels = [];
 
         // add provider
         $ProviderModels['conventional'] = new ThreemaGateway_Installer_TfaProvider(
-            ThreemaGateway_Constants::TfaIDprefix . 'conventional',
+            ThreemaGateway_Constants::TfaIDprefix . '_conventional',
             'ThreemaGateway_Tfa_Conventional',
-            ThreemaGateway_Constants::TfaBasePriority - 5);
+            ThreemaGateway_Constants::TfaBasePriority - 15);
+        $ProviderModels['reversed'] = new ThreemaGateway_Installer_TfaProvider(
+            ThreemaGateway_Constants::TfaIDprefix . '_reversed',
+            'ThreemaGateway_Tfa_Reversed',
+            ThreemaGateway_Constants::TfaBasePriority - 10);
 
         return $ProviderModels;
     }
@@ -147,24 +163,27 @@ class ThreemaGateway_Installer
      */
     protected static function meetsRequirements(&$error)
     {
+        /** @var bool $isError whether an error is triggered */
+        $isError = false;
+
         // check XenForo version
         if (XenForo_Application::$versionId < 1050051) {
-            $error = 'This add-on requires XenForo 1.5.0 or higher.';
-            return false;
+            $error .= 'This add-on requires XenForo 1.5.0 or higher.' . PHP_EOL;
+            $isError = true;
         }
 
         // check PHP version
         if (version_compare(PHP_VERSION, '5.4', '<')) {
-            $error = 'Threema Gateway requires PHP version 5.4 or higher. Current version: ' . PHP_VERSION;
-            return false;
+            $error .= 'Threema Gateway requires PHP version 5.4 or higher. Current version: ' . PHP_VERSION . PHP_EOL;
+            $isError = true;
         }
 
         // check MySql version
         if (mysqli_get_server_version() < 50503) { //require v5.5.3
-            $error = 'Threema Gateway requires MySQL version 5.5.3 or higher. Current version: ' . mysqli_get_server_info();
-            return false;
+            $error .= 'Threema Gateway requires MySQL version 5.5.3 or higher. Current version: ' . mysqli_get_server_info() . PHP_EOL;
+            $isError = true;
         }
 
-        return true;
+        return !$isError;
     }
 }

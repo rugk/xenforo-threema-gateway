@@ -424,6 +424,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         }
 
         if (!$this->isPrepared) {
+            /** @var ThreemaGateway_Model_Messages $model */
             $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
             $model->preQuery();
             $this->isPrepared = true;
