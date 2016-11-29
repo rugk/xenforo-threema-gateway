@@ -31,7 +31,7 @@ This is as secure as the first methods, but it may be more convenient for the us
 
 ![reversed sketch: server sends code to user, client sends it to server via Threema](images/Reversed.svg)
 
-The random code must not be takes as a secret here as the authentication is mostly done only by ensuring that the (previously registered) Threema ID sended a message stating to allow the login. The NaCl encryption ensures authentity of a message and the secret should just be unique to prevent potential replay attacks.
+The random code must not be taken as a secret here as the authentication is mostly done only by ensuring that the (previously registered) Threema ID sended a message stating to allow the login. The NaCl encryption ensures authentity of a message and the secret should just be unique to prevent potential replay attacks.
 
 ## Fast login
 **Pro:** Very convenient and fast to use  
@@ -46,4 +46,4 @@ This is secure, because here the message ID acts as a secret only known to the s
 By acknowledging a message the client creates an authenticated and end-to-end-encrypted message stating that the previously received message ID (and therefore the message) has been acknowledged. As the message asks the question whether to allow login this is a cryptographic proof of the users decicion and can therefore be validated by the server.
 
 The security mostly depends on how the user can estimate the vadility of the login request. An attacker could try to login at the same time and trick the user into acknowledging the wrong message.
-There is also the change that a user accidentially ackknowledges the wrong message by choosing the wrong button, which immediately and non-revokably allows the login.
+There is also the chance that a user accidentially ackknowledges the wrong message by choosing the wrong button, which immediately and non-revocably permits the login.

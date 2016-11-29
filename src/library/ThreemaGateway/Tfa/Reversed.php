@@ -100,6 +100,9 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             return [];
         }
 
+        /** @var array $triggerData */
+        $triggerData = [];
+
         /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
 
@@ -108,30 +111,24 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
 
         //code is only valid for some time
         if ($context == 'setup') {
-            $providerData['validationTime'] = $options->threema_gateway_tfa_reversed_validation_setup * 60; //default: 10 minutes
+            $triggerData['validationTime'] = $options->threema_gateway_tfa_reversed_validation_setup * 60; //default: 10 minutes
         } else {
-            $providerData['validationTime'] = $options->threema_gateway_tfa_reversed_validation * 60; //default: 3 minutes
+            $triggerData['validationTime'] = $options->threema_gateway_tfa_reversed_validation * 60; //default: 3 minutes
         }
 
-        $providerData['code']          = $code;
-        $providerData['codeGenerated'] = XenForo_Application::$time;
+        $triggerData['code']          = $code;
+        $triggerData['codeGenerated'] = XenForo_Application::$time;
 
-        // save data in session
-        /** @var XenForo_Session $session */
-        $session = XenForo_Application::getSession();
-        /** @var string $sessionKey */
-        $sessionKey = 'tfaData_' . $this->_providerId . '_trigger';
-        $session->set($sessionKey, $providerData);
-        $session->save(); // TODO: Problem: Session is already read-only
+        $providerData = array_merge($providerData, $triggerData);
 
         // most importantly register message request for Threema callback
         $this->registerPendingConfirmationMessage(
             $providerData,
             ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUESTCODE,
-            $sessionKey
+            $user
         );
 
-        return [];
+        return $triggerData;
     }
 
     /**
@@ -149,6 +146,10 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
                                         array $providerData, array $triggerData)
     {
         parent::renderVerification($view, $context, $user, $providerData, $triggerData);
+
+        if ($providerData['useNumberSmilies']) {
+            $triggerData['codeSmileys'] = ThreemaGateway_Handler_Emoji::parseUnicode(ThreemaGateway_Handler_Emoji::replaceDigits($triggerData['code']));
+        }
 
         $params = [
             'data' => $providerData,
@@ -180,30 +181,23 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             return false;
         }
 
-        // get session data
-        /** @var XenForo_Session $session */
-        $session = XenForo_Application::getSession();
-        /** @var string $sessionKey */
-        $sessionKey = 'tfaData_' . $this->_providerId . '_trigger';
-        $newProviderData = $session->get($sessionKey);
-
         // check whether code has been received at all
-        if (!isset($newProviderData['receivedCode'])) {
+        if (!isset($providerData['receivedCode'])) {
             return false;
         }
 
         // prevent replay attacks
-        if (!$this->verifyCodeReplay($providerData, $newProviderData['receivedCode'])) {
+        if (!$this->verifyCodeReplay($providerData, $providerData['receivedCode'])) {
             return false;
         }
 
         // check whether the code is the same as required
-        if (!$this->stringCompare($providerData['code'], $newProviderData['receivedCode'])) {
+        if (!$this->stringCompare($providerData['code'], $providerData['receivedCode'])) {
             return false;
         }
 
         // save current code for later replay attack checks
-        $providerData['lastCode']     = $newProviderData['receivedCode'];
+        $providerData['lastCode']     = $providerData['receivedCode'];
         $providerData['lastCodeTime'] = XenForo_Application::$time;
         unset($providerData['code']);
         unset($providerData['codeGenerated']);
@@ -291,7 +285,6 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
 
         //add other options to provider data
         $providerData['useNumberSmilies'] = $input->filterSingle('useNumberSmilies', XenForo_Input::BOOLEAN);
-        $providerData['useShortMessage']  = $input->filterSingle('useShortMessage', XenForo_Input::BOOLEAN);
 
         return $providerData;
     }
@@ -421,11 +414,17 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             //show first setup page (you can enter your Threema ID)
             $context = 'firstsetup';
 
+            //set default values of options
+            $providerData['useNumberSmilies'] = true;
+
             $threemaId = $this->getDefaultThreemaId($user);
         } else {
             //first manage page ($context = setup)
             $threemaId = $providerData['threemaid'];
         }
+
+        /** @var XenForo_Options $xenOptions */
+        $xenOptions = XenForo_Application::getOptions();
 
         /** @var array $viewParams parameters for XenForo_ControllerResponse_View */
         $viewParams = [
@@ -437,7 +436,10 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             'newTriggerData' => $newTriggerData,
             'showSetup' => $showSetup,
             'context' => $context,
-            'threemaId' => $threemaId
+            'threemaId' => $threemaId,
+            'https' => XenForo_Application::$secure,
+            'showqrcode' => $xenOptions->threema_gateway_tfa_reversed_show_qr_code,
+            'gatewayid' => $this->GatewaySettings->getId()
         ];
         return $controller->responseView(
             'ThreemaGateway_ViewPublic_TfaManage',

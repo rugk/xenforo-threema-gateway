@@ -45,9 +45,7 @@ class ThreemaGateway_Listener_MessageCallback
         $receiver = new ThreemaGateway_Handler_Action_Receiver;
 
         // first check whether message has already been saved to prevent replay attacks
-        if ($receiver->messageIsReceived($receiveResult->getMessageId())) {
-            throw new XenForo_Exception('Message already received!');
-        }
+        $handler->assertNoReplayAttack($receiveResult->getMessageId());
 
         // it is useful to add some logging messages for easier debugging
         $handler->addLog($output, 'Message will not be saved to database!');

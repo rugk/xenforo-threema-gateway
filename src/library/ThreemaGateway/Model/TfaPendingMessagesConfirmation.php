@@ -46,11 +46,12 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
      * the pending type.
      *
      * @param string $threemaId
+     * @param string $providerId Provider ID of 2FA method
      * @param int    $pendingType use the PENDING_* constants
      *
      * @return null|array
      */
-    public function getPending($threemaId, $pendingType = null)
+    public function getPending($threemaId, $providerId = null, $pendingType = null)
     {
         /** @var array $conditionsArray */
         $conditionsArray = [
@@ -59,6 +60,11 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
         $paramsArray = [
             $threemaId
         ];
+
+        if ($providerId !== null) {
+            $conditionsArray[] = '`provider_id` = ?';
+            $paramsArray[]     = $providerId;
+        }
 
         if ($pendingType !== null) {
             $conditionsArray[] = '`pending_type` = ?';

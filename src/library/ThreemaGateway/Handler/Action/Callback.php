@@ -21,6 +21,12 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     protected $filtered;
 
     /**
+     * @var bool whether it has been checked that the message is not used in a
+     *           replay attack
+     */
+    protected $messageReplayChecked = false;
+
+    /**
      * Initializes handling for processing a request callback.
      *
      * @param Zend_Controller_Request_Http $request
@@ -51,13 +57,13 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      * It makes sure malwformed requests can be denied fastly without needing
      * to check the authentity/security of the message.
      *
-     * @param string $errorString Output error string
+     * @param string|array $errorString Output error string/array
      *
      * @return bool
      */
     public function validatePreConditions(&$errorString)
     {
-        /* @var XenForo_Options */
+        /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
 
         // only allow POST requests (unless GET is allowed in ACP)
@@ -106,14 +112,14 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      * request may change at any time and to avoid a loss of messages the
      * Gateway server is supposed to retry the delivery.
      *
-     * @param string $errorString Output error string
+     * @param string|array $errorString Output error string/array
      *
      * @return bool
      */
     public function validateRequest(&$errorString)
     {
         // access token validation (authentication of Gateway server)
-        /* @var XenForo_Options */
+        /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
         if (!$options->threema_gateway_receivecallback) {
             $errorString = [null, 'Unverified request: access token is not configured', 'Unverified request'];
@@ -158,7 +164,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      * It is used to prevent malformed (but verified) bad requests to get to the
      * decryption part, whcih cannot decrypt them anyway.
      *
-     * @param string $errorString Output error string
+     * @param string|array $errorString Output error string/array
      *
      * @return bool
      */
@@ -170,7 +176,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             return false;
         }
 
-        /* @var XenForo_Options */
+        /** @var XenForo_Options $options */
         $options   = XenForo_Application::getOptions();
         $rejectOld = false;
         if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
@@ -226,7 +232,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             throw new XenForo_Exception('Message cannot be processed: [ResultErrors] ' . implode('|', $receiveResult->getErrors()));
         }
 
-        /* @var Threema\MsgApi\Messages\ThreemaMessage */
+        /** @var Threema\MsgApi\Messages\ThreemaMessage $threemaMsg */
         $threemaMsg = $receiveResult->getThreemaMessage();
 
         // create detailed log when debug mode is enabled
@@ -247,10 +253,16 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         ], $threemaMsg->getTypeCode());
 
         // save message in database
-        if ($saveMessage) {
-            $this->saveMessage($receiveResult, $threemaMsg);
-        } else {
-            $this->saveMessageId($receiveResult->getMessageId());
+        try {
+            if ($saveMessage) {
+                $this->saveMessage($receiveResult, $threemaMsg);
+            } else {
+                $this->saveMessageId($receiveResult->getMessageId());
+            }
+        } catch (Exception $e) {
+            // as XenForo does not allow Exception chaining, we better log the exception right now
+            XenForo_Error::logException($e);
+            throw new XenForo_Exception('Message could not be saved: [' . get_class($e) . '] ' . $e->getMessage());
         }
 
         XenForo_CodeEvent::fire('threemagw_message_callback_postsave', [
@@ -262,32 +274,64 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             $debugMode
         ], $threemaMsg->getTypeCode());
 
-        // delete decrypted data from memory
-        // $this->getCryptTool()->removeVar($receiveResult);
-        // $this->getCryptTool()->removeVar($threemaMsg);
-
         return $output;
     }
 
     /**
      * Adds a string to the current log string or array.
      *
-     * @param mixed  $log         string or array
-     * @param string $stringToAdd
+     * @param array|string $log         string or array
+     * @param string       $stringToAdd
      */
     public function addLog(&$log, $stringToAdd, $stringToAddDetail = null)
     {
+        // convert to array if neccessary or just add string
         if (is_string($log)) {
-            $log .= PHP_EOL . $stringToAdd;
-        } else {
             if ($stringToAddDetail) {
-                $log[1] .= PHP_EOL . $stringToAddDetail;
+                $log[1] = $log;
+                $log[2] = $log;
             } else {
-                $log[1] .= PHP_EOL . $stringToAdd;
+                $log .= PHP_EOL . $stringToAdd;
+                return;
             }
+        }
 
+        // add to array
+        if ($stringToAddDetail) {
+            $log[1] .= PHP_EOL . $stringToAddDetail;
+        } elseif ($stringToAdd) {
+            $log[1] .= PHP_EOL . $stringToAdd;
+        }
+
+        if ($stringToAdd) {
             $log[2] .= PHP_EOL . $stringToAdd;
         }
+    }
+
+    /**
+     * Checks whether a message is already saved. If so this may indicate a
+     * replay attack.
+     *
+     * @param string $messageId
+     *
+     * @throws XenForo_Exception
+     */
+    public function assertNoReplayAttack($messageId)
+    {
+        // do not check multiple times
+        if ($this->messageReplayChecked) {
+            return;
+        }
+
+        /** @var ThreemaGateway_Handler_Action_Receiver $receiver */
+        $receiver = new ThreemaGateway_Handler_Action_Receiver;
+
+        // first check whether message has already been saved to prevent replay attacks
+        if ($receiver->messageIsReceived($messageId)) {
+            throw new Exception('Message " ' . $messageId . ' " has already been received and is already saved. This may indicate a replay attack.');
+        }
+
+        $this->messageReplayChecked = true;
     }
 
     /**
@@ -297,7 +341,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      * If not, you'll get one specific entry.
      * In case nothing could be found, this returns "null".
      *
-     * @param string $key
+     * @param  string            $key
      * @return string|array|null
      */
     public function getRequest($key = null)
@@ -322,8 +366,10 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      *
      * @return array[null, string, string]
      */
-    protected function getLogData($receiveResult, $threemaMsg)
-    {
+    protected function getLogData(
+        Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,
+        Threema\MsgApi\Messages\ThreemaMessage $threemaMsg
+    ) {
         $EOL = PHP_EOL;
 
         // common heading
@@ -372,8 +418,10 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      *
      * @throws XenForo_Exception
      */
-    protected function saveMessage($receiveResult, $threemaMsg)
-    {
+    protected function saveMessage(
+        Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,
+        Threema\MsgApi\Messages\ThreemaMessage $threemaMsg
+    ) {
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
 
         $dataWriter->set('message_id', $receiveResult->getMessageId()); // this is set for all tables

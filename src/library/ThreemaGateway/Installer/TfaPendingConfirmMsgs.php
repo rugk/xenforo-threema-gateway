@@ -26,14 +26,13 @@ class ThreemaGateway_Installer_TfaPendingConfirmMsgs
         $db = XenForo_Application::get('db');
         $db->query('CREATE TABLE `' . self::DbTable . '`
             (`request_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-            `session_id` VARBINARY(32) NOT NULL,
             `threema_id` CHAR(8) NOT NULL,
+            `provider_id` VARBINARY(25) NOT NULL,
             `pending_type` TINYINT(3) UNSIGNED NOT NULL,
-            `session_key` VARCHAR(64) NOT NULL,
+            `user_id` INT(10) UNSIGNED NOT NULL,
+            `session_id` VARBINARY(32) NOT NULL,
             `expiry_date` INT(10) UNSIGNED NOT NULL,
             PRIMARY KEY(`request_id`),
-            INDEX(`threema_id`),
-            INDEX(`pending_type`),
             INDEX(`expiry_date`)
             ) COMMENT=\'Stores pending 2FA requests for confirmation messages for receiver/callback.\'');
     }

@@ -21,8 +21,8 @@ class ThreemaGateway_Installer
      */
     public static function install($installedAddon)
     {
-        /** @var array $providerModells An array with the models of all providers */
-        $providerModells = self::getProviderModells();
+        /** @var array $providerInstaller An array with the models of all providers */
+        $providerInstaller = self::getProviderInstaller();
 
         // check requirements of Gateway
         if (!self::meetsRequirements($error)) {
@@ -36,7 +36,7 @@ class ThreemaGateway_Installer
         // Not installed
         if ($oldAddonVersion == 0) {
             // add tfa providers to database
-            foreach ($providerModells as $provider) {
+            foreach ($providerInstaller as $provider) {
                 $provider->add();
             }
 
@@ -95,11 +95,13 @@ class ThreemaGateway_Installer
         $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
         $messageDbInstaller->destroy();
 
-        /** @var array $providerModells An array with the modells of all providers */
-        $providerModells = self::getProviderModells();
+        // TODO: remove user data of provider via XenForo_Model_Tfa
+
+        /** @var array $providerInstaller An array with the models of all providers */
+        $providerInstaller = self::getProviderInstaller();
 
         // delete tfa provider from database
-        foreach ($providerModells as $provider) {
+        foreach ($providerInstaller as $provider) {
             $provider->delete();
         }
 
@@ -131,26 +133,26 @@ class ThreemaGateway_Installer
     }
 
     /**
-     * Returns the provider models needed for modifying the database.
+     * Returns the provider installer needed for modifying the database.
      *
      * @return array
      */
-    protected static function getProviderModells()
+    protected static function getProviderInstaller()
     {
-        /** @var array $ProviderModels An array with the models of all providers */
-        $ProviderModels = [];
+        /** @var array $providerInstaller An array with the models of all providers */
+        $providerInstaller = [];
 
         // add provider
-        $ProviderModels['conventional'] = new ThreemaGateway_Installer_TfaProvider(
+        $providerInstaller['conventional'] = new ThreemaGateway_Installer_TfaProvider(
             ThreemaGateway_Constants::TfaIDprefix . '_conventional',
             'ThreemaGateway_Tfa_Conventional',
             ThreemaGateway_Constants::TfaBasePriority - 15);
-        $ProviderModels['reversed'] = new ThreemaGateway_Installer_TfaProvider(
+        $providerInstaller['reversed'] = new ThreemaGateway_Installer_TfaProvider(
             ThreemaGateway_Constants::TfaIDprefix . '_reversed',
             'ThreemaGateway_Tfa_Reversed',
             ThreemaGateway_Constants::TfaBasePriority - 10);
 
-        return $ProviderModels;
+        return $providerInstaller;
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Extent XenForo_ControllerPublic.
+ * Use XFCP to extend controller classes.
  *
  * @package ThreemaGateway
  * @author rugk

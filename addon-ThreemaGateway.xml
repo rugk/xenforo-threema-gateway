@@ -114,20 +114,40 @@
         <input type="text" name="code" id="ctrl_threemagw_code" class="textCtrl" />
 	</dd>
 </dl>]]></template>
+    <template title="two_step_threemagw_reversed"><![CDATA[<xen:require css="threemagw.css" />
+
+<xen:comment>main content begin</xen:comment>
+<p>
+	{xen:phrase tfa_threemagw_reversed_message_please_enter_code, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
+</p>
+
+<div class="threemagw_code">
+	{xen:phrase tfa_threemagw_reversed_show_code, 'code={$trigger.code}'}
+</div>
+<div class="threemagw_send_link">
+	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
+</div>
+<div class="threemagw_qrcode_send">
+	<xen:comment>TODO</xen:comment>
+</div>
+
+<p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>
+
+<xen:comment>main content end</xen:comment>]]></template>
   </admin_templates>
   <admin_template_modifications/>
   <code_events>
     <event event_id="threemagw_message_callback_postsave"><![CDATA[<p>Called when the callback receives a message. It is called after the message has benn saved in the database.</p>
 
 <p>Callback signature:</p>
-<blockquote><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler, <em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult, <em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg, <em>array</em> &amp;$output, $messageSaved, $debugMode</code></blockquote>
+<blockquote><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler, <em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult, <em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg, <em>array|string</em> &amp;$output, $messageSaved, $debugMode</code></blockquote>
 
 <p>Arguments:</p>
 <ol>
 	<li><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler</code> - the callback handler triggering this</li>
 	<li><code><em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult</code> - Threema PHP-SDK receive result.</li>
 	<li><code><em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg</code> - Threema PHP-SDK message result.</li>
-	<li><code><em>array</em> &amp;$output</code> - The output, which is later written to log and potentially shown to Threema. Can be modified, but please only append strings. Array format: [$logType, $debugLog, $publicLog].</li>
+	<li><code><em>array|string</em> &amp;$output</code> - The output, which is later written to log and potentially shown to Threema. Can be modified, but please only append strings. Array format: [$logType, $debugLog, $publicLog].</li>
 	<li><code><em>bool</em> $messageSaved</code> - If true the message has been saved to the database.<br>
 	<b>Note:</b> Even when disabled, the message ID is always saved in the database (for security reasons).</li>
 	<li><code><em>bool</em> $debugMode</code> - Whether the debug mode is activated.</li>
@@ -136,17 +156,17 @@
 <p><b>Event Hint:</b> Message type ID (see <code>ThreemaGateway_Model_Messages</code>) of the message processed. As you cannot use constants here, enter the integer value here.</p>]]></event>
     <event event_id="threemagw_message_callback_presave"><![CDATA[<p>Called when the callback receives a message. It is called before the message is saved and therefore you can even prevent message savings if needed.</p>
 
-<p><b>Note:</b> Before the message is saved in the database it is not guaranteed that replay attacks do not happen. Depending on what you do, you may consider to query the database (<code>ThreemaGateway_Handler_Action_Receiver->messageIsReceived</code>) to ensure that it is not already saved.</p>
+<p><b>Note:</b> Before the message is saved in the database it is not guaranteed that replay attacks do not happen. Depending on what you do, you may consider to query the database (<code>$handler->assertNoReplayAttack($messageId)</code>) to ensure that it is not already saved.</p>
 
 <p>Callback signature:</p>
-<blockquote><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler, <em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult, <em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg, <em>array</em> &amp;$output, &amp;$saveMessage, $debugMode</code></blockquote>
+<blockquote><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler, <em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult, <em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg, <em>array|string</em> &amp;$output, &amp;$saveMessage, $debugMode</code></blockquote>
 
 <p>Arguments:</p>
 <ol>
 	<li><code><em>ThreemaGateway_Handler_Action_Callback</em> $handler</code> - the callback handler triggering this</li>
 	<li><code><em>Threema\MsgApi\Helpers\ReceiveMessageResult</em> $receiveResult</code> - Threema PHP-SDK receive result.</li>
 	<li><code><em>Threema\MsgApi\Messages\ThreemaMessage</em> $threemaMsg</code> - Threema PHP-SDK message result.</li>
-	<li><code><em>array</em> &amp;$output</code> - The output, which is later written to log and potentially shown to Threema. Can be modified, but please only append strings. Array format: [$logType, $debugLog, $publicLog].</li>
+	<li><code><em>array|string</em> &amp;$output</code> - The output, which is later written to log and potentially shown to Threema. Can be modified, but please only append strings. Array format: [$logType, $debugLog, $publicLog].</li>
 	<li><code><em>bool</em> &amp;$saveMessage</code> - If true the message is saved to the database (default). Can be manipulated to not save the message.<br>
 	<b>Note:</b> Even when disabled, the message ID is always saved in the database (for security reasons).</li>
 	<li><code><em>bool</em> $debugMode</code> - Whether the debug mode is activated.</li>
@@ -157,7 +177,8 @@
   <code_event_listeners>
     <listener event_id="file_health_check" execute_order="10" callback_class="ThreemaGateway_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description="Integrate add-on into health check"/>
     <listener event_id="init_dependencies" execute_order="10" callback_class="ThreemaGateway_Listener_InitDependencies" callback_method="addHelpers" active="1" hint="" description="Extend init_dependencies for template helpers"/>
-    <listener event_id="load_class_controller" execute_order="5" callback_class="ThreemaGateway_Listener_LoadClassController" callback_method="extendAccountController" active="1" hint="XenForo_ControllerPublic_Account" description="Extend XF account controller"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThreemaGateway_Listener_LoadClass" callback_method="extendClass" active="1" hint="XenForo_Session" description="Extend XF class loader for session"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="ThreemaGateway_Listener_LoadClassController" callback_method="extendAccountController" active="1" hint="XenForo_ControllerPublic_Account" description="Extend XF account controller for 2FA"/>
     <listener event_id="threemagw_message_callback_presave" execute_order="160" callback_class="ThreemaGateway_Listener_TfaMessageCallback" callback_method="checkForReceiverCode" active="1" hint="1" description="2FA Reversed - message processing callback"/>
   </code_event_listeners>
   <cron/>
@@ -267,6 +288,12 @@ userfield</sub_options>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="205"/>
+    </option>
+    <option option_id="threema_gateway_tfa_reversed_show_qr_code" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="230"/>
     </option>
     <option option_id="threema_gateway_tfa_reversed_validation" edit_format="spinbox" data_type="positive_integer" can_backup="1">
       <default_value>3</default_value>
@@ -413,6 +440,9 @@ Add the ID of the custom user field in the input box, where it should be looked 
 It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed" version_id="2" version_string="0.2.0"><![CDATA[Activate Threema Gateway: Reversed]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_explain" version_id="2" version_string="0.2.0"><![CDATA[Allow users to use the "Reversed" 2FA method.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_reversed_show_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Show QR code of Gateway ID]]></phrase>
+    <phrase title="option_threema_gateway_tfa_reversed_show_qr_code_explain" version_id="2" version_string="0.2.0"><![CDATA[When enabled this suggests the user to scan the QR code of the Gateway ID. As you usually cannot meet a Gateway ID in person anyway, it is reasonable to offer this.<br>
+<b>Note:</b> For security reasons this option is always ignored when HTTPS is not used.]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_validation" version_id="2" version_string="0.2.0"><![CDATA[Validation time]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_validation_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid. (in minutes)]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_validation_setup" version_id="2" version_string="0.2.0"><![CDATA[Validation time when setting up]]></phrase>
@@ -445,6 +475,9 @@ When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, a
     <phrase title="permission_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Use Threema 2FA]]></phrase>
     <phrase title="permission_threemagw_use" version_id="1" version_string="0.1.0"><![CDATA[Use Threema Gateway]]></phrase>
     <phrase title="sendto_threema" version_id="1" version_string="0.1"><![CDATA[Send to Threema]]></phrase>
+    <phrase title="tfa_threemagw_add_threema_id_button" version_id="2" version_string="0.2.0"><![CDATA[Add Threema ID]]></phrase>
+    <phrase title="tfa_threemagw_add_threema_id_button_tooltip" version_id="2" version_string="0.2.0"><![CDATA[Adds {threemaid} to your contact list]]></phrase>
+    <phrase title="tfa_threemagw_contact_qrcode_text" version_id="2" version_string="0.2.0"><![CDATA[3mid:{threemaid},{publickey}]]></phrase>
     <phrase title="tfa_threemagw_conventional" version_id="1" version_string="0.1.0"><![CDATA[Threema - Conventional]]></phrase>
     <phrase title="tfa_threemagw_conventional_desc" version_id="1" version_string="0.1.0"><![CDATA[This will send you a 6 digit code through Threema to verify your login.{e2e}]]></phrase>
     <phrase title="tfa_threemagw_conventional_message" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Two-factor authentication
@@ -471,6 +504,9 @@ Validity: {validationTime}
 {board}
 {board_url}]]></phrase>
     <phrase title="tfa_threemagw_conventional_setup_descr" version_id="1" version_string="0.1"><![CDATA[This mode sends you a 6 digit code to your Threema ID, which you have to enter when logging in.]]></phrase>
+    <phrase title="tfa_threemagw_enter_own_threema_id_below" version_id="2" version_string="0.2.0"><![CDATA[Please enter your own Threema ID below.]]></phrase>
+    <phrase title="tfa_threemagw_i_like_smilies" version_id="2" version_string="0.2.0"><![CDATA[I like Emojis!]]></phrase>
+    <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only, if you like emoticons/smileys.]]></phrase>
     <phrase title="tfa_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[Threema - Reversed]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_text" version_id="2" version_string="0.2.0"><![CDATA[Send message]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_tooltip" version_id="2" version_string="0.2.0"><![CDATA[Send code via your mobile device]]></phrase>
@@ -484,11 +520,14 @@ In case you are on your desktop, you can scan the QR code.]]></phrase>
     <phrase title="tfa_threemagw_reversed_validation_time" version_id="2" version_string="0.2.0"><![CDATA[The code is valid for {validationTime}.]]></phrase>
     <phrase title="tfa_threemagw_setup_generaldescr" version_id="1" version_string="0.1"><![CDATA[This two factor authentication mode uses the <a href="https://threema.ch" target="_blank">Threema</a> app. Before you can proceed you have to download it. It is available <a href="https://threema.ch/get-threema" target="_blank">for many platforms</a>. <br />
 Setup your Threema ID and enter it below.]]></phrase>
+    <phrase title="tfa_threemagw_setup_please_add_threema_id" version_id="2" version_string="0.2.0"><![CDATA[Please add the Threema ID <b>{gatewayid}</b> to your contact list before proceeding.]]></phrase>
+    <phrase title="tfa_threemagw_setup_please_scan_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Please scan the following QR code with Threema before proceeding. The Threema ID <b>{gatewayid}</b> should be added!]]></phrase>
     <phrase title="tfa_threemagw_setup_public_key" version_id="1" version_string="0.1"><![CDATA[Public Key]]></phrase>
     <phrase title="tfa_threemagw_setup_public_key_descr" version_id="1" version_string="0.1"><![CDATA[Before proceeding, please confirm that the following fingerprint is correct. Often you can find it on the same page where you can also see your Threema ID and QR code.<br>
 <b>Key fingerprint:</b> {pubKeyShort}<br /><br />
 Please check each character of the code and confirm it is the same as displayed on your device. Should you notice any discrepancy when doing so, please <i>do not continue</i> and contact the forum admin.<br />
 The displayed fingerprint is derived from the public key, which is linked to your Threema ID. More information <a href="https://threema.ch/en/faq/threema_id" target="_blank">in the Threema FAQ</a>.]]></phrase>
+    <phrase title="tfa_threemagw_setup_use_button_below_to_add_threema_id" version_id="2" version_string="0.2.0"><![CDATA[In case you are currently using a device where Threema is installed you can just use the button below to add the ID:]]></phrase>
     <phrase title="tfa_threemagw_short_message_explain" version_id="1" version_string="0.1"><![CDATA[Uses short messages instead of long ones to allow you to see your verification code directly in the notification, so you do not have to open Threema to see it.]]></phrase>
     <phrase title="tfa_threemagw_use_number_smilies" version_id="1" version_string="0.1"><![CDATA[Use smilies as digits]]></phrase>
     <phrase title="tfa_threemagw_use_number_smilies_explain" version_id="1" version_string="0.1"><![CDATA[Replaces the numbers in the code with smilies.]]></phrase>
@@ -650,7 +689,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			<dd>
 				<p>{xen:phrase tfa_threemagw_reversed_setup_descr}</p>
 			</dd>
-		</dl>
+		</dl><p>
 	</xen:if>
 
 	<xen:if is="{$newProviderHtml}">
@@ -664,26 +703,77 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 
 		<input type="hidden" name="confirm" value="1" />
 	<xen:else />
-		<dl class="ctrlUnit">
-			<xen:comment>Show Threema ID input.</xen:comment>
-			<xen:include template="threemagw_threemaid_input_field" id="ctrl_threemagw_reversed_threemaid" />
-				
-			<xen:if is="{$context} == 'manage'">
-				<dt><label></label></dt>
-				<dd>
-					<p><b>Key fingerprint:</b> {xen:helper threemaidpubkeyshort, {$threemaid}}<br /><br /></p>
-				</dd>
-			</xen:if>
+		<xen:if is="{$context} == 'manage' or {$context} == 'firstsetup'">
+			<dl class="ctrlUnit">
+				<xen:comment>Show QR code or Threema Gateway ID</xen:comment>
+				<dt><label>{xen:phrase setup}:</label></dt>
 
-			<xen:if is="{$context} == 'firstsetup'">
-				<xen:comment>Show QR code or Threema ID</xen:comment>
 				<xen:comment>For security reasons the QR code is only shown when a HTTPS connection is used.</xen:comment>
-				<dt><label>{xen:phrase tfa_threemagw_setup_public_key}:</label></dt>
+				<xen:if is="{$https} AND {$showqrcode}">
+					<dt></dt>
+					<dd>
+						<p>{xen:phrase tfa_threemagw_setup_please_scan_qr_code, 'gatewayid={$gatewayid}'}</p>
+					</dd>
+
+					<dt></dt>
+					<dd>
+						<div style="text-align: center"><span id="GatewayIdQrCode" style="display: inline-block; background: white; padding: 15px"></span></div>
+					</dd>
+
+					<xen:comment>JS block responsible for parsing qr code.</xen:comment>
+					<xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />						
+					<script>
+					$(function()
+					{
+						var $el = $('#GatewayIdQrCode');
+						$el.qrcode({
+							text: '{xen:jsescape {xen:phrase tfa_threemagw_contact_qrcode_text, 'threemaid={$gatewayid}', 'publickey={xen:helper threemaidpubkey, {$gatewayid}}'}}'
+						});
+					});
+					</script>
+
+				<xen:else />
+					<dt></dt>
+					<dd>
+						<p>{xen:phrase tfa_threemagw_setup_please_add_threema_id, 'gatewayid={$gatewayid}'}</p>
+					</dd>
+				</xen:if>
+
+				<dt></dt>
 				<dd>
-					<p>{xen:phrase tfa_threemagw_setup_public_key_descr, 'threemaid={$data.threemaid}', 'pubKeyShort={xen:helper threemaidpubkeyshort, {$data.threemaid}}'}</p>
+					<p>{xen:phrase tfa_threemagw_setup_use_button_below_to_add_threema_id}</p>
 				</dd>
+
+				<dt></dt>
+				<dd>
+					<a style="margin: 10px" class="button" href="threema://add?id={$gatewayid}" title="{xen:phrase tfa_threemagw_add_threema_id_button_tooltip, 'threemaid={$gatewayid}'}" accesskey="c">{xen:phrase tfa_threemagw_add_threema_id_button, 'threemaid={$gatewayid}'}</a>
+				</dd>
+			</dl>
+		</xen:if>
+
+		<xen:comment>Show Threema ID input.</xen:comment>
+		<dl class="ctrlUnit">
+			<xen:if is="{$context} == 'manage' or {$context} == 'firstsetup'">
+				<dt></dt>
+				<dd>
+					<p>{xen:phrase tfa_threemagw_enter_own_threema_id_below}</p>
+				</dd>
+			</xen:else />
+				
 			</xen:if>
 
+			<xen:include template="threemagw_threemaid_input_field" id="ctrl_threemagw_reversed_threemaid" />
+		</dl>
+
+		<xen:comment>Other options</xen:comment>
+		<dl class="ctrlUnit">
+			<dt><label>{xen:phrase more_options}:</label></dt>
+			<dd><ul>
+				<li>
+					<label><input type="checkbox" name="useNumberSmilies" value="1" {xen:if $providerData.useNumberSmilies, 'checked=""'} /> {xen:phrase tfa_threemagw_i_like_smilies}</label>
+		            <p class="explain">{xen:phrase tfa_threemagw_i_like_smilies_explain}</p>
+				</li>
+			</ul></dd>
 		</dl>
 
 		<dl class="ctrlUnit submitUnit">
@@ -785,7 +875,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 	{xen:phrase tfa_threemagw_reversed_show_code, 'code={$trigger.code}'}
 </div>
 <div class="threemagw_send_link">
-	<a class="button" href="threema://compose?text={$trigger.code}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
+	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
 </div>
 <div class="threemagw_qrcode_send">
 	<xen:comment>TODO</xen:comment>

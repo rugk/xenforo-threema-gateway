@@ -302,39 +302,39 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     /**
      * Register a request for a new pending confirmation message.
      *
-     * @param  array $providerData
-     * @param  int   $pendingType  What type of message request this is.
-     *                             You should use one of the PENDING_* constants
-     *                             in the Model (ThreemaGateway_Model_TfaPendingMessagesConfirmation).
-     * @param string $sessionKey under what session key the data should be saved
+     * @param array $providerData
+     * @param int   $pendingType  What type of message request this is.
+     *                            You should use one of the PENDING_* constants
+     *                            in the Model (ThreemaGateway_Model_TfaPendingMessagesConfirmation).
+     * @param array $user
      *
      * @return bool
      */
-    final protected function registerPendingConfirmationMessage($providerData, $pendingType, $sessionKey)
+    final protected function registerPendingConfirmationMessage(array $providerData, $pendingType, array $user)
     {
         /** @var ThreemaGateway_Model_TfaPendingMessagesConfirmation $model */
         $model = XenForo_DataWriter::create('ThreemaGateway_Model_TfaPendingMessagesConfirmation');
         /** @var ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation $dataWriter */
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation');
-        /** @var XenForo_Session $session */
-        $session = XenForo_Application::getSession();
+
 
         // check whether the same request is already issued, if so overwrite it
-        if ($model->getPending($providerData['threemaid'], $pendingType)) {
+        if ($model->getPending($providerData['threemaid'], $this->_providerId, $pendingType)) {
             $dataWriter->setExistingData([
                 ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable => [
                     'threema_id' => $providerData['threemaid'],
+                    'provider_id' => $this->_providerId,
                     'pending_type' => $pendingType
                 ]
             ]);
         }
 
-        $dataWriter->set('session_id', $session->getSessionId());
         $dataWriter->set('threema_id', $providerData['threemaid']);
-
+        $dataWriter->set('provider_id', $this->_providerId);
         $dataWriter->set('pending_type', $pendingType);
 
-        $dataWriter->set('session_key', $sessionKey);
+        $dataWriter->set('user_id', $user['user_id']);
+        $dataWriter->set('session_id', XenForo_Application::getSession()->getSessionId());
 
         $dataWriter->set('expiry_date', $providerData['codeGenerated'] + $providerData['validationTime']);
 
@@ -344,14 +344,14 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     /**
      * Register a request for a new pending confirmation message.
      *
-     * @param  array $providerData
-     * @param  int   $pendingType  What type of message request this is.
-     *                             You should use one of the PENDING_* constants
-     *                             in the Model (ThreemaGateway_Model_TfaPendingMessagesConfirmation).
+     * @param array $providerData
+     * @param int   $pendingType  What type of message request this is.
+     *                            You should use one of the PENDING_* constants
+     *                            in the Model (ThreemaGateway_Model_TfaPendingMessagesConfirmation).
      *
      * @return bool
      */
-    final protected function unregisterPendingConfirmationMessage($providerData, $pendingType)
+    final protected function unregisterPendingConfirmationMessage(array $providerData, $pendingType)
     {
         /** @var ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation $dataWriter */
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation');
@@ -359,6 +359,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         $dataWriter->setExistingData([
             ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable => [
                 'threema_id' => $providerData['threemaid'],
+                $this->_providerId,
                 'pending_type' => $pendingType
             ]
         ]);
@@ -373,7 +374,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * @param  array $providerData
      * @return bool
      */
-    final protected function verifyCodeTiming($providerData)
+    final protected function verifyCodeTiming(array $providerData)
     {
         if (empty($providerData['code']) || empty($providerData['codeGenerated'])) {
             return false;
@@ -394,7 +395,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * @param  string $newCode      the new code, which is currently checked/verified
      * @return bool
      */
-    final protected function verifyCodeReplay($providerData, $newCode)
+    final protected function verifyCodeReplay(array $providerData, $newCode)
     {
         if (!empty($providerData['lastCode']) && $this->stringCompare($providerData['lastCode'], $newCode)) {
             // prevent replay attacks: once the code has been used, don't allow it to be used in the slice again
