@@ -509,7 +509,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * @throws XenForo_Exception
      * @return null|array
      */
-    protected function getMessageIdsFromResult($messages)
+    protected function getMessageIdsFromResult(array $messages)
     {
         // use PHP function if available (>= PHP 5.5.0)
         if (function_exists('array_column')) {
@@ -540,7 +540,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * @throws XenForo_Exception
      * @return false|array
      */
-    protected function pushArrayKeys(&$baseArray, &$subArray, $removeKeys)
+    protected function pushArrayKeys(array &$baseArray, array &$subArray, array $removeKeys)
     {
         foreach ($removeKeys as $key) {
             // skip invalid keys
@@ -575,7 +575,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      *
      * @return array
      */
-    public function groupArray($array, $indexKey, $ignoreIndex = false)
+    public function groupArray(array $array, $indexKey, $ignoreIndex = false)
     {
         /** @var array $output */
         $output = [];

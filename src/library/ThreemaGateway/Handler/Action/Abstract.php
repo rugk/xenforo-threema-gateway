@@ -1,6 +1,6 @@
 <?php
 /**
- * Stuff for all actions.
+ * General purpose action handler.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-class ThreemaGateway_Handler_Action_Abstract
+abstract class ThreemaGateway_Handler_Action_Abstract
 {
     /**
      * Gateway PHP SDK Singleton

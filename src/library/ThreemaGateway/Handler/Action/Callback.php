@@ -207,6 +207,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      */
     public function processMessage($downloadPath, $debugMode = false)
     {
+        /** @var string $output */
         $output = '';
 
         if (!ThreemaGateway_Handler_Validation::checkDir($downloadPath)) {
@@ -328,7 +329,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
 
         // first check whether message has already been saved to prevent replay attacks
         if ($receiver->messageIsReceived($messageId)) {
-            throw new Exception('Message " ' . $messageId . ' " has already been received and is already saved. This may indicate a replay attack.');
+            throw new Exception('Message "' . $messageId . '" has already been received and is already saved. This may indicate a replay attack.');
         }
 
         $this->messageReplayChecked = true;
@@ -432,6 +433,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
 
         // files
         if (count($receiveResult->getFiles()) >= 1) {
+            /** @var array $fileList the files associated to the message */
             $fileList = $receiveResult->getFiles();
             // set current (first) type/path
             $dataWriter->set('file_type', key($fileList), ThreemaGateway_Model_Messages::DbTableFiles);
@@ -448,6 +450,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
             $dataWriter->set('receipt_type', $threemaMsg->getReceiptType(), ThreemaGateway_Model_Messages::DbTableMessages . '_delivery_receipt');
 
+            /** @var array $ackedMsgIds the acknowledged message IDs */
             $ackedMsgIds = $this->bin2hexArray($threemaMsg->getAckedMessageIds());
             if (count($ackedMsgIds) >= 1) {
                 // set current (first) type/path

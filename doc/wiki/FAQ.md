@@ -239,6 +239,10 @@ When they disable the mode however, they should not be able to enable it again.
 
 If you want to prevent users from using the 2FA at all, you can limit the permissions for the user/user group, so that they cannot use the Threema Gateway or the 2FA of the Threema Gateway anymore. However be **careful when doing so** as this may cause serious problems, because when users do not use any other 2FA method, they will not only get errors, but will also have no way to login anymore. So be careful when disabling 2FA modes!
 
+### How do I edit the messages send in the 2FA modes?
+
+These messages are saved as phrases. Just search for "Threema" and/or "message" and you should find them. E.g. `tfa_threemagw_conventional_message` contains the long message send in the conventional 2FA mode.
+
 ### How do I add smilies to my messages?
 All messages this add-on sends are saved as phrases. Unicode emotions cannot be saved in phrases directly.
 However you can use Unicode characters in the format `\u<hexnum>`. You can use the same format as in C, C++ or Java source code (where UTF-16 is used). There are also [converters](https://www.branah.com/unicode-converter) for this task.

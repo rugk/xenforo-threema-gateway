@@ -1,7 +1,7 @@
 <?php
 /**
- * Two factor authentication provider for Threema Gateway which waites for a
- * code transfered via Threema.
+ * Two factor authentication provider for Threema Gateway which sends a
+ * confirmation message.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -10,16 +10,16 @@
  */
 
 /**
- * TFA where the user sends a login code via Threema.
+ * TFA where the user acknowledges a message sent my the server.
  */
-class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
+class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
 {
     /**
      * Return the title of the 2FA methode.
      */
     public function getTitle()
     {
-        return new XenForo_Phrase('tfa_threemagw_reversed');
+        return new XenForo_Phrase('tfa_threemagw_fast');
     }
 
     /**
@@ -27,17 +27,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
      */
     public function getDescription()
     {
-        /** @var array $params */
-        $params = [];
-        /** @var XenForo_Options $options */
-        $options = XenForo_Application::getOptions();
-        if ($this->GatewaySettings->isEndToEnd()) {
-            $params['board'] = $options->boardTitle;
-        } else {
-            $params['e2e'] = '';
-        }
-
-        return new XenForo_Phrase('tfa_threemagw_reversed_desc', $params);
+        return new XenForo_Phrase('tfa_threemagw_fast_desc');
     }
 
     /**
@@ -54,12 +44,13 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
         // check whether it is activated in the settings
         /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
-        if (!$options->threema_gateway_tfa_reversed) {
+        if (!$options->threema_gateway_tfa_fast) {
             return false;
         }
 
         // check specific permissions
-        if (!$this->GatewayPermissions->hasPermission('receive') ||
+        if (!$this->GatewayPermissions->hasPermission('send') ||
+            !$this->GatewayPermissions->hasPermission('receive') ||
             !$this->GatewayPermissions->hasPermission('fetch')
         ) {
             return false;
@@ -100,35 +91,48 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             return [];
         }
 
-        /** @var array $triggerData */
-        $triggerData = [];
-
         /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
 
-        /** @var string $code random 6 digit string */
-        $code = $this->generateRandomCode();
-
-        $triggerData['code']          = $code;
-        $triggerData['codeGenerated'] = XenForo_Application::$time;
-
-        //code is only valid for some time
+        //message is only valid for some time
         if ($context == 'setup') {
-            $triggerData['validationTime'] = $options->threema_gateway_tfa_reversed_validation_setup * 60; //default: 10 minutes
+            $providerData['validationTime'] = $options->threema_gateway_tfa_fast_validation_setup * 60; //default: 10 minutes
         } else {
-            $triggerData['validationTime'] = $options->threema_gateway_tfa_reversed_validation * 60; //default: 3 minutes
+            $providerData['validationTime'] = $options->threema_gateway_tfa_fast_validation * 60; //default: 3 minutes
         }
 
-        $providerData = array_merge($providerData, $triggerData);
+        // send message
+        /** @var string $phrase name of XenForo phrase to use */
+        $phrase = 'tfa_threemagw_fast_message';
+        if ($providerData['useShortMessage']) {
+            $phrase = 'tfa_threemagw_fast_message_short';
+        }
 
-        // most importantly register message request for Threema callback
+        /** @var XenForo_Phrase $message */
+        $message = new XenForo_Phrase($phrase, [
+            'user' => $user['username'],
+            'ip' => $ip,
+            'validationTime' => $this->parseValidationTime($providerData['validationTime']),
+            'board' => $options->boardTitle,
+            'board_url' => $options->boardUrl
+        ]);
+
+        /** @var int $messageId  */
+        $messageId = $this->sendMessage($providerData['threemaid'], $message);
+
+        // save message ID as code here!
+        $providerData['code']          = $messageId;
+        $providerData['codeGenerated'] = XenForo_Application::$time;
+
+        // most register message request for Threema callback
         $this->registerPendingConfirmationMessage(
             $providerData,
-            ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_CODE,
-            $user
+            ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_DELIVERY_RECEIPT,
+            $user,
+            $messageId
         );
 
-        return $triggerData;
+        return [];
     }
 
     /**
@@ -147,18 +151,13 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::renderVerification($view, $context, $user, $providerData, $triggerData);
 
-        if ($providerData['useNumberSmilies']) {
-            $triggerData['codeSmileys'] = ThreemaGateway_Handler_Emoji::parseUnicode(ThreemaGateway_Handler_Emoji::replaceDigits($triggerData['code']));
-        }
-
         $params = [
             'data' => $providerData,
             'trigger' => $triggerData,
             'context' => $context,
-            'validationTime' => $this->parseValidationTime($providerData['validationTime']),
             'gatewayid' => $this->GatewaySettings->getId()
         ];
-        return $view->createTemplateObject('two_step_threemagw_reversed', $params)->render();
+        return $view->createTemplateObject('two_step_threemagw_fast', $params)->render();
     }
 
     /**
@@ -176,23 +175,35 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::verifyFromInput($context, $input, $user, $providerData);
 
-        // verify that code has not expired yet
+        // assure that code has not expired yet
         if (!$this->verifyCodeTiming($providerData)) {
             return false;
         }
 
-        // check whether code has been received at all
+        // assure that code has been received at all
         if (!isset($providerData['receivedCode'])) {
             return false;
         }
 
-        // prevent replay attacks
+        // assure replay attacks
         if (!$this->verifyCodeReplay($providerData, $providerData['receivedCode'])) {
             return false;
         }
 
-        // check whether the code is the same as required
+        // assure that the code is the same as required
         if (!$this->stringCompare($providerData['code'], $providerData['receivedCode'])) {
+            return false;
+        }
+
+        // assure that the receipt message is *not* a decline message
+        if ($providerData['receivedDeliveryReceipt'] === 4) {
+            // take more drastic steps if it is
+            $this->handleMessageDecline($providerData);
+            return false; // and fail silently
+        }
+
+        // assure that the receipt message is a confirmation receipt
+        if ($providerData['receivedDeliveryReceipt'] !== 3) {
             return false;
         }
 
@@ -201,7 +212,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
         // unregister confirmation
         $this->unregisterPendingConfirmationMessage(
             $providerData,
-            ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_CODE
+            ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_DELIVERY_RECEIPT
         );
 
         return true;
@@ -280,7 +291,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
         }
 
         //add other options to provider data
-        $providerData['useNumberSmilies'] = $input->filterSingle('useNumberSmilies', XenForo_Input::BOOLEAN);
+        $providerData['useShortMessage']  = $input->filterSingle('useShortMessage', XenForo_Input::BOOLEAN);
 
         return $providerData;
     }
@@ -393,15 +404,13 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
 
                 return null;
             } elseif ($input->filterSingle('step', XenForo_Input::BOOLEAN) == 'setup') {
-                //show "real" setup (where you have to send your validation code)
+                //show "real" setup (where you have to confirm validation)
                 $context = 'setupvalidation';
 
                 $newProviderData = $providerData;
                 $session->set($sessionKey, $newProviderData);
 
-                $newTriggerData = [
-                    'code' => $newProviderData['code']
-                ];
+                $newTriggerData = []; //is not used anyway...
                 $showSetup = true;
             } else {
                 throw new XenForo_Exception('Request invalid.');
@@ -411,7 +420,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             $context = 'firstsetup';
 
             //set default values of options
-            $providerData['useNumberSmilies'] = true;
+            $providerData['useShortMessage'] = false;
 
             $threemaId = $this->getDefaultThreemaId($user);
         } else {
@@ -434,13 +443,26 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             'context' => $context,
             'threemaId' => $threemaId,
             'https' => XenForo_Application::$secure,
-            'showqrcode' => $xenOptions->threema_gateway_tfa_reversed_show_qr_code,
+            'showqrcode' => $xenOptions->threema_gateway_tfa_fast_show_qr_code,
             'gatewayid' => $this->GatewaySettings->getId()
         ];
         return $controller->responseView(
             'ThreemaGateway_ViewPublic_TfaManage',
-            'account_two_step_threemagw_reversed_manage',
+            'account_two_step_threemagw_fast_manage',
             $viewParams
         );
+    }
+
+    /**
+     * Handles the actions when a user declines a received message.
+     *
+     * It can ...
+     *
+     * @param array $providerData
+     */
+    protected function handleMessageDecline(array $providerData)
+    {
+        // possibly ban user, etc.
+        // (should be customizable)
     }
 }

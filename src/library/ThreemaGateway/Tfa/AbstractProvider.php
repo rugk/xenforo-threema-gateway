@@ -112,7 +112,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     }
 
     /**
-     * Called when trying to verify user. Checks whether given code is valid.
+     * Called when trying to verify user. Checks whether a given code is valid.
      *
      * @param string $context
      * @param array  $input
@@ -133,7 +133,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * @param array         $user
      * @param array         $error
      *
-     * @return bool
+     * @return array
      */
     public function verifySetupFromInput(XenForo_Input $input, array $user, &$error)
     {
@@ -213,12 +213,12 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     }
 
     /**
-     * Generates a random numeric string.
+     * Generates a random numeric string consisting of digits.
      *
      * @param  int    $length The length of the string (default: 6)
      * @return string
      */
-    final protected function generateRandomString($length = 6)
+    final protected function generateRandomCode($length = 6)
     {
         /* @var XenForo_Options */
         $options = XenForo_Application::getOptions();
@@ -307,10 +307,11 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      *                            You should use one of the PENDING_* constants
      *                            in the Model (ThreemaGateway_Model_TfaPendingMessagesConfirmation).
      * @param array $user
+     * @param string|int $extraData    Any extra data you want to save in the database.
      *
      * @return bool
      */
-    final protected function registerPendingConfirmationMessage(array $providerData, $pendingType, array $user)
+    final protected function registerPendingConfirmationMessage(array $providerData, $pendingType, array $user, $extraData = null)
     {
         /** @var ThreemaGateway_Model_TfaPendingMessagesConfirmation $model */
         $model = XenForo_DataWriter::create('ThreemaGateway_Model_TfaPendingMessagesConfirmation');
@@ -336,6 +337,9 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         $dataWriter->set('user_id', $user['user_id']);
         $dataWriter->set('session_id', XenForo_Application::getSession()->getSessionId());
 
+        if ($extraData) {
+            $dataWriter->set('extra_data', $extraData);
+        }
         $dataWriter->set('expiry_date', $providerData['codeGenerated'] + $providerData['validationTime']);
 
         return $dataWriter->save();
@@ -380,7 +384,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
             return false;
         }
 
-        if (XenForo_Application::$time - $providerData['codeGenerated'] > $providerData['validationTime']) {
+        if ((XenForo_Application::$time - $providerData['codeGenerated']) > $providerData['validationTime']) {
             return false;
         }
 
@@ -403,6 +407,24 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
                 return false;
             }
         }
+
+        return true;
+    }
+
+    /**
+     * Updates the data used by {@see verifyCodeReplay()} to prevent replay attacks.
+     *
+     * @param  array  $providerData
+     * @param  string|int  $code    The currently processed (& verified) code
+     * @return bool
+     */
+    final protected function updateReplayCheckData(array &$providerData, $code)
+    {
+        // save current code for later replay attack checks
+        $providerData['lastCode']     = $providerData['receivedCode'];
+        $providerData['lastCodeTime'] = XenForo_Application::$time;
+        unset($providerData['code']);
+        unset($providerData['codeGenerated']);
 
         return true;
     }

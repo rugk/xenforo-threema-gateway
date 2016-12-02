@@ -14,27 +14,7 @@
 class ThreemaGateway_Listener_TfaMessageCallback
 {
     /**
-     * @var array Cache of models
-     */
-    static $modelCache = [];
-
-    /**
-     * @var XenForo_Session Imitiated session
-     */
-    static $session;
-
-    /**
-     * @var array user data cache
-     */
-    static $user = [];
-
-    /**
-     * @var string How the provider data has been fetched
-     */
-    static $providerDataFetchMethod;
-
-    /**
-     * Checks whether text messages contain code used for the receiver 2FA.
+     * Presave listener: Checks whether text messages contain code used for the receiver 2FA.
      *
      * You should set the "event hint" to "1" to only pass text messages to the
      * listener. Otherwise errors may happen.
@@ -55,263 +35,91 @@ class ThreemaGateway_Listener_TfaMessageCallback
                                         &$saveMessage,
                                         $debugMode)
     {
-        /** @var string $msgText the Threema message text */
-        $msgText = trim($threemaMsg->getText());
+        // create tfa callback handler
+        $class       = XenForo_Application::resolveDynamicClass('ThreemaGateway_Handler_Action_TfaCallback_TextMessage');
+        $tfaCallback = new $class($handler, $receiveResult, $threemaMsg, $output, $saveMessage, $debugMode);
 
-        // convert number emoticons to usual numbers (just remove that uncidoe thing :)
-        $msgText = str_replace(ThreemaGateway_Handler_Emoji::parseUnicode('\u20e3'), '', $msgText);
-
-        // check whether we are responsible for the message
-        // https://regex101.com/r/ttkhwd/2
-        if (!preg_match('/^\d{6}$/', $msgText)) {
+        // initiate
+        if (!$tfaCallback->prepareProcessing()) {
             return;
         }
 
-        // first check whether message has already been saved to prevent replay attacks
-        $handler->assertNoReplayAttack($receiveResult->getMessageId());
+        $tfaCallback->setMessageTypeName('2FA Reversed confirmation message', 'code');
+        $tfaCallback->setPrendingRequestType(ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_CODE);
 
-
-        $handler->addLog($output, 'Recognized 2FA Reversed confirmation message.');
-        $handler->addLog($output, '[...]', 'Converted message text: ' . $msgText);
-
-        // check whether we are requested to handle this message
-        /** @var ThreemaGateway_Model_TfaPendingMessagesConfirmation $pendingRequestsModel */
-        $pendingRequestsModel = XenForo_Model::create('ThreemaGateway_Model_TfaPendingMessagesConfirmation');
-
-        /** @var array|null $pendingRequests all pending requets if there are some */
-        $pendingRequests = $pendingRequestsModel->getPending(
-            $handler->getRequest('from'),
-            null,
-            ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUESTCODE
+        // convert number emoticons to usual numbers (just remove that unicode thing :)
+        $tfaCallback->addFilter(
+            ThreemaGateway_Handler_Action_TfaCallback_TextMessage::FILTER_REPLACE,
+            [
+                ThreemaGateway_Handler_Emoji::parseUnicode('\u20e3') => ''
+            ]
         );
 
-        if (!$pendingRequests) {
-            $handler->addLog($output, 'No confirmation requests registered. Abort.');
+        // check whether we are responsible for the message
+        $tfaCallback->addFilter(
+            ThreemaGateway_Handler_Action_TfaCallback_TextMessage::FILTER_REGEX_MATCH,
+            '/^\d{6}$/' // https://regex101.com/r/ttkhwd/2
+        );
+
+        if (!$tfaCallback->applyFilters()) {
+            echo "filteer failed<bR>";
             return;
         }
 
-        // handle all requests
-        /** @var bool $successfullyProcessed */
-        $successfullyProcessed = false;
-
-        foreach ($pendingRequests as $id => $confirmRequest) {
-            // let's first verify the receive date according to the send time
-            // as this is not possible later as the send time is not logged
-            if ($handler->getRequest('date') > $confirmRequest['expiry_date']) {
-                $handler->addLog($output,
-                    'Message is too old.',
-                    'Message is too old, already expired. Maximum: ' .  date('Y-m-d H:i:s', $confirmRequest['expiry_date'])
-                );
-                continue;
-            }
-            // the check with the current time is done in the actual 2FA provider (verifyFromInput)
-
-            $handler->addLog($output, '', 'Request #' .
-                $confirmRequest['request_id'] . ' from ' .
-                $confirmRequest['provider_id'] . ' for user ' .
-                $confirmRequest['user_id'] . ' for session ' .
-                $confirmRequest['session_id']);
-
-            /** @var array $providerData provider data of session */
-            $providerData = [];
-            try {
-                $providerData = self::getProviderDataBySession($confirmRequest);
-
-                $handler->addLog($output,
-                    '',
-                    'Got provider data from session.'
-                );
-            } catch (Exception $e) {
-                $handler->addLog($output,
-                    '',
-                    $e->getMessage() . ' Try 2FA model.'
-                );
-
-                // second try via model
-                try {
-                    $providerData = self::getProviderDataByModel($confirmRequest);
-
-                    $handler->addLog($output,
-                        '',
-                        'Got provider data from user model.'
-                    );
-                } catch (Exception $e) {
-                    $handler->addLog($output,
-                        'Could not get provider data.',
-                        $e->getMessage() . ' Abort.'
-                    );
-                    continue;
-                }
-            }
-
-            // finally save the received code
-            $providerData['receivedCode'] = $msgText;
-            // whether the code is the same as the requested one is verified in
-            // the actual 2FA provider (verifyFromInput) later
-
-            try {
-                self::saveProviderData($providerData, $confirmRequest);
-            } catch (Exception $e) {
-                $handler->addLog($output, 'Could not save provider data.', $e->getMessage());
-                continue;
-            }
-
-            $handler->addLog($output, 'Code saved.', 'Saved code for request #' .
-                $confirmRequest['request_id'] . ' from' .
-                $confirmRequest['provider_id'] . ' for user ' .
-                $confirmRequest['user_id'] . ' for session ' .
-                $confirmRequest['session_id']);
-
-            $successfullyProcessed = true;
+        if (!$tfaCallback->processPending([
+            'saveKey' => 'receivedCode'
+        ])) {
+            return;
         }
 
-        if ($successfullyProcessed) {
-            // do not s<ave message as it already has been processed
-            $saveMessage = false;
-        }
+        $tfaCallback->getReferencedData($output, $saveMessage);
     }
 
     /**
-     * Fetches and returns the provider data using the session.
+     * Presave listener: Checks whether a message has a new delivery status, which needs to be updated for the 2FA fast mode.
      *
-     * @param array $confirmRequest the confirmation message request
-     * @throws XenForo_Exception
-     * @return array
-     */
-    protected static function getProviderDataBySession(array $confirmRequest)
-    {
-        /** @var XenForo_Session $session */
-        $session = self::getSession();
-        $session->threemagwSetupRaw($confirmRequest['session_id'], false);
-
-        /** @var string $sessionKey session key identifying  */
-        $sessionKey = 'tfaData_' . $confirmRequest['provider_id'];
-        /** @var array $providerData provider data of session */
-        $providerData = $session->get($sessionKey);
-
-        if (empty($providerData)) {
-            throw new XenForo_Exception('Could not get provider data from session using key ' . $sessionKey . '.');
-        }
-
-        self::$providerDataFetchMethod = 'session';
-        return $providerData;
-    }
-
-    /**
-     * Fetches and returns the provider data.
+     * You should set the "event hint" to "128" to only pass delivery receipts to the
+     * listener. Otherwise errors may happen.
      *
-     * @param array $confirmRequest the confirmation message request
-     * @throws XenForo_Exception
-     * @return array
-     */
-    protected static function getProviderDataByModel(array $confirmRequest)
-    {
-        /** @var XenForo_Model_Tfa $tfaModel */
-        $tfaModel = self::getModelFromCache('XenForo_Model_Tfa');
-
-        /** @var array $userTfa */
-        $userTfa = $tfaModel->getUserTfaEntries($confirmRequest['user_id']);
-        if (!$userTfa) {
-            throw new XenForo_Exception('Could not get user 2FA data.');
-        }
-
-        try {
-            /** @var array $providerData provider data of session */
-            $providerData = unserialize($userTfa[$confirmRequest['provider_id']]['provider_data']);
-        } catch (Exception $e) {
-            throw new XenForo_Exception('Could not get provider data. (error: ' . $e->getMessage() . ')');
-        }
-
-        if (empty($providerData)) {
-            throw new XenForo_Exception('Could not get provider data.');
-        }
-
-        self::$providerDataFetchMethod = 'tfa_model';
-        return $providerData;
-    }
-
-    /**
-     * Gets model from cache or initializes a new model if needed.
-     *
-     * @param array $newProviderData porovider data to save
-     * @param array $confirmRequest the confirmation message request
+     * @param ThreemaGateway_Handler_Action_Callback      $handler
+     * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult
+     * @param Threema\MsgApi\Messages\ThreemaMessage      $threemaMsg
+     * @param array|string                                $output        [$logType, $debugLog, $publicLog]
+     * @param bool                                        $saveMessage
+     * @param bool                                        $debugMode
      *
      * @throws XenForo_Exception
      */
-    protected static function saveProviderData(array $newProviderData, array $confirmRequest)
+    public static function checkForDeliveryReceipt(ThreemaGateway_Handler_Action_Callback $handler,
+                                        Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,
+                                        Threema\MsgApi\Messages\ThreemaMessage $threemaMsg,
+                                        &$output,
+                                        &$saveMessage,
+                                        $debugMode)
     {
-        if (self::$providerDataFetchMethod == 'session') {
-            /** @var string $sessionKey session key identifying  */
-            $sessionKey = 'tfaData_' . $confirmRequest['provider_id'];
+        // create tfa callback handler
+        $class       = XenForo_Application::resolveDynamicClass('ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt');
+        $tfaCallback = new $class($handler, $receiveResult, $threemaMsg, $output, $saveMessage, $debugMode);
 
-            /** @var XenForo_Session $session */
-            $session = self::getSession();
-
-            $session->set($sessionKey, $newProviderData);
-            $session->save();
-        } elseif (self::$providerDataFetchMethod == 'tfa_model') {
-            /** @var XenForo_Model_Tfa $tfaModel */
-            $tfaModel = self::getModelFromCache('XenForo_Model_Tfa');
-            $tfaModel->updateUserProvider($confirmRequest['user_id'], $confirmRequest['provider_id'], $newProviderData, false);
-        } else {
-            throw new XenForo_Exception('Invalid provider data fetch method: ' . self::$providerDataFetchMethod);
-        }
-    }
-
-    /**
-     * Gets model from cache or initializes a new model if needed.
-     *
-     * @param string $class Name of class to load
-     *
-     * @return XenForo_Model
-     */
-    protected static function getModelFromCache($class)
-    {
-        if (!isset(self::$modelCache[$class]))
-        {
-            self::$modelCache[$class] = XenForo_Model::create($class);
+        // initiate
+        if (!$tfaCallback->prepareProcessing()) {
+            return;
         }
 
-        return self::$modelCache[$class];
-    }
+        $tfaCallback->setMessageTypeName('2FA Fast acknowledge message', 'delivery receipt');
+        $tfaCallback->setPrendingRequestType(ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_DELIVERY_RECEIPT);
 
-    /**
-     * Returns the XenForo session.
-     *
-     * @return XenForo_Session
-     */
-    protected static function getSession()
-    {
-        if (!isset(self::$session))
-        {
-            $class = XenForo_Application::resolveDynamicClass('XenForo_Session');
-            self::$session = new $class;
+        if (!$tfaCallback->applyFilters()) {
+            return;
         }
 
-        return self::$session;
-    }
-
-    /**
-     * Returns the user array.
-     *
-     * @param int $userId
-     * @return array
-     */
-    protected static function getUserData($userId)
-    {
-        if (!isset(self::$user[$userId]))
-        {
-            /** @var XenForo_Model_User $userModel */
-            $userModel = self::getModelFromCache('XenForo_Model_User');
-            /** @var array $user */
-            $user = $userModel->getFullUserById($userId);
-            if (!$user) {
-                throw new XenForo_Exception('Could not get user data data.');
-            }
-
-            self::$user[$userId] = $user;
+        if (!$tfaCallback->processPending([
+            'saveKey'            => 'receivedCode',
+            'saveKeyReceiptType' => 'receivedDeliveryReceipt'
+        ])) {
+            return;
         }
 
-        return self::$user[$userId];
+        $tfaCallback->getReferencedData($output, $saveMessage);
     }
 }

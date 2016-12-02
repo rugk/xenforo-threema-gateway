@@ -151,6 +151,10 @@ class ThreemaGateway_Installer
             ThreemaGateway_Constants::TfaIDprefix . '_reversed',
             'ThreemaGateway_Tfa_Reversed',
             ThreemaGateway_Constants::TfaBasePriority - 10);
+        $providerInstaller['fast'] = new ThreemaGateway_Installer_TfaProvider(
+            ThreemaGateway_Constants::TfaIDprefix . '_fast',
+            'ThreemaGateway_Tfa_Fast',
+            ThreemaGateway_Constants::TfaBasePriority - 5);
 
         return $providerInstaller;
     }

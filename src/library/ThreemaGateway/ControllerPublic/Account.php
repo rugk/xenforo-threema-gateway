@@ -16,7 +16,8 @@ class ThreemaGateway_ControllerPublic_Account extends XFCP_ThreemaGateway_Contro
      */
     const PROVIDER_ARRAY = [
         'threemagw_conventional',
-        'threemagw_reversed'
+        'threemagw_reversed',
+        'threemagw_fast'
     ];
 
     /**

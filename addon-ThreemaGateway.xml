@@ -114,6 +114,9 @@
         <input type="text" name="code" id="ctrl_threemagw_code" class="textCtrl" />
 	</dd>
 </dl>]]></template>
+    <template title="two_step_threemagw_fast"><![CDATA[<p>
+	{xen:phrase tfa_threemagw_fast_please_confirm_message, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
+</p>]]></template>
     <template title="two_step_threemagw_reversed"><![CDATA[<xen:require css="threemagw.css" />
 
 <xen:comment>main content begin</xen:comment>
@@ -180,6 +183,7 @@
     <listener event_id="load_class" execute_order="10" callback_class="ThreemaGateway_Listener_LoadClass" callback_method="extendClass" active="1" hint="XenForo_Session" description="Extend XF class loader for session"/>
     <listener event_id="load_class_controller" execute_order="10" callback_class="ThreemaGateway_Listener_LoadClassController" callback_method="extendAccountController" active="1" hint="XenForo_ControllerPublic_Account" description="Extend XF account controller for 2FA"/>
     <listener event_id="threemagw_message_callback_presave" execute_order="160" callback_class="ThreemaGateway_Listener_TfaMessageCallback" callback_method="checkForReceiverCode" active="1" hint="1" description="2FA Reversed - message processing callback"/>
+    <listener event_id="threemagw_message_callback_presave" execute_order="240" callback_class="ThreemaGateway_Listener_TfaMessageCallback" callback_method="checkForDeliveryReceipt" active="1" hint="128" description="2FA Fast - message processing callback"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -282,6 +286,30 @@ userfield</sub_options>
       <edit_format_params>min=1</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="115"/>
+    </option>
+    <option option_id="threema_gateway_tfa_fast" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="305"/>
+    </option>
+    <option option_id="threema_gateway_tfa_fast_show_qr_code" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="330"/>
+    </option>
+    <option option_id="threema_gateway_tfa_fast_validation" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>3</default_value>
+      <edit_format_params>min=1</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="310"/>
+    </option>
+    <option option_id="threema_gateway_tfa_fast_validation_setup" edit_format="spinbox" data_type="positive_integer" can_backup="1">
+      <default_value>10</default_value>
+      <edit_format_params>min=1</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="315"/>
     </option>
     <option option_id="threema_gateway_tfa_reversed" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
@@ -431,14 +459,24 @@ Additionally many 2FA methods will be disabled if you do not install libsodium.]
     <phrase title="option_threema_gateway_tfa_autolookupphone_explain" version_id="2" version_string="0.2.0"><![CDATA[When the user activates a 2FA mode this option automatically tries to get the Threema ID associated with the mobile phone number of the user. The phone number is hashed before it is send to the Threema server.<br />
 Add the ID of the custom user field in the input box, where it should be looked for phone numbers.<br />
 <b>Important:</b> When the phone number in this custom user field is not verified when it is saved this allows forum users to lookup arbitrary phone numbers of any Threema user.]]></phrase>
-    <phrase title="option_threema_gateway_tfa_conventional" version_id="2" version_string="0.2.0"><![CDATA[Activate Threema Gateway: Conventional]]></phrase>
+    <phrase title="option_threema_gateway_tfa_conventional" version_id="2" version_string="0.2.0"><![CDATA[Activate conventional mode]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_explain" version_id="1" version_string="0.1.0"><![CDATA[Allow users to use the "Conventional" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_validation" version_id="2" version_string="0.2.0"><![CDATA[Validation time]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_validation_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid. (in minutes)]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_validation_setup" version_id="2" version_string="0.2.0"><![CDATA[Validation time when setting up]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid when setting up the 2FA method. (in minutes)<br>
 It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
-    <phrase title="option_threema_gateway_tfa_reversed" version_id="2" version_string="0.2.0"><![CDATA[Activate Threema Gateway: Reversed]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast" version_id="2" version_string="0.2.0"><![CDATA[Activate fast login mode]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_explain" version_id="2" version_string="0.2.0"><![CDATA[Allows users to use the "Fast login" method]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_show_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Show QR code of Gateway ID]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_show_qr_code_explain" version_id="2" version_string="0.2.0"><![CDATA[When enabled this suggests the user to scan the QR code of the Gateway ID. As you usually cannot meet a Gateway ID in person anyway, it is reasonable to offer this.<br>
+<b>Note:</b> For security reasons this option is always ignored when HTTPS is not used.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_validation" version_id="2" version_string="0.2.0"><![CDATA[Validation time]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_validation_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid. (in minutes)]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_validation_setup" version_id="2" version_string="0.2.0"><![CDATA[Validation time when setting up]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid when setting up the 2FA method. (in minutes)<br>
+It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_reversed" version_id="2" version_string="0.2.0"><![CDATA[Activate reversed mode]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_explain" version_id="2" version_string="0.2.0"><![CDATA[Allow users to use the "Reversed" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_show_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Show QR code of Gateway ID]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_show_qr_code_explain" version_id="2" version_string="0.2.0"><![CDATA[When enabled this suggests the user to scan the QR code of the Gateway ID. As you usually cannot meet a Gateway ID in person anyway, it is reasonable to offer this.<br>
@@ -485,11 +523,11 @@ When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, a
 Hi {user},
 to complete the second step of the two-factor authentication, you must enter the following code:
 
-{code}
+*{code}*
 
 The code is valid for {validationTime}.
 
-The login was requested via the IP {ip}. If you did not initiate this request, you should change your password urgently.
+The login was requested via the *IP* *{ip}*. If you did not initiate this request, you should change your password urgently.
 
 Thanks,
 {board}
@@ -497,7 +535,7 @@ Thanks,
     <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_continue" version_id="2" version_string="0.2.0"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to continue.]]></phrase>
     <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login" version_id="2" version_string="0.2.0"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to complete login.]]></phrase>
     <phrase title="tfa_threemagw_conventional_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11
-Code: {code}
+Code: *{code}*
 IP: {ip}
 Validity: {validationTime}
 
@@ -505,6 +543,29 @@ Validity: {validationTime}
 {board_url}]]></phrase>
     <phrase title="tfa_threemagw_conventional_setup_descr" version_id="1" version_string="0.1"><![CDATA[This mode sends you a 6 digit code to your Threema ID, which you have to enter when logging in.]]></phrase>
     <phrase title="tfa_threemagw_enter_own_threema_id_below" version_id="2" version_string="0.2.0"><![CDATA[Please enter your own Threema ID below.]]></phrase>
+    <phrase title="tfa_threemagw_fast" version_id="2" version_string="0.2.0"><![CDATA[Threema - Fast login]]></phrase>
+    <phrase title="tfa_threemagw_fast_desc" version_id="2" version_string="0.2.0"><![CDATA[This will send you a message with some details about who requests the login and you can confirm or decline the request.]]></phrase>
+    <phrase title="tfa_threemagw_fast_message" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Two-factor authentication
+
+Hi {user},
+a user with the *IP* *{ip}* requested to login into your account.
+
+To allow the login you have to acknowledge this message.
+
+If you did not initiate this request, you should decline this message instead and change your password urgently.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
+    <phrase title="tfa_threemagw_fast_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11
+*IP* *{ip}* tried to login.
+
+Acknowledge this message to allow the login.
+
+{board}
+{board_url}]]></phrase>
+    <phrase title="tfa_threemagw_fast_please_confirm_message" version_id="2" version_string="0.2.0"><![CDATA[Please confirm the message, which has just been sent to <b>{threemaid}</b> from <b>{gatewayid}</b>.]]></phrase>
+    <phrase title="tfa_threemagw_fast_setup_descr" version_id="2" version_string="0.2.0"><![CDATA[This mode sends you a message, which you have to confirm (acknowledge) to allow the login request. If you decline it, you cannot login.]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies" version_id="2" version_string="0.2.0"><![CDATA[I like Emojis!]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only, if you like emoticons/smileys.]]></phrase>
     <phrase title="tfa_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[Threema - Reversed]]></phrase>
@@ -528,10 +589,10 @@ Setup your Threema ID and enter it below.]]></phrase>
 Please check each character of the code and confirm it is the same as displayed on your device. Should you notice any discrepancy when doing so, please <i>do not continue</i> and contact the forum admin.<br />
 The displayed fingerprint is derived from the public key, which is linked to your Threema ID. More information <a href="https://threema.ch/en/faq/threema_id" target="_blank">in the Threema FAQ</a>.]]></phrase>
     <phrase title="tfa_threemagw_setup_use_button_below_to_add_threema_id" version_id="2" version_string="0.2.0"><![CDATA[In case you are currently using a device where Threema is installed you can just use the button below to add the ID:]]></phrase>
-    <phrase title="tfa_threemagw_short_message_explain" version_id="1" version_string="0.1"><![CDATA[Uses short messages instead of long ones to allow you to see your verification code directly in the notification, so you do not have to open Threema to see it.]]></phrase>
     <phrase title="tfa_threemagw_use_number_smilies" version_id="1" version_string="0.1"><![CDATA[Use smilies as digits]]></phrase>
     <phrase title="tfa_threemagw_use_number_smilies_explain" version_id="1" version_string="0.1"><![CDATA[Replaces the numbers in the code with smilies.]]></phrase>
     <phrase title="tfa_threemagw_use_short_message" version_id="1" version_string="0.1"><![CDATA[Use short messages]]></phrase>
+    <phrase title="tfa_threemagw_use_short_message_explain" version_id="2" version_string="0.2.0"><![CDATA[Uses short messages instead of long ones to allow you to see your verification code directly in the notification, so you do not have to open Threema to see it.]]></phrase>
     <phrase title="threemagw_confirmation_code" version_id="1" version_string="0.1"><![CDATA[Threema Confirmation Code]]></phrase>
     <phrase title="threemagw_fetching_publickey_failed" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
     <phrase title="threemagw_getting_credits_failed" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
@@ -631,7 +692,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			<dd><ul>
 				<li>
 					<label><input type="checkbox" name="useShortMessage" value="1" {xen:if $providerData.useShortMessage, 'checked=""'} /> {xen:phrase tfa_threemagw_use_short_message}</label>
-					<p class="explain">{xen:phrase tfa_threemagw_short_message_explain}</p>
+					<p class="explain">{xen:phrase tfa_threemagw_use_short_message_explain}</p>
 				</li>
 			</ul></dd>
 		</dl>
@@ -644,6 +705,144 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 				<dd><input type="submit" name="save" value="{xen:phrase save}" accesskey="s" class="button primary" /></dd>
 			<xen:else />
 				<dd><input type="submit" name="save" value="{xen:phrase sendto_threema}" accesskey="s" class="button primary" /></dd>
+			</xen:if>
+		</dl>
+	</xen:if>
+
+	<input type="hidden" name="provider" value="{$providerId}" />
+	<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'">
+		<xen:comment>Add special parameters if this is in setup.</xen:comment>
+		<xen:if is="{$newProviderHtml}">
+			<input type="hidden" name="step" value="confirm" />
+		<xen:else />
+			<input type="hidden" name="step" value="setup" />
+		</xen:if>
+	<xen:elseif is="!{$newProviderHtml}" />
+		<input type="hidden" name="manage" value="1" />
+	</xen:if>
+	<input type="hidden" name="_xfConfirm" value="1" />
+	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
+</form>]]></template>
+    <template title="account_two_step_threemagw_fast_manage" version_id="2" version_string="0.2.0"><![CDATA[<xen:title>{xen:phrase two_step_verification_setup}: {$provider.title}</xen:title>
+
+<form method="post" class="xenForm {xen:if $newProviderHtml, AutoValidator}"
+<xen:comment>Use /enable link when setting provider up and use /manage link when changing setting later.</xen:comment>
+action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'">
+		"{xen:link 'account/two-step/enable'}"
+	<xen:else />
+		"{xen:link 'account/two-step/manage'}"
+	</xen:if> data-redirect="yes">
+	
+	<xen:comment>information block</xen:comment>
+	<xen:if is="{$context} == 'firstsetup'">
+		<xen:comment>First site of setup page shows general information.</xen:comment>
+		<dl class="ctrlUnit">
+		<dt></dt>
+			<dd>
+				<p>{xen:phrase tfa_threemagw_setup_generaldescr}</p>
+				<p>{xen:phrase tfa_threemagw_fast_setup_descr}</p>
+			</dd>
+		</dl>
+	<xen:elseif is="{$context} == 'manage'" />
+		<xen:comment>Later manages only show some basic information...</xen:comment>
+		<dl class="ctrlUnit">
+		<dt></dt>
+			<dd>
+				<p>{xen:phrase tfa_threemagw_fast_setup_descr}</p>
+			</dd>
+		</dl><p>
+	</xen:if>
+
+	<xen:if is="{$newProviderHtml}">
+		<xen:comment>Shows validation input field if Threema ID was changed.</xen:comment>
+		{xen:raw $newProviderHtml}
+
+		<dl class="ctrlUnit submitUnit">
+			<dt></dt>
+			<dd><input type="submit" name="save" value="{xen:phrase confirm}" accesskey="s" class="button primary" /></dd>
+		</dl>
+
+		<input type="hidden" name="confirm" value="1" />
+	<xen:else />
+		<xen:if is="{$context} == 'manage' or {$context} == 'firstsetup'">
+			<dl class="ctrlUnit">
+				<xen:comment>Show QR code or Threema Gateway ID</xen:comment>
+				<dt><label>{xen:phrase setup}:</label></dt>
+
+				<xen:comment>For security reasons the QR code is only shown when a HTTPS connection is used.</xen:comment>
+				<xen:if is="{$https} AND {$showqrcode}">
+					<dt></dt>
+					<dd>
+						<p>{xen:phrase tfa_threemagw_setup_please_scan_qr_code, 'gatewayid={$gatewayid}'}</p>
+					</dd>
+
+					<dt></dt>
+					<dd>
+						<div style="text-align: center"><span id="GatewayIdQrCode" style="display: inline-block; background: white; padding: 15px"></span></div>
+					</dd>
+
+					<xen:comment>JS block responsible for parsing qr code.</xen:comment>
+					<xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />						
+					<script>
+					$(function()
+					{
+						var $el = $('#GatewayIdQrCode');
+						$el.qrcode({
+							text: '{xen:jsescape {xen:phrase tfa_threemagw_contact_qrcode_text, 'threemaid={$gatewayid}', 'publickey={xen:helper threemaidpubkey, {$gatewayid}}'}}'
+						});
+					});
+					</script>
+
+				<xen:else />
+					<dt></dt>
+					<dd>
+						<p>{xen:phrase tfa_threemagw_setup_please_add_threema_id, 'gatewayid={$gatewayid}'}</p>
+					</dd>
+				</xen:if>
+
+				<dt></dt>
+				<dd>
+					<p>{xen:phrase tfa_threemagw_setup_use_button_below_to_add_threema_id}</p>
+				</dd>
+
+				<dt></dt>
+				<dd>
+					<a style="margin: 10px" class="button" href="threema://add?id={$gatewayid}" title="{xen:phrase tfa_threemagw_add_threema_id_button_tooltip, 'threemaid={$gatewayid}'}" accesskey="c">{xen:phrase tfa_threemagw_add_threema_id_button, 'threemaid={$gatewayid}'}</a>
+				</dd>
+			</dl>
+		</xen:if>
+
+		<xen:comment>Show Threema ID input.</xen:comment>
+		<dl class="ctrlUnit">
+			<xen:if is="{$context} == 'manage' or {$context} == 'firstsetup'">
+				<dt></dt>
+				<dd>
+					<p>{xen:phrase tfa_threemagw_enter_own_threema_id_below}</p>
+				</dd>
+			</xen:else />
+				
+			</xen:if>
+
+			<xen:include template="threemagw_threemaid_input_field" id="ctrl_threemagw_fast_threemaid" />
+		</dl>
+
+		<xen:comment>Other options</xen:comment>
+		<dl class="ctrlUnit">
+			<dt><label>{xen:phrase more_options}:</label></dt>
+			<dd><ul>
+				<li>
+					<label><input type="checkbox" name="useShortMessage" value="1" {xen:if $providerData.useShortMessage, 'checked=""'} /> {xen:phrase tfa_threemagw_use_short_message}</label>
+		            <p class="explain">{xen:phrase tfa_threemagw_use_short_message_explain}</p>
+				</li>
+			</ul></dd>
+		</dl>
+
+		<dl class="ctrlUnit submitUnit">
+			<dt></dt>
+			<xen:if is="{$context} == 'setup'">
+				<dd><input type="submit" name="save" value="{xen:phrase save}" accesskey="s" class="button primary" /></dd>
+			<xen:else />
+				<dd><input type="submit" name="save" value="{xen:phrase continue}" accesskey="s" class="button primary" /></dd>
 			</xen:if>
 		</dl>
 	</xen:if>
@@ -856,6 +1055,22 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 		<dt><label>{xen:phrase tfa_threemagw_setup_public_key}:</label></dt>
 		<dd>
 			<p>{xen:phrase tfa_threemagw_setup_public_key_descr, 'threemaid={$data.threemaid}', 'pubKeyShort={xen:helper threemaidpubkeyshort, {$data.threemaid}}'}</p>
+		</dd>
+	</dl>
+</xen:if>]]></template>
+    <template title="two_step_threemagw_fast" version_id="2" version_string="0.2.0"><![CDATA[<xen:if is="{$context} == 'setup'">
+	<dl class="ctrlUnit">
+		<dt></dt>
+			<dd>
+</xen:if>
+
+<xen:comment>main content begin</xen:comment>
+<p>
+	{xen:phrase tfa_threemagw_fast_please_confirm_message, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
+</p>
+<xen:comment>main content end</xen:comment>
+
+<xen:if is="{$context} == 'setup'">
 		</dd>
 	</dl>
 </xen:if>]]></template>

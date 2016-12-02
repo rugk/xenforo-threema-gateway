@@ -3,11 +3,11 @@
 Basic priority: 30 (see ThreemaGateway_Constants::TfaBasePriority)  
 Range reserved: `TfaBasePriority-5` to `TfaBasePriority`
 
-name         | server                                       | client                                     | user                                             | implemented (class)            | priority
------------- | -------------------------------------------- | ------------------------------------------ | ------------------------------------------------ | ------------------------------ | --------
+name         | server                                       | client                                     | user                                             | implemented (class)             | priority
+------------ | -------------------------------------------- | ------------------------------------------ | ------------------------------------------------ | ------------------------------- | --------
 Conventional | send 6 digits code                           | receive code                               | enter code into website                          | ThreemaGateway_Tfa_Conventional | 25
-Reversed     | receives 6 digits code                       | sends 6 digits code                        | types code from website into phone/scans QR code | ThreemaGateway_Tfa_Reversed <br> (QR code generation not yet implemented)                       | 30
-Fast login   | sends login message, receives status updates | receives message, sends status update back | taps on accept/decline on their phone            | not yet                        | 35
+Reversed     | receives 6 digits code                       | sends 6 digits code                        | types code from website into phone/scans QR code | ThreemaGateway_Tfa_Reversed     | 30
+Fast login   | sends login message, receives status updates | receives message, sends status update back | taps on accept/decline on their phone            | ThreemaGateway_Tfa_Fast         | 35
 
 ## Conventional
 

@@ -24,7 +24,7 @@ class ThreemaGateway_Constants
     const TfaBasePriority = 40;
 
     /**
-     * @var string Regular expressions for Threema IDs
+     * @var array[string] Regular expressions for Threema IDs
      */
     const RegExThreemaId = [
         'gateway' => '^\*[A-Za-z0-9]{7}$', // https://regex101.com/r/fF9hQ0/4
@@ -36,4 +36,14 @@ class ThreemaGateway_Constants
      * @var string file path of threema callback php file
      */
     const CallbackFile = 'threema_callback.php';
+
+    /**
+     * @var string Type of delivery receipt messages
+     */
+    const MESSAGE_DELIVERY_RECEIPT_TYPE = [
+        'received' => 1,
+        'read' => 2,
+        'userack' => 3,
+        'userdec' => 4,
+    ];
 }

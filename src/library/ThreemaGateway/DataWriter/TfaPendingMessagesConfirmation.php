@@ -46,6 +46,10 @@ class ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation extends XenForo_D
                     'type' => self::TYPE_STRING,
                     'required' => true
                 ],
+                'extra_data' => [
+                    'type' => self::TYPE_BINARY,
+                    'required' => false
+                ],
                 'expiry_date' => [
                     'type' => self::TYPE_UINT,
                     'required' => true

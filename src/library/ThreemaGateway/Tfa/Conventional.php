@@ -101,7 +101,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         $options = XenForo_Application::getOptions();
 
         /** @var string $code random 6 digit string */
-        $code = $this->generateRandomString();
+        $code = $this->generateRandomCode();
 
         $providerData['code']          = $code;
         $providerData['codeGenerated'] = XenForo_Application::$time;
@@ -118,6 +118,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
             $code = ThreemaGateway_Handler_Emoji::replaceDigits($code);
         }
 
+        /** @var string $phrase name of XenForo phrase to use */
         $phrase = 'tfa_threemagw_conventional_message';
         if ($providerData['useShortMessage']) {
             $phrase = 'tfa_threemagw_conventional_message_short';
@@ -161,7 +162,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     }
 
     /**
-     * Called when trying to verify user. Checks whether given code is valid.
+     * Called when trying to verify user. Checks whether a given code is valid.
      *
      * @param string $context
      * @param array  $input
@@ -196,11 +197,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
             return false;
         }
 
-        // save current code for later replay attack checks
-        $providerData['lastCode']     = $code;
-        $providerData['lastCodeTime'] = XenForo_Application::$time;
-        unset($providerData['code']);
-        unset($providerData['codeGenerated']);
+        $this->updateReplayCheckData($providerData, $code);
 
         return true;
     }
@@ -254,7 +251,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
      * @param array         $user
      * @param array         $error
      *
-     * @return bool
+     * @return array
      */
     public function verifySetupFromInput(XenForo_Input $input, array $user, &$error)
     {

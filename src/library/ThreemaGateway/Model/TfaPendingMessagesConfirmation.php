@@ -18,7 +18,12 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
     /**
      * @var int Pending type: a 6 digit code is requested
      */
-    const PENDING_REQUESTCODE = 1;
+    const PENDING_REQUEST_CODE = 1;
+
+    /**
+     * @var int Pending type: a delivery receipt is requested
+     */
+    const PENDING_REQUEST_DELIVERY_RECEIPT = 2;
 
     /**
      * Returns the pending confirmations by a given request ID.
