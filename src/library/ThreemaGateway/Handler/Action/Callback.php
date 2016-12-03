@@ -483,7 +483,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
 
         $dataWriter->set('message_id', $messageId, ThreemaGateway_Model_Messages::DbTableMessages);
-        $dataWriter->set('date_received', null, ThreemaGateway_Model_Messages::DbTableMessages); // reset default value
+        $dataWriter->roundReceiveDate(); // reduce amount of meta data stored
 
         return $dataWriter->save();
     }

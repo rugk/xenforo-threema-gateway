@@ -48,8 +48,8 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
         }
 
         // check specific permissions
-        if (!$this->GatewayPermissions->hasPermission('receive') ||
-            !$this->GatewayPermissions->hasPermission('fetch')
+        if (!$this->gatewayPermissions->hasPermission('receive') ||
+            !$this->gatewayPermissions->hasPermission('fetch')
         ) {
             return false;
         }
@@ -127,7 +127,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             'trigger' => $triggerData,
             'context' => $context,
             'validationTime' => $this->parseValidationTime($providerData['validationTime']),
-            'gatewayid' => $this->GatewaySettings->getId()
+            'gatewayid' => $this->gatewaySettings->getId()
         ];
         return $view->createTemplateObject('two_step_threemagw_reversed', $params)->render();
     }
@@ -259,7 +259,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
         $viewParams += [
             'https' => XenForo_Application::$secure,
             'showqrcode' => $xenOptions->threema_gateway_tfa_reversed_show_qr_code,
-            'gatewayid' => $this->GatewaySettings->getId()
+            'gatewayid' => $this->gatewaySettings->getId()
         ];
 
         return $viewParams;

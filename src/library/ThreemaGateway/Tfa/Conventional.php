@@ -21,7 +21,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     {
         /** @var array $params */
         $params = [];
-        if ($this->GatewaySettings->isEndToEnd()) {
+        if ($this->gatewaySettings->isEndToEnd()) {
             $params['e2e'] = new XenForo_Phrase('threemagw_message_is_sent_e2e');
         } else {
             $params['e2e'] = '';
@@ -49,8 +49,8 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         }
 
         // check specific permissions
-        if (!$this->GatewayPermissions->hasPermission('send') ||
-            !$this->GatewayPermissions->hasPermission('fetch')
+        if (!$this->gatewayPermissions->hasPermission('send') ||
+            !$this->gatewayPermissions->hasPermission('fetch')
         ) {
             return false;
         }

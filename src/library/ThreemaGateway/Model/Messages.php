@@ -175,17 +175,27 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     }
 
     /**
-     * Sets the type code for querying only one type.
+     * Sets the a time limit for what messages should be queried
      *
      * @param int $date_min oldest date of messages
      * @param int $date_max latest date of messages (optional)
+     * @param int $applyToReceiveDates set to true to apply the condition to
+     *                                 receive dates (default = false, applies
+     *                                 it to send dates)
      */
-    public function setTimeLimit($date_min, $date_max = null)
+    public function setTimeLimit($date_min, $date_max = null, $applyToReceiveDates = false)
     {
-        $this->fetchOptions['where'][]  = 'metamessage.date_send >= ?';
+        /** @var string $attribut the collumn/attribut with the time data */
+        $attribut = 'metamessage.date_send';
+
+        if ($applyToReceiveDates) {
+            $attribut = 'metamessage.date_received';
+        }
+
+        $this->fetchOptions['where'][]  = $attribut . ' >= ?';
         $this->fetchOptions['params'][] = $date_min;
         if ($date_max) {
-            $this->fetchOptions['where'][]  = 'metamessage.date_send <= ?';
+            $this->fetchOptions['where'][]  = $attribut . ' <= ?';
             $this->fetchOptions['params'][] = $date_max;
         }
     }
@@ -333,8 +343,8 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         $orderByClause    = $this->getOrderByClause(self::OrderChoice, $this->fetchOptions);
 
         // query data
-        /** @var array|null $output */
-        $output      = null;
+        /** @var array $output */
+        $output = [];
         /** @var array|null $result database query result */
         $result      = null;
         /** @var string $resultindex index to use for additional data from query */
@@ -445,7 +455,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
 
         // go through each message
         foreach ($result as $msgId => $resultForId) {
-            // $output = [];
+            $output[$msgId] = [];
             $output[$msgId] = $this->pushArrayKeys($output[$msgId],
                                     $resultForId,
                                     $removeAttributes);
@@ -457,6 +467,10 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
             }
         }
 
+        if (!$output) {
+            return null;
+        }
+
         return $output;
     }
 
@@ -464,8 +478,8 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * Returns only the meta data of one or more messages not depending on the
      * type of the message.
      *
-     * @param  bool       $groupById     Set to true to group the data by the message ID
-     * @param  bool       $ignoreInvalid Set to true to remove data sets where the message content may be deleted
+     * @param  bool       $groupById     When true groups the data by the message ID (default: false)
+     * @param  bool       $ignoreInvalid When true removes data sets where the message content may be deleted (default: true)
      * @return null|array
      */
     public function getMessageMetaData($groupById = false, $ignoreInvalid = true)

@@ -19,7 +19,7 @@ class ThreemaGateway_Helper_General
      * @param  string $idgroup gateway, personal or any
      * @return string
      */
-    public static function regEx($idgroup)
+    public static function threemaRegEx($idgroup)
     {
         return ThreemaGateway_Constants::RegExThreemaId[$idgroup];
     }

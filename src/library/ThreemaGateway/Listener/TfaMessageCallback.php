@@ -62,7 +62,6 @@ class ThreemaGateway_Listener_TfaMessageCallback
         );
 
         if (!$tfaCallback->applyFilters()) {
-            echo 'filteer failed<bR>';
             return;
         }
 

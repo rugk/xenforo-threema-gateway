@@ -20,7 +20,7 @@ class ThreemaGateway_Listener_InitDependencies
     {
         //check not neccessary as we use an event hint
         XenForo_Template_Helper_Core::$helperCallbacks += [
-            'threemaregex' => ['ThreemaGateway_Helper_General', 'regEx'],
+            'threemaregex' => ['ThreemaGateway_Helper_General', 'threemaRegEx'],
             'threemaidverify' => ['ThreemaGateway_Helper_General', 'isThreemaId'],
             'threemagwcensor' => ['ThreemaGateway_Helper_General', 'censor'],
             'threemaidpubkey' => ['ThreemaGateway_Helper_Key', 'getPublic'],

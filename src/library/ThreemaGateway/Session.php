@@ -4,7 +4,7 @@
  *
  * @package ThreemaGateway
  * @author rugk
- * @copyright Copyright (c) 2015-2016 rugk
+ * @copyright Copyright (c) 2016 rugk
  * @license MIT
  */
 

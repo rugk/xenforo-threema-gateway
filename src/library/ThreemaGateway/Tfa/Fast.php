@@ -33,9 +33,9 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         }
 
         // check specific permissions
-        if (!$this->GatewayPermissions->hasPermission('send') ||
-            !$this->GatewayPermissions->hasPermission('receive') ||
-            !$this->GatewayPermissions->hasPermission('fetch')
+        if (!$this->gatewayPermissions->hasPermission('send') ||
+            !$this->gatewayPermissions->hasPermission('receive') ||
+            !$this->gatewayPermissions->hasPermission('fetch')
         ) {
             return false;
         }
@@ -125,7 +125,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             'data' => $providerData,
             'trigger' => $triggerData,
             'context' => $context,
-            'gatewayid' => $this->GatewaySettings->getId()
+            'gatewayid' => $this->gatewaySettings->getId()
         ];
         return $view->createTemplateObject('two_step_threemagw_fast', $params)->render();
     }
@@ -254,7 +254,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         $viewParams += [
             'https' => XenForo_Application::$secure,
             'showqrcode' => $xenOptions->threema_gateway_tfa_fast_show_qr_code,
-            'gatewayid' => $this->GatewaySettings->getId()
+            'gatewayid' => $this->gatewaySettings->getId()
         ];
 
         return $viewParams;

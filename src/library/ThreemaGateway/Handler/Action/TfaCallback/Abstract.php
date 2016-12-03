@@ -473,7 +473,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
         }
 
         $this->log($this->nameSecret . ' saved.', 'Saved ' . $this->nameSecret . ' for request #' .
-            $confirmRequest['request_id'] . ' from' .
+            $confirmRequest['request_id'] . ' from ' .
             $confirmRequest['provider_id'] . ' for user ' .
             $confirmRequest['user_id'] . ' for session ' .
             $confirmRequest['session_id']);

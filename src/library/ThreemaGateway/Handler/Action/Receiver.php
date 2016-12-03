@@ -79,7 +79,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // only show last result
         $model->setResultLimit(1);
         // to make sure the message is really the last one, sort it by the send time
-        $model->setOrder('date_send', 'asc');
+        $model->setOrder('date_send', 'desc');
 
         return $this->execute($model, $messageType);
     }
@@ -404,9 +404,19 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     public function removeMessage($messageId)
     {
         $this->initiate();
+
         /** @var ThreemaGateway_DataWriter_Messages $dataWriter */
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
         $dataWriter->setExistingData($messageId);
+
+        // remove metadata as much as possible
+        /** @var ThreemaGateway_DataWriter_Messages $dataWriterMeta */
+        $dataWriterMeta = clone $dataWriter;
+        $dataWriterMeta->roundReceiveDate();
+        $dataWriterMeta->save();
+
+        // remove all other data
+        /** @var ThreemaGateway_DataWriter_Messages $dataWriter */
         $dataWriter->delete();
     }
 

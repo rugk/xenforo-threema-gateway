@@ -47,6 +47,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 ],
                 'date_received' => [
                     'type' => self::TYPE_UINT,
+                    'required' => true,
                     'default' => XenForo_Application::$time
                 ]
             ],
@@ -148,6 +149,32 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 ]
             ]
         ];
+    }
+
+
+    /**
+     * Generalises the receive date to reduce the amount of stored meta data.
+     *
+     * Generally you may also want to call this if the data you are inserting
+     * is only placeholder data (aka the message ID + receive date).
+     * All existing data should already be set when calling this function.
+     */
+    public function roundReceiveDate()
+    {
+        /* @var int|null $receiveDate */
+        // get specified value
+        $receiveDate = $this->get('date_received');
+
+        // get default if not set
+        if (!$receiveDate) {
+            $receiveDate = $this->_fields[ThreemaGateway_Model_Messages::DbTableMessages]['date_received']['default'];
+        }
+
+        // round unix time to day (00:00)
+        $receiveDate = (int) floor($receiveDate / 60 / 60 / 24) * 24 * 60 * 60;
+
+        // modify data
+        $this->set('date_received', $receiveDate);
     }
 
     /**
@@ -257,13 +284,16 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     protected function _preSave()
     {
         // filter data
-        $newData = $this->getNewData();
+        // also uses existing data as a data base as otherwise the main table
+        // may also get deleted because of missing message id
+        $newData = array_merge($this->getNewData(), $this->_existingData);
+
         foreach ($this->getTables() as $tableName) {
             // search for (invalid) tables with
             if (
                 !array_key_exists($tableName, $newData) || // no data OR
                 !array_key_exists('message_id', $newData[$tableName]) || // missing message_id OR
-                (count($newData[$tableName]) == 1 && $tableName != ThreemaGateway_Model_Messages::DbTableMessages) // message_id as the only data set (and it's not the main message table where this is valid<)
+                (count($newData[$tableName]) == 1 && $tableName != ThreemaGateway_Model_Messages::DbTableMessages) // message_id as the only data set (and it's not the main message table where this is valid)
             ) {
                 // and remove them
                 unset($this->_fields[$tableName]);
@@ -271,11 +301,14 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         }
 
         // check whether there is other data in the main table
-        /** @var $isData whether in the main table is other data than the message ID */
+        /** @var bool $isData whether in the main table is other data than the message ID */
         $isData = false;
         foreach ($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages] as $field => $fieldData) {
             if ($field == 'message_id') {
                 // skip as requirement already checked
+                continue;
+            }
+            if ($field == 'date_received') {
                 continue;
             }
 
@@ -285,10 +318,13 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
             }
         }
 
-        // validate data (either main table contains only message ID *OR* it all required data fields)
+        // validate data (either main table contains only basic data *OR* it all required data fields)
         foreach ($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages] as $field => $fieldData) {
             if ($field == 'message_id') {
                 // skip as requirement already checked
+                continue;
+            }
+            if ($field == 'date_received') {
                 continue;
             }
 
@@ -402,10 +438,11 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     }
 
     /**
-     * Post-delete: Remove all data from main table, except of mesage ID.
+     * Post-delete: Remove all data from main table, except of message ID &
+     * the receive date.
      *
      * The reason for the deletion is, that the message ID should stay in the
-     * database and must not be deleted as this pürevents replay attacks
+     * database and must not be deleted as this prevents replay attacks
      * ({@see ThreemaGateway_Handler_Action_Receiver->removeMessage()}).
      *
      * @see XenForo_DataWriter::_postDelete()
@@ -417,6 +454,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableMessages];
         // remove keys, which should stay in the database
         unset($tableFields['message_id']);
+        unset($tableFields['date_received']); // as this is needed for real deletion
         // we do only care about the keys
         /** @var array $tableKeys extracted keys from fields */
         $tableKeys = array_keys($tableFields);
