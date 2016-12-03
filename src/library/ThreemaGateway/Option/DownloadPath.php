@@ -13,7 +13,7 @@ class ThreemaGateway_Option_DownloadPath
     /**
      * Verifies whether the dir is valid (can be created) and is writable.
      *
-     * @param string             $dirpath  Input
+     * @param string             $dirpath   Input
      * @param XenForo_DataWriter $dw
      * @param string             $fieldName Name of field/option
      *
@@ -57,15 +57,15 @@ class ThreemaGateway_Option_DownloadPath
      * was done, it returns true. This means it silently fails, if the dir could
      * not be moved.
      *
-     * @param string $newDir Please pass the absolute path here!
+     * @param  string    $newDir Please pass the absolute path here!
      * @throws Exception (from rename())
      * @return bool
      */
     protected static function moveDir($newDir)
     {
-        /** @var XenForo_Options */
+        /** @var XenForo_Options $xenOptions */
         $xenOptions = XenForo_Application::getOptions();
-        // get absolute old dir
+        /** @var string $orgDir original old dir */
         $orgDir = XenForo_Application::getInstance()->getRootDir() . '/' . $xenOptions->threema_gateway_downloadpath;
 
         // if no option set or previous option does not apply anymore

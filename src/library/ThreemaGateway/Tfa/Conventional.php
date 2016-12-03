@@ -15,14 +15,6 @@
 class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvider
 {
     /**
-     * Return the title of the 2FA methode.
-     */
-    public function getTitle()
-    {
-        return new XenForo_Phrase('tfa_threemagw_conventional');
-    }
-
-    /**
      * Return a description of the 2FA methode.
      */
     public function getDescription()
@@ -35,7 +27,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
             $params['e2e'] = '';
         }
 
-        return new XenForo_Phrase('tfa_threemagw_conventional_desc', $params);
+        return new XenForo_Phrase('tfa_' . $this->_providerId . '_desc', $params);
     }
 
     /**
@@ -67,26 +59,12 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     }
 
     /**
-     * Called when activated. Returns inital data of 2FA methode.
-     *
-     * @param array $user
-     * @param array $setupData
-     * @return array
-     */
-    public function generateInitialData(array $user, array $setupData)
-    {
-        $setupData = parent::generateInitialData($user, $setupData);
-
-        return $setupData;
-    }
-
-    /**
      * Called when trying to verify user. Sends Threema message.
      *
-     * @param string $context
-     * @param array  $user
-     * @param string $ip
-     * @param array  $providerData
+     * @param  string $context
+     * @param  array  $user
+     * @param  string $ip
+     * @param  array  $providerData
      * @return array
      */
     public function triggerVerification($context, array $user, $ip, array &$providerData)
@@ -115,7 +93,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
 
         // add options
         if ($providerData['useNumberSmilies']) {
-            $code = ThreemaGateway_Handler_Emoji::replaceDigits($code);
+            $code = ThreemaGateway_Helper_Emoji::replaceDigits($code);
         }
 
         /** @var string $phrase name of XenForo phrase to use */
@@ -141,12 +119,12 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     /**
      * Called when trying to verify user. Shows code input and such things.
      *
-     * @param XenForo_View $view
-     * @param string       $context
-     * @param array        $user
-     * @param array        $providerData
-     * @param array        $triggerData
-     * @return string HTML code
+     * @param  XenForo_View $view
+     * @param  string       $context
+     * @param  array        $user
+     * @param  array        $providerData
+     * @param  array        $triggerData
+     * @return string       HTML code
      */
     public function renderVerification(XenForo_View $view, $context, array $user,
                                         array $providerData, array $triggerData)
@@ -203,48 +181,6 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     }
 
     /**
-     * @return bool
-     */
-    public function canManage()
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function requiresSetup()
-    {
-        // Prevent setup functionality to execute when we are still in step one
-        // of the setup.
-        $session    = XenForo_Application::getSession();
-        /** @var string $sessionKey */
-        $sessionKey = 'tfaData_' . $this->_providerId;
-        if ($session->get($sessionKey)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Called when setting up the provider before the setup page is shown.
-     *
-     * Currently this is not correctly implemented in XenForo.
-     * See {@link https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047}
-     *
-     * @param XenForo_Input $input
-     * @param array         $user
-     * @param array         $error
-     *
-     * @return string HTML code
-     */
-    public function renderSetup(XenForo_View $view, array $user)
-    {
-        // redirected by ThreemaGateway_ControllerPublic_Account->actionTwoStepEnable
-        // to handleManage.
-    }
-
-    /**
      * Verifies the Treema ID formally after it was entered/changed.
      *
      * @param XenForo_Input $input
@@ -255,24 +191,8 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
      */
     public function verifySetupFromInput(XenForo_Input $input, array $user, &$error)
     {
-        parent::verifySetupFromInput($input, $user, $error);
-
         /** @var array $providerData */
-        $providerData = [];
-        /** @var string $threemaid Threema ID given as parameter */
-        $threemaid    = $input->filterSingle('threemaid', XenForo_Input::STRING);
-
-        //check Threema ID
-        /** @var string $verifyError */
-        $verifyError = '';
-        if (ThreemaGateway_Handler_Validation::checkThreemaId($threemaid, 'personal', $verifyError)) {
-            // correct
-            $providerData['threemaid'] = $threemaid;
-        } else {
-            // incorrect
-            $error[] = $verifyError;
-            return [];
-        }
+        $providerData = parent::verifySetupFromInput($input, $user, $error);
 
         //add other options to provider data
         $providerData['useNumberSmilies'] = $input->filterSingle('useNumberSmilies', XenForo_Input::BOOLEAN);
@@ -282,153 +202,43 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     }
 
     /**
-     * Handles settings of user.
+     * Called before the setup verification is shown.
      *
-     * @param XenForo_Controller $controller
-     * @param array              $user
-     * @param array              $providerData
+     * @param array $providerData
+     * @param array $triggerData
      *
-     * @return null|ThreemaGateway_ViewPublic_TfaManage
+     * @return bool
      */
-    public function handleManage(XenForo_Controller $controller, array $user, array $providerData)
+    protected function initiateSetupData(array &$providerData, array &$triggerData)
     {
-        parent::handleManage($controller, $user, $providerData);
+        return true;
+    }
 
-        /** @var XenForo_Input $input */
-        $input   = $controller->getInput();
-        /** @var Zend_Controller_Request_Http $request */
-        $request = $controller->getRequest();
-        /** @var XenForo_Session $session */
-        $session = XenForo_Application::getSession();
-
-        /** @var array|null $newProviderData */
-        $newProviderData = null;
-        /** @var array|null $newTriggerData */
-        $newTriggerData  = null;
-        /** @var bool $showSetup */
-        $showSetup       = false;
-        /** @var string $context */
-        $context         = 'setup';
-        /** @var string $threemaId */
-        $threemaId       = '';
-
-        /* Possible values of $context in order of usual appearance
-        firstsetup      Input=Threema ID    User enables 2FA provider the first time.
-        setupvalidation Input=2FA code      Confirming 2FA in initial setup. (2FA input context: setup)
-
-        setup           Input=Threema ID    UI to change settings of 2FA provider (shows when user clicks on "Manage")
-        update          Input=2FA code      Confirming 2FA when settings changed. (2FA input context: setup)
-
-        <not here>      Input=2FA c. only   Login page, where code requested (2FA input context: login)
-
-        The usual template is account_two_step_threemagw_conventional_manage, which includes
-        account_two_step_threemagw_conventional every time when a 2FA code is requested. If so
-        this "subtemplate" always gets the context "setup".
-        Only when logging in this template is included by itself and gets the context "login".
-        */
-
-        /* Ways this function can go: Input (filterSingle) --> action --> output ($context)
-        Initial setup:
-            no $providerData --> set default options & Threema ID --> firstsetup
-            step = setup --> show page where user can enter 2FA code --> setupvalidation
-            <verification not done in method>
-
-        Manage:
-            ... (last else block) --> manage page: show setup --> setup
-            manage --> show page where user can enter 2FA code --> update
-            confirm --> check 2FA code & use settings if everything is right --> <null>
-
-        Login:
-            <not manmaged in this function>
-        */
-
-        if ($controller->isConfirmedPost()) {
-            $sessionKey = 'tfaData_' . $this->_providerId;
-
-            //setup changed
-            if ($input->filterSingle('manage', XenForo_Input::BOOLEAN)) {
-                //provider data (settings) changed
-
-                //read and verify options
-                $error           = '';
-                $newProviderData = $this->verifySetupFromInput($input, $user, $error);
-                if (!$newProviderData) {
-                    return $controller->responseError($error);
-                }
-
-                //check if there is a new ID, which would require revalidation
-                if ($newProviderData['threemaid'] == $providerData['threemaid']) {
-                    //the same Threema ID - use options instantly
-                    $this->saveProviderOptions($user, $newProviderData);
-                    return null;
-                }
-
-                //validation is required, revalidate this thing...
-                $newTriggerData = $this->triggerVerification('setup', $user, $request->getClientIp(false), $newProviderData);
-
-                $session->set($sessionKey, $newProviderData);
-                $showSetup = true;
-                $context   = 'update';
-            } elseif ($input->filterSingle('confirm', XenForo_Input::BOOLEAN)) {
-                //confirm setup validation
-
-                //validate new provider data
-                $newProviderData = $session->get($sessionKey);
-                if (!is_array($newProviderData)) {
-                    return null;
-                }
-
-                if (!$this->verifyFromInput('setup', $input, $user, $newProviderData)) {
-                    return $controller->responseError(new XenForo_Phrase('two_step_verification_value_could_not_be_confirmed'));
-                }
-
-                //update provider as everything is okay
-                $this->saveProviderOptions($user, $newProviderData);
-                $session->remove($sessionKey);
-
-                return null;
-            } elseif ($input->filterSingle('step', XenForo_Input::BOOLEAN) == 'setup') {
-                //show "real" setup (where you have to enter your validation code)
-                $context = 'setupvalidation';
-
-                $newProviderData = $providerData;
-                $session->set($sessionKey, $newProviderData);
-
-                $newTriggerData = []; //is not used anyway...
-                $showSetup      = true;
-            } else {
-                throw new XenForo_Exception('Request invalid.');
-            }
-        } elseif (empty($providerData)) { //no previous settings
-            //show first setup page (you can enter your Threema ID and settings)
-            $context = 'firstsetup';
-
-            //set default values of options
-            $providerData['useNumberSmilies'] = true;
-            $providerData['useShortMessage']  = false;
-
-            $threemaId = $this->getDefaultThreemaId($user);
-        } else {
-            //first manage page ($context = setup)
-            $threemaId = $providerData['threemaid'];
-        }
-
-        /** @var array $viewParams parameters for XenForo_ControllerResponse_View */
-        $viewParams = [
-            'provider' => $this,
-            'providerId' => $this->_providerId,
-            'user' => $user,
-            'providerData' => $providerData,
-            'newProviderData' => $newProviderData,
-            'newTriggerData' => $newTriggerData,
-            'showSetup' => $showSetup,
-            'context' => $context,
-            'threemaId' => $threemaId
+    /**
+     * Generates the default provider options at setup time before it is
+     * displayed to the user.
+     *
+     * @return array
+     */
+    protected function generateDefaultData()
+    {
+        return [
+            'useNumberSmilies' => true,
+            'useShortMessage' => false,
         ];
-        return $controller->responseView(
-            'ThreemaGateway_ViewPublic_TfaManage',
-            'account_two_step_threemagw_conventional_manage',
-            $viewParams
-        );
+    }
+
+    /**
+     * Adjust the view aparams, e.g. add special params needed by your
+     * template.
+     *
+     * @param array  $viewParams
+     * @param string $context
+     *
+     * @return array
+     */
+    protected function adjustViewParams(array $viewParams, $context)
+    {
+        return $viewParams;
     }
 }

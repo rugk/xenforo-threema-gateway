@@ -156,7 +156,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * All other methods return "null" in this case as they cannot return all of
      * the requested data. This function however would return true.
      *
-     * @param  string     $messageId
+     * @param  string $messageId
      * @return bool
      */
     public function messageIsReceived($messageId)

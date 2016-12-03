@@ -17,7 +17,7 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
      * @param string $message
      *
      * @throws XenForo_Exception
-     * @return int The message ID
+     * @return int               The message ID
      */
     public function sendSimple($threemaId, $message)
     {
@@ -48,7 +48,7 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
      * @param string $message   The message to send (max 3500 characters)
      *
      * @throws XenForo_Exception
-     * @return int The message ID
+     * @return int               The message ID
      */
     public function sendE2EText($threemaId, $message)
     {
@@ -87,7 +87,7 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
      * @param string $message   The message to send (max 3500 characters)
      *
      * @throws XenForo_Exception
-     * @return int The message ID
+     * @return int               The message ID
      */
     public function sendAuto($threemaId, $message)
     {

@@ -107,12 +107,12 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
                                &$saveMessage,
                                $debugMode)
    {
-       $this->callback    = $handler;
-       $this->log         = $output;
+       $this->callback              = $handler;
+       $this->log                   = $output;
        $this->receiveResult         = $receiveResult;
-       $this->threemaMsg         = $threemaMsg;
-       $this->saveMessage = $saveMessage;
-       $this->debugMode   = $debugMode;
+       $this->threemaMsg            = $threemaMsg;
+       $this->saveMessage           = $saveMessage;
+       $this->debugMode             = $debugMode;
    }
 
     /**
@@ -287,6 +287,24 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
     abstract protected function applyFilter($filterType, $filterData, $failOnError = true);
 
     /**
+     * Analyses/filters/validates the existing old provider data e.g. to
+     * compare it with the new data to set.
+     *
+     * Returns "false" if the process should be canceled. Otherwise "true".
+     *
+     * @param array $oldProviderData old data read
+     * @param array $setData         new data to set
+     * @param array $processOptions  custom options (optional)
+     *
+     * @throws XenForo_Exception
+     * @return bool
+     */
+    protected function preSaveData(array &$oldProviderData, array &$setData, array $processOptions = [])
+    {
+        return true;
+    }
+
+    /**
      * Does stuff needed to be done before processing the actual requests.
      *
      * Returns "false" if the process should be canceled. Otherwise "true".
@@ -385,11 +403,13 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      *
      * @param  array             $confirmRequest the confirmation message request
      * @param  array             $setData        an array of the data to set
+     * @param  array             $processOptions custom options (optional)
      * @throws XenForo_Exception
      */
     protected function setDataForRequest(
         array $confirmRequest,
-        array $setData
+        array $setData,
+        array $processOptions = []
     ) {
         /** @var array $providerData provider data of session */
         $providerData = [];
@@ -433,6 +453,10 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
                 // re-throw exception
                 throw $e;
             }
+        }
+
+        if (!$this->preSaveData($providerData, $setData, $processOptions)) {
+            throw new Exception('preSaveData() returned an error and prevented data saving.');
         }
 
         // merge the data with the original provider data

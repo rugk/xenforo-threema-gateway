@@ -140,6 +140,11 @@ class ThreemaGateway_Handler_Action_GatewayServer extends ThreemaGateway_Handler
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
+        // prevent any lookup if the gateway ID key is requested
+        if ($threemaId == $this->settings->getId()) {
+            return $this->settings->getOwnPublicKey();
+        }
+
         /** @var Threema\MsgApi\Commands\Results\FetchPublicKeyResult $result */
         $result = $this->getConnector()->fetchPublicKey($threemaId);
         if ($result->isSuccess()) {

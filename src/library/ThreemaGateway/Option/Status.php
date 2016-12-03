@@ -22,17 +22,17 @@ class ThreemaGateway_Option_Status
      */
     public static function renderHtml(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
-        /** @var bool */
+        /** @var bool $isConfError */
         $isConfError     = false;
-        /** @var bool */
+        /** @var bool $isPhpSdkError */
         $isPhpSdkError   = false;
-        /** @var array */
+        /** @var array $status */
         $status          = ['libsodium', 'libsodiumphp', 'phpsdk', 'credits'];
-        /** @var string */
+        /** @var string $additionalerrors */
         $additionalerrors = '';
 
         //get XenForo required things
-        /** @var XenForo_Visitor */
+        /** @var XenForo_Visitor $visitor */
         $visitor = XenForo_Visitor::getInstance();
 
         if (!XenForo_Application::$secure) {
@@ -76,11 +76,11 @@ class ThreemaGateway_Option_Status
             try {
                 $sdk = ThreemaGateway_Handler_PhpSdk::getInstance($gwSettings);
                 //Note: When the SDK throws an exception the two lines below cannot be executed, so the version number cannot be determinated
-                $status['phpsdk']['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $sdk->getVersion()]);
+                $status['phpsdk']['text']     = new XenForo_Phrase('option_threema_gateway_status_phpsdk_version', ['version' => $sdk->getVersion()]);
                 $status['phpsdk']['addition'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_featurelevel', ['level' => $sdk->getFeatureLevel()]);
             } catch (Exception $e) {
-                $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_phpsdk_error').$e->getMessage();
-                $isPhpSdkError = true;
+                $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_phpsdk_error') . $e->getMessage();
+                $isPhpSdkError              = true;
             }
 
             // check permissions
@@ -92,14 +92,14 @@ class ThreemaGateway_Option_Status
                 // if available show credits
                 try {
                     $gwServer = new ThreemaGateway_Handler_Action_GatewayServer;
-                    $credits = $gwServer->getCredits();
+                    $credits  = $gwServer->getCredits();
                 } catch (Exception $e) {
                     if (!$isPhpSdkError) {
                         // only add error if it really includes some useful information
                         // if the SDK already has an error it is clear that this will
                         // also fail. Mostly it just fails with "Undefined variable:
                         // cryptTool".
-                        $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_gwserver_error').$e->getMessage();
+                        $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_custom_gwserver_error') . $e->getMessage();
                     }
                     $credits = 'N/A';
                 }
@@ -132,10 +132,7 @@ class ThreemaGateway_Option_Status
             }
         }
 
-        /** @var ThreemaGateway_Handler_Settings */
-        $settings = new ThreemaGateway_Handler_Settings;
-
-        if ($settings->isDebug()) {
+        if ($gwSettings->isDebug()) {
             if (XenForo_Application::debugMode()) {
                 $additionalerrors[] = [
                     'text' => new XenForo_Phrase('option_threema_gateway_status_debug_mode_active'),

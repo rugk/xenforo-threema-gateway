@@ -51,7 +51,7 @@ class ThreemaGateway_Listener_TfaMessageCallback
         $tfaCallback->addFilter(
             ThreemaGateway_Handler_Action_TfaCallback_TextMessage::FILTER_REPLACE,
             [
-                ThreemaGateway_Handler_Emoji::parseUnicode('\u20e3') => ''
+                ThreemaGateway_Helper_Emoji::parseUnicode('\u20e3') => ''
             ]
         );
 
@@ -62,7 +62,7 @@ class ThreemaGateway_Listener_TfaMessageCallback
         );
 
         if (!$tfaCallback->applyFilters()) {
-            echo "filteer failed<bR>";
+            echo 'filteer failed<bR>';
             return;
         }
 
@@ -114,8 +114,9 @@ class ThreemaGateway_Listener_TfaMessageCallback
         }
 
         if (!$tfaCallback->processPending([
-            'saveKey'            => 'receivedCode',
-            'saveKeyReceiptType' => 'receivedDeliveryReceipt'
+            'saveKey'                   => 'receivedCode',
+            'saveKeyReceiptType'        => 'receivedDeliveryReceipt',
+            'saveKeyReceiptTypeLargest' => 'receivedDeliveryReceiptLargest'
         ])) {
             return;
         }

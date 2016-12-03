@@ -165,10 +165,9 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     protected function _getExistingData($data)
     {
         /** @var string $messageId */
-        if (!$messageId = $this->_getExistingPrimaryKey($data, 'message_id'))
-		{
-			return false;
-		}
+        if (!$messageId = $this->_getExistingPrimaryKey($data, 'message_id')) {
+            return false;
+        }
 
         /** @var array $existing Array of existing data. (filled below) */
         $existing = [];
@@ -315,15 +314,15 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     }
 
     /**
-	 * Pre-delete: Remove main table & deletes unused tables.
+     * Pre-delete: Remove main table & deletes unused tables.
      *
      * The reason for the deletion is, that the message ID should stay in the
      * database and must not be deleted.
      *
      * @see XenForo_DataWriter::_preDelete()
-	 */
-	protected function _preDelete()
-	{
+     */
+    protected function _preDelete()
+    {
         // remove main table from deletion as it is handled in _postDelete().
         unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages]);
 
@@ -351,7 +350,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     protected function _postSave()
     {
         // get data
-        $allFiles = $this->getExtraData(self::DataFiles);
+        $allFiles    = $this->getExtraData(self::DataFiles);
         $ackedMsgIds = $this->getExtraData(self::DataAckedMsgIds);
 
         // add additional data
@@ -368,7 +367,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 $tableKeys = array_keys($tableFields);
 
                 // create insert query for this item
-                $this->_db->query('INSERT INTO `' .  ThreemaGateway_Model_Messages::DbTableFiles . '`
+                $this->_db->query('INSERT INTO `' . ThreemaGateway_Model_Messages::DbTableFiles . '`
                     ( `' . implode('`, `',  $tableKeys) . '`)
                     VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
                     [
@@ -391,7 +390,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 $tableKeys = array_keys($tableFields);
 
                 // create insert query for this item
-                $this->_db->query('INSERT INTO `' .  ThreemaGateway_Model_Messages::DbTableAckMsgs . '`
+                $this->_db->query('INSERT INTO `' . ThreemaGateway_Model_Messages::DbTableAckMsgs . '`
                     ( `' . implode('`, `',  $tableKeys) . '`)
                     VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
                     [
@@ -403,16 +402,16 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     }
 
     /**
-	 * Post-delete: Remove all data from main table, except of mesage ID.
+     * Post-delete: Remove all data from main table, except of mesage ID.
      *
      * The reason for the deletion is, that the message ID should stay in the
      * database and must not be deleted as this pürevents replay attacks
      * ({@see ThreemaGateway_Handler_Action_Receiver->removeMessage()}).
      *
      * @see XenForo_DataWriter::_postDelete()
-	 */
-	protected function _postDelete()
-	{
+     */
+    protected function _postDelete()
+    {
         // get table fields
         /** @var array $tableFields fields of main message table */
         $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableMessages];
@@ -423,7 +422,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         $tableKeys = array_keys($tableFields);
 
         // remove values from database
-        $this->_db->query('UPDATE `' .  ThreemaGateway_Model_Messages::DbTableMessages . '`
+        $this->_db->query('UPDATE `' . ThreemaGateway_Model_Messages::DbTableMessages . '`
             SET `' . implode('`=null, `',  $tableKeys) . '`=null
             WHERE ' . $this->getUpdateCondition(ThreemaGateway_Model_Messages::DbTableMessages));
     }

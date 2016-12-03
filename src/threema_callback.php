@@ -34,7 +34,7 @@ $callback->initCallbackHandling(new Zend_Controller_Request_Http());
 
 /** @var XenForo_Options $options */
 $options = XenForo_Application::getOptions();
-/** @var bool whether XenForo is running in debug mode */
+/** @var bool $debugMode whether XenForo is running in debug mode */
 $debugMode = XenForo_Application::debugMode();
 // could use ThreemaGateway_Handler_Settings->isDebug() here, but that would
 // not be good here as we really only need the RAW debug mode setting.

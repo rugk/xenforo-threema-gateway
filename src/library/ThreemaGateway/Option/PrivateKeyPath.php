@@ -13,8 +13,8 @@ class ThreemaGateway_Option_PrivateKeyPath
     /**
      * Verifies the existence of the path.
      *
-     * Note that $filepath can also the key directly. However this is neither
-     * the official way nor recommend or documented.
+     * Note that $filepath can also be the key directly. However this is neither
+     * the official way nor recommend/documented.
      *
      * @param string             $filepath  Input
      * @param XenForo_DataWriter $dw
@@ -30,9 +30,9 @@ class ThreemaGateway_Option_PrivateKeyPath
         }
 
         // check path
-        if (!file_exists(__DIR__ . '/../' . $filepath) &&
-            $filepath != '' &&
-            !ThreemaGateway_Handler_Key::check($filepath, 'private:')
+        if ($filepath != '' && //ignore empty field
+            !file_exists(__DIR__ . '/../' . $filepath) && //verify accessibility
+            !ThreemaGateway_Helper_Key::check($filepath, 'private:') //or that it's the key directly
         ) {
             $dw->error(new XenForo_Phrase('threemagw_invalid_privkeypath'), $fieldName);
             return false;

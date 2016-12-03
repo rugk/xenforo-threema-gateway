@@ -21,7 +21,7 @@ class ThreemaGateway_Option_ThreemaGatewayId
      */
     public static function verifyOption(&$threemaid, XenForo_DataWriter $dw, $fieldName)
     {
-        /** @var mixed Useless error var */
+        /** @var mixed $error useless error var */
         $error = '';
 
         //check for formal errors

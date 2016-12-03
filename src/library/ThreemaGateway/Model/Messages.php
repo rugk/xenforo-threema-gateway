@@ -114,8 +114,8 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     /**
      * Sets the message ID(s) for the query.
      *
-     * @param string|array $messageIds one (string) or more (array) message IDs
-     * @param string $tablePrefix The table prefix (optional)
+     * @param string|array $messageIds  one (string) or more (array) message IDs
+     * @param string       $tablePrefix The table prefix (optional)
      */
     public function setMessageId($messageIds, $tablePrefix = null)
     {
@@ -464,7 +464,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * Returns only the meta data of one or more messages not depending on the
      * type of the message.
      *
-     * @param  bool       $groupById Set to true to group the data by the message ID
+     * @param  bool       $groupById     Set to true to group the data by the message ID
      * @param  bool       $ignoreInvalid Set to true to remove data sets where the message content may be deleted
      * @return null|array
      */
@@ -489,7 +489,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
             foreach ($result as $i => $msgData) {
                 if (!array_key_exists('message_type_code', $msgData) ||
                     !$msgData['message_type_code']) {
-                        unset($result[$i]);
+                    unset($result[$i]);
                 }
             }
         }
@@ -596,7 +596,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * It automatically chooses between a simple `this = ?` or a more complex
      * `this IN (?, ?, ...)`.
      *
-     * @param string $attName the name of the required attribut
+     * @param string       $attName  the name of the required attribut
      * @param string|array $attValue the value, which should be required
      *
      * @return array

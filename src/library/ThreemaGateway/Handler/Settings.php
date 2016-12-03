@@ -26,39 +26,41 @@ class ThreemaGateway_Handler_Settings
     protected $GatewayId = '';
 
     /**
-     * @var string $GatewaySecret Your own Threema Gateway Secret
+     * @var string $gatewaySecret Your own Threema Gateway Secret
      */
-    protected $GatewaySecret = '';
+    protected $gatewaySecret = '';
 
     /**
-     * @var string $PrivateKey Your own private key
+     * @var string $privateKey Your own private key
      */
-    protected $PrivateKey = '';
+    protected $privateKey = '';
 
     /**
-     * @var string $PrivateKeyBase The unconverted private key from settings.
+     * @var string $privateKeyBase The unconverted private key from settings.
      */
-    private $PrivateKeyBase = '';
+    private $privateKeyBase = '';
 
     /**
-     * Create the connection to the PHP-SDK.
-     *
+     * @var string $publicKey the public key converted from the private key {@see $privateKey}
+     */
+    protected $publicKey = '';
+
+    /**
+     * Initiate settings.
      */
     public function __construct()
     {
-        /** @var XenForo_Options */
         $this->xenOptions = XenForo_Application::getOptions();
 
         // get options (if not hard-coded)
         if (!$this->GatewayId) {
             $this->GatewayId = $this->xenOptions->threema_gateway_threema_id;
         }
-        if (!$this->GatewaySecret) {
-            $this->GatewaySecret = $this->xenOptions->threema_gateway_threema_id_secret;
+        if (!$this->gatewaySecret) {
+            $this->gatewaySecret = $this->xenOptions->threema_gateway_threema_id_secret;
         }
-        if (!$this->PrivateKey) {
-            /** @var string $filepath */
-            $this->PrivateKeyBase = $this->xenOptions->threema_gateway_privatekeyfile;
+        if (!$this->privateKey) {
+            $this->privateKeyBase = $this->xenOptions->threema_gateway_privatekeyfile;
 
             // vadility check & processing is later done when private key is actually requested
             // {@see convertPrivateKey()}
@@ -82,7 +84,7 @@ class ThreemaGateway_Handler_Settings
     public function isAvaliable()
     {
         if (!$this->GatewayId ||
-            !$this->GatewaySecret ||
+            !$this->gatewaySecret ||
             $this->xenOptions->threema_gateway_e2e == ''
         ) {
             return false;
@@ -112,12 +114,12 @@ class ThreemaGateway_Handler_Settings
         //check whether sending and receiving is possible
         if ($this->isEndToEnd()) {
             // fast check
-            if (!$this->PrivateKey && !$this->PrivateKeyBase) {
+            if (!$this->privateKey && !$this->privateKeyBase) {
                 return false;
             }
 
             // get private key if neccessary
-            if (!$this->PrivateKey) {
+            if (!$this->privateKey) {
                 try {
                     $this->convertPrivateKey();
                 } catch (XenForo_Exception $e) {
@@ -127,7 +129,7 @@ class ThreemaGateway_Handler_Settings
             }
 
             // if the key is (still) invalid, return error
-            if (!$this->isPrivateKey($this->PrivateKey)) {
+            if (!$this->isPrivateKey($this->privateKey)) {
                 return false;
             }
         }
@@ -174,13 +176,13 @@ class ThreemaGateway_Handler_Settings
     }
 
     /**
-     * Returns the gateway secret
+     * Returns the gateway secret.
      *
      * @return string
      */
     public function getSecret()
     {
-        return $this->GatewaySecret;
+        return $this->gatewaySecret;
     }
 
     /**
@@ -190,11 +192,27 @@ class ThreemaGateway_Handler_Settings
      */
     public function getPrivateKey()
     {
-        if (!$this->PrivateKey) {
+        if (!$this->privateKey) {
             $this->convertPrivateKey();
         }
 
-        return $this->PrivateKey;
+        return $this->privateKey;
+    }
+
+    /**
+     * Returns the public key.
+     *
+     * @return string
+     */
+    public function getOwnPublicKey()
+    {
+        if (!$this->publicKey) {
+            /** @var ThreemaGateway_Handler_Action_KeyConverter $keyConverter */
+            $keyConverter    = new ThreemaGateway_Handler_Action_KeyConverter;
+            $this->publicKey = $keyConverter->derivePublicKey($this->getPrivateKey());
+        }
+
+        return $this->publicKey;
     }
 
     /**
@@ -206,19 +224,19 @@ class ThreemaGateway_Handler_Settings
     protected function convertPrivateKey()
     {
         // find path of private key file
-        if (file_exists(__DIR__ . '/../' . $this->PrivateKeyBase)) {
+        if (file_exists(__DIR__ . '/../' . $this->privateKeyBase)) {
             /** @var resource|false $fileres */
-            $fileres = fopen(__DIR__ . '/../' . $this->PrivateKeyBase, 'r');
-        } elseif (ThreemaGateway_Handler_Key::check($this->PrivateKeyBase, 'private:')) {
+            $fileres = fopen(__DIR__ . '/../' . $this->privateKeyBase, 'r');
+        } elseif (ThreemaGateway_Helper_Key::check($this->privateKeyBase, 'private:')) {
             // use raw key (undocumented, not recommend)
-            $this->PrivateKey = $this->PrivateKeyBase;
+            $this->privateKey = $this->privateKeyBase;
         } else {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_invalid_privatekey'));
         }
 
         // read content of private key file
         if (is_resource($fileres)) {
-            $this->PrivateKey = fgets($fileres);
+            $this->privateKey = fgets($fileres);
             fclose($fileres);
         } else {
             //error opening file
@@ -229,11 +247,11 @@ class ThreemaGateway_Handler_Settings
     /**
      * Checks whether the string actually is a private key.
      *
-     * @param string $privateKey The string to check.
+     * @param  string $privateKey The string to check.
      * @return bool
      */
     protected function isPrivateKey($privateKey)
     {
-        return ThreemaGateway_Handler_Key::check($privateKey, 'private:');
+        return ThreemaGateway_Helper_Key::check($privateKey, 'private:');
     }
 }

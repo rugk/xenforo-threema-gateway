@@ -21,7 +21,7 @@ class ThreemaGateway_Helper_UserField
      *
      * @param  string $field The field id
      * @param  string $value The entered value
-     * @param  mixed $error
+     * @param  mixed  $error
      * @return bool
      */
     public static function verifyThreemaId($field, &$value, &$error)

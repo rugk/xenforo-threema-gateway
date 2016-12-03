@@ -27,7 +27,7 @@ class ThreemaGateway_Option_ReceiveCallback
      */
     public static function renderOption(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
     {
-        /** @var XenForo_Options */
+        /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
 
         // set default value
@@ -73,21 +73,6 @@ class ThreemaGateway_Option_ReceiveCallback
      */
     protected static function generateDefault()
     {
-        $code = '';
-        //try using Sodium first
-        try {
-            /** @var ThreemaGateway_Handler_Libsodium */
-            $sodiumHelper = new ThreemaGateway_Handler_Libsodium;
-            $code         = $sodiumHelper->getRandomString(self::AccessTokenLength);
-        } catch (Exception $e) {
-            // ignore errors
-        }
-
-        //use XenForo method as a fallback
-        if (!$code) {
-            $code = XenForo_Application::generateRandomString(self::AccessTokenLength);
-        }
-
-        return $code;
+        return ThreemaGateway_Helper_Random::getRandomAlphaNum(self::AccessTokenLength);
     }
 }

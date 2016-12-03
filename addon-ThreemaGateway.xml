@@ -118,25 +118,26 @@
 	{xen:phrase tfa_threemagw_fast_please_confirm_message, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
 </p>]]></template>
     <template title="two_step_threemagw_reversed"><![CDATA[<xen:require css="threemagw.css" />
+<xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />
+<xen:require js="js/ThreemaGateway/threematfa.js" />
 
 <xen:comment>main content begin</xen:comment>
 <p>
 	{xen:phrase tfa_threemagw_reversed_message_please_enter_code, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
 </p>
 
-<div class="threemagw_code">
+<div class="threemagw_centerwrapper threemagw_code">
 	{xen:phrase tfa_threemagw_reversed_show_code, 'code={$trigger.code}'}
 </div>
-<div class="threemagw_send_link">
+<div class="threemagw_centerwrapper threemagw_send_link">
 	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
 </div>
-<div class="threemagw_qrcode_send">
-	<xen:comment>TODO</xen:comment>
+<div class="threemagw_centerwrapper threemagw_qrcode_send">
+	<span class="threemagw_createqr threemagw_qr" data-qrcode="{xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}"></span>
 </div>
 
 <p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>
-
-<xen:comment>main content end</xen:comment>]]></template>
+]]></template>
   </admin_templates>
   <admin_template_modifications/>
   <code_events>
@@ -335,12 +336,6 @@ userfield</sub_options>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="215"/>
     </option>
-    <option option_id="threema_gateway_tfa_useimprovedsrng" edit_format="onoff" data_type="boolean" can_backup="1">
-      <default_value>1</default_value>
-      <edit_format_params></edit_format_params>
-      <sub_options></sub_options>
-      <relation group_id="threemagw_tfa" display_order="25"/>
-    </option>
     <option option_id="threema_gateway_threema_id" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_ThreemaGatewayId" validation_method="verifyOption">
       <default_value></default_value>
       <edit_format_params>placeholder = *MYAPIID</edit_format_params>
@@ -458,7 +453,7 @@ Additionally many 2FA methods will be disabled if you do not install libsodium.]
     <phrase title="option_threema_gateway_tfa_autolookupphone" version_id="1" version_string="0.1.0"><![CDATA[Automatically lookup phone numbers]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupphone_explain" version_id="2" version_string="0.2.0"><![CDATA[When the user activates a 2FA mode this option automatically tries to get the Threema ID associated with the mobile phone number of the user. The phone number is hashed before it is send to the Threema server.<br />
 Add the ID of the custom user field in the input box, where it should be looked for phone numbers.<br />
-<b>Important:</b> When the phone number in this custom user field is not verified when it is saved this allows forum users to lookup arbitrary phone numbers of any Threema user.]]></phrase>
+<b>Important:</b> When the phone number in this custom user field is not verified when it is saved this allows forum members to lookup arbitrary phone numbers of any Threema user.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional" version_id="2" version_string="0.2.0"><![CDATA[Activate conventional mode]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_explain" version_id="1" version_string="0.1.0"><![CDATA[Allow users to use the "Conventional" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_validation" version_id="2" version_string="0.2.0"><![CDATA[Validation time]]></phrase>
@@ -486,8 +481,6 @@ It is useful that this value is a bit higher than the previous one, to give the 
     <phrase title="option_threema_gateway_tfa_reversed_validation_setup" version_id="2" version_string="0.2.0"><![CDATA[Validation time when setting up]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid when setting up the 2FA method. (in minutes)<br>
 It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
-    <phrase title="option_threema_gateway_tfa_useimprovedsrng" version_id="1" version_string="0.1.0"><![CDATA[Use libsodiums random number generator instead of XenForo's internal one (recommend)]]></phrase>
-    <phrase title="option_threema_gateway_tfa_useimprovedsrng_explain" version_id="1" version_string="0.1.0"><![CDATA[When this setting is activated all 2FA methods try to use <a href="https://download.libsodium.org/doc/generating_random_data/index.html" target="_blank">libsodium's random number generator</a> instead of XenForo's internal one. This may provide better security.]]></phrase>
     <phrase title="option_threema_gateway_threema_id" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway ID]]></phrase>
     <phrase title="option_threema_gateway_threema_id_explain" version_id="1" version_string="0.1"><![CDATA[Enter the Threema ID of your Gateway account here. (e.g. <code>*MYAPIID</code>)]]></phrase>
     <phrase title="option_threema_gateway_threema_id_secret" version_id="1" version_string="0.1"><![CDATA[Threema ID secret]]></phrase>
@@ -548,7 +541,7 @@ Validity: {validationTime}
     <phrase title="tfa_threemagw_fast_message" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Two-factor authentication
 
 Hi {user},
-a user with the *IP* *{ip}* requested to login into your account.
+a user with the *IP* *{ip}* requested a login confirmation for your account.
 
 To allow the login you have to acknowledge this message.
 
@@ -564,7 +557,8 @@ Acknowledge this message to allow the login.
 
 {board}
 {board_url}]]></phrase>
-    <phrase title="tfa_threemagw_fast_please_confirm_message" version_id="2" version_string="0.2.0"><![CDATA[Please confirm the message, which has just been sent to <b>{threemaid}</b> from <b>{gatewayid}</b>.]]></phrase>
+    <phrase title="tfa_threemagw_fast_please_confirm_message" version_id="2" version_string="0.2.0"><![CDATA[Please confirm the message, which has just been sent to <b>{threemaid}</b> from <b>{gatewayid}</b>.<br>
+In case you accidentally tapped on "Decline" you can always confirm the message afterwards to login anyway.]]></phrase>
     <phrase title="tfa_threemagw_fast_setup_descr" version_id="2" version_string="0.2.0"><![CDATA[This mode sends you a message, which you have to confirm (acknowledge) to allow the login request. If you decline it, you cannot login.]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies" version_id="2" version_string="0.2.0"><![CDATA[I like Emojis!]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only, if you like emoticons/smileys.]]></phrase>
@@ -606,7 +600,7 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_invalid_threema_id" version_id="1" version_string="0.1"><![CDATA[The Threema ID is invalid.]]></phrase>
     <phrase title="threemagw_invalid_threema_secret" version_id="1" version_string="0.1.0"><![CDATA[The Threema ID Secret is invalid.]]></phrase>
     <phrase title="threemagw_libsodium_error" version_id="1" version_string="0.1.0"><![CDATA[Error when trying to use libsodium.]]></phrase>
-    <phrase title="threemagw_message_is_sent_e2e" version_id="1" version_string="0.1.0"><![CDATA[The message is sent end-to-end encrypted.]]></phrase>
+    <phrase title="threemagw_message_is_sent_e2e" version_id="2" version_string="0.2.0"><![CDATA[ The message is sent end-to-end encrypted.]]></phrase>
     <phrase title="threemagw_minute" version_id="1" version_string="0.1"><![CDATA[minute]]></phrase>
     <phrase title="threemagw_minutes" version_id="1" version_string="0.1"><![CDATA[minutes]]></phrase>
     <phrase title="threemagw_missing_database_data" version_id="2" version_string="0.2.0"><![CDATA[Some data in the database is missing.]]></phrase>
@@ -765,51 +759,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 		<input type="hidden" name="confirm" value="1" />
 	<xen:else />
 		<xen:if is="{$context} == 'manage' or {$context} == 'firstsetup'">
-			<dl class="ctrlUnit">
-				<xen:comment>Show QR code or Threema Gateway ID</xen:comment>
-				<dt><label>{xen:phrase setup}:</label></dt>
-
-				<xen:comment>For security reasons the QR code is only shown when a HTTPS connection is used.</xen:comment>
-				<xen:if is="{$https} AND {$showqrcode}">
-					<dt></dt>
-					<dd>
-						<p>{xen:phrase tfa_threemagw_setup_please_scan_qr_code, 'gatewayid={$gatewayid}'}</p>
-					</dd>
-
-					<dt></dt>
-					<dd>
-						<div style="text-align: center"><span id="GatewayIdQrCode" style="display: inline-block; background: white; padding: 15px"></span></div>
-					</dd>
-
-					<xen:comment>JS block responsible for parsing qr code.</xen:comment>
-					<xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />						
-					<script>
-					$(function()
-					{
-						var $el = $('#GatewayIdQrCode');
-						$el.qrcode({
-							text: '{xen:jsescape {xen:phrase tfa_threemagw_contact_qrcode_text, 'threemaid={$gatewayid}', 'publickey={xen:helper threemaidpubkey, {$gatewayid}}'}}'
-						});
-					});
-					</script>
-
-				<xen:else />
-					<dt></dt>
-					<dd>
-						<p>{xen:phrase tfa_threemagw_setup_please_add_threema_id, 'gatewayid={$gatewayid}'}</p>
-					</dd>
-				</xen:if>
-
-				<dt></dt>
-				<dd>
-					<p>{xen:phrase tfa_threemagw_setup_use_button_below_to_add_threema_id}</p>
-				</dd>
-
-				<dt></dt>
-				<dd>
-					<a style="margin: 10px" class="button" href="threema://add?id={$gatewayid}" title="{xen:phrase tfa_threemagw_add_threema_id_button_tooltip, 'threemaid={$gatewayid}'}" accesskey="c">{xen:phrase tfa_threemagw_add_threema_id_button, 'threemaid={$gatewayid}'}</a>
-				</dd>
-			</dl>
+			<xen:include template="threemagw_add_gateway_id" />
 		</xen:if>
 
 		<xen:comment>Show Threema ID input.</xen:comment>
@@ -903,51 +853,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 		<input type="hidden" name="confirm" value="1" />
 	<xen:else />
 		<xen:if is="{$context} == 'manage' or {$context} == 'firstsetup'">
-			<dl class="ctrlUnit">
-				<xen:comment>Show QR code or Threema Gateway ID</xen:comment>
-				<dt><label>{xen:phrase setup}:</label></dt>
-
-				<xen:comment>For security reasons the QR code is only shown when a HTTPS connection is used.</xen:comment>
-				<xen:if is="{$https} AND {$showqrcode}">
-					<dt></dt>
-					<dd>
-						<p>{xen:phrase tfa_threemagw_setup_please_scan_qr_code, 'gatewayid={$gatewayid}'}</p>
-					</dd>
-
-					<dt></dt>
-					<dd>
-						<div style="text-align: center"><span id="GatewayIdQrCode" style="display: inline-block; background: white; padding: 15px"></span></div>
-					</dd>
-
-					<xen:comment>JS block responsible for parsing qr code.</xen:comment>
-					<xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />						
-					<script>
-					$(function()
-					{
-						var $el = $('#GatewayIdQrCode');
-						$el.qrcode({
-							text: '{xen:jsescape {xen:phrase tfa_threemagw_contact_qrcode_text, 'threemaid={$gatewayid}', 'publickey={xen:helper threemaidpubkey, {$gatewayid}}'}}'
-						});
-					});
-					</script>
-
-				<xen:else />
-					<dt></dt>
-					<dd>
-						<p>{xen:phrase tfa_threemagw_setup_please_add_threema_id, 'gatewayid={$gatewayid}'}</p>
-					</dd>
-				</xen:if>
-
-				<dt></dt>
-				<dd>
-					<p>{xen:phrase tfa_threemagw_setup_use_button_below_to_add_threema_id}</p>
-				</dd>
-
-				<dt></dt>
-				<dd>
-					<a style="margin: 10px" class="button" href="threema://add?id={$gatewayid}" title="{xen:phrase tfa_threemagw_add_threema_id_button_tooltip, 'threemaid={$gatewayid}'}" accesskey="c">{xen:phrase tfa_threemagw_add_threema_id_button, 'threemaid={$gatewayid}'}</a>
-				</dd>
-			</dl>
+			<xen:include template="threemagw_add_gateway_id" />
 		</xen:if>
 
 		<xen:comment>Show Threema ID input.</xen:comment>
@@ -958,7 +864,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 					<p>{xen:phrase tfa_threemagw_enter_own_threema_id_below}</p>
 				</dd>
 			</xen:else />
-				
+				<xen:comment>no need for an explanation as this is nearly the only input field on the page</xen:comment>
 			</xen:if>
 
 			<xen:include template="threemagw_threemaid_input_field" id="ctrl_threemagw_reversed_threemaid" />
@@ -1003,9 +909,19 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
   text-transform: uppercase;
 }
 
-.threemagw_code, .threemagw_send_link {
+.threemagw_centerwrapper {
   margin: 5px;
   text-align: center;
+}
+
+.threemagw_qr {
+  display: inline-block;
+  background: white;
+  padding: 15px
+}
+
+.threemagw_emphasized_button {
+  margin: 10px
 }
 
 .threemagw_code > p {
@@ -1022,6 +938,46 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
   margin-bottom: 2px;
   width: auto;
 }]]></template>
+    <template title="threemagw_add_gateway_id" version_id="2" version_string="0.2.0"><![CDATA[<!-- show Threema Gateway QR code or button to allow users to add ID to their contacts. -->
+<xen:require css="threemagw.css" />
+
+<dl class="ctrlUnit">
+	<xen:comment>Show QR code or Threema Gateway ID</xen:comment>
+	<dt><label>{xen:phrase setup}:</label></dt>
+
+	<xen:comment>For security reasons the QR code is only shown when a HTTPS connection is used.</xen:comment>
+	<xen:if is="{$https} AND {$showqrcode}">
+		<dt></dt>
+		<dd>
+			<p>{xen:phrase tfa_threemagw_setup_please_scan_qr_code, 'gatewayid={$gatewayid}'}</p>
+		</dd>
+
+		<dt></dt>
+		<dd>
+			<div class="threemagw_centerwrapper"><span class="threemagw_createqr threemagw_qr" data-qrcode="{xen:phrase tfa_threemagw_contact_qrcode_text, 'threemaid={$gatewayid}', 'publickey={xen:helper threemaidpubkey, {$gatewayid}}'}"></span></div>
+		</dd>
+
+		<xen:comment>JS block responsible for parsing qr code.</xen:comment>
+		<xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />
+		<xen:require js="js/ThreemaGateway/threematfa.js" />
+
+	<xen:else />
+		<dt></dt>
+		<dd>
+			<p>{xen:phrase tfa_threemagw_setup_please_add_threema_id, 'gatewayid={$gatewayid}'}</p>
+		</dd>
+	</xen:if>
+
+	<dt></dt>
+	<dd>
+		<p>{xen:phrase tfa_threemagw_setup_use_button_below_to_add_threema_id}</p>
+	</dd>
+
+	<dt></dt>
+	<dd>
+		<a class="button threemagw_emphasized_button" href="threema://add?id={$gatewayid}" title="{xen:phrase tfa_threemagw_add_threema_id_button_tooltip, 'threemaid={$gatewayid}'}" accesskey="c">{xen:phrase tfa_threemagw_add_threema_id_button, 'threemaid={$gatewayid}'}</a>
+	</dd>
+</dl>]]></template>
     <template title="threemagw_threemaid_input_field" version_id="2" version_string="0.2.0"><![CDATA[<xen:require css="threemagw.css" />
 <xen:comment>Show Threema ID input and all other settings as this is not the validation page.</xen:comment>
 <dt>
@@ -1081,19 +1037,23 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			<dd>
 </xen:if>
 
+<xen:require css="threemagw.css" />
+<xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />
+<xen:require js="js/ThreemaGateway/threematfa.js" />
+
 <xen:comment>main content begin</xen:comment>
 <p>
 	{xen:phrase tfa_threemagw_reversed_message_please_enter_code, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
 </p>
 
-<div class="threemagw_code">
+<div class="threemagw_centerwrapper threemagw_code">
 	{xen:phrase tfa_threemagw_reversed_show_code, 'code={$trigger.code}'}
 </div>
-<div class="threemagw_send_link">
+<div class="threemagw_centerwrapper threemagw_send_link">
 	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
 </div>
-<div class="threemagw_qrcode_send">
-	<xen:comment>TODO</xen:comment>
+<div class="threemagw_centerwrapper threemagw_qrcode_send">
+	<span class="threemagw_createqr threemagw_qr" data-qrcode="{xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}"></span>
 </div>
 
 <p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>

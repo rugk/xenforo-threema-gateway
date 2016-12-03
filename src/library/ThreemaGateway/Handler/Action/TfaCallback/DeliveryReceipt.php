@@ -117,7 +117,9 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
      *
      * Returns "false" if the process should be canceled. Otherwise "true".
      *
-     * @param array $processOptions please include 'saveKey'
+     * @param array $processOptions please include 'saveKey',
+     *                              'saveKeyReceiptType' and
+     *                              'saveKeyReceiptTypeLargest'
      *
      * @return bool
      */
@@ -146,7 +148,9 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
                 $this->setDataForRequest($confirmRequest, [
                     $processOptions['saveKey'] => $ackedMsgId,
                     $processOptions['saveKeyReceiptType'] => $this->receiptType
-                ]);
+                    // saveKeyReceiptTypeLargest is set by preSaveData() as it needs to
+                    // analyse the old data
+                ], $processOptions);
             } catch (Exception $e) {
                 $this->log('Could not save data for request.', $e->getMessage());
             }
@@ -162,5 +166,29 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
         }
 
         return $successfullyProcessed;
+    }
+
+    /**
+     * Checks whether the previously saved receipt type is smaller than the
+     * one got currently.
+     *
+     * @param array $oldProviderData old data read
+     * @param array $setData         new data to set
+     * @param array $processOptions  custom options (optional)
+     *
+     * @throws XenForo_Exception
+     * @return bool
+     */
+    protected function preSaveData(array &$oldProviderData, array &$setData, array $processOptions = [])
+    {
+        if ($processOptions['saveKeyReceiptTypeLargest']) {
+            if (!isset($oldProviderData[$processOptions['saveKeyReceiptTypeLargest']]) ||
+                $oldProviderData[$processOptions['saveKeyReceiptTypeLargest']] < $this->receiptType
+            ) {
+                $setData[$processOptions['saveKeyReceiptTypeLargest']] = $this->receiptType;
+            }
+        }
+
+        return true;
     }
 }

@@ -8,11 +8,12 @@
  * @license MIT
  */
 
- class ThreemaGateway_Handler_Emoji
+ class ThreemaGateway_Helper_Emoji
  {
      /**
      * Replaces unicode escape sequence with the correct UNICODE character.
      *
+     * XenForo template helper: emojiparseunicode.
      * You need to pass it as surrogate pairs, e.g. \ud83d\udd11.
      *
      * @param  string $string
@@ -33,6 +34,7 @@
      * Replaces digits with their corresponding unicode characters
      * (surrogate pairs).
      *
+     * XenForo template helper: emojireplacedigits.
      * Only replaces one digit numbers. "10" is therefore replaced by two unicode
      * characters.
      *

@@ -41,12 +41,11 @@ class ThreemaGateway_Handler_Permissions
      * Private constructor so nobody else can instance it.
      * Use {@link getInstance()} instead.
      *
-     * @throws XenForo_Exception
      * @return true
      */
     private function __construct()
     {
-        return true;
+        // do nothing
     }
 
     /**

@@ -14,9 +14,9 @@ class ThreemaGateway_Option_VerifyReceiveTime
     /**
      * Verifies the existence of the path.
      *
-     * @param string             $option Input
+     * @param string             $option    Input
      * @param XenForo_DataWriter $dw
-     * @param string             $fieldName   Name of field/option
+     * @param string             $fieldName Name of field/option
      *
      * @return bool
      */

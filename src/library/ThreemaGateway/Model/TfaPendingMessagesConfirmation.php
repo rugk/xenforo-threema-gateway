@@ -34,7 +34,7 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
      */
     public function getPendingById($requestId)
     {
-        /* @var mixed result of SQL query */
+        /** @var mixed $result result of SQL query */
         $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DbTable . '`
                   WHERE `request_id` = ?',
                   $requestId);
@@ -51,7 +51,7 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
      * the pending type.
      *
      * @param string $threemaId
-     * @param string $providerId Provider ID of 2FA method
+     * @param string $providerId  Provider ID of 2FA method
      * @param int    $pendingType use the PENDING_* constants
      *
      * @return null|array
@@ -76,7 +76,7 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
             $paramsArray[]     = $pendingType;
         }
 
-        /* @var mixed result of SQL query */
+        /** @var mixed $result result of SQL query */
         $result = $this->fetchAllKeyed('SELECT * FROM `' . self::DbTable . '`
                   WHERE ' . $this->getConditionsForClause($conditionsArray),
                   'request_id', $paramsArray);

@@ -30,7 +30,7 @@ class ThreemaGateway_Handler_DbKeystore extends Threema\MsgApi\PublicKeyStore
      */
     public function __construct()
     {
-        $this->model = XenForo_Model::create('ThreemaGateway_Model_Keystore');
+        $this->model      = XenForo_Model::create('ThreemaGateway_Model_Keystore');
         $this->dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Keystore');
     }
 
@@ -48,9 +48,8 @@ class ThreemaGateway_Handler_DbKeystore extends Threema\MsgApi\PublicKeyStore
     /**
      * Save a public key.
      *
-     * @param  string    $threemaId
-     * @param  string    $publicKey
-     * @throws Exception
+     * @param  string $threemaId
+     * @param  string $publicKey
      * @return bool
      */
     public function savePublicKey($threemaId, $publicKey)
@@ -61,13 +60,12 @@ class ThreemaGateway_Handler_DbKeystore extends Threema\MsgApi\PublicKeyStore
     }
 
     /**
-     * Blocks requests to create method.
+     * Ignores requests to create method.
      *
-     * @param  string  $path
-     * @return PhpFile
+     * @param string $path
      */
     public static function create($path)
     {
-        return false;
+        return;
     }
 }

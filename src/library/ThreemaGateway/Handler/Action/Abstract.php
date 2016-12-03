@@ -11,12 +11,12 @@
 abstract class ThreemaGateway_Handler_Action_Abstract
 {
     /**
-     * Gateway PHP SDK Singleton
+     * Gateway PHP SDK store.
      *
      * This variable is private as {@link getSdk()} should be used. This makes
      * sure the SDK is only initialized when it is really needed.
      *
-     * @var singleton
+     * @var ThreemaGateway_Handler_PhpSdk
      */
     private $sdk = null;
 
@@ -35,7 +35,7 @@ abstract class ThreemaGateway_Handler_Action_Abstract
      */
     public function __construct()
     {
-        $this->settings = new ThreemaGateway_Handler_Settings;
+        $this->settings    = new ThreemaGateway_Handler_Settings;
         $this->permissions = ThreemaGateway_Handler_Permissions::getInstance();
     }
 

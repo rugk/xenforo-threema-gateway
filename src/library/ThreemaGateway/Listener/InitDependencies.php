@@ -22,12 +22,15 @@ class ThreemaGateway_Listener_InitDependencies
         XenForo_Template_Helper_Core::$helperCallbacks += [
             'threemaregex' => ['ThreemaGateway_Helper_General', 'regEx'],
             'threemaidverify' => ['ThreemaGateway_Helper_General', 'isThreemaId'],
-            'threemaidpubkey' => ['ThreemaGateway_Helper_PublicKey', 'get'],
-            'threemaidpubkeyshort' => ['ThreemaGateway_Helper_PublicKey', 'getShort'],
-            'threemashortpubkey' => ['ThreemaGateway_Helper_PublicKey', 'convertShort'],
-            'threemaispubkey' => ['ThreemaGateway_Helper_PublicKey', 'check'],
-            'threemapubkeyremovesuffix' => ['ThreemaGateway_Helper_PublicKey', 'removeSuffix'],
             'threemagwcensor' => ['ThreemaGateway_Helper_General', 'censor'],
+            'threemaidpubkey' => ['ThreemaGateway_Helper_Key', 'getPublic'],
+            'threemaidpubkeyshort' => ['ThreemaGateway_Helper_Key', 'getPublicShort'],
+            'threemashortpubkey' => ['ThreemaGateway_Helper_Key', 'getUserDisplay'],
+            'threemaisvalidkey' => ['ThreemaGateway_Helper_Key', 'check'],
+            'threemaisvalidpubkey' => ['ThreemaGateway_Helper_Key', 'checkPublic'],
+            'threemakeyremovesuffix' => ['ThreemaGateway_Helper_Key', 'removeSuffix'],
+            'emojiparseunicode' => ['ThreemaGateway_Helper_Emoji', 'parseUnicode'],
+            'emojireplacedigits' => ['ThreemaGateway_Helper_Emoji', 'replaceDigits'],
         ];
     }
 }

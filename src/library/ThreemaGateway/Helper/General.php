@@ -40,7 +40,7 @@ class ThreemaGateway_Helper_General
      */
     public static function isThreemaId($threemaid, $type = 'personal', $checkExistence)
     {
-        /** @var array */
+        /** @var array $error */
         $error = []; //error array is not used anyway
         return ThreemaGateway_Handler_Validation::checkThreemaId($threemaid, $type, $error, $checkExistence);
     }

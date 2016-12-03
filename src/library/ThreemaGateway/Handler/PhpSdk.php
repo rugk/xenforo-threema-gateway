@@ -248,7 +248,7 @@ class ThreemaGateway_Handler_PhpSdk
         //create E2E helper if E2E mode is used
         if ($this->settings->isEndToEnd()) {
             $this->e2eHelper = new E2EHelper(
-                ThreemaGateway_Handler_Key::hexToBin($this->settings->getPrivateKey()),
+                $this->cryptTool->hex2bin(ThreemaGateway_Helper_Key::removeSuffix($this->settings->getPrivateKey())),
                 $this->connector
             );
         }
@@ -265,11 +265,11 @@ class ThreemaGateway_Handler_PhpSdk
      */
     protected function createConnectionSettings($GatewayId, $GatewaySecret)
     {
-        /* @var null|object */
-        $setting = null;
+        /** @var null|ConnectionSettings $settings */
+        $settings = null;
         if ($this->xenOptions->threema_gateway_httpshardening) {
             //create a connection with advanced options
-            /* @var array */
+            /** @var array $tlsSettings */
             $tlsSettings = [];
             switch ($this->xenOptions->threema_gateway_httpshardening) {
                 case 1:

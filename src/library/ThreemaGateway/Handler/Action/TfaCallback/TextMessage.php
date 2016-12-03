@@ -61,7 +61,7 @@ class ThreemaGateway_Handler_Action_TfaCallback_TextMessage extends ThreemaGatew
 
                 if (is_string($success)) {
                     $this->msgText = $success;
-                    $success = true;
+                    $success       = true;
                 } else {
                     $success = false;
                 }

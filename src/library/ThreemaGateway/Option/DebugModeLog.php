@@ -85,7 +85,7 @@ class ThreemaGateway_Option_DebugModeLog
      * Attention: This does not check whether it is good/useful to remove the
      * file! Please do so before or just catch all exceptions.
      *
-     * @param array $filepath option setting
+     * @param  array $filepath option setting
      * @return bool
      */
     protected static function removeLog($filepath)
@@ -99,14 +99,14 @@ class ThreemaGateway_Option_DebugModeLog
     /**
      * Corrects the option array.
      *
-     * @param string $option
+     * @param  string $option
      * @return string
      */
     protected static function correctOption($option)
     {
         // correct value
         if (empty($option)) {
-            /** @var XenForo_Options */
+            /** @var XenForo_Options $xenOptions */
             $xenOptions = XenForo_Application::getOptions();
 
             // save file path even if disabled

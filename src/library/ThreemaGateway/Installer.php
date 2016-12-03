@@ -173,8 +173,8 @@ class ThreemaGateway_Installer
         $isError = false;
 
         // check XenForo version
-        if (XenForo_Application::$versionId < 1050051) {
-            $error .= 'This add-on requires XenForo 1.5.0 or higher.' . PHP_EOL;
+        if (XenForo_Application::$versionId < 1050770) {
+            $error .= 'This add-on requires XenForo 1.5.7 or higher.' . PHP_EOL;
             $isError = true;
         }
 
