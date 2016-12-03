@@ -178,7 +178,8 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
 
         /** @var XenForo_Options $options */
         $options   = XenForo_Application::getOptions();
-        $rejectOld = false;
+        /** @var string $rejectOld the maximum age of a message */
+        $rejectOld = '';
         if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
             $rejectOld = $options->threema_gateway_verify_receive_time['time'];
         } else {
@@ -189,6 +190,11 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         // discard too old messages
         if ($this->filtered['date'] < strtotime($rejectOld, XenForo_Application::$time)) {
             $errorString = [null, 'Message cannot be processed: Message is too old (send at ' . date('Y-m-d H:i:s', $this->filtered['date']) . ', messages older than ' . $rejectOld . ' are rejected)', 'Message cannot be processed'];
+            return false;
+        }
+
+        if ($this->filtered['date'] > XenForo_Application::$time) {
+            $errorString = [null, 'Message cannot be processed: Message is send in the future (send at ' . date('Y-m-d H:i:s', $this->filtered['date']) . ', please check your server clock)', 'Message cannot be processed'];
             return false;
         }
 
@@ -437,7 +443,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             $fileList = $receiveResult->getFiles();
             // set current (first) type/path
             $dataWriter->set('file_type', key($fileList), ThreemaGateway_Model_Messages::DbTableFiles);
-            $dataWriter->set('file_path', $this->normalizeFilePath(current($fileList)), ThreemaGateway_Model_Messages::DbTableFiles);
+            $dataWriter->set('file_path', $dataWriter->normalizeFilePath(current($fileList)), ThreemaGateway_Model_Messages::DbTableFiles);
             // remove current value from array
             unset($fileList[key($fileList)]);
             // pass as extra data for later saving
@@ -486,18 +492,6 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         $dataWriter->roundReceiveDate(); // reduce amount of meta data stored
 
         return $dataWriter->save();
-    }
-
-    /**
-     * Normalizes the file path to be.
-     *
-     * @param string $filepath
-     * @todo Move this somewhere else, so it can be used in the data writer too.
-     * @return string
-     */
-    protected function normalizeFilePath($filepath)
-    {
-        return basename($filepath);
     }
 
     /**

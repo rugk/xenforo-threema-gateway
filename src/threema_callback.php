@@ -39,9 +39,12 @@ $debugMode = XenForo_Application::debugMode();
 // could use ThreemaGateway_Handler_Settings->isDebug() here, but that would
 // not be good here as we really only need the RAW debug mode setting.
 
+/** @var array $logExtra */
 $logExtra         = [];
-$logMessage       = false;
-$logMessagePublic = false;
+/** @var null|string $logMessage */
+$logMessage       = null;
+/** @var null|string $logMessagePublic */
+$logMessagePublic = null;
 
 try {
     if (!$callback->validatePreConditions($logMessage)) {

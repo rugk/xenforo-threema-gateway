@@ -249,7 +249,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * @throws XenForo_Exception
      * @return null|array
      */
-    public function getAllMessageData($metaData, $groupByMessageType = false)
+    public function getAllMessageData(array $metaData, $groupByMessageType = false)
     {
         // get grouped messages by type
         $messageTypes = $this->groupArray($metaData, 'message_type_code');

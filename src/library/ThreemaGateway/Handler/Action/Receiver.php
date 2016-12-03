@@ -388,7 +388,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     }
 
     /**
-     * Remove a message from teh database (after processing).
+     * Remove a message from the database.
      *
      * Note that the message is never completly removed and the message ID will
      * stay in the database.
@@ -408,15 +408,6 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         /** @var ThreemaGateway_DataWriter_Messages $dataWriter */
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
         $dataWriter->setExistingData($messageId);
-
-        // remove metadata as much as possible
-        /** @var ThreemaGateway_DataWriter_Messages $dataWriterMeta */
-        $dataWriterMeta = clone $dataWriter;
-        $dataWriterMeta->roundReceiveDate();
-        $dataWriterMeta->save();
-
-        // remove all other data
-        /** @var ThreemaGateway_DataWriter_Messages $dataWriter */
         $dataWriter->delete();
     }
 

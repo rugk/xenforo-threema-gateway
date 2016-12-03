@@ -161,20 +161,21 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      */
     public function roundReceiveDate()
     {
-        /* @var int|null $receiveDate */
-        // get specified value
-        $receiveDate = $this->get('date_received');
+        $this->set('date_received', $this->getRoundedReceiveDate());
+    }
 
-        // get default if not set
-        if (!$receiveDate) {
-            $receiveDate = $this->_fields[ThreemaGateway_Model_Messages::DbTableMessages]['date_received']['default'];
-        }
-
-        // round unix time to day (00:00)
-        $receiveDate = (int) floor($receiveDate / 60 / 60 / 24) * 24 * 60 * 60;
-
-        // modify data
-        $this->set('date_received', $receiveDate);
+    /**
+     * Normalizes the file path returned by the PHP SDK to a common format.
+     *
+     * Currently this removes the directory structure, so that only the file
+     * name is saved.
+     *
+     * @param string $filepath
+     * @return string
+     */
+    public static function normalizeFilePath($filepath)
+    {
+        return basename($filepath);
     }
 
     /**
@@ -318,7 +319,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
             }
         }
 
-        // validate data (either main table contains only basic data *OR* it all required data fields)
+        // validate data (either main table contains only basic data *OR* it requires all data fields)
         foreach ($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages] as $field => $fieldData) {
             if ($field == 'message_id') {
                 // skip as requirement already checked
@@ -350,7 +351,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     }
 
     /**
-     * Pre-delete: Remove main table & deletes unused tables.
+     * Pre-delete: Remove main table & unused tables from selected existing data.
      *
      * The reason for the deletion is, that the message ID should stay in the
      * database and must not be deleted.
@@ -359,8 +360,11 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      */
     protected function _preDelete()
     {
-        // remove main table from deletion as it is handled in _postDelete().
-        unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages]);
+        // we may need to store the message ID to prevent replay attacks
+        if (ThreemaGateway_Helper_Cron::messageIsAtRiskOfReplayAttack($this->_existingData[ThreemaGateway_Model_Messages::DbTableMessages])) {
+            // remove main table from deletion as it is handled in _postDelete().
+            unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages]);
+        }
 
         // similar to _preSave() filter data
         foreach ($this->getTables() as $tableName) {
@@ -408,7 +412,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
                     [
                         $this->get('message_id'), //message_id
-                        basename($filePath), //file_path //TODO: Use common normalizeFilePath func. here!
+                        $this->normalizeFilePath($filePath), //file_path
                         $fileType, //file_type
                     ]);
             }
@@ -449,20 +453,53 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      */
     protected function _postDelete()
     {
+        // skip custom deletion if main table has already been deleted and is
+        // therefore stil in the fields array
+        if (isset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages])) {
+            return;
+        }
+
         // get table fields
         /** @var array $tableFields fields of main message table */
         $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableMessages];
         // remove keys, which should stay in the database
         unset($tableFields['message_id']);
-        unset($tableFields['date_received']); // as this is needed for real deletion
+        unset($tableFields['date_received']);
+        // date_received is not removed as this is needed for real deletion;
+        // below it is also updated to a generalised value to reduce the amount
+        // of saved meta data
+
         // we do only care about the keys
         /** @var array $tableKeys extracted keys from fields */
         $tableKeys = array_keys($tableFields);
 
         // remove values from database
         $this->_db->query('UPDATE `' . ThreemaGateway_Model_Messages::DbTableMessages . '`
-            SET `' . implode('`=null, `',  $tableKeys) . '`=null
+            SET `' . implode('`=null, `',  $tableKeys) . '`=null,
+            `date_received`=' . $this->_db->quote($this->getRoundedReceiveDate()) . '
             WHERE ' . $this->getUpdateCondition(ThreemaGateway_Model_Messages::DbTableMessages));
+    }
+
+    /**
+     * Gets the receive date in a rounded way.
+     *
+     * @return int
+     */
+    protected function getRoundedReceiveDate()
+    {
+        /* @var int|null $receiveDate */
+        // get specified value
+        $receiveDate = $this->get('date_received');
+
+        // get default if not set
+        if (!$receiveDate) {
+            $receiveDate = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableMessages]['date_received']['default'];
+        }
+
+        // round unix time to day (00:00)
+        $receiveDate = floor($receiveDate / 60 / 60 / 24) * 24 * 60 * 60;
+
+        return (int) $receiveDate;
     }
 
     /**
