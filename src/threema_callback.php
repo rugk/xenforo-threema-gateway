@@ -11,7 +11,9 @@
  * @license MIT
  */
 
+/** @var int $startTime time of application start */
 $startTime = microtime(true);
+/** @var int $fileDir current dir */
 $fileDir   = dirname(__FILE__);
 if (!file_exists($fileDir . '/library/XenForo/Autoloader.php')) {
     // second try
@@ -25,10 +27,13 @@ XenForo_Autoloader::getInstance()->setupAutoloader($fileDir . '/library');
 XenForo_Application::initialize($fileDir . '/library', $fileDir);
 XenForo_Application::set('page_start_time', $startTime);
 
+/** @var XenForo_Dependencies_Public $deps */
 $deps = new XenForo_Dependencies_Public();
 $deps->preLoadData();
 
+/** @var Zend_Controller_Response_Http $response */
 $response = new Zend_Controller_Response_Http();
+/** @var ThreemaGateway_Handler_Action_Callback $callback */
 $callback = new ThreemaGateway_Handler_Action_Callback();
 $callback->initCallbackHandling(new Zend_Controller_Request_Http());
 

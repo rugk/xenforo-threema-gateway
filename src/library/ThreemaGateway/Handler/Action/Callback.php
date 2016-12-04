@@ -330,8 +330,10 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             return;
         }
 
+        // skip all internal handling of receiver as it does a simple yes/no check only
+        // also skip permissions as currently no user is logged in
         /** @var ThreemaGateway_Handler_Action_Receiver $receiver */
-        $receiver = new ThreemaGateway_Handler_Action_Receiver;
+        $receiver = new ThreemaGateway_Handler_Action_Receiver(true, true);
 
         // first check whether message has already been saved to prevent replay attacks
         if ($receiver->messageIsReceived($messageId)) {

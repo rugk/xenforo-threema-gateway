@@ -173,7 +173,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      * @param string $filepath
      * @return string
      */
-    public static function normalizeFilePath($filepath)
+    public function normalizeFilePath($filepath)
     {
         return basename($filepath);
     }
@@ -259,9 +259,6 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
 
     /**
      * Gets SQL condition to update the existing record.
-     *
-     * Note that this method is involved in the deletion process and therefore
-     * implemented
      *
      * @see XenForo_DataWriter::_getUpdateCondition()
      * @return bool

@@ -14,6 +14,39 @@
     <template title="threemagateway_option_list_option_hidden.css"><![CDATA[.threemagateway_option_hidden {
   display: none;
 }]]></template>
+    <template title="threemagw.css"><![CDATA[.inputThreemaId {
+  text-transform: uppercase;
+}
+
+.threemagw_centerwrapper {
+  margin: 5px;
+  text-align: center;
+}
+
+.threemagw_qr {
+  display: inline-block;
+  background: white;
+  padding: 15px
+}
+
+.threemagw_emphasized_button {
+  margin: 10px
+}
+
+.threemagw_code > p {
+  color: {xen:property dimmedTextColor};
+  margin-bottom: 5px;
+}
+
+/* this needs to be so strong specified to overwrite the auto value from .textCtrl */
+.threemagw_code > code.textCtrl.threemagw_given_code {
+  display: inline-block;
+  font-size: 18pt; /* same as titleBar > h1 title */
+  color: {xen:property secondaryMedium};
+  padding: 3px 6px;
+  margin-bottom: 2px;
+  width: auto;
+}]]></template>
     <template title="threemagw_option_list_receivecallback"><![CDATA[<xen:require css="threemagw_option_list_receivecallback.css" />
 <xen:require js="js/ThreemaGateway/options.js" />
 
@@ -467,9 +500,9 @@ It is useful that this value is a bit higher than the previous one, to give the 
     <phrase title="option_threema_gateway_tfa_fast_show_qr_code_explain" version_id="2" version_string="0.2.0"><![CDATA[When enabled this suggests the user to scan the QR code of the Gateway ID. As you usually cannot meet a Gateway ID in person anyway, it is reasonable to offer this.<br>
 <b>Note:</b> For security reasons this option is always ignored when HTTPS is not used.]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_validation" version_id="2" version_string="0.2.0"><![CDATA[Validation time]]></phrase>
-    <phrase title="option_threema_gateway_tfa_fast_validation_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid. (in minutes)]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_validation_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the message should be able to be confirmed. (in minutes)]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_validation_setup" version_id="2" version_string="0.2.0"><![CDATA[Validation time when setting up]]></phrase>
-    <phrase title="option_threema_gateway_tfa_fast_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid when setting up the 2FA method. (in minutes)<br>
+    <phrase title="option_threema_gateway_tfa_fast_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the message should be able to be confirmed when setting up the 2FA method. (in minutes)<br>
 It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed" version_id="2" version_string="0.2.0"><![CDATA[Activate reversed mode]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_explain" version_id="2" version_string="0.2.0"><![CDATA[Allow users to use the "Reversed" 2FA method.]]></phrase>
@@ -538,7 +571,7 @@ Validity: {validationTime}
     <phrase title="tfa_threemagw_enter_own_threema_id_below" version_id="2" version_string="0.2.0"><![CDATA[Please enter your own Threema ID below.]]></phrase>
     <phrase title="tfa_threemagw_fast" version_id="2" version_string="0.2.0"><![CDATA[Threema - Fast login]]></phrase>
     <phrase title="tfa_threemagw_fast_desc" version_id="2" version_string="0.2.0"><![CDATA[This will send you a message with some details about who requests the login and you can confirm or decline the request.]]></phrase>
-    <phrase title="tfa_threemagw_fast_message" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Two-factor authentication
+    <phrase title="tfa_threemagw_fast_message" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10 Two-factor authentication
 
 Hi {user},
 a user with the *IP* *{ip}* requested a login confirmation for your account.
@@ -550,7 +583,7 @@ If you did not initiate this request, you should decline this message instead an
 Thanks,
 {board}
 {board_url}]]></phrase>
-    <phrase title="tfa_threemagw_fast_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11
+    <phrase title="tfa_threemagw_fast_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
 *IP* *{ip}* tried to login.
 
 Acknowledge this message to allow the login.

@@ -166,7 +166,10 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
             $this->preProcessPending();
         }
         if (!$this->pendingRequests) {
-            throw new XenForo_Exception('preProcessPending() misses setting of pending request data.');
+            if (isset($processOptions['requirePendingRequests']) && $processOptions['requirePendingRequests']) {
+                throw new XenForo_Exception('preProcessPending() could not get any pending request data.');
+            }
+            return false;
         }
 
         // handle all requests

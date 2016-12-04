@@ -35,43 +35,46 @@ class ThreemaGateway_Listener_TfaMessageCallback
                                         &$saveMessage,
                                         $debugMode)
     {
+        /** @var bool $isError */
+        $isError = true;
+
         // create tfa callback handler
         $class       = XenForo_Application::resolveDynamicClass('ThreemaGateway_Handler_Action_TfaCallback_TextMessage');
         $tfaCallback = new $class($handler, $receiveResult, $threemaMsg, $output, $saveMessage, $debugMode);
 
         // initiate
-        if (!$tfaCallback->prepareProcessing()) {
-            return;
-        }
+        if ($tfaCallback->prepareProcessing()) {
+            $tfaCallback->setMessageTypeName('2FA Reversed confirmation message', 'code');
+            $tfaCallback->setPrendingRequestType(ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_CODE);
 
-        $tfaCallback->setMessageTypeName('2FA Reversed confirmation message', 'code');
-        $tfaCallback->setPrendingRequestType(ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_CODE);
+            // convert number emoticons to usual numbers (just remove that unicode thing :)
+            $tfaCallback->addFilter(
+                ThreemaGateway_Handler_Action_TfaCallback_TextMessage::FILTER_REPLACE,
+                [
+                    ThreemaGateway_Helper_Emoji::parseUnicode('\u20e3') => ''
+                ]
+            );
 
-        // convert number emoticons to usual numbers (just remove that unicode thing :)
-        $tfaCallback->addFilter(
-            ThreemaGateway_Handler_Action_TfaCallback_TextMessage::FILTER_REPLACE,
-            [
-                ThreemaGateway_Helper_Emoji::parseUnicode('\u20e3') => ''
-            ]
-        );
+            // check whether we are responsible for the message
+            $tfaCallback->addFilter(
+                ThreemaGateway_Handler_Action_TfaCallback_TextMessage::FILTER_REGEX_MATCH,
+                '/^\d{6}$/' // https://regex101.com/r/ttkhwd/2
+            );
 
-        // check whether we are responsible for the message
-        $tfaCallback->addFilter(
-            ThreemaGateway_Handler_Action_TfaCallback_TextMessage::FILTER_REGEX_MATCH,
-            '/^\d{6}$/' // https://regex101.com/r/ttkhwd/2
-        );
-
-        if (!$tfaCallback->applyFilters()) {
-            return;
-        }
-
-        if (!$tfaCallback->processPending([
-            'saveKey' => 'receivedCode'
-        ])) {
-            return;
+            if ($tfaCallback->applyFilters()) {
+                if ($tfaCallback->processPending([
+                    'saveKey' => 'receivedCode'
+                ])) {
+                    $isError = false;
+                }
+            }
         }
 
         $tfaCallback->getReferencedData($output, $saveMessage);
+        if ($isError) {
+            $handler->addLog($output, 'checkForReceiverCode() finished with an error.');
+        }
+        return;
     }
 
     /**
@@ -96,30 +99,33 @@ class ThreemaGateway_Listener_TfaMessageCallback
                                         &$saveMessage,
                                         $debugMode)
     {
+        /** @var bool $isError */
+        $isError = true;
+
         // create tfa callback handler
         $class       = XenForo_Application::resolveDynamicClass('ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt');
         $tfaCallback = new $class($handler, $receiveResult, $threemaMsg, $output, $saveMessage, $debugMode);
 
         // initiate
-        if (!$tfaCallback->prepareProcessing()) {
-            return;
-        }
+        if ($tfaCallback->prepareProcessing()) {
+            $tfaCallback->setMessageTypeName('2FA Fast acknowledge message', 'delivery receipt');
+            $tfaCallback->setPrendingRequestType(ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_DELIVERY_RECEIPT);
 
-        $tfaCallback->setMessageTypeName('2FA Fast acknowledge message', 'delivery receipt');
-        $tfaCallback->setPrendingRequestType(ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_DELIVERY_RECEIPT);
-
-        if (!$tfaCallback->applyFilters()) {
-            return;
-        }
-
-        if (!$tfaCallback->processPending([
-            'saveKey'                   => 'receivedCode',
-            'saveKeyReceiptType'        => 'receivedDeliveryReceipt',
-            'saveKeyReceiptTypeLargest' => 'receivedDeliveryReceiptLargest'
-        ])) {
-            return;
+            if ($tfaCallback->applyFilters()) {
+                if ($tfaCallback->processPending([
+                    'saveKey'                   => 'receivedCode',
+                    'saveKeyReceiptType'        => 'receivedDeliveryReceipt',
+                    'saveKeyReceiptTypeLargest' => 'receivedDeliveryReceiptLargest'
+                ])) {
+                    $isError = false;
+                }
+            }
         }
 
         $tfaCallback->getReferencedData($output, $saveMessage);
+        if ($isError) {
+            $handler->addLog($output, 'checkForDeliveryReceipt() finished with an error.');
+        }
+        return;
     }
 }

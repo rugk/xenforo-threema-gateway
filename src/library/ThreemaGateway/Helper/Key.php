@@ -41,7 +41,7 @@ class ThreemaGateway_Helper_Key
      * Returns the short (user friendly) hash of the public key of a Threema ID.
      *
      * XenForo template helper: threemaidpubkeyshort.
-     * Do not confuse this with {@link convertShort()}. Here you have to pass
+     * Do not confuse this with {@link getUserDisplay()}. Here you have to pass
      * the Threema Id!
      *
      * @param  string $threemaid Threema ID
@@ -52,7 +52,7 @@ class ThreemaGateway_Helper_Key
         if ($threemaid == '') {
             return '';
         }
-        return self::convertShort(self::get($threemaid));
+        return self::getUserDisplay(self::getPublic($threemaid));
     }
 
     /**

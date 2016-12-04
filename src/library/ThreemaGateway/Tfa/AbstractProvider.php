@@ -664,7 +664,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     final protected function updateReplayCheckData(array &$providerData, $code)
     {
         // save current code for later replay attack checks
-        $providerData['lastCode']     = $providerData['receivedCode'];
+        $providerData['lastCode']     = $code;
         $providerData['lastCodeTime'] = XenForo_Application::$time;
         unset($providerData['code']);
         unset($providerData['codeGenerated']);

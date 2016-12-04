@@ -19,6 +19,11 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     protected $isPrepared = false;
 
     /**
+     * @var bool whether the permissions were already checked
+     */
+    protected $isPermissionChecked = false;
+
+    /**
      * @var bool whether the result should be grouped by the message type
      */
     protected $groupByMessageType = false;
@@ -26,13 +31,16 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     /**
      * Startup.
      *
-     * @param bool $alreadyPrepared If the Message Model is already prepared you
-     *                              may set this to true.
+     * @param bool $alreadyPrepared     If the Message Model is already prepared you
+     *                                  may set this to true.
+     * @param bool $skipPermissionCheck Set to true to skip the permission check.
+     *                                  (not recommend)
      */
-    public function __construct($alreadyPrepared = false)
+    public function __construct($alreadyPrepared = false, $skipPermissionCheck = false)
     {
         parent::__construct();
-        $this->isPrepared = $alreadyPrepared;
+        $this->isPrepared          = $alreadyPrepared;
+        $this->isPermissionChecked = $skipPermissionCheck;
     }
 
     /**
@@ -420,8 +428,11 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     protected function initiate()
     {
         // check permission
-        if (!$this->permissions->hasPermission('receive')) {
-            // throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
+        if (!$this->isPermissionChecked) {
+            if (!$this->permissions->hasPermission('receive')) {
+                throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
+            }
+            $this->isPermissionChecked = true;
         }
 
         if (!$this->isPrepared) {
