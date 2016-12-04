@@ -4,9 +4,9 @@ You are free to create your own add-ons, which uses the Threema Gateway for your
 
 We follow [Semantic Versioning](http://semver.org/) to maintain backward compatibility. Additionally the version ID of this add-ons follows [the same format](https://xenforo.com/community/threads/development-best-practices.64996/#post-794344) as XenForo itself.
 
-## General recommendations
+## Installation
 
-*   During the installation of yours add-on, you should check whether this add-on is installed. You can see [here](https://xenforo.com/community/threads/checking-for-the-existance-of-other-add-ons-while-installing.113610/#post-1047354) how you can do it.
+During the installation of yours add-on, you should check whether this add-on is installed. You can see [here](https://xenforo.com/community/threads/checking-for-the-existance-of-other-add-ons-while-installing.113610/#post-1047354) how you can do it.
 
 ## Using the Handler
 

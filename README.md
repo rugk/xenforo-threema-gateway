@@ -1,3 +1,6 @@
+# XenForo - Threema Gateway (two-factor-authentication)
+
+[TODO: short explanation of what this is]
 
 ## User
 * Multiple two step/two factor authentication modes allow you to choose the most suitable for yourself.
@@ -16,7 +19,6 @@
 * You can find extensive instructions in the [`doc`](/doc/) dir.
 
 ## Security
-
 * This add-on is open source, so you and other people can check what it does and that nothing malicious is done.
 * Sensitive settings are hidden in the ACP.
 * You can set permissions which users can send or receive messages with the Threema Gateway.
@@ -25,13 +27,13 @@
 * Permissions allow you to control every aspect of your Gateway.
 * This add-on does only make external calls to the Threema Gateway server.
 * By default the add-on uses the [advanced settings](https://github.com/rugk/threema-msgapi-sdk-php#user-content-creating-a-connection-with-advanced-options) of the PHP SDK, which provide better HTTPS security when sending messages.
-* You can further improve the advanced connection settings uses just with a small switch in the ACP.
+* You can further improve the advanced connection settings with a few clicks in the ACP.
 * The Gateway server pin is automatically [pinned](https://www.owasp.org/index.php/Certificate_and_Public_Key_Pinning) when possible. (needs cURL >= v7.39)
 
 # Requirements
 * PHP 5.4 or later
 * XenForo 1.5 or later
-* libsodium (recommend, required for receiving messages, install guide included)
+* Libsodium (recommend, required for receiving messages, install guide included)
 * curl (>= v7.39 suggested for better security)
 * MySQL 5.5.3 or higher
-* HTTPS on server (recommend, required for receiving messages and some details), if you have not set it up use [Let's Encrypt](https://letsencrypt.org/), certificates must be valid, self-signed certificates are not accepted
+* HTTPS on server (recommend, required for receiving messages and some details), if you have not set it up using [Let's Encrypt](https://letsencrypt.org/), certificates must be valid, self-signed certificates are not accepted

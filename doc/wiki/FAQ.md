@@ -15,7 +15,7 @@ However SMS is insecure (see "[Why not just SMS?](#why-not-just-sms)") and the T
 
 ### Why is the add-on only compatible with XenForo 1.5?
 
-The reason is that XenForo 1.5 introduced two-factor-authentication and the 2FA modews of this add-on work as a 2FA provider internally. As the add-on depends on this feature, it does not work with earlier versions of XenForo.
+The reason is that XenForo 1.5 introduced two-factor-authentication and the 2FA modes of this add-on work as a 2FA provider internally. As the add-on depends on this feature, it does not work with earlier versions of XenForo.
 
 ### Why did you choose Threema? I'd like to have WhatsApp instead!
 
@@ -58,6 +58,10 @@ Yes, it is as it works completely offline. That's also the reason why it is show
 
 However 2FA verification with Threema is nearly as secure as the [TOTP](https://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm) verification (that's how the app verification is called), but it may be much more convenient and the user can choose from several 2FA methods.
 Additionally it is always good to have a second 2FA method activated as a backup.
+
+### Is this compatible to XenForo v2?
+
+We will see. Currently I could not test it.
 
 ## Using Two-factor-authentication
 
@@ -205,12 +209,12 @@ Also mail addresses will be automatically looked up if the corresponding option 
 3. Go to the 2FA settings, activate the phone lookup and enter the field ID you choose earlier there:
   ![add phone user field 04](AddPhoneUserField04.PNG)
 
-Note that your users have to include the [country calling codes](https://en.wikipedia.org/wiki/List_of_country_calling_codes) in the phone number. So e.g. they have to write "+41 791 234567" instead of "0791 234567". However spaces and the "+" sign at the beginning are not important.  
+Note that your users have to include the [country calling codes](https://en.wikipedia.org/wiki/List_of_country_calling_codes) in the phone number. So e.g. they have to write "+41 791 234567" instead of "0791 234567". However spaces and the "+" sign at the beginning are not required.  
 If it does not work also make sure that the users have the "lookup" permission.
 
 ### Messages are not send or received. What should I do?
 
-You should make sure you [setup](../doc/setup.md) everything correctly. Visit the ACP options page and look at the status. There you will eventually see error messages. Also make sure you have enough credits to send messages.
+You should make sure you [setup](../doc/setup.md) everything correctly. Visit the ACP options page and look at the status. There you will maybe see error messages. Also make sure you have enough credits to send messages.
 
 If this does not help, consider opening an issue.
 
@@ -244,5 +248,6 @@ If you want to prevent users from using the 2FA at all, you can limit the permis
 These messages are saved as phrases. Just search for "Threema" and/or "message" and you should find them. E.g. `tfa_threemagw_conventional_message` contains the long message send in the conventional 2FA mode.
 
 ### How do I add smilies to my messages?
+
 All messages this add-on sends are saved as phrases. Unicode emotions cannot be saved in phrases directly.
 However you can use Unicode characters in the format `\u<hexnum>`. You can use the same format as in C, C++ or Java source code (where UTF-16 is used). There are also [converters](https://www.branah.com/unicode-converter) for this task.

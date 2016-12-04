@@ -47,3 +47,5 @@ By acknowledging a message the client creates an authenticated and end-to-end-en
 
 The security mostly depends on how the user can estimate the vadility of the login request. An attacker could try to login at the same time and trick the user into acknowledging the wrong message.
 There is also the chance that a user accidentially ackknowledges the wrong message by choosing the wrong button, which immediately and non-revocably permits the login.
+
+As an extra with this method users can explicitly state that the login access was unwanted (by declining a message). This allows one to execute different actions when this happens, such as banning the IP/user, who tried to login.

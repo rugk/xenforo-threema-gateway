@@ -265,6 +265,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      *
      * It can ...
      *
+     * @todo
      * @param array $providerData
      */
     protected function handleMessageDecline(array $providerData)
