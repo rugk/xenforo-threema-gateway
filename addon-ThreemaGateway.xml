@@ -549,7 +549,7 @@ When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, a
 Hi {user},
 to complete the second step of the two-factor authentication, you must enter the following code:
 
-*{code}*
+{code}
 
 The code is valid for {validationTime}.
 
@@ -561,7 +561,7 @@ Thanks,
     <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_continue" version_id="2" version_string="0.2.0"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to continue.]]></phrase>
     <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login" version_id="2" version_string="0.2.0"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to complete login.]]></phrase>
     <phrase title="tfa_threemagw_conventional_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11
-Code: *{code}*
+Code: {code}
 IP: {ip}
 Validity: {validationTime}
 
@@ -584,7 +584,7 @@ Thanks,
 {board}
 {board_url}]]></phrase>
     <phrase title="tfa_threemagw_fast_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
-*IP* *{ip}* tried to login.
+*IP* *{ip}* tried to login as {user}.
 
 Acknowledge this message to allow the login.
 
@@ -611,7 +611,7 @@ Setup your Threema ID and enter it below.]]></phrase>
     <phrase title="tfa_threemagw_setup_please_add_threema_id" version_id="2" version_string="0.2.0"><![CDATA[Please add the Threema ID <b>{gatewayid}</b> to your contact list before proceeding.]]></phrase>
     <phrase title="tfa_threemagw_setup_please_scan_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Please scan the following QR code with Threema before proceeding. The Threema ID <b>{gatewayid}</b> should be added!]]></phrase>
     <phrase title="tfa_threemagw_setup_public_key" version_id="1" version_string="0.1"><![CDATA[Public Key]]></phrase>
-    <phrase title="tfa_threemagw_setup_public_key_descr" version_id="1" version_string="0.1"><![CDATA[Before proceeding, please confirm that the following fingerprint is correct. Often you can find it on the same page where you can also see your Threema ID and QR code.<br>
+    <phrase title="tfa_threemagw_setup_public_key_descr" version_id="2" version_string="0.2.0"><![CDATA[Before proceeding, please confirm that the following fingerprint of your Threema ID is correct. Often you can find it on the same page where you can also see your Threema ID and QR code.<br>
 <b>Key fingerprint:</b> {pubKeyShort}<br /><br />
 Please check each character of the code and confirm it is the same as displayed on your device. Should you notice any discrepancy when doing so, please <i>do not continue</i> and contact the forum admin.<br />
 The displayed fingerprint is derived from the public key, which is linked to your Threema ID. More information <a href="https://threema.ch/en/faq/threema_id" target="_blank">in the Threema FAQ</a>.]]></phrase>
@@ -697,13 +697,6 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 		<dl class="ctrlUnit">
 			<xen:comment>Show Threema ID input and all other settings as this is not the validation page.</xen:comment>
 			<xen:include template="threemagw_threemaid_input_field" id="ctrl_threemagw_conventional_threemaid" />
-				
-			<xen:if is="{$context} == 'manage'">
-				<dt><label></label></dt>
-				<dd>
-					<p><b>Key fingerprint:</b> {xen:helper threemaidpubkeyshort, {$threemaid}}<br /><br /></p>
-				</dd>
-			</xen:if>
 		</dl>
 
 		<dl class="ctrlUnit">
@@ -1011,6 +1004,16 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 		<a class="button threemagw_emphasized_button" href="threema://add?id={$gatewayid}" title="{xen:phrase tfa_threemagw_add_threema_id_button_tooltip, 'threemaid={$gatewayid}'}" accesskey="c">{xen:phrase tfa_threemagw_add_threema_id_button, 'threemaid={$gatewayid}'}</a>
 	</dd>
 </dl>]]></template>
+    <template title="threemagw_pubkey_userverify" version_id="2" version_string="0.2.0"><![CDATA[<xen:if is="{$context} == 'setup'">
+	<xen:comment>Show public key of Threema ID</xen:comment>
+	<xen:comment>This allows the user to verify the public key received by the server, so potential man-in-the-middle attacks can be mitigated.</xen:comment>
+	<dl class="ctrlUnit">
+		<dt><label>{xen:phrase tfa_threemagw_setup_public_key}:</label></dt>
+		<dd>
+			<p>{xen:phrase tfa_threemagw_setup_public_key_descr, 'threemaid={$data.threemaid}', 'pubKeyShort={xen:helper threemaidpubkeyshort, {$data.threemaid}}'}</p>
+		</dd>
+	</dl>
+</xen:if>]]></template>
     <template title="threemagw_threemaid_input_field" version_id="2" version_string="0.2.0"><![CDATA[<xen:require css="threemagw.css" />
 <xen:comment>Show Threema ID input and all other settings as this is not the validation page.</xen:comment>
 <dt>
@@ -1033,20 +1036,11 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 <dl class="ctrlUnit">
     <dt><label for="ctrl_threemagw_code">{xen:phrase threemagw_confirmation_code}:</label></dt>
 	<dd>
-        <input type="text" name="code" id="ctrl_threemagw_code" class="textCtrl" />
+        <input type="text" name="code" id="ctrl_threemagw_code" class="textCtrl" autocomplete="off" maxlength="6" />
 	</dd>
 </dl>
 
-<xen:if is="{$context} == 'setup'">
-	<xen:comment>Show public key of Threema ID</xen:comment>
-	<xen:comment>This allows the user to verify the public key received by the server, so potential man-in-the-middle attacks can be mitigated.</xen:comment>
-	<dl class="ctrlUnit">
-		<dt><label>{xen:phrase tfa_threemagw_setup_public_key}:</label></dt>
-		<dd>
-			<p>{xen:phrase tfa_threemagw_setup_public_key_descr, 'threemaid={$data.threemaid}', 'pubKeyShort={xen:helper threemaidpubkeyshort, {$data.threemaid}}'}</p>
-		</dd>
-	</dl>
-</xen:if>]]></template>
+<xen:include template="threemagw_pubkey_userverify" />]]></template>
     <template title="two_step_threemagw_fast" version_id="2" version_string="0.2.0"><![CDATA[<xen:if is="{$context} == 'setup'">
 	<dl class="ctrlUnit">
 		<dt></dt>
@@ -1062,7 +1056,9 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 <xen:if is="{$context} == 'setup'">
 		</dd>
 	</dl>
-</xen:if>]]></template>
+</xen:if>
+
+<xen:include template="threemagw_pubkey_userverify" />]]></template>
     <template title="two_step_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[<xen:require css="threemagw.css" />
 <xen:if is="{$context} == 'setup'">
 	<dl class="ctrlUnit">

@@ -94,6 +94,9 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         // add options
         if ($providerData['useNumberSmilies']) {
             $code = ThreemaGateway_Helper_Emoji::replaceDigits($code);
+        } else {
+            // make code a bold text
+            $code = '*' . $code . '*';
         }
 
         /** @var string $phrase name of XenForo phrase to use */

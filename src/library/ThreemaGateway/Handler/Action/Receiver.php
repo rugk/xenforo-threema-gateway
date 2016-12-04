@@ -19,7 +19,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     protected $isPrepared = false;
 
     /**
-     * @var bool whether the permissions were already checked
+     * @var bool whether the permissions are already checked
      */
     protected $isPermissionChecked = false;
 
