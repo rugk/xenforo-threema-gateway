@@ -14,7 +14,7 @@
 /** @var int $startTime time of application start */
 $startTime = microtime(true);
 /** @var int $fileDir current dir */
-$fileDir   = dirname(__FILE__);
+$fileDir = dirname(__FILE__);
 if (!file_exists($fileDir . '/library/XenForo/Autoloader.php')) {
     // second try
     $fileDir = '.';
@@ -45,9 +45,9 @@ $debugMode = XenForo_Application::debugMode();
 // not be good here as we really only need the RAW debug mode setting.
 
 /** @var array $logExtra */
-$logExtra         = [];
+$logExtra = [];
 /** @var null|string $logMessage */
-$logMessage       = null;
+$logMessage = null;
 /** @var null|string $logMessagePublic */
 $logMessagePublic = null;
 

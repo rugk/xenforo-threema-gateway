@@ -589,7 +589,7 @@ Thanks,
 {board}
 {board_url}]]></phrase>
     <phrase title="tfa_threemagw_fast_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
-*IP* *{ip}* tried to login as {user}.
+*IP* *{ip}* tried to login as _{user}_.
 
 Acknowledge this message to allow the login.
 
@@ -598,6 +598,26 @@ Acknowledge this message to allow the login.
     <phrase title="tfa_threemagw_fast_please_confirm_message" version_id="2" version_string="0.2.0"><![CDATA[Please confirm the message, which has just been sent to <b>{threemaid}</b> from <b>{gatewayid}</b>.<br>
 In case you accidentally tapped on "Decline" you can always confirm the message afterwards to login anyway.]]></phrase>
     <phrase title="tfa_threemagw_fast_setup_descr" version_id="2" version_string="0.2.0"><![CDATA[This mode sends you a message, which you have to confirm (acknowledge) to allow the login request. If you decline it, you cannot login.]]></phrase>
+    <phrase title="tfa_threemagw_fast_setup_message" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10 Two-factor authentication
+
+Hi {user},
+a user with the *IP* *{ip}* requested a 2FA activation confirmation for your account.
+
+To allow the request you have to acknowledge this message.
+
+If you did not initiate this request, you should decline this message instead and change your password urgently.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
+    <phrase title="tfa_threemagw_fast_setup_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
+*IP* *{ip}* tried to activate the 2FA mode as _{user}_.
+
+Acknowledge this message to allow the request.
+
+{board}
+{board_url}]]></phrase>
+    <phrase title="tfa_threemagw_fast_validation_time" version_id="2" version_string="0.2.0"><![CDATA[You have {validationTime} to do so.]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies" version_id="2" version_string="0.2.0"><![CDATA[I like Emojis!]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only, if you like emoticons/smileys.]]></phrase>
     <phrase title="tfa_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[Threema - Reversed]]></phrase>
@@ -1058,6 +1078,9 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 <p>
 	{xen:phrase tfa_threemagw_fast_please_confirm_message, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
 </p>
+
+<p>{xen:phrase tfa_threemagw_fast_validation_time, 'validationTime={$validationTime}'}</p>
+
 <xen:comment>main content end</xen:comment>
 
 <xen:if is="{$context} == 'setup'">

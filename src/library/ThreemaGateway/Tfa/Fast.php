@@ -80,8 +80,12 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         // send message
         /** @var string $phrase name of XenForo phrase to use */
         $phrase = 'tfa_threemagw_fast_message';
+        if ($context == 'setup') {
+            $phrase = 'tfa_threemagw_fast_setup_message';
+        }
+
         if ($providerData['useShortMessage']) {
-            $phrase = 'tfa_threemagw_fast_message_short';
+            $phrase .= '_short';
         }
 
         /** @var XenForo_Phrase $message */
@@ -131,6 +135,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             'data' => $providerData,
             'trigger' => $triggerData,
             'context' => $context,
+            'validationTime' => $this->parseValidationTime($providerData['validationTime']),
             'gatewayid' => $this->gatewaySettings->getId()
         ];
         return $view->createTemplateObject('two_step_threemagw_fast', $params)->render();
