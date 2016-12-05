@@ -116,7 +116,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         }
         if ($timeSpan) {
             $model->setTimeLimit(strtotime($timeSpan, XenForo_Application::$time));
-            // manual ordering is not neccessary as only new messages are inserted
+            // manual ordering is not necessary as only new messages are inserted
             // ("at the bottom") and the dates never change,
         }
         if ($keyword) {
@@ -197,7 +197,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * queries here.
      * Note: When passing a message ID please avoid using other parameters as
      * it may produce errors. When you have a message ID it is also not
-     * really neccessary to specify other conditions.
+     * really necessary to specify other conditions.
      *
      * @param  string     $threemaId     filter by Threema ID (optional)
      * @param  string     $mimeType      Filter by mime type (optional).
@@ -421,7 +421,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
 
     /**
      * Checks whether the user is allowed to receive messages and prepares Model
-     * if neccessary.
+     * if necessary.
      *
      * @throws XenForo_Exception
      */

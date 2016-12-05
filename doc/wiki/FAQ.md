@@ -229,6 +229,8 @@ This add-on has multiple ways which deactivate one or more 2FA methods. Please m
 3. The user group has enough permissions to use the specific 2FA method. E.g. for the conventional mode the users must have permission to use the Gateway, send messages, fetch public keys (lookup) and use the 2FA mode.
 4. The 2FA method is activated in the settings.
 
+Note that the Reversed and Fast mode require the end-to-end mode.
+
 ### How can I hide a 2FA method?
 
 There are multiple way to do this. You can hide it...

@@ -73,7 +73,7 @@ try {
         );
     }
 
-    // split log message if neccessary
+    // split log message if necessary
     if (is_array($logMessage)) {
         $logTypeBackup                                 = $logType;
         $logMessageBackup                              = $logMessage;

@@ -1,6 +1,6 @@
 <?php
 /**
- * DataWriter for pending message requests of Threema TFA.
+ * DataWriter for pending message requests of Threema 2FA.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -60,9 +60,6 @@ class ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation extends XenForo_D
 
     /**
      * Gets the actual existing data out of data that was passed in. See parent for explanation.
-     *
-     * As an update cannot happen in the keystore anyway, this function is not
-     * implemented in any way.
      *
      * @param mixed
      * @see XenForo_DataWriter::_getExistingData()

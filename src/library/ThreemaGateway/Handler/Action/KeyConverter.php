@@ -13,7 +13,7 @@ class ThreemaGateway_Handler_Action_KeyConverter extends ThreemaGateway_Handler_
     /**
      * Converts a key from hex to binary format.
      *
-     * It automatically removes the prefixes if neccessary.
+     * It automatically removes the prefixes if necessary.
      *
      * @param  string $keyHex The key in hex
      * @return string

@@ -272,7 +272,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      * Pre-save: Removes tables, which should not be touched.
      *
      * The function searches for invalid tables and removes them from the query.
-     * This is neccessary as a message can only be an instance of one message
+     * This is necessary as a message can only be an instance of one message
      * type and as by default all tables (& therefore types) are included in the
      * fields, we have to confitionally remove them.
      * Additionally it ses the correct character encoding.
@@ -358,7 +358,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     protected function _preDelete()
     {
         // we may need to store the message ID to prevent replay attacks
-        if (ThreemaGateway_Helper_Cron::messageIsAtRiskOfReplayAttack($this->_existingData[ThreemaGateway_Model_Messages::DbTableMessages])) {
+        if (ThreemaGateway_Helper_Message::isAtRiskOfReplayAttack($this->_existingData[ThreemaGateway_Model_Messages::DbTableMessages])) {
             // remove main table from deletion as it is handled in _postDelete().
             unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages]);
         }

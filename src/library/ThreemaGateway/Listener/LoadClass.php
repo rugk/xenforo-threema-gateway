@@ -18,7 +18,7 @@ class ThreemaGateway_Listener_LoadClass
      */
     public static function extendClass($class, array &$extend)
     {
-        //check not really neccessary as we use an event hint, but just to be sure...
+        //check not really necessary as we use an event hint, but just to be sure...
         if ($class == 'XenForo_Session') {
             $extend[] = 'ThreemaGateway_Session';
         }

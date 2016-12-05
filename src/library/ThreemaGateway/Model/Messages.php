@@ -66,7 +66,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     /**
      * Execute this before any query.
      *
-     * Sets internal values neccessary for a correct connection to the database.
+     * Sets internal values necessary for a correct connection to the database.
      */
     public function preQuery()
     {
@@ -77,11 +77,11 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     /**
      * Inject or modify a fetch option manually.
      *
-     * Sets internal values neccessary for a correct connection to the database.
-     * This should best be avoided, when it is not really neccessary to change
+     * Sets internal values necessary for a correct connection to the database.
+     * This should best be avoided, when it is not really necessary to change
      * the value directly.
-     * It can e.g. be used to reset data. WHen you e.g. want to reset the where
-     * caluse call it this way: injectFetchOption('where', []).
+     * It can e.g. be used to reset data. When you e.g. want to reset the where
+     * option call it this way: injectFetchOption('where', []).
      *
      * @param string $option The option name to inject
      * @param mixed  $value  The value of the option to set.
@@ -177,25 +177,18 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     /**
      * Sets the a time limit for what messages should be queried
      *
-     * @param int $date_min oldest date of messages
-     * @param int $date_max latest date of messages (optional)
-     * @param int $applyToReceiveDates set to true to apply the condition to
-     *                                 receive dates (default = false, applies
-     *                                 it to send dates)
+     * @param int|null $date_min oldest date of messages (optional)
+     * @param int|null $date_max latest date of messages (optional)
+     * @param string $attribute Set the atttribute to apply this to.
      */
-    public function setTimeLimit($date_min, $date_max = null, $applyToReceiveDates = false)
+    public function setTimeLimit($date_min = null, $date_max = null, $attribute = 'metamessage.date_send')
     {
-        /** @var string $attribut the collumn/attribut with the time data */
-        $attribut = 'metamessage.date_send';
-
-        if ($applyToReceiveDates) {
-            $attribut = 'metamessage.date_received';
+        if ($date_min) {
+            $this->fetchOptions['where'][]  = $attribute . ' >= ?';
+            $this->fetchOptions['params'][] = $date_min;
         }
-
-        $this->fetchOptions['where'][]  = $attribut . ' >= ?';
-        $this->fetchOptions['params'][] = $date_min;
         if ($date_max) {
-            $this->fetchOptions['where'][]  = $attribut . ' <= ?';
+            $this->fetchOptions['where'][]  = $attribute . ' <= ?';
             $this->fetchOptions['params'][] = $date_max;
         }
     }
@@ -285,14 +278,14 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                 // merge arrays
                 $mergedArrays = $msgMetaData + $groupedResult[$msgId];
 
-                // remove unneccessary message_id (the ID is already the key)
+                // remove unnecessary message_id (the ID is already the key)
                 if (array_key_exists('message_id', $mergedArrays)) {
                     unset($mergedArrays['message_id']);
                 }
 
                 // save as output
                 if ($groupByMessageType) {
-                    // remove unneccessary message_type_code (as it is already
+                    // remove unnecessary message_type_code (as it is already
                     // grouped by it)
                     if (array_key_exists('message_type_code', $mergedArrays)) {
                         unset($mergedArrays['message_type_code']);
@@ -325,7 +318,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      */
     public function getMessageDataByType($messageType, $includeMetaData = true)
     {
-        // add table if neccessary
+        // add table if necessary
         $extraSelect = '';
         $extraJoin   = '';
         if ($includeMetaData) {
@@ -409,7 +402,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                     ', $limitOptions['limit'], $limitOptions['offset']),
                 $this->fetchOptions['params']);
 
-                // although this is not strictly neccessary for the ease of
+                // although this is not strictly necessary for the ease of
                 // processing the data later, we also index this
                 $resultindex = 'text';
                 break;
@@ -461,7 +454,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                                     $removeAttributes);
             $output[$msgId][$resultindex] = $resultForId;
 
-            // remove unneccessary message_id (the ID is already the key)
+            // remove unnecessary message_id (the ID is already the key)
             if (array_key_exists('message_id', $output[$msgId])) {
                 unset($output[$msgId]['message_id']);
             }
@@ -514,6 +507,29 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         }
 
         return $result;
+    }
+
+    /**
+     * Removes entries from the meta data message table.
+     *
+     * Note that if the message(s) has/have other data saved in the database
+     * this will fail.
+     * Note: The number of where and params-options must be equal. You can
+     * submit additional conditions with the first parameter.
+     * Attention: This ignores the limit/offset clause for simplicity.
+     *
+     * @param array $additionalConditions Add additional where conditions if
+     *                                    neccessary.
+     */
+    public function removeMetaData(array $additionalConditions = [])
+    {
+        $this->_getDb()->delete(
+            ThreemaGateway_Model_Messages::DbTableMessages,
+            array_merge(array_combine(
+                $this->fetchOptions['where'], $this->fetchOptions['params']),
+                $additionalConditions
+            )
+        );
     }
 
     /**
@@ -627,7 +643,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
             $this->fetchOptions['params'][] = $attValue;
         } else {
             $this->fetchOptions['where'][]  = $attName . ' IN (' . implode(', ', array_fill(0, count($attValue), '?')) . ')';
-            $this->fetchOptions['params'] += $attValue;
+            $this->fetchOptions['params']  += $attValue;
         }
     }
 }

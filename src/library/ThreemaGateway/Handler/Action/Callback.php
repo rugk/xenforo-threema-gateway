@@ -292,7 +292,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      */
     public function addLog(&$log, $stringToAdd, $stringToAddDetail = null)
     {
-        // convert to array if neccessary or just add string
+        // convert to array if necessary or just add string
         if (is_string($log)) {
             if ($stringToAddDetail) {
                 $log[1] = $log;

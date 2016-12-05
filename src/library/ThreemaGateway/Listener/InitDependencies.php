@@ -18,7 +18,7 @@ class ThreemaGateway_Listener_InitDependencies
      */
     public static function addHelpers(XenForo_Dependencies_Abstract $dependencies, array $data)
     {
-        //check not neccessary as we use an event hint
+        //check not necessary as we use an event hint
         XenForo_Template_Helper_Core::$helperCallbacks += [
             'threemaregex' => ['ThreemaGateway_Helper_General', 'threemaRegEx'],
             'threemaidverify' => ['ThreemaGateway_Helper_General', 'isThreemaId'],

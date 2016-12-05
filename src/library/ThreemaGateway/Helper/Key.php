@@ -112,7 +112,7 @@ class ThreemaGateway_Helper_Key
     }
 
     /**
-     * Removes the suffix if neccessary.
+     * Removes the suffix if necessary.
      *
      * XenForo template helper: threemakeyremovesuffix.
      *

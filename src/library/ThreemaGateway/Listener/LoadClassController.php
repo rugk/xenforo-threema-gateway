@@ -18,7 +18,7 @@ class ThreemaGateway_Listener_LoadClassController
      */
     public static function extendAccountController($class, array &$extend)
     {
-        //check not really neccessary as we use an event hint, but just to be sure...
+        //check not really necessary as we use an event hint, but just to be sure...
         if ($class == 'XenForo_ControllerPublic_Account') {
             $extend[] = 'ThreemaGateway_ControllerPublic_Account';
         }

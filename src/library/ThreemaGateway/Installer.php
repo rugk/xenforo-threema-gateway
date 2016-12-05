@@ -81,7 +81,7 @@ class ThreemaGateway_Installer
     }
 
     /**
-     * When uninstalling this deletes the unneccessary database entries/tables.
+     * When uninstalling this deletes the unnecessary database entries/tables.
      */
     public static function uninstall()
     {

@@ -108,6 +108,10 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     {
         $this->gatewayPermissions->setUserId($user);
 
+        if (!$providerData) {
+            throw new XenForo_Exception(new XenForo_Phrase('threemagw_this_tfa_mode_is_not_setup'));
+        }
+
         return [];
     }
 
@@ -393,7 +397,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     public function canEnable()
     {
-        // check neccessary permissions
+        // check necessary permissions
         return $this->gatewaySettings->isReady() && $this->gatewayPermissions->hasPermission('tfa');
     }
 
@@ -416,8 +420,8 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     abstract protected function generateDefaultData();
 
     /**
-     * Adjust the view aparams, e.g. add special params needed by your
-     * template.
+    * Adjust the view params for managing the 2FA mode, e.g. add special
+    * params needed by your template.
      *
      * @param array  $viewParams
      * @param string $context

@@ -32,6 +32,11 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             return false;
         }
 
+        // this 2FA mode requires end-to-end encryption
+        if (!$this->gatewaySettings->isEndToEnd()) {
+            return false;
+        }
+
         // check specific permissions
         if (!$this->gatewayPermissions->hasPermission('send') ||
             !$this->gatewayPermissions->hasPermission('receive') ||
@@ -57,8 +62,9 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::triggerVerification($context, $user, $ip, $providerData);
 
-        if (!$providerData) {
-            return [];
+        // this 2FA mode requires end-to-end encryption
+        if (!$this->gatewaySettings->isEndToEnd()) {
+            throw new XenForo_Exception(new XenForo_Phrase('threema_this_action_required_e2e'));
         }
 
         /** @var XenForo_Options $options */
@@ -238,8 +244,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-     * Adjust the view aparams, e.g. add special params needed by your
-     * template.
+    * Adjust the view params for managing the 2FA mode, e.g. add special
+    * params needed by your template.
      *
      * @param array  $viewParams
      * @param string $context

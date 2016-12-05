@@ -118,7 +118,7 @@ class ThreemaGateway_Handler_Settings
                 return false;
             }
 
-            // get private key if neccessary
+            // get private key if necessary
             if (!$this->privateKey) {
                 try {
                     $this->convertPrivateKey();

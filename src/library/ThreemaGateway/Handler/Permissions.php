@@ -105,7 +105,7 @@ class ThreemaGateway_Handler_Permissions
                         old user is the default user too.
         */
         $userIsAlreadyVisitor = $this->userIsDefault($newUser) && $this->userIsDefault($oldUserId);
-        // prevent unneccessary changes
+        // prevent unnecessary changes
         if ($oldUserId == $newUserId || $userIsAlreadyVisitor) {
             return false;
         }

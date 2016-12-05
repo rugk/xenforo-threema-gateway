@@ -1,6 +1,6 @@
 <?php
 /**
- * Model for querying pending confirmation messages.
+ * Model for querying pending confirmation requests.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -86,5 +86,21 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
         }
 
         return $result;
+    }
+
+    /**
+     * Removes all expired pending requets.
+     *
+     * This should be executed regularely as otherwise the database gets filled
+     * up with unconfirmed/never handled pending requests.
+     *
+     */
+    public function deleteExpired()
+    {
+        $this->_getDb()->delete(self::DbTable,
+            [
+                '? > expiry_date' => XenForo_Application::$time
+            ]
+        );
     }
 }

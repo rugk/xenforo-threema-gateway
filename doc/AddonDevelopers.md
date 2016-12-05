@@ -21,7 +21,7 @@ When you want to access `ThreemaGateway_Handler_Settings` you should usually acc
 #### Recommendations
 
 As explained above you can use `ThreemaGateway_Handler_Settings->isReady()` to check whether the SDK is usable at all, before initiating it via `ThreemaGateway_Handler_PhpSdk`. You should do so.
-Then you can create the neccessary handlers. All handlers usually check the permissions they require, but if you do not want to catch exceptions you should check all required permissions via `ThreemaGateway_Handler_Permissions->hasPermission()` before.
+Then you can create the necessary handlers. All handlers usually check the permissions they require, but if you do not want to catch exceptions you should check all required permissions via `ThreemaGateway_Handler_Permissions->hasPermission()` before.
 You may also consider checking `ThreemaGateway_Handler_Settings->isEndToEnd()` for security-sensitive data or when you want to test whether you can receive messages. (When the E2E mode is not set up you also cannot receive any messages.)
 
 ### Emoticons

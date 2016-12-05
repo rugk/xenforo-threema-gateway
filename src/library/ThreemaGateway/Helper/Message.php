@@ -8,7 +8,7 @@
  * @license MIT
  */
 
-class ThreemaGateway_Helper_Cron
+class ThreemaGateway_Helper_Message
 {
     /**
      * Checks whether a message is at risk of an replay attack.
@@ -21,7 +21,7 @@ class ThreemaGateway_Helper_Cron
      *
      * @return bool
      */
-    public static function messageIsAtRiskOfReplayAttack(array $messageMetaData)
+    public static function isAtRiskOfReplayAttack(array $messageMetaData)
     {
         // in case the time is no valid/positive number, better return true
         if (!$messageMetaData['date_received']) {
@@ -29,7 +29,7 @@ class ThreemaGateway_Helper_Cron
         }
 
         // if message has not been send at least 2 weeks ago (by default), it is attackable
-        if ($messageMetaData['date_received'] >= self::getOldestPossibleReplackAttackDate()) {
+        if ($messageMetaData['date_received'] >= self::getOldestPossibleReplayAttackDate()) {
             return true;
         }
 
@@ -46,7 +46,7 @@ class ThreemaGateway_Helper_Cron
      *
      * @return int
      */
-    public static function getOldestPossibleReplackAttackDate()
+    public static function getOldestPossibleReplayAttackDate()
     {
         /** @var XenForo_Options $options */
         $options   = XenForo_Application::getOptions();

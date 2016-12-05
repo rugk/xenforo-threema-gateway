@@ -81,7 +81,7 @@ var ReceiveCallback = (function (window, document) {
     };
 
     /**
-     * update - Update the output field (and, if neccessary, also the output
+     * update - Update the output field (and, if necessary, also the output
      * field)
      *
      * @param {object} event jQuery event

@@ -219,7 +219,10 @@
     <listener event_id="threemagw_message_callback_presave" execute_order="160" callback_class="ThreemaGateway_Listener_TfaMessageCallback" callback_method="checkForReceiverCode" active="1" hint="1" description="2FA Reversed - message processing callback"/>
     <listener event_id="threemagw_message_callback_presave" execute_order="240" callback_class="ThreemaGateway_Listener_TfaMessageCallback" callback_method="checkForDeliveryReceipt" active="1" hint="128" description="2FA Fast - message processing callback"/>
   </code_event_listeners>
-  <cron/>
+  <cron>
+    <entry entry_id="threemagwCleanUpMsgs" cron_class="ThreemaGateway_CronEntry_CleanUp" cron_method="pruneOldDeletedMessages" active="1"><![CDATA[{"day_type":"dow","dow":["-1"],"hours":["3"],"minutes":["17"]}]]></entry>
+    <entry entry_id="threemagwCleanUpTfaPend" cron_class="ThreemaGateway_CronEntry_CleanUp" cron_method="pruneExpiredTfaPendingRequests" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["-1"],"minutes":["48"]}]]></entry>
+  </cron>
   <email_templates/>
   <email_template_modifications/>
   <optiongroups>
@@ -422,6 +425,8 @@ time</sub_options>
   </permissions>
   <phrases>
     <phrase title="admin_permission_threemagw_showcredits" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway: Show credits]]></phrase>
+    <phrase title="cron_entry_threemagwCleanUpMsgs" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway: Clean up old deleted Threema messages]]></phrase>
+    <phrase title="cron_entry_threemagwCleanUpTfaPend" version_id="2" version_string="0.2.0"><![CDATA[Threema 2FA: Clean up expired pending requests]]></phrase>
     <phrase title="option_group_threemagw" version_id="1" version_string="0.1"><![CDATA[Threema Gateway]]></phrase>
     <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank">Threema Gateway</a>.]]></phrase>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
@@ -644,9 +649,11 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_phpkeystore_example" version_id="1" version_string="0.1.0"><![CDATA[keystore.php]]></phrase>
     <phrase title="threemagw_privatekeyfile_example" version_id="1" version_string="0.1.0"><![CDATA[privateKey.txt]]></phrase>
     <phrase title="threemagw_sending_failed" version_id="1" version_string="0.1.0"><![CDATA[Sending message failed.]]></phrase>
+    <phrase title="threemagw_this_tfa_mode_is_not_setup" version_id="2" version_string="0.2.0"><![CDATA[This 2FA mode has not been setup correctly.]]></phrase>
     <phrase title="threemagw_threemaid" version_id="1" version_string="0.1.0"><![CDATA[Threema ID]]></phrase>
     <phrase title="threemagw_threema_id_does_not_exist" version_id="1" version_string="0.1"><![CDATA[Threema ID does not exist.]]></phrase>
     <phrase title="threemagw_unknown_message_type" version_id="2" version_string="0.2.0"><![CDATA[Unknown message type]]></phrase>
+    <phrase title="threema_this_action_required_e2e" version_id="2" version_string="0.2.0"><![CDATA[This action requires the end-to-end encrypted Threema mode.]]></phrase>
     <phrase title="user_field_threemaid" global_cache="1" version_id="1" version_string="0.1.0"><![CDATA[Threema ID]]></phrase>
     <phrase title="user_field_threemaid_desc" version_id="1" version_string="0.1.0"><![CDATA[]]></phrase>
   </phrases>

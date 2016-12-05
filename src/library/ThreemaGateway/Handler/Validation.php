@@ -52,7 +52,7 @@ class ThreemaGateway_Handler_Validation
 
     /**
      * Checks whether the directory is read- and writable.
-     * It also automatically creates it if neccessary.
+     * It also automatically creates it if necessary.
      *
      * @param  string $dir directory to check
      * @return bool

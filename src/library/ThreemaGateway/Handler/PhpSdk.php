@@ -56,7 +56,7 @@ class ThreemaGateway_Handler_PhpSdk
     protected $connector;
 
     /**
-     * @var E2EHelper The Threema E2E helper, which is neccessary when dealing
+     * @var E2EHelper The Threema E2E helper, which is necessary when dealing
      *                with end-to-end-encrypted messages.
      */
     protected $e2eHelper;
