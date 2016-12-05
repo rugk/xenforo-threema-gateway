@@ -134,6 +134,8 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     /**
      * Called when trying to verify user. Checks whether a given code is valid.
      *
+     * At the end, please call {@see resetProviderOptionsForTrigger()}.
+     *
      * @param string $context
      * @param array  $input
      * @param array  $user
@@ -441,6 +443,22 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         /** @var XenForo_Model_Tfa $tfaModel */
         $tfaModel = XenForo_Model::create('XenForo_Model_Tfa');
         $tfaModel->enableUserTfaProvider($user['user_id'], $this->_providerId, $options);
+    }
+
+    /**
+     * Resets the provider options to make sure the current 2FA verification
+     * does not affect the next one.
+     *
+     * Please expand this if you have more values, which need to be reset, but
+     * please do not forget to call the parent.
+     *
+     * @param string $context
+     * @param array $providerData
+     */
+    protected function resetProviderOptionsForTrigger($context, array &$providerData)
+    {
+        unset($providerData['code']);
+        unset($providerData['codeGenerated']);
     }
 
     /**

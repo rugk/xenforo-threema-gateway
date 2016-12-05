@@ -185,6 +185,8 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_CODE
         );
 
+        $this->resetProviderOptionsForTrigger($context, $providerData);
+
         return true;
     }
 
@@ -273,5 +275,21 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
         ];
 
         return $viewParams;
+    }
+
+    /**
+    * Resets the provider options to make sure the current 2FA verification
+    * does not affect the next one.
+     *
+     * @param string $context
+     * @param array $providerData
+     */
+    protected function resetProviderOptionsForTrigger($context, array &$providerData)
+    {
+        parent::resetProviderOptionsForTrigger($context, $providerData);
+
+        if (isset($providerData['receivedCode'])) {
+            unset($providerData['receivedCode']);
+        }
     }
 }

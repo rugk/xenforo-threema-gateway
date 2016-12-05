@@ -180,6 +180,8 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
 
         $this->updateReplayCheckData($providerData, $code);
 
+        $this->resetProviderOptionsForTrigger($context, $providerData);
+
         return true;
     }
 

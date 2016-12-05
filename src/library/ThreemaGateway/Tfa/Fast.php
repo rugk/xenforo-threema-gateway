@@ -165,8 +165,11 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         if (!isset($providerData['receivedCode'])) {
             return false;
         }
+        if (!isset($providerData['receivedDeliveryReceipt'])) {
+            return false;
+        }
 
-        // assure replay attacks
+        // prevent replay attacks
         if (!$this->verifyCodeReplay($providerData, $providerData['receivedCode'])) {
             return false;
         }
@@ -183,8 +186,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             return false; // and fail silently
         }
 
-        // assure that the receipt message is a confirmation receipt
-        // or has at least been a receipe before
+        // assure that the receipt message is a confirmation/acknowledge receipt
+        // or has at least been a confirmation receipe before
         if ($providerData['receivedDeliveryReceipt'] !== 3 &&
             $providerData['receivedDeliveryReceiptLargest'] !== 3
         ) {
@@ -198,6 +201,14 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             $providerData,
             ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_DELIVERY_RECEIPT
         );
+
+        // unset data
+        //
+        // IMPORTANT: This is very important here as this data cannot be replay-
+        // checked and would therefore result in a vulnerability.
+        // Especially 'receivedDeliveryReceiptLargest' would not be correct in
+        // this case!
+        $this->resetProviderOptionsForTrigger($context, $providerData);
 
         return true;
     }
@@ -217,7 +228,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         $providerData = parent::verifySetupFromInput($input, $user, $error);
 
         //add other options to provider data
-        $providerData['useShortMessage']  = $input->filterSingle('useShortMessage', XenForo_Input::BOOLEAN);
+        $providerData['useShortMessage'] = $input->filterSingle('useShortMessage', XenForo_Input::BOOLEAN);
 
         return $providerData;
     }
@@ -272,6 +283,28 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
+     * Resets the provider options to make sure the current 2FA verification
+     * does not affect the next one.
+     *
+     * @param string $context
+     * @param array $providerData
+     */
+    protected function resetProviderOptionsForTrigger($context, array &$providerData)
+    {
+        parent::resetProviderOptionsForTrigger($context, $providerData);
+
+        if (isset($providerData['receivedCode'])) {
+            unset($providerData['receivedCode']);
+        }
+        if (isset($providerData['receivedDeliveryReceipt'])) {
+            unset($providerData['receivedDeliveryReceipt']);
+        }
+        if (isset($providerData['receivedDeliveryReceiptLargest'])) {
+            unset($providerData['receivedDeliveryReceiptLargest']);
+        }
+    }
+
+    /**
      * Handles the actions when a user declines a received message.
      *
      * It can ...
@@ -279,7 +312,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      * @todo
      * @param array $providerData
      */
-    protected function handleMessageDecline(array $providerData)
+    private function handleMessageDecline(array $providerData)
     {
         // possibly ban user, etc.
         // (should be customizable)
