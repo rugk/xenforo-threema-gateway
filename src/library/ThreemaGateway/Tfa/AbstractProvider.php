@@ -352,7 +352,6 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
             //first manage page ($context = setup)
             $threemaId = $providerData['threemaid'];
         }
-        // echo '$context:'.$context.'<br>';
 
         /** @var array $viewParams parameters for XenForo_ControllerResponse_View */
         $viewParams = [

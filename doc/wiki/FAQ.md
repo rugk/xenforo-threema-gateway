@@ -187,9 +187,23 @@ You can savely ignore this error messages. If you want to get more information a
 This indicates that something or someone tried to send you a message to your Threema Callback, which you have already received. The message ID is included in the error in the part which I replaced with `[…]` here.
 
 To debug the reason for this you may [enable debug logging](#how-can-i-enable-debug-logging).
-As this Exception is thrown as a part of the mechanism to prevent replay attacks, it could of course happened that someone tried to carry out such an attack. In this case I'd suggest you to investigate the case and change your callback secret (in the ACP).
+As this Exception is thrown as a part of the mechanism to prevent replay attacks (see question below), it could of course happened that someone tried to carry out such an attack. In this case I'd suggest you to investigate the case and change your callback secret (in the ACP).
 
 If you get the MySQLi exception, you will always get two logged exceptions for each issue as the original exception is also logged, so you can get more details about the issue.
+
+### What are replay attacks and what does the checkbox "Harden replay attack protection" do?
+
+A [replay attack](https://en.wikipedia.org/wiki/Replay_attack) is an attack where a message (e.g. a 2FA login message) is send to your XenForo instance again altghough it has already been received before.
+All included 2FA modes however have replay attack protection build in (which is technically assured, because of tzhe different secrets/codes they rely on). However as this add-on also provides an API for other add-ons this setting might be useful to activate if another application cannot ensure this.
+
+When the option is disabled "only" the "defaults" for this protection are applied. The server stores all message IDs for at least 14 days (or whatever number you set in "Reject old messages when receiving") and afterwards may delete them if they are not needed anymore. When a message is received it can never have the same message ID as a previously saved one, which prevents that such already sent messages can be received.
+14 days are the default limit as the Threema server stores messages at most for 14 days and deletes them afterwards.  
+The Gateway server could theoretically act maliciously and reset these messages after 14 days and they would not be rejected, but this assumes a hacked or misbehaving Threema server server, which is usually not your threat model.  
+If such an attack happens, you should get one of the messages outlined in the question above.
+
+When the option is enabled the message IDs are never deleted, which makes sure all messages can always be verified no matter when they were sent. Naturally this stores some more data in your database and may slow down your queries/message receiving processing a bit.
+
+Note that changing this setting does not affect previously received messages.
 
 ### Can I get this add-on to use the Threema IDs from user fields?
 

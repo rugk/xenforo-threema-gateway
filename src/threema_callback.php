@@ -2,7 +2,7 @@
 /**
  * Callback for Threema Gateway.
  *
- * Inspired by PayPal Callback included in XenForo.
+ * Inspired by the PayPal Callback included in XenForo.
  * You can remove this file if you uninstalled the Threema Gateway add-on.
  *
  * @package ThreemaGateway

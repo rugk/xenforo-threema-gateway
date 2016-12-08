@@ -17,9 +17,6 @@ class ThreemaGateway_CronEntry_CleanUp
      * This ensures that unnecessary meta data is deleted as afterwards also
      * the message ID is deleted so no one knows that the message has been
      * received.
-     * Disabling this is not critical, just your database gets filled up a bit
-     * more. If you disable this replay attacks can be prevented even if the
-     * Gateway server sends malicious data with wrong dates.
      *
      */
     public static function pruneOldDeletedMessages()
@@ -28,9 +25,22 @@ class ThreemaGateway_CronEntry_CleanUp
         $messageModel = XenForo_Model::create('ThreemaGateway_Model_Messages');
         $messageModel->setTimeLimit(null, ThreemaGateway_Helper_Message::getOldestPossibleReplayAttackDate(), 'date_received');
 
+        /** @var XenForo_Options $options */
+        $xenOptions = XenForo_Application::getOptions();
         // only need to test whether one attribute is invalid, all others are
-        // automatically invalid too unless something really went wrong
-        $messageModel->removeMetaData(['date_send IS NULL']);
+        // automatically invalid too unless something is really went wrong
+        /** @var array $condition */
+        $conditions = ['date_send IS NULL'];
+
+        // when the hardened mode is activated, only set receive date to "null"
+        if ($xenOptions->threema_gateway_harden_reply_attack_protection) {
+            // update all receive_dates with "null" to remove as much meta data
+            // as possible
+            $messageModel->removeMetaData($conditions, ['date_received']);
+        } else {
+            // remove whole data set
+            $messageModel->removeMetaData($conditions);
+        }
     }
 
     /**

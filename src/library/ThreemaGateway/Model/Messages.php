@@ -175,11 +175,11 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     }
 
     /**
-     * Sets the a time limit for what messages should be queried
+     * Sets the a time limit for what messages should be queried.
      *
-     * @param int|null $date_min oldest date of messages (optional)
-     * @param int|null $date_max latest date of messages (optional)
-     * @param string $attribute Set the atttribute to apply this to.
+     * @param int|null $date_min  oldest date of messages (optional)
+     * @param int|null $date_max  latest date of messages (optional)
+     * @param string   $attribute Set the atttribute to apply this to.
      */
     public function setTimeLimit($date_min = null, $date_max = null, $attribute = 'metamessage.date_send')
     {
@@ -510,26 +510,43 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     }
 
     /**
-     * Removes entries from the meta data message table.
+     * Removes entries or meta data fields from the meta data message table.
      *
      * Note that if the message(s) has/have other data saved in the database
-     * this will fail.
+     * the full deletion will fail.
      * Note: The number of where and params-options must be equal. You can
      * submit additional conditions with the first parameter.
      * Attention: This ignores the limit/offset clause for simplicity.
      *
      * @param array $additionalConditions Add additional where conditions if
      *                                    neccessary.
+     * @param array $removeOnlyField      When set only the passed fields are
+     *                                    updated to "null" rather than deleting
+     *                                    the whole record.
      */
-    public function removeMetaData(array $additionalConditions = [])
+    public function removeMetaData(array $additionalConditions = [], array $removeOnlyField = [])
     {
-        $this->_getDb()->delete(
-            ThreemaGateway_Model_Messages::DbTableMessages,
-            array_merge(array_combine(
-                $this->fetchOptions['where'], $this->fetchOptions['params']),
-                $additionalConditions
-            )
-        );
+        if ($removeOnlyField) {
+            $this->_getDb()->update(
+                self::DbTableMessages,
+                array_combine(
+                    $removeOnlyField,
+                    array_fill(0, count($removeOnlyField), null)
+                ),
+                array_merge(array_combine(
+                    $this->fetchOptions['where'], $this->fetchOptions['params']),
+                    $additionalConditions
+                )
+            );
+        } else {
+            $this->_getDb()->delete(
+                self::DbTableMessages,
+                array_merge(array_combine(
+                    $this->fetchOptions['where'], $this->fetchOptions['params']),
+                    $additionalConditions
+                )
+            );
+        }
     }
 
     /**
@@ -643,7 +660,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
             $this->fetchOptions['params'][] = $attValue;
         } else {
             $this->fetchOptions['where'][]  = $attName . ' IN (' . implode(', ', array_fill(0, count($attValue), '?')) . ')';
-            $this->fetchOptions['params']  += $attValue;
+            $this->fetchOptions['params'] += $attValue;
         }
     }
 }

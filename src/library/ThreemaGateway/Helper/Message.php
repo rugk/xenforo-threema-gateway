@@ -28,6 +28,14 @@ class ThreemaGateway_Helper_Message
             return true;
         }
 
+        /** @var XenForo_Options $options */
+        $xenOptions = XenForo_Application::getOptions();
+
+        // when the hardened mode is activated, always return true
+        if ($xenOptions->threema_gateway_harden_reply_attack_protection) {
+            return true;
+        }
+
         // if message has not been send at least 2 weeks ago (by default), it is attackable
         if ($messageMetaData['date_received'] >= self::getOldestPossibleReplayAttackDate()) {
             return true;

@@ -54,8 +54,8 @@ class ThreemaGateway_Handler_DbKeystore extends Threema\MsgApi\PublicKeyStore
      */
     public function savePublicKey($threemaId, $publicKey)
     {
-        $this->dataWriter->set('threemaid', $threemaId);
-        $this->dataWriter->set('publickey', $publicKey);
+        $this->dataWriter->set('threema_id', $threemaId);
+        $this->dataWriter->set('public_key', $publicKey);
         return $this->dataWriter->save();
     }
 

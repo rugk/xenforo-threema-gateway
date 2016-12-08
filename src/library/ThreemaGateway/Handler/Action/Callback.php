@@ -230,7 +230,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
                 $downloadPath
             );
         } catch (Exception $e) {
-            // as XenForo does not allow Exception chaining, we better log the exception right now
+            // as XenForo does not allow exception chaining, we better log the exception right now
             XenForo_Error::logException($e);
             throw new XenForo_Exception('Message cannot be processed: [' . get_class($e) . '] ' . $e->getMessage());
         }
@@ -335,7 +335,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         /** @var ThreemaGateway_Handler_Action_Receiver $receiver */
         $receiver = new ThreemaGateway_Handler_Action_Receiver(true, true);
 
-        // first check whether message has already been saved to prevent replay attacks
+        // check whether message has already been saved to prevent replay attacks
         if ($receiver->messageIsReceived($messageId)) {
             throw new Exception('Message "' . $messageId . '" has already been received and is already saved. This may indicate a replay attack.');
         }

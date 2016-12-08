@@ -96,6 +96,15 @@
 .threemagw_receivecallback_fakecharacter {
   opacity: 0;
 }]]></template>
+    <template title="threemagw_option_list_static_explain"><![CDATA[<xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
+	<xen:explain></xen:explain>
+	<xen:html>
+		<p>{xen:raw $preparedOption.explain}</p>
+		
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>]]></template>
     <template title="threemagw_option_list_status"><![CDATA[<xen:require css="threemagw_option_list_status.css" />
 
 <xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
@@ -247,13 +256,19 @@ e2e={xen:phrase option_threema_gateway_mode_e2e}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="120"/>
     </option>
+    <option option_id="threema_gateway_harden_reply_attack_protection" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="340"/>
+    </option>
     <option option_id="threema_gateway_httpshardening" edit_format="select" data_type="integer" can_backup="1">
       <default_value>1</default_value>
       <edit_format_params>0={xen:phrase option_threema_gateway_httpshardening_no}
 1={xen:phrase option_threema_gateway_httpshardening_basic}
 2={xen:phrase option_threema_gateway_httpshardening_enhanced}</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="240"/>
+      <relation group_id="threemagw" display_order="190"/>
     </option>
     <option option_id="threema_gateway_keystorefile" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_PhpKeyStorePath" validation_method="verifyOption">
       <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path";s:0:"";}</default_value>
@@ -263,7 +278,7 @@ type=textbox
 placeholder={xen:phrase threemagw_phpkeystore_example}</edit_format_params>
       <sub_options>enabled
 path</sub_options>
-      <relation group_id="threemagw" display_order="230"/>
+      <relation group_id="threemagw" display_order="240"/>
     </option>
     <option option_id="threema_gateway_logreceivedmsgs" edit_format="callback" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_DebugModeLog" validation_method="verifyOption">
       <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"path";s:45:"internal_data/threemagateway/receivedmsgs.log";}</default_value>
@@ -284,8 +299,14 @@ path</sub_options>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="170"/>
     </option>
+    <option option_id="threema_gateway_static_advanced_settings_warning" edit_format="template" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params>threemagw_option_list_static_explain</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="301"/>
+    </option>
     <option option_id="threema_gateway_status" edit_format="callback" data_type="boolean" can_backup="1">
-      <default_value>true</default_value>
+      <default_value>1</default_value>
       <edit_format_params>ThreemaGateway_Option_Status::renderHtml</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="1"/>
@@ -388,13 +409,13 @@ userfield</sub_options>
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="310"/>
+      <relation group_id="threemagw" display_order="220"/>
     </option>
     <option option_id="threema_gateway_usesource" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="220"/>
+      <relation group_id="threemagw" display_order="230"/>
     </option>
     <option option_id="threema_gateway_verify_receive_time" edit_format="onofftextbox" data_type="array" can_backup="1" validation_class="ThreemaGateway_Option_VerifyReceiveTime" validation_method="verifyOption">
       <default_value>a:2:{s:7:"enabled";s:1:"0";s:4:"time";s:0:"";}</default_value>
@@ -432,12 +453,17 @@ time</sub_options>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
     <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the two-factor-authentication modes of the Threema Gateway. Please note that the general Threema Gateway settings must be configured before.]]></phrase>
     <phrase title="option_threema_gateway_allow_get_receive" version_id="2" version_string="0.2.0"><![CDATA[Allow GET requests when receiving messages (debug mode)]]></phrase>
-    <phrase title="option_threema_gateway_allow_get_receive_explain" version_id="2" version_string="0.2.0"><![CDATA[Usually the Gateway server only sends data via POST request. This option also allows GET requests, which may be useful for debugging.]]></phrase>
+    <phrase title="option_threema_gateway_allow_get_receive_explain" version_id="2" version_string="0.2.0"><![CDATA[Usually the Gateway server only sends data via POST request. This option also allows GET requests, which may be useful for debugging.<br>
+<b>Note:</b> For security reasons this setting is ignored when XenForo is not running in debug mode.]]></phrase>
     <phrase title="option_threema_gateway_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[Download path for files]]></phrase>
     <phrase title="option_threema_gateway_downloadpath_explain" version_id="1" version_string="0.1.0"><![CDATA[This is the path where files send to your ID should be saved (in decrypted form!). When no path is given the files are not downloaded (not recommend!). The path must be relative to the XenForo root.]]></phrase>
     <phrase title="option_threema_gateway_e2e" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
     <phrase title="option_threema_gateway_e2e_explain" version_id="1" version_string="0.1.0"><![CDATA[Select the mode you chose when setting up your Threema ID. Without the end-to-end encrypted mode many options may not be available.]]></phrase>
-    <phrase title="option_threema_gateway_httpshardening" version_id="1" version_string="0.1.0"><![CDATA[Hardened HTTPS connection (recommend)]]></phrase>
+    <phrase title="option_threema_gateway_harden_reply_attack_protection" version_id="2" version_string="0.2.0"><![CDATA[Harden replay attack protection]]></phrase>
+    <phrase title="option_threema_gateway_harden_reply_attack_protection_explain" version_id="2" version_string="0.2.0"><![CDATA[If you are concerned that the Threema server could trick you into maliciously re-delivering you a message, which has already be delivered tick this option.
+When enabled this may store more data in your database than when it is disabled.<br>
+A strong replay-attack protection is always used, so it is not necessary to enable this option. More information can <a href="https://SOMEWHERE-TODO-" target="_blank">can be found in the FAQ</a>.]]></phrase>
+    <phrase title="option_threema_gateway_httpshardening" version_id="2" version_string="0.2.0"><![CDATA[Harden HTTPS connection (recommend)]]></phrase>
     <phrase title="option_threema_gateway_httpshardening_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic hardening]]></phrase>
     <phrase title="option_threema_gateway_httpshardening_enhanced" version_id="1" version_string="0.1.0"><![CDATA[Enhanced hardening]]></phrase>
     <phrase title="option_threema_gateway_httpshardening_explain" version_id="1" version_string="0.1.0"><![CDATA[When sending messages this prevents fallback attacks on the TLS/HTTPS connection by limiting the TLS version and ciphers to modern ones.
@@ -459,6 +485,8 @@ For security reasons this setting <b>is ignored</b> when XenForo is not running 
     <phrase title="option_threema_gateway_receivecallback" version_id="1" version_string="0.1.0"><![CDATA[Callback for Threema Gateway server]]></phrase>
     <phrase title="option_threema_gateway_receivecallback_explain" version_id="1" version_string="0.1.0"><![CDATA[Here you can find your callback URL for the Threema Gateway server, which you need for receiving messages. The access token you can change here should be a random string.
 It has been randomly generated at the installation of this add-on. You can regenerate it by leaving this field empty.]]></phrase>
+    <phrase title="option_threema_gateway_static_advanced_settings_warning" version_id="2" version_string="0.2.0"><![CDATA[Advanced options]]></phrase>
+    <phrase title="option_threema_gateway_static_advanced_settings_warning_explain" version_id="2" version_string="0.2.0"><![CDATA[<b>Warning:</b> Below special settings for advanced users are listed! It is generally not recommend nor required to change them. <b>Only change them if you know what you are doing!</b>]]></phrase>
     <phrase title="option_threema_gateway_status" version_id="1" version_string="0.1"><![CDATA[Status]]></phrase>
     <phrase title="option_threema_gateway_status_credits" version_id="1" version_string="0.1"><![CDATA[Remaining credits: <b>{credits}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_credits_error" version_id="1" version_string="0.1.0"><![CDATA[There was an error when fetching credits. You probably have entered an incorrect Threema Gateway ID or secret. There could also have been a connection error.]]></phrase>
@@ -619,7 +647,7 @@ Acknowledge this message to allow the request.
 {board_url}]]></phrase>
     <phrase title="tfa_threemagw_fast_validation_time" version_id="2" version_string="0.2.0"><![CDATA[You have {validationTime} to do so.]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies" version_id="2" version_string="0.2.0"><![CDATA[I like Emojis!]]></phrase>
-    <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only, if you like emoticons/smileys.]]></phrase>
+    <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only if you like emoticons/smileys.]]></phrase>
     <phrase title="tfa_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[Threema - Reversed]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_text" version_id="2" version_string="0.2.0"><![CDATA[Send message]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_tooltip" version_id="2" version_string="0.2.0"><![CDATA[Send code via your mobile device]]></phrase>
