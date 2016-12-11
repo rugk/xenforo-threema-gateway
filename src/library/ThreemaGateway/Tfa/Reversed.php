@@ -136,7 +136,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             'data' => $providerData,
             'trigger' => $triggerData,
             'context' => $context,
-            'validationTime' => $this->parseValidationTime($providerData['validationTime']),
+            'validationTime' => $this->parseTime($providerData['validationTime']),
             'gatewayid' => $this->gatewaySettings->getId()
         ];
         return $view->createTemplateObject('two_step_threemagw_reversed', $params)->render();

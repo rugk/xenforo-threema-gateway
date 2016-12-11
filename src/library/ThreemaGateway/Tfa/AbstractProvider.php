@@ -699,7 +699,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * @param  int    $minutes
      * @return string
      */
-    final protected function parseValidationTime($minutes)
+    final protected function parseTime($minutes)
     {
         /** @var string $vadilityTimeDisplay */
         $vadilityTimeDisplay = floor($minutes / 60);

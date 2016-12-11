@@ -109,7 +109,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
             'code' => $code,
             'user' => $user['username'],
             'ip' => $ip,
-            'validationTime' => $this->parseValidationTime($providerData['validationTime']),
+            'validationTime' => $this->parseTime($providerData['validationTime']),
             'board' => $options->boardTitle,
             'board_url' => $options->boardUrl
         ]);

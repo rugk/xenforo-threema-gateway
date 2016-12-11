@@ -76,4 +76,27 @@ class ThreemaGateway_Helper_General
         }
         return $censorstr . $orgstr[1];
     }
+
+    /**
+     * Rounds a given timestamp (unix time) to the day.
+     *
+     * @param int $time
+     * @param bool $roundUp set to true to round up to the next day
+     *
+     * @return int
+     */
+    public static function roundToDate($time, $roundUp = false)
+    {
+        // calculate days and rund down to previous day time
+        /** @var int $days */
+        $days = floor($time / 60 / 60 / 24);
+
+        // round up if needed
+        if ($roundUp) {
+            $days += 1;
+        }
+
+        // calculate seconds again
+        return $days * 24 * 60 * 60;
+    }
 }

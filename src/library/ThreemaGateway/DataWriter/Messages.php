@@ -494,7 +494,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         }
 
         // round unix time to day (00:00)
-        $receiveDate = floor($receiveDate / 60 / 60 / 24) * 24 * 60 * 60;
+        $receiveDate = ThreemaGateway_Helper_General::roundToDate($receiveDate);
 
         return (int) $receiveDate;
     }

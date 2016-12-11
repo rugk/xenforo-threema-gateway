@@ -35,17 +35,16 @@ The random code must not be taken as a secret here as the authentication is most
 
 ## Fast login
 **Pro:** Very convenient and fast to use  
-**Contra:** Security depends on user (not secret code)
+**Contra:** Security depends on user (invisible 'secret')
 
 The user gets a message telling them a user requested to login. They can now accept or decline the message. If the message is accepted the user is granted access.  
 This is the most convenient mode for the user, but it does not depend on a secret code anymore. Similar methods are used for Twitter and Microsoft's 2FA, but they use their own apps for this.
 
 ![fast login sketch: server sends message to user, user acknowledges or declines it](images/FastLogin.svg)
 
-This is secure, because here the message ID acts as a secret only known to the server and the client. This secret is never transfered outside of the Threema network. Nevertheless the security of the system does not depend on this secret.  
+This is secure, because here the message ID acts as a secret only known to the server and the client. This secret is never transfered outside of the Threema network or the forum sever itself. Nevertheless the security of the system does not depend on this secret.  
 By acknowledging a message the client creates an authenticated and end-to-end-encrypted message stating that the previously received message ID (and therefore the message) has been acknowledged. As the message asks the question whether to allow login this is a cryptographic proof of the users decicion and can therefore be validated by the server.
 
-The security mostly depends on how the user can estimate the vadility of the login request. An attacker could try to login at the same time and trick the user into acknowledging the wrong message.
-There is also the chance that a user accidentially ackknowledges the wrong message by choosing the wrong button, which immediately and non-revocably permits the login.
+The security mostly depends on how the user can estimate the vadility of the login request (which includes the IP address). An attacker could try to login at the same time and trick the user into acknowledging the wrong message.
 
 As an extra with this method users can explicitly state that the login access was unwanted (by declining a message). This allows one to execute different actions when this happens, such as banning the IP/user, who tried to login.

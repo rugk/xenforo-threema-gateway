@@ -616,6 +616,19 @@ If you did not initiate this request, you should decline this message instead an
 Thanks,
 {board}
 {board_url}]]></phrase>
+    <phrase title="tfa_threemagw_fast_message_blocked" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 Login access blocked!
+
+\u26A0 *Important* *message!*
+
+Hi {user},
+a user with the *IP* *{ip}* tried to login (again) with the Threema Fast 2FA mode.
+
+This was blocked as the user has previously been blocked as you denied a login request.
+In case you did this accidentally you have to wait until the block is lifted.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
     <phrase title="tfa_threemagw_fast_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
 *IP* *{ip}* tried to login as _{user}_.
 
@@ -638,6 +651,19 @@ If you did not initiate this request, you should decline this message instead an
 Thanks,
 {board}
 {board_url}]]></phrase>
+    <phrase title="tfa_threemagw_fast_setup_message_blocked" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 2FA activation access blocked!
+
+\u26A0 *Important* *message!*
+
+Hi {user},
+a user with the *IP* *{ip}* tried to activate the Threema Fast 2FA mode.
+
+This was blocked as the user has previously been blocked as you denied a login request.
+In case you did this accidentally you have to wait until the block is lifted. You can afterwards confirm this message to activate the 2FA mode.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
     <phrase title="tfa_threemagw_fast_setup_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
 *IP* *{ip}* tried to activate the 2FA mode as _{user}_.
 
@@ -645,9 +671,27 @@ Acknowledge this message to allow the request.
 
 {board}
 {board_url}]]></phrase>
+    <phrase title="tfa_threemagw_fast_user_banned" version_id="2" version_string="0.2.0"><![CDATA[2FA login violation]]></phrase>
     <phrase title="tfa_threemagw_fast_validation_time" version_id="2" version_string="0.2.0"><![CDATA[You have {validationTime} to do so.]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies" version_id="2" version_string="0.2.0"><![CDATA[I like Emojis!]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only if you like emoticons/smileys.]]></phrase>
+    <phrase title="tfa_threemagw_message_blocked_general" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 Login access blocked!
+
+Hi {user},
+as you declined the login message, the user with the *IP* *{ip}* has been prevented from accessing your account.
+
+{blockActions}
+
+\uD83D\uDC49 In case you did this accidentally you can still *change* the status of the (previous) *login* *request* *message* to
+    \uD83D\uDC4D accept
+to allow the login.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
+    <phrase title="tfa_threemagw_message_blocked_ip" version_id="2" version_string="0.2.0"><![CDATA[The IP has been banned permanently.]]></phrase>
+    <phrase title="tfa_threemagw_message_blocked_login" version_id="2" version_string="0.2.0"><![CDATA[The 2FA login method has been blocked for {blockTime}.]]></phrase>
+    <phrase title="tfa_threemagw_message_blocked_user" version_id="2" version_string="0.2.0"><![CDATA[The user account has been banned for {blockTime}.]]></phrase>
     <phrase title="tfa_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[Threema - Reversed]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_text" version_id="2" version_string="0.2.0"><![CDATA[Send message]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_tooltip" version_id="2" version_string="0.2.0"><![CDATA[Send code via your mobile device]]></phrase>
@@ -697,6 +741,7 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_phpkeystore_example" version_id="1" version_string="0.1.0"><![CDATA[keystore.php]]></phrase>
     <phrase title="threemagw_privatekeyfile_example" version_id="1" version_string="0.1.0"><![CDATA[privateKey.txt]]></phrase>
     <phrase title="threemagw_sending_failed" version_id="1" version_string="0.1.0"><![CDATA[Sending message failed.]]></phrase>
+    <phrase title="threemagw_tfa_user_banned" version_id="2" version_string="0.2.0"><![CDATA[2FA login failure]]></phrase>
     <phrase title="threemagw_this_tfa_mode_is_not_setup" version_id="2" version_string="0.2.0"><![CDATA[This 2FA mode has not been setup correctly.]]></phrase>
     <phrase title="threemagw_threemaid" version_id="1" version_string="0.1.0"><![CDATA[Threema ID]]></phrase>
     <phrase title="threemagw_threema_id_does_not_exist" version_id="1" version_string="0.1"><![CDATA[Threema ID does not exist.]]></phrase>
