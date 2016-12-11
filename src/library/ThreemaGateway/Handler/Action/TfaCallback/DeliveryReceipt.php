@@ -141,7 +141,7 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
                 continue;
             }
 
-            $this->log('Found acknowledged message ID ' . $ackedMsgId . ' of the in delivery message.');
+            $this->log('Found acknowledged message ID ' . $ackedMsgId . ' of pending request in delivery message.');
 
             // save data
             try {
@@ -172,6 +172,7 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
      * Checks whether the previously saved receipt type is smaller than the
      * one got currently.
      *
+     * @param array $confirmRequest the confirm request
      * @param array $oldProviderData old data read
      * @param array $setData         new data to set
      * @param array $processOptions  custom options (optional)
@@ -179,13 +180,50 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
      * @throws XenForo_Exception
      * @return bool
      */
-    protected function preSaveData(array &$oldProviderData, array &$setData, array $processOptions = [])
+    protected function preSaveData(array $confirmRequest, array &$oldProviderData, array &$setData, array $processOptions = [])
     {
+        // save largest delivery receipt
         if ($processOptions['saveKeyReceiptTypeLargest']) {
+            // if current receipt is smaller than all previous ones
             if (!isset($oldProviderData[$processOptions['saveKeyReceiptTypeLargest']]) ||
                 $oldProviderData[$processOptions['saveKeyReceiptTypeLargest']] < $this->receiptType
             ) {
                 $setData[$processOptions['saveKeyReceiptTypeLargest']] = $this->receiptType;
+            }
+        }
+
+        return true;
+    }
+    /**
+     * Calls 2FA provider verification if it could do some blocking.
+     *
+     * @param array $confirmRequest the confirm request
+     * @param array $providerData   merged provider data
+     * @param array $processOptions custom options (optional)
+     *
+     * @throws XenForo_Exception
+     * @return bool
+     */
+    protected function preSaveDataMerged(array $confirmRequest, array &$providerData, array $processOptions = [])
+    {
+        // if it is a decline message, let it check by the 2FA provider to
+        // potentially ban or block users
+        if ($processOptions['tfaProviderCallbackOnDecline'] && $this->receiptType === 4) {
+            $this->log('Detected decline receipt type. Calling 2FA provider now to execute potential banning actions.');
+
+            /** @var ThreemaGateway_Tfa_AbstractProvider $tfaProvider */
+            $tfaProvider = new $processOptions['tfaProviderCallbackOnDecline']($processOptions['tfaProviderId']);
+            $tfaProvider->thisIsSpecialGatewayCallback();
+
+            // call original verification
+            if ($tfaProvider->verifyFromInput(
+                'callback',
+                $this->callback->getInput(),
+                $this->getUserData($confirmRequest['user_id']),
+                $providerData
+            )) {
+                // it is unexpected to succeed (because of the delivery receipt), so if this happens we need to log this
+                $this->log('Unexpected error: For some strange reason, the callback verification succeeded.');
             }
         }
 

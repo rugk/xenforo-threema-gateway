@@ -87,7 +87,7 @@ class ThreemaGateway_Helper_General
      */
     public static function roundToDate($time, $roundUp = false)
     {
-        // calculate days and rund down to previous day time
+        // calculate days and round down to previous day time
         /** @var int $days */
         $days = floor($time / 60 / 60 / 24);
 

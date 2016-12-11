@@ -432,6 +432,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             if (!$this->permissions->hasPermission('receive')) {
                 throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
             }
+
             $this->isPermissionChecked = true;
         }
 
@@ -439,6 +440,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             /** @var ThreemaGateway_Model_Messages $model */
             $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
             $model->preQuery();
+
             $this->isPrepared = true;
         }
     }

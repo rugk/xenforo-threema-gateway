@@ -52,6 +52,16 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     protected $gatewaySender;
 
     /**
+     * Special variable stating that the provider has been called irregularely
+     * from the Threema Gateway Callback.
+     *
+     * This can be set with {@see isSpecialGatewayCallback()}.
+     *
+     * @var bool
+     */
+    protected $isSpecialReceiverCallback = false;
+
+    /**
      * Create provider.
      *
      * @param string $id Provider id
@@ -63,6 +73,15 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         $this->gatewaySettings    = new ThreemaGateway_Handler_Settings;
         $this->gatewayServer      = new ThreemaGateway_Handler_Action_GatewayServer;
         $this->gatewaySender      = new ThreemaGateway_Handler_Action_Sender;
+    }
+
+    /**
+     * When called this states that this provider has been called from the
+     * Threema Gateway server called.
+     */
+    public function thisIsSpecialGatewayCallback()
+    {
+        $this->isSpecialReceiverCallback = true;
     }
 
     /**
@@ -472,6 +491,11 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         // parse message
         $messageText = $xenPhrase->render();
         $messageText = ThreemaGateway_Helper_Emoji::parseUnicode($messageText);
+
+        // skip permission check if called from Gateway callback
+        if ($this->isSpecialReceiverCallback) {
+            $this->gatewaySender->skipPermissionCheck();
+        }
 
         // send message
         return $this->gatewaySender->sendAuto($receiverId, $messageText);

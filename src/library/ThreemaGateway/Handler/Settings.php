@@ -254,4 +254,14 @@ class ThreemaGateway_Handler_Settings
     {
         return ThreemaGateway_Helper_Key::check($privateKey, 'private:');
     }
+
+    /**
+     * Convert object to string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return __CLASS__ . ' of ' . $this->GatewayId;
+    }
 }

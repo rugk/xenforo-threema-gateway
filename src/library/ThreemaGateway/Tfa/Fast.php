@@ -92,7 +92,6 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         // whether the login is still blocked right now
         if ($this->userIsBlocked($providerData, true)) {
             $isBlocked = true;
-            // set notification if enable
             if (!$providerData['blockedNotification']) {
                 // skip message sending
                 // This is not recommend as it makes the whole request faster,
@@ -164,8 +163,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-     * Called when trying to verify user. Checks whether the code was received
-     * from the Threema Gateway callback.
+     * Called when trying to verify user. Checks whether the delivery receipt was received
+     * from the Threema Gateway callback and acknowledges the message.
      *
      * @param string $context
      * @param array  $input
@@ -208,13 +207,17 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             return false;
         }
 
-        // assure that the current receipt message is *not* a decline message
+        // assure that the current delivery receipt is *not* a decline message
         if ($providerData['receivedDeliveryReceipt'] === 4) {
-            // take more drastic steps if it is
+            // take more drastic steps if it the user explicitly disallowed access
             $this->handleMessageDecline($providerData, $user);
-            // manually need to save provider data as when verification fails this is not done by default
-            $tfaModel = XenForo_Model::create('XenForo_Model_Tfa');
-            $tfaModel->updateUserProvider($user['user_id'], $this->_providerId, $providerData, true);
+            if ($context == 'login') {
+                // manually need to save provider data as when verification fails this is not done by default
+                $tfaModel = XenForo_Model::create('XenForo_Model_Tfa');
+                $tfaModel->updateUserProvider($user['user_id'], $this->_providerId, $providerData, true);
+                // usually this part of the code should never be reached as the callback/receiver
+                // triggers this check and saves the resulting provider data in any case
+            }
             return false; // and fail silently
         }
 
@@ -405,7 +408,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      * Handles the actions when a user declines a received message.
      *
      * It can block the login for some time, ban the user temporarily or even
-     * block the IP permanently.
+     * ban the IP permanently.
      *
      * @param array $providerData
      * @param array $user aray of user data
@@ -454,6 +457,10 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         }
 
         // send notification message
+        if (!$providerData['blockedNotification']) {
+            return;
+        }
+
         /** @var string $blockActions description of actions taken */
         $blockActions = '';
 

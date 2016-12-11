@@ -158,7 +158,12 @@
 </dl>]]></template>
     <template title="two_step_threemagw_fast"><![CDATA[<p>
 	{xen:phrase tfa_threemagw_fast_please_confirm_message, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
-</p>]]></template>
+</p>
+
+<xen:comment>
+	display of validation time currently disabled as it is really high by default and displaying it would be useless
+	<p>{xen:phrase tfa_threemagw_fast_validation_time, 'validationTime={$validationTime}'}</p>
+</xen:comment>]]></template>
     <template title="two_step_threemagw_reversed"><![CDATA[<xen:require css="threemagw.css" />
 <xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />
 <xen:require js="js/ThreemaGateway/threematfa.js" />
@@ -358,13 +363,13 @@ userfield</sub_options>
       <relation group_id="threemagw_tfa" display_order="330"/>
     </option>
     <option option_id="threema_gateway_tfa_fast_validation" edit_format="spinbox" data_type="positive_integer" can_backup="1">
-      <default_value>3</default_value>
+      <default_value>60</default_value>
       <edit_format_params>min=1</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="310"/>
     </option>
     <option option_id="threema_gateway_tfa_fast_validation_setup" edit_format="spinbox" data_type="positive_integer" can_backup="1">
-      <default_value>10</default_value>
+      <default_value>60</default_value>
       <edit_format_params>min=1</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="315"/>
@@ -533,10 +538,10 @@ It is useful that this value is a bit higher than the previous one, to give the 
     <phrase title="option_threema_gateway_tfa_fast_show_qr_code_explain" version_id="2" version_string="0.2.0"><![CDATA[When enabled this suggests the user to scan the QR code of the Gateway ID. As you usually cannot meet a Gateway ID in person anyway, it is reasonable to offer this.<br>
 <b>Note:</b> For security reasons this option is always ignored when HTTPS is not used.]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_validation" version_id="2" version_string="0.2.0"><![CDATA[Validation time]]></phrase>
-    <phrase title="option_threema_gateway_tfa_fast_validation_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the message should be able to be confirmed. (in minutes)]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_validation_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the message should be able to confirm or decline the message. (in minutes)<br>
+The default time limit is so high (compared with the other 2FA modes) as here a long expiration limit does not decrease the security (as the message ID as a stronger secret is used in this mode) and as the expiration limit here also limits the time a user can at maximum decline the message to block a potential (malicious) intruder. Thus it is actually useful to specify a high limit here.]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_validation_setup" version_id="2" version_string="0.2.0"><![CDATA[Validation time when setting up]]></phrase>
-    <phrase title="option_threema_gateway_tfa_fast_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the message should be able to be confirmed when setting up the 2FA method. (in minutes)<br>
-It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the message should be able to confirm or decline the message when setting up the 2FA method. (in minutes)]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed" version_id="2" version_string="0.2.0"><![CDATA[Activate reversed mode]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_explain" version_id="2" version_string="0.2.0"><![CDATA[Allow users to use the "Reversed" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_show_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Show QR code of Gateway ID]]></phrase>
@@ -683,14 +688,14 @@ as you declined the login message, the user with the *IP* *{ip}* has been preven
 {blockActions}
 
 \uD83D\uDC49 In case you did this accidentally you can still *change* the status of the (previous) *login* *request* *message* to
-    \uD83D\uDC4D accept
+    \uD83D\uDC4D acknowledge
 to allow the login.
 
 Thanks,
 {board}
 {board_url}]]></phrase>
     <phrase title="tfa_threemagw_message_blocked_ip" version_id="2" version_string="0.2.0"><![CDATA[The IP has been banned permanently.]]></phrase>
-    <phrase title="tfa_threemagw_message_blocked_login" version_id="2" version_string="0.2.0"><![CDATA[The 2FA login method has been blocked for {blockTime}.]]></phrase>
+    <phrase title="tfa_threemagw_message_blocked_login" version_id="2" version_string="0.2.0"><![CDATA[This 2FA login method has been blocked for {blockTime}.]]></phrase>
     <phrase title="tfa_threemagw_message_blocked_user" version_id="2" version_string="0.2.0"><![CDATA[The user account has been banned for {blockTime}.]]></phrase>
     <phrase title="tfa_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[Threema - Reversed]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_text" version_id="2" version_string="0.2.0"><![CDATA[Send message]]></phrase>
@@ -1152,7 +1157,10 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 	{xen:phrase tfa_threemagw_fast_please_confirm_message, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
 </p>
 
-<p>{xen:phrase tfa_threemagw_fast_validation_time, 'validationTime={$validationTime}'}</p>
+<xen:comment>
+	display of validation time currently disabled as it is really high by default and displaying it would be useless
+	<p>{xen:phrase tfa_threemagw_fast_validation_time, 'validationTime={$validationTime}'}</p>
+</xen:comment>
 
 <xen:comment>main content end</xen:comment>
 

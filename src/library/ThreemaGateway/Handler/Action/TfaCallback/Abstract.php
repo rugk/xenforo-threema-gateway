@@ -197,7 +197,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      * Verifies & saves data for one confirm request.
      *
      * Returns "false" if the process should be canceled. Otherwise "true".
-     * Childs should call the parent here as the things done in this class are
+     * childs should call the parent here as the things done in this class are
      * essential!
      *
      * @throws XenForo_Exception
@@ -241,7 +241,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
     }
 
     /**
-     * Returns the user array.
+     * Returns the log and save message data you passed to this class when initiating.
      *
      * This should be called at least once at the end as this is the only way
      * to update the log and save message values.
@@ -295,6 +295,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      *
      * Returns "false" if the process should be canceled. Otherwise "true".
      *
+     * @param array $confirmRequest  the confirm request
      * @param array $oldProviderData old data read
      * @param array $setData         new data to set
      * @param array $processOptions  custom options (optional)
@@ -302,7 +303,42 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      * @throws XenForo_Exception
      * @return bool
      */
-    protected function preSaveData(array &$oldProviderData, array &$setData, array $processOptions = [])
+    protected function preSaveData(array $confirmRequest, array &$oldProviderData, array &$setData, array $processOptions = [])
+    {
+        return true;
+    }
+
+    /**
+     * Handles the already merged provider data.
+     *
+     * Returns "false" if the process should be canceled. Otherwise "true".
+     *
+     * @param array $confirmRequest the confirm request
+     * @param array $providerData   merged provider data
+     * @param array $processOptions custom options (optional)
+     *
+     * @throws XenForo_Exception
+     * @return bool
+     */
+    protected function preSaveDataMerged(array $confirmRequest, array &$providerData, array $processOptions = [])
+    {
+        return true;
+    }
+
+    /**
+     * Does some stuff with the data after it has been saved.
+     *
+     * Returns "false" if the process should be canceled. Otherwise "true".
+     *
+     * @param array $confirmRequest the confirm request
+     * @param array $providerData   old data read
+     * @param array $setData        new data to set
+     * @param array $processOptions custom options (optional)
+     *
+     * @throws XenForo_Exception
+     * @return bool
+     */
+    protected function postSaveData(array $confirmRequest, array &$providerData, array $processOptions = [])
     {
         return true;
     }
@@ -359,7 +395,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
         /** @var ThreemaGateway_Model_TfaPendingMessagesConfirmation $pendingRequestsModel */
         $pendingRequestsModel = $this->getModelFromCache('ThreemaGateway_Model_TfaPendingMessagesConfirmation');
 
-        /** @var array|null $pendingRequests all pending requets if there are some */
+        /** @var array|null $pendingRequests all pending requests if there are some */
         $pendingRequests = $pendingRequestsModel->getPending(
             $this->callback->getRequest('from'),
             null,
@@ -458,12 +494,16 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
             }
         }
 
-        if (!$this->preSaveData($providerData, $setData, $processOptions)) {
+        if (!$this->preSaveData($confirmRequest, $providerData, $setData, $processOptions)) {
             throw new Exception('preSaveData() returned an error and prevented data saving.');
         }
 
         // merge the data with the original provider data
         $providerData = array_merge($providerData, $setData);
+
+        if (!$this->preSaveDataMerged($confirmRequest, $providerData, $processOptions)) {
+            throw new Exception('preSaveDataMerged() returned an error and prevented data saving.');
+        }
 
         // and save the data
         try {
@@ -480,6 +520,10 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
             $confirmRequest['provider_id'] . ' for user ' .
             $confirmRequest['user_id'] . ' for session ' .
             $confirmRequest['session_id']);
+
+        if (!$this->postSaveData($confirmRequest, $providerData, $processOptions)) {
+            throw new Exception('postSaveData() returned an error.');
+        }
     }
 
     /**

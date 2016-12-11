@@ -367,6 +367,20 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     }
 
     /**
+     * Returns the original input.
+     *
+     * It is strongly discouraghed to use this and better use {@see getRequest()}
+     * as this data is already filtered.
+     * In general you should have few real reasons to get this RAW data.
+     *
+     * @return XenForo_Input
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    /**
      * Returns an array with a not so detailed[2] and a very detailed[1] log
      * of the received message.
      *

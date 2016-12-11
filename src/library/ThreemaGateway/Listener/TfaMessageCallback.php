@@ -72,7 +72,7 @@ class ThreemaGateway_Listener_TfaMessageCallback
 
         $tfaCallback->getReferencedData($output, $saveMessage);
         if ($isError) {
-            $handler->addLog($output, 'checkForReceiverCode() finished with an error.');
+            $handler->addLog($output, __METHOD__ . ' finished with an error. No receiver code message detected.');
         }
         return;
     }
@@ -113,9 +113,11 @@ class ThreemaGateway_Listener_TfaMessageCallback
 
             if ($tfaCallback->applyFilters()) {
                 if ($tfaCallback->processPending([
-                    'saveKey'                   => 'receivedCode',
-                    'saveKeyReceiptType'        => 'receivedDeliveryReceipt',
-                    'saveKeyReceiptTypeLargest' => 'receivedDeliveryReceiptLargest'
+                    'saveKey'                      => 'receivedCode',
+                    'saveKeyReceiptType'           => 'receivedDeliveryReceipt',
+                    'saveKeyReceiptTypeLargest'    => 'receivedDeliveryReceiptLargest',
+                    'tfaProviderCallbackOnDecline' => 'ThreemaGateway_Tfa_Fast',
+                    'tfaProviderId'                => ThreemaGateway_Constants::TfaIDprefix . '_fast',
                 ])) {
                     $isError = false;
                 }
@@ -124,7 +126,7 @@ class ThreemaGateway_Listener_TfaMessageCallback
 
         $tfaCallback->getReferencedData($output, $saveMessage);
         if ($isError) {
-            $handler->addLog($output, 'checkForDeliveryReceipt() finished with an error.');
+            $handler->addLog($output, __METHOD__ . ' finished with an error. No delivery receipt of 2FA mode');
         }
         return;
     }
