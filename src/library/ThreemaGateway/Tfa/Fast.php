@@ -49,7 +49,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-     * Called when trying to verify user. Creates code and registers callback
+     * Called when trying to verify user. Creates secret and registers callback
      * request.
      *
      * @param  string $context
@@ -124,9 +124,9 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         /** @var int $messageId */
         $messageId = $this->sendMessage($providerData['threemaid'], $message);
 
-        // save message ID as code here!
-        $providerData['code']          = $messageId;
-        $providerData['codeGenerated'] = XenForo_Application::$time;
+        // save message ID as secret here
+        $providerData['secret']          = $messageId;
+        $providerData['secretGenerated'] = XenForo_Application::$time;
 
         // register message request for Threema callback
         $this->registerPendingConfirmationMessage(
@@ -140,8 +140,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-     * Called when trying to verify user. Shows code, so user can send it via
-     * Threema.
+     * Called when trying to verify user. Shows only the request to confirm
+     * the message.
      *
      * @param  XenForo_View $view
      * @param  string       $context
@@ -180,13 +180,18 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::verifyFromInput($context, $input, $user, $providerData);
 
-        // assure that code has not expired yet
-        if (!$this->verifyCodeTiming($providerData)) {
+        // let errors pass through
+        if (!$result) {
+            return $result;
+        }
+
+        // assure that secret has not expired yet
+        if (!$this->verifySecretIsInTime($providerData)) {
             return false;
         }
 
-        // assure that code has been received at all
-        if (!isset($providerData['receivedCode'])) {
+        // assure that secret has been received at all
+        if (!isset($providerData['receivedSecret'])) {
             return false;
         }
         if (!isset($providerData['receivedDeliveryReceipt'])) {
@@ -194,12 +199,12 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         }
 
         // prevent replay attacks
-        if (!$this->verifyCodeReplay($providerData, $providerData['receivedCode'])) {
+        if (!$this->verifyNoReplayAttack($providerData, $providerData['receivedSecret'])) {
             return false;
         }
 
-        // assure that the code is the same as required
-        if (!$this->stringCompare($providerData['code'], $providerData['receivedCode'])) {
+        // assure that the secret is the same as required
+        if (!$this->stringCompare($providerData['secret'], $providerData['receivedSecret'])) {
             return false;
         }
 
@@ -232,7 +237,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             return false;
         }
 
-        $this->updateReplayCheckData($providerData, $providerData['receivedCode']);
+        $this->updateReplayCheckData($providerData, $providerData['receivedSecret']);
 
         // unregister confirmation
         $this->unregisterPendingConfirmationMessage(
@@ -264,6 +269,11 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     {
         /** @var array $providerData */
         $providerData = parent::verifySetupFromInput($input, $user, $error);
+
+        // let errors pass through
+        if (!$providerData) {
+            return $providerData;
+        }
 
         /** @var XenForo_Options $xenOptions */
         $xenOptions = XenForo_Application::getOptions();
@@ -377,8 +387,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::resetProviderOptionsForTrigger($context, $providerData);
 
-        if (isset($providerData['receivedCode'])) {
-            unset($providerData['receivedCode']);
+        if (isset($providerData['receivedSecret'])) {
+            unset($providerData['receivedSecret']);
         }
         if (isset($providerData['receivedDeliveryReceipt'])) {
             unset($providerData['receivedDeliveryReceipt']);
@@ -434,7 +444,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         // exception: ignore blocking if the message ID is the same and the
         // delivery receipt is not a decline message (which would cause
         // another blocking)
-        if ($this->stringCompare($providerData['blockedBy'], $providerData['code']) &&
+        if ($this->stringCompare($providerData['blockedBy'], $providerData['secret']) &&
             $providerData['receivedDeliveryReceipt'] !== 4
         ) {
             // this makes it possible to 'correct' a possible wrong tap on 'decline'
@@ -478,7 +488,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         ) {
             // ban this 2FA method
             $providerData['blocked'] = true;
-            $providerData['blockedBy'] = $providerData['code'];
+            $providerData['blockedBy'] = $providerData['secret'];
             $providerData['blockedUntil'] = XenForo_Application::$time + $blockingTime;
 
             // append to action list

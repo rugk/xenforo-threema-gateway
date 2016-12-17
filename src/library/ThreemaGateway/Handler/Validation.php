@@ -15,7 +15,7 @@ class ThreemaGateway_Handler_Validation
      *
      * @param  string         $threemaid      The Threema ID to check.
      * @param  string         $type           The type of the Threema ID (personal, gateway, any)
-     * @param  XenForo_Phrase $error
+     * @param  string         $error
      * @param  bool           $checkExistence Whether not only formal aspects should
      *                                        be checked, but also the existence of the ID.
      * @return bool
@@ -26,7 +26,7 @@ class ThreemaGateway_Handler_Validation
 
         // check whether an id is formally correct
         if (!preg_match('/' . ThreemaGateway_Constants::RegExThreemaId[$type] . '/', $threemaid)) {
-            $error = new XenForo_Phrase('threemagw_invalid_threema_id');
+            $error = (new XenForo_Phrase('threemagw_invalid_threema_id'))->render();
             return false;
         }
 
@@ -43,7 +43,7 @@ class ThreemaGateway_Handler_Validation
             $publicKey = $gwServer->fetchPublicKey($threemaid);
         } catch (Exception $e) {
             // to show detailed error messages: $error = new XenForo_Phrase('threemagw_threema_id_does_not_exist') . ' ' . $e->getMessage();
-            $error = new XenForo_Phrase('threemagw_threema_id_does_not_exist');
+            $error = (new XenForo_Phrase('threemagw_threema_id_does_not_exist'))->render();
             return false;
         }
 

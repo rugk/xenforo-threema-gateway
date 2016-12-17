@@ -44,7 +44,7 @@ class ThreemaGateway_Listener_TfaMessageCallback
 
         // initiate
         if ($tfaCallback->prepareProcessing()) {
-            $tfaCallback->setMessageTypeName('2FA Reversed confirmation message', 'code');
+            $tfaCallback->setMessageTypeName('2FA Reversed confirmation message', 'secret');
             $tfaCallback->setPrendingRequestType(ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_CODE);
 
             // convert number emoticons to usual numbers (just remove that unicode thing :)
@@ -63,7 +63,7 @@ class ThreemaGateway_Listener_TfaMessageCallback
 
             if ($tfaCallback->applyFilters()) {
                 if ($tfaCallback->processPending([
-                    'saveKey' => 'receivedCode'
+                    'saveKey' => 'receivedSecret'
                 ])) {
                     $isError = false;
                 }
@@ -113,7 +113,7 @@ class ThreemaGateway_Listener_TfaMessageCallback
 
             if ($tfaCallback->applyFilters()) {
                 if ($tfaCallback->processPending([
-                    'saveKey'                      => 'receivedCode',
+                    'saveKey'                      => 'receivedSecret',
                     'saveKeyReceiptType'           => 'receivedDeliveryReceipt',
                     'saveKeyReceiptTypeLargest'    => 'receivedDeliveryReceiptLargest',
                     'tfaProviderCallbackOnDecline' => 'ThreemaGateway_Tfa_Fast',

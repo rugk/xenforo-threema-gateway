@@ -1268,13 +1268,13 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 </p>
 
 <div class="threemagw_centerwrapper threemagw_code">
-	{xen:phrase tfa_threemagw_reversed_show_code, 'code={$trigger.code}'}
+	{xen:phrase tfa_threemagw_reversed_show_code, 'code={$trigger.secret}'}
 </div>
 <div class="threemagw_centerwrapper threemagw_send_link">
-	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
+	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.secret, $trigger.secretWithSmiley}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
 </div>
 <div class="threemagw_centerwrapper threemagw_qrcode_send">
-	<span class="threemagw_createqr threemagw_qr" data-qrcode="{xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}"></span>
+	<span class="threemagw_createqr threemagw_qr" data-qrcode="{xen:if $providerData.useNumberSmilies, $trigger.secret, $trigger.secretWithSmiley}"></span>
 </div>
 
 <p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>

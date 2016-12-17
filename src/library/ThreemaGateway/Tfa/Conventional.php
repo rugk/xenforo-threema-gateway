@@ -1,6 +1,6 @@
 <?php
 /**
- * Two factor authentication provider for Threema Gateway which sends a code.
+ * Two factor authentication provider for Threema Gateway which sends a 6-digit secret/code.
  * to the user.
  *
  * @package ThreemaGateway
@@ -10,7 +10,7 @@
  */
 
 /**
- * TFA where the user gets a login code. Similar to SMS/email 2FA.
+ * TFA where the user gets a login secret. Similar to SMS/email 2FA.
  */
 class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvider
 {
@@ -78,13 +78,13 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
 
-        /** @var string $code random 6 digit string */
-        $code = $this->generateRandomCode();
+        /** @var string $secret random 6 digit string */
+        $secret = $this->generateRandomSecret();
 
-        $providerData['code']          = $code;
-        $providerData['codeGenerated'] = XenForo_Application::$time;
+        $providerData['secret']          = $secret;
+        $providerData['secretGenerated'] = XenForo_Application::$time;
 
-        //code is only valid for some time
+        //secret is only valid for some time
         if ($context == 'setup') {
             $providerData['validationTime'] = $options->threema_gateway_tfa_conventional_validation_setup * 60; //default: 10 minutes
         } else {
@@ -93,10 +93,10 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
 
         // add options
         if ($providerData['useNumberSmilies']) {
-            $code = ThreemaGateway_Helper_Emoji::replaceDigits($code);
+            $secret = ThreemaGateway_Helper_Emoji::replaceDigits($secret);
         } else {
-            // make code a bold text
-            $code = '*' . $code . '*';
+            // make secret a bold text
+            $secret = '*' . $secret . '*';
         }
 
         /** @var string $phrase name of XenForo phrase to use */
@@ -106,7 +106,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         }
 
         $message = new XenForo_Phrase($phrase, [
-            'code' => $code,
+            'secret' => $secret,
             'user' => $user['username'],
             'ip' => $ip,
             'validationTime' => $this->parseTime($providerData['validationTime']),
@@ -120,7 +120,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     }
 
     /**
-     * Called when trying to verify user. Shows code input and such things.
+     * Called when trying to verify user. Shows input for the secret and such things.
      *
      * @param  XenForo_View $view
      * @param  string       $context
@@ -143,7 +143,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     }
 
     /**
-     * Called when trying to verify user. Checks whether a given code is valid.
+     * Called when trying to verify user. Checks whether a given secret is valid.
      *
      * @param string $context
      * @param array  $input
@@ -156,29 +156,34 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     {
         parent::verifyFromInput($context, $input, $user, $providerData);
 
-        // verify that code has not expired yet
-        if (!$this->verifyCodeTiming($providerData)) {
+        // let errors pass through
+        if (!$result) {
+            return $result;
+        }
+
+        // verify that secret has not expired yet
+        if (!$this->verifySecretIsInTime($providerData)) {
             return false;
         }
 
-        /** @var string $code 6 digit string given as parameter */
-        $code = $input->filterSingle('code', XenForo_Input::STRING);
-        $code = preg_replace('/[^0-9]/', '', $code); //remove all non-numeric characters
-        if (!$code) {
+        /** @var string $secret 6 digit string given as parameter */
+        $secret = $input->filterSingle('secret', XenForo_Input::STRING);
+        $secret = preg_replace('/[^0-9]/', '', $secret); //remove all non-numeric characters
+        if (!$secret) {
             return false;
         }
 
         // prevent replay attacks
-        if (!$this->verifyCodeReplay($providerData, $code)) {
+        if (!$this->verifyNoReplayAttack($providerData, $secret)) {
             return false;
         }
 
-        // compare required and given code
-        if (!$this->stringCompare($providerData['code'], $code)) {
+        // compare required and given secret
+        if (!$this->stringCompare($providerData['secret'], $secret)) {
             return false;
         }
 
-        $this->updateReplayCheckData($providerData, $code);
+        $this->updateReplayCheckData($providerData, $secret);
 
         $this->resetProviderOptionsForTrigger($context, $providerData);
 
@@ -198,6 +203,11 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
     {
         /** @var array $providerData */
         $providerData = parent::verifySetupFromInput($input, $user, $error);
+
+        // let errors pass through
+        if (!$providerData) {
+            return $providerData;
+        }
 
         //add other options to provider data
         $providerData['useNumberSmilies'] = $input->filterSingle('useNumberSmilies', XenForo_Input::BOOLEAN);

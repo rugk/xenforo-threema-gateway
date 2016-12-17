@@ -1,7 +1,7 @@
 <?php
 /**
  * Two factor authentication provider for Threema Gateway which waites for a
- * code transfered via Threema.
+ * secret/code transfered via Threema.
  *
  * @package ThreemaGateway
  * @author rugk
@@ -10,7 +10,7 @@
  */
 
 /**
- * TFA where the user sends a login code via Threema.
+ * TFA where the user sends a login secret via Threema.
  */
 class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
 {
@@ -63,7 +63,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-     * Called when trying to verify user. Creates code and registers callback
+     * Called when trying to verify user. Creates secret and registers callback
      * request.
      *
      * @param  string $context
@@ -88,13 +88,13 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
         /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
 
-        /** @var string $code random 6 digit string */
-        $code = $this->generateRandomCode();
+        /** @var string $secret random 6 digit string */
+        $secret = $this->generateRandomSecret();
 
-        $providerData['code']          = $code;
-        $providerData['codeGenerated'] = XenForo_Application::$time;
+        $providerData['secret']          = $secret;
+        $providerData['secretGenerated'] = XenForo_Application::$time;
 
-        //code is only valid for some time
+        //secret is only valid for some time
         if ($context == 'setup') {
             $providerData['validationTime'] = $options->threema_gateway_tfa_reversed_validation_setup * 60; //default: 10 minutes
         } else {
@@ -127,9 +127,9 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::renderVerification($view, $context, $user, $providerData, $triggerData);
 
-        $triggerData['code'] = $providerData['code'];
+        $triggerData['secret'] = $providerData['secret'];
         if ($providerData['useNumberSmilies']) {
-            $triggerData['codeSmileys'] = ThreemaGateway_Helper_Emoji::parseUnicode(ThreemaGateway_Helper_Emoji::replaceDigits($triggerData['code']));
+            $triggerData['secretWithSmiley'] = ThreemaGateway_Helper_Emoji::parseUnicode(ThreemaGateway_Helper_Emoji::replaceDigits($triggerData['secret']));
         }
 
         $params = [
@@ -143,7 +143,7 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-     * Called when trying to verify user. Checks whether the code was received
+     * Called when trying to verify user. Checks whether the secret was received
      * from the Threema Gateway callback.
      *
      * @param string $context
@@ -155,29 +155,34 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
      */
     public function verifyFromInput($context, XenForo_Input $input, array $user, array &$providerData)
     {
-        parent::verifyFromInput($context, $input, $user, $providerData);
+        $result = parent::verifyFromInput($context, $input, $user, $providerData);
 
-        // verify that code has not expired yet
-        if (!$this->verifyCodeTiming($providerData)) {
+        // let errors pass through
+        if (!$result) {
+            return $result;
+        }
+
+        // verify that secret has not expired yet
+        if (!$this->verifySecretIsInTime($providerData)) {
             return false;
         }
 
-        // check whether code has been received at all
-        if (!isset($providerData['receivedCode'])) {
+        // check whether secret has been received at all
+        if (!isset($providerData['receivedSecret'])) {
             return false;
         }
 
         // prevent replay attacks
-        if (!$this->verifyCodeReplay($providerData, $providerData['receivedCode'])) {
+        if (!$this->verifyNoReplayAttack($providerData, $providerData['receivedSecret'])) {
             return false;
         }
 
-        // check whether the code is the same as required
-        if (!$this->stringCompare($providerData['code'], $providerData['receivedCode'])) {
+        // check whether the secret is the same as required
+        if (!$this->stringCompare($providerData['secret'], $providerData['receivedSecret'])) {
             return false;
         }
 
-        $this->updateReplayCheckData($providerData, $providerData['receivedCode']);
+        $this->updateReplayCheckData($providerData, $providerData['receivedSecret']);
 
         // unregister confirmation
         $this->unregisterPendingConfirmationMessage(
@@ -221,6 +226,11 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     {
         /** @var array $providerData */
         $providerData = parent::verifySetupFromInput($input, $user, $error);
+
+        // let errors pass through
+        if (!$providerData) {
+            return $providerData;
+        }
 
         //add other options to provider data
         $providerData['useNumberSmilies'] = $input->filterSingle('useNumberSmilies', XenForo_Input::BOOLEAN);
@@ -289,8 +299,8 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::resetProviderOptionsForTrigger($context, $providerData);
 
-        if (isset($providerData['receivedCode'])) {
-            unset($providerData['receivedCode']);
+        if (isset($providerData['receivedSecret'])) {
+            unset($providerData['receivedSecret']);
         }
     }
 }

@@ -9,7 +9,7 @@
  */
 
 /**
- * Threema Gateway Code for two step authentication (TFA/2FA).
+ * Threema Gateway for two step authentication (TFA/2FA).
  */
 abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractProvider
 {
@@ -116,7 +116,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     }
 
     /**
-     * Called when trying to verify user. Shows code input and such things.
+     * Called when trying to verify user. Shows input for secret and such things.
      *
      * @param  XenForo_View $view
      * @param  string       $context
@@ -132,7 +132,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     }
 
     /**
-     * Called when trying to verify user. Checks whether a given code is valid.
+     * Called when trying to verify user. Checks whether a given secret is valid.
      *
      * At the end, please call {@see resetProviderOptionsForTrigger()}.
      *
@@ -164,7 +164,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         /** @var array $providerData */
         $providerData = [];
         /** @var string $threemaid Threema ID given as parameter */
-        $threemaid    = $input->filterSingle('threemaid', XenForo_Input::STRING);
+        $threemaid = $input->filterSingle('threemaid', XenForo_Input::STRING);
 
         //check Threema ID
         /** @var string $verifyError */
@@ -251,15 +251,15 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
 
         /* Possible values of $context in order of usual appearance
         firstsetup      Input=Threema ID    User enables 2FA provider the first time.
-        setupvalidation Input=2FA code      Confirming 2FA in initial setup. (2FA input context: setup)
+        setupvalidation Input=2FA secret    Confirming 2FA in initial setup. (2FA input context: setup)
 
         setup           Input=Threema ID    UI to change settings of 2FA provider (shows when user clicks on "manage")
-        update          Input=2FA code      Confirming 2FA when settings changed. (2FA input context: setup)
+        update          Input=2FA secret    Confirming 2FA when settings changed. (2FA input context: setup)
 
-        <not here>      Input=2FA c. only   Login page, where code requested (2FA input context: login)
+        <not here>      Input=2FA c. only   Login page, where secret requested (2FA input context: login)
 
         The usual template is account_two_step_threemagw_conventional_manage, which includes
-        account_two_step_threemagw_conventional every time when a 2FA code is requested. If so
+        account_two_step_threemagw_conventional every time when a 2FA secret is requested. If so
         this "subtemplate" always gets the context "setup".
         Only when logging in this template is included by itself and gets the context "login".
         */
@@ -267,13 +267,13 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         /* Ways this function can go: Input (filterSingle) --> action --> output ($context)
         Initial setup:
             no $providerData --> set default options & Threema ID --> firstsetup
-            step = setup --> show page where user can enter 2FA code --> setupvalidation
+            step = setup --> show page where user can enter 2FA secret --> setupvalidation
             <verification not done in method>
 
         Manage:
             ... (last else block) --> manage page: show setup --> setup
-            manage --> show page where user can enter 2FA code --> update
-            confirm --> check 2FA code & use settings if everything is right --> <null>
+            manage --> show page where user can enter 2FA secret --> update
+            confirm --> check 2FA secret & use settings if everything is right --> <null>
 
         Login:
             <not manmaged in this function>
@@ -296,7 +296,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
                 }
 
                 //check if there is a new ID, which would require revalidation
-                if ($newProviderData['threemaid'] == $providerData['threemaid']) {
+                if ($newProviderData['threemaid'] === $providerData['threemaid']) {
                     //the same Threema ID - use options instantly
                     $this->saveProviderOptions($user, $newProviderData);
                     return null;
@@ -457,8 +457,8 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     protected function resetProviderOptionsForTrigger($context, array &$providerData)
     {
-        unset($providerData['code']);
-        unset($providerData['codeGenerated']);
+        unset($providerData['secret']);
+        unset($providerData['secretGenerated']);
     }
 
     /**
@@ -484,37 +484,37 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * @param  int    $length The length of the string (default: 6)
      * @return string
      */
-    final protected function generateRandomCode($length = 6)
+    final protected function generateRandomSecret($length = 6)
     {
         /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
-        /** @var string $code */
-        $code = '';
+        /** @var string $secret */
+        $secret = '';
 
         try {
             //use own Sodium method
-            $code = ThreemaGateway_Helper_Random::getRandomNumeric($length);
+            $secret = ThreemaGateway_Helper_Random::getRandomNumeric($length);
         } catch (Exception $e) {
-            $code = ''; // ignore errors
+            // ignore errors
         }
 
         //use XenForo method as a fallback
-        if (!$code || !ctype_digit($code)) {
+        if (!$secret || !ctype_digit($secret)) {
             // ThreemaGateway_Helper_Random internally uses XenForo as a
             // fallback
             $random = ThreemaGateway_Helper_Random::getRandomBytes(4);
 
             // that's XenForo style
-            $code = (
+            $secret = (
                 ((ord($random[0]) & 0x7f) << 24) |
                 ((ord($random[1]) & 0xff) << 16) |
                 ((ord($random[2]) & 0xff) << 8) |
                 (ord($random[3]) & 0xff)
                     ) % pow(10, $length);
-            $code = str_pad($code, $length, '0', STR_PAD_LEFT);
+            $secret = str_pad($secret, $length, '0', STR_PAD_LEFT);
         }
 
-        return $code;
+        return $secret;
     }
 
     /**
@@ -605,7 +605,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         if ($extraData) {
             $dataWriter->set('extra_data', $extraData);
         }
-        $dataWriter->set('expiry_date', $providerData['codeGenerated'] + $providerData['validationTime']);
+        $dataWriter->set('expiry_date', $providerData['secretGenerated'] + $providerData['validationTime']);
 
         return $dataWriter->save();
     }
@@ -637,19 +637,19 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     }
 
     /**
-     * Verifies whether the new code is valid considering timing information
-     * about the current code.
+     * Verifies whether the new secret is valid considering timing information
+     * about the current secret.
      *
      * @param  array $providerData
      * @return bool
      */
-    final protected function verifyCodeTiming(array $providerData)
+    final protected function verifySecretIsInTime(array $providerData)
     {
-        if (empty($providerData['code']) || empty($providerData['codeGenerated'])) {
+        if (empty($providerData['secret']) || empty($providerData['secretGenerated'])) {
             return false;
         }
 
-        if ((XenForo_Application::$time - $providerData['codeGenerated']) > $providerData['validationTime']) {
+        if ((XenForo_Application::$time - $providerData['secretGenerated']) > $providerData['validationTime']) {
             return false;
         }
 
@@ -657,18 +657,18 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     }
 
     /**
-     * Verifies whether the new code is valid by comparing it with the previous
-     * code.
+     * Verifies whether the new secret is valid by comparing it with the previous
+     * secret.
      *
      * @param  array  $providerData
-     * @param  string $newCode      the new code, which is currently checked/verified
+     * @param  string $newSecret      the new secret, which is currently checked/verified
      * @return bool
      */
-    final protected function verifyCodeReplay(array $providerData, $newCode)
+    final protected function verifyNoReplayAttack(array $providerData, $newSecret)
     {
-        if (!empty($providerData['lastCode']) && $this->stringCompare($providerData['lastCode'], $newCode)) {
-            // prevent replay attacks: once the code has been used, don't allow it to be used in the slice again
-            if (!empty($providerData['lastCodeTime']) && (XenForo_Application::$time - $providerData['lastCodeTime']) < $providerData['validationTime']) {
+        if (!empty($providerData['lastSecret']) && $this->stringCompare($providerData['lastSecret'], $newSecret)) {
+            // prevent replay attacks: once the secret has been used, don't allow it to be used in the slice again
+            if (!empty($providerData['lastSecretTime']) && (XenForo_Application::$time - $providerData['lastSecretTime']) < $providerData['validationTime']) {
                 return false;
             }
         }
@@ -677,19 +677,19 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     }
 
     /**
-     * Updates the data used by {@see verifyCodeReplay()} to prevent replay attacks.
+     * Updates the data used by {@see verifyNoReplayAttack()} to prevent replay attacks.
      *
      * @param  array      $providerData
-     * @param  string|int $code         The currently processed (& verified) code
+     * @param  string|int $secret         The currently processed (& verified) secret
      * @return bool
      */
-    final protected function updateReplayCheckData(array &$providerData, $code)
+    final protected function updateReplayCheckData(array &$providerData, $secret)
     {
-        // save current code for later replay attack checks
-        $providerData['lastCode']     = $code;
-        $providerData['lastCodeTime'] = XenForo_Application::$time;
-        unset($providerData['code']);
-        unset($providerData['codeGenerated']);
+        // save current secret for later replay attack checks
+        $providerData['lastSecret']     = $secret;
+        $providerData['lastSecretTime'] = XenForo_Application::$time;
+        unset($providerData['secret']);
+        unset($providerData['secretGenerated']);
 
         return true;
     }

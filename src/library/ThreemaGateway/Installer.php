@@ -58,7 +58,7 @@ class ThreemaGateway_Installer
             // allow all block actions for mods (& thus also admins)
             $permissionsInstaller->addForUserGroup(4, 'blockedNotification', 'allow');
             $permissionsInstaller->addForUserGroup(4, 'blockTfaMode', 'allow');
-            $permissionsInstaller->addForUserGroup(4, 'blockUser', 'allow');
+            $permissionsInstaller->addForUserGroup(4, 'blockUser', 'allow'); // not possible as mods/admins cannot be blocked, but we allow it :)
             $permissionsInstaller->addForUserGroup(4, 'blockIp', 'allow');
 
             // create public key store
