@@ -337,7 +337,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
 
         // check whether message has already been saved to prevent replay attacks
         if ($receiver->messageIsReceived($messageId)) {
-            throw new Exception('Message "' . $messageId . '" has already been received and is already saved. This may indicate a replay attack.');
+            throw new XenForo_Exception('Message "' . $messageId . '" has already been received and is already saved. This may indicate a replay attack.');
         }
 
         $this->messageReplayChecked = true;

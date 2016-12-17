@@ -213,7 +213,6 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
 
             /** @var ThreemaGateway_Tfa_AbstractProvider $tfaProvider */
             $tfaProvider = new $processOptions['tfaProviderCallbackOnDecline']($processOptions['tfaProviderId']);
-            $tfaProvider->thisIsSpecialGatewayCallback();
 
             // call original verification
             if ($tfaProvider->verifyFromInput(

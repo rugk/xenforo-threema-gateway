@@ -332,6 +332,12 @@ placeholder=</edit_format_params>
 userfield</sub_options>
       <relation group_id="threemagw_tfa" display_order="45"/>
     </option>
+    <option option_id="threema_gateway_tfa_blocking_time" edit_format="spinbox" data_type="integer" can_backup="1">
+      <default_value>5</default_value>
+      <edit_format_params>min=1</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="341"/>
+    </option>
     <option option_id="threema_gateway_tfa_conventional" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
@@ -355,6 +361,12 @@ userfield</sub_options>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="305"/>
+    </option>
+    <option option_id="threema_gateway_tfa_fast_block" edit_format="template" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params>threemagw_option_list_static_explain</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="340"/>
     </option>
     <option option_id="threema_gateway_tfa_fast_show_qr_code" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
@@ -438,6 +450,10 @@ time</sub_options>
       <permission_group permission_group_id="threemagw"/>
     </permission_groups>
     <permissions>
+      <permission permission_group_id="threemagw" permission_id="blockIp" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="20"/>
+      <permission permission_group_id="threemagw" permission_id="blockLogin" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="10"/>
+      <permission permission_group_id="threemagw" permission_id="blockUser" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="15"/>
+      <permission permission_group_id="threemagw" permission_id="blockedNotification" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="5"/>
       <permission permission_group_id="threemagw" permission_id="fetch" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="20"/>
       <permission permission_group_id="threemagw" permission_id="lookup" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="30"/>
       <permission permission_group_id="threemagw" permission_id="receive" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="15"/>
@@ -447,6 +463,7 @@ time</sub_options>
     </permissions>
     <interface_groups>
       <interface_group interface_group_id="threemagw" display_order="305"/>
+      <interface_group interface_group_id="threemagw_tfa" display_order="310"/>
     </interface_groups>
   </permissions>
   <phrases>
@@ -525,6 +542,8 @@ Additionally many 2FA methods will be disabled if you do not install libsodium.]
     <phrase title="option_threema_gateway_tfa_autolookupphone_explain" version_id="2" version_string="0.2.0"><![CDATA[When the user activates a 2FA mode this option automatically tries to get the Threema ID associated with the mobile phone number of the user. The phone number is hashed before it is send to the Threema server.<br />
 Add the ID of the custom user field in the input box, where it should be looked for phone numbers.<br />
 <b>Important:</b> When the phone number in this custom user field is not verified when it is saved this allows forum members to lookup arbitrary phone numbers of any Threema user.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_blocking_time" version_id="2" version_string="0.2.0"><![CDATA[Time to block (minutes)]]></phrase>
+    <phrase title="option_threema_gateway_tfa_blocking_time_explain" version_id="2" version_string="0.2.0"><![CDATA[How many minutes the login via the 2FA method should be blocked when a user chooses to do so. This value can not be configured by a user. It is always the same for each user.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional" version_id="2" version_string="0.2.0"><![CDATA[Activate conventional mode]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_explain" version_id="1" version_string="0.1.0"><![CDATA[Allow users to use the "Conventional" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_validation" version_id="2" version_string="0.2.0"><![CDATA[Validation time]]></phrase>
@@ -533,6 +552,10 @@ Add the ID of the custom user field in the input box, where it should be looked 
     <phrase title="option_threema_gateway_tfa_conventional_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid when setting up the 2FA method. (in minutes)<br>
 It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast" version_id="2" version_string="0.2.0"><![CDATA[Activate fast login mode]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_block" version_id="2" version_string="0.2.0"><![CDATA[Blocking options]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_block_explain" version_id="2" version_string="0.2.0"><![CDATA[In the Fast mode users can decline messages. In the setup of the Fast mode users can configure what to do when they do so.<br>
+
+You can configure what users are allowed to do in this case, in the permission options for all user groups (at "Threema - Two-step-authentication"). By defaults users can only do some notifications and login blocking and admins and moderators can do everything.]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_explain" version_id="2" version_string="0.2.0"><![CDATA[Allows users to use the "Fast login" method]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_show_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Show QR code of Gateway ID]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_show_qr_code_explain" version_id="2" version_string="0.2.0"><![CDATA[When enabled this suggests the user to scan the QR code of the Gateway ID. As you usually cannot meet a Gateway ID in person anyway, it is reasonable to offer this.<br>
@@ -570,6 +593,11 @@ The recommend minimum value is 20 minutes (<code>-20 min</code>) as the Gateway 
 When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, as messages can never be older than 14 days as they are deleted from the Gateway server.]]></phrase>
     <phrase title="permission_group_threemagw" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
     <phrase title="permission_interface_threemagw" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway]]></phrase>
+    <phrase title="permission_interface_threemagw_tfa" version_id="2" version_string="0.2.0"><![CDATA[Threema - Two-step-authentication]]></phrase>
+    <phrase title="permission_threemagw_blockedNotification" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow notification]]></phrase>
+    <phrase title="permission_threemagw_blockIp" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow IP block]]></phrase>
+    <phrase title="permission_threemagw_blockLogin" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow temporary 2FA method block]]></phrase>
+    <phrase title="permission_threemagw_blockUser" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow user block (for one day)]]></phrase>
     <phrase title="permission_threemagw_fetch" version_id="1" version_string="0.1.0"><![CDATA[Fetch public key (based on ID)]]></phrase>
     <phrase title="permission_threemagw_lookup" version_id="1" version_string="0.1.0"><![CDATA[Lookup ID/public key based on any criteria]]></phrase>
     <phrase title="permission_threemagw_receive" version_id="1" version_string="0.1.0"><![CDATA[Receive messages]]></phrase>
@@ -579,6 +607,12 @@ When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, a
     <phrase title="sendto_threema" version_id="1" version_string="0.1"><![CDATA[Send to Threema]]></phrase>
     <phrase title="tfa_threemagw_add_threema_id_button" version_id="2" version_string="0.2.0"><![CDATA[Add Threema ID]]></phrase>
     <phrase title="tfa_threemagw_add_threema_id_button_tooltip" version_id="2" version_string="0.2.0"><![CDATA[Adds {threemaid} to your contact list]]></phrase>
+    <phrase title="tfa_threemagw_block_ip" version_id="2" version_string="0.2.0"><![CDATA[block the IP of the user trying to login]]></phrase>
+    <phrase title="tfa_threemagw_block_ip_explain" version_id="2" version_string="0.2.0"><![CDATA[This <b>permanently</b> blocks the IP of the user, who tried to login. Use this option with care!]]></phrase>
+    <phrase title="tfa_threemagw_block_login" version_id="2" version_string="0.2.0"><![CDATA[block the 2FA login method]]></phrase>
+    <phrase title="tfa_threemagw_block_login_explain" version_id="2" version_string="0.2.0"><![CDATA[This prevents the user from using the 2FA method for <b>{time}</b>, but does not show any notification to the user trying to login to not attract the attackers attention.]]></phrase>
+    <phrase title="tfa_threemagw_block_user" version_id="2" version_string="0.2.0"><![CDATA[block the user account for one day.]]></phrase>
+    <phrase title="tfa_threemagw_block_user_explain" version_id="2" version_string="0.2.0"><![CDATA[This bans the user account for {time}. The account can only be unbanned by admins.]]></phrase>
     <phrase title="tfa_threemagw_contact_qrcode_text" version_id="2" version_string="0.2.0"><![CDATA[3mid:{threemaid},{publickey}]]></phrase>
     <phrase title="tfa_threemagw_conventional" version_id="1" version_string="0.1.0"><![CDATA[Threema - Conventional]]></phrase>
     <phrase title="tfa_threemagw_conventional_desc" version_id="1" version_string="0.1.0"><![CDATA[This will send you a 6 digit code through Threema to verify your login.{e2e}]]></phrase>
@@ -678,17 +712,16 @@ Acknowledge this message to allow the request.
 {board_url}]]></phrase>
     <phrase title="tfa_threemagw_fast_user_banned" version_id="2" version_string="0.2.0"><![CDATA[2FA login violation]]></phrase>
     <phrase title="tfa_threemagw_fast_validation_time" version_id="2" version_string="0.2.0"><![CDATA[You have {validationTime} to do so.]]></phrase>
+    <phrase title="tfa_threemagw_fast_when_decline" version_id="2" version_string="0.2.0"><![CDATA[When you decline a login message…]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies" version_id="2" version_string="0.2.0"><![CDATA[I like Emojis!]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only if you like emoticons/smileys.]]></phrase>
     <phrase title="tfa_threemagw_message_blocked_general" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 Login access blocked!
 
 Hi {user},
 as you declined the login message, the user with the *IP* *{ip}* has been prevented from accessing your account.
-
 {blockActions}
-
-\uD83D\uDC49 In case you did this accidentally you can still *change* the status of the (previous) *login* *request* *message* to
-    \uD83D\uDC4D acknowledge
+\uD83D\uDC49 In case you did this accidentally you can still *change* the status of the (previous!) *login* *request* *message* to
+    "\uD83D\uDC4D acknowledge"
 to allow the login.
 
 Thanks,
@@ -696,7 +729,10 @@ Thanks,
 {board_url}]]></phrase>
     <phrase title="tfa_threemagw_message_blocked_ip" version_id="2" version_string="0.2.0"><![CDATA[The IP has been banned permanently.]]></phrase>
     <phrase title="tfa_threemagw_message_blocked_login" version_id="2" version_string="0.2.0"><![CDATA[This 2FA login method has been blocked for {blockTime}.]]></phrase>
+    <phrase title="tfa_threemagw_message_blocked_nothing" version_id="2" version_string="0.2.0"><![CDATA[Nothing more has been done to prevent the user from accessing your account as you have not configured any other options.]]></phrase>
     <phrase title="tfa_threemagw_message_blocked_user" version_id="2" version_string="0.2.0"><![CDATA[The user account has been banned for {blockTime}.]]></phrase>
+    <phrase title="tfa_threemagw_notify_of_block" version_id="2" version_string="0.2.0"><![CDATA[notify me of the the actions via Threema]]></phrase>
+    <phrase title="tfa_threemagw_notify_of_block_explain" version_id="2" version_string="0.2.0"><![CDATA[This notifies the user via Threema of the actions taken when blocking and possible subsequent login attempts via this 2FA method. This option is recommend.]]></phrase>
     <phrase title="tfa_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[Threema - Reversed]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_text" version_id="2" version_string="0.2.0"><![CDATA[Send message]]></phrase>
     <phrase title="tfa_threemagw_reversed_button_tooltip" version_id="2" version_string="0.2.0"><![CDATA[Send code via your mobile device]]></phrase>
@@ -723,8 +759,10 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="tfa_threemagw_use_short_message" version_id="1" version_string="0.1"><![CDATA[Use short messages]]></phrase>
     <phrase title="tfa_threemagw_use_short_message_explain" version_id="2" version_string="0.2.0"><![CDATA[Uses short messages instead of long ones to allow you to see your verification code directly in the notification, so you do not have to open Threema to see it.]]></phrase>
     <phrase title="threemagw_confirmation_code" version_id="1" version_string="0.1"><![CDATA[Threema Confirmation Code]]></phrase>
+    <phrase title="threemagw_days" version_id="2" version_string="0.2.0"><![CDATA[days]]></phrase>
     <phrase title="threemagw_fetching_publickey_failed" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
     <phrase title="threemagw_getting_credits_failed" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
+    <phrase title="threemagw_hours" version_id="2" version_string="0.2.0"><![CDATA[hours]]></phrase>
     <phrase title="threemagw_invalid_debuglogpath" version_id="1" version_string="0.1.0"><![CDATA[The path of the message debug log file is invalid. Please check your permissions.]]></phrase>
     <phrase title="threemagw_invalid_discard_old_date" version_id="2" version_string="0.2.0"><![CDATA[The date given for discarding old messages is invalid.]]></phrase>
     <phrase title="threemagw_invalid_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[The directory cannot be used. Please check the directory and it's permissions.]]></phrase>
@@ -736,12 +774,14 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_invalid_threema_secret" version_id="1" version_string="0.1.0"><![CDATA[The Threema ID Secret is invalid.]]></phrase>
     <phrase title="threemagw_libsodium_error" version_id="1" version_string="0.1.0"><![CDATA[Error when trying to use libsodium.]]></phrase>
     <phrase title="threemagw_message_is_sent_e2e" version_id="2" version_string="0.2.0"><![CDATA[ The message is sent end-to-end encrypted.]]></phrase>
-    <phrase title="threemagw_minute" version_id="1" version_string="0.1"><![CDATA[minute]]></phrase>
     <phrase title="threemagw_minutes" version_id="1" version_string="0.1"><![CDATA[minutes]]></phrase>
     <phrase title="threemagw_missing_database_data" version_id="2" version_string="0.2.0"><![CDATA[Some data in the database is missing.]]></phrase>
     <phrase title="threemagw_missing_e2e_helper" version_id="1" version_string="0.1.0"><![CDATA[The E2E helper is missing. Probably it was tried to use it although the Gateway is not used in E2E mode.]]></phrase>
     <phrase title="threemagw_missing_sdk" version_id="1" version_string="0.1.0"><![CDATA[The PHP SDK for Threema Gateway is missing.]]></phrase>
     <phrase title="threemagw_not_writable_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[The PHP keystore file is not writable.]]></phrase>
+    <phrase title="threemagw_one_day" version_id="2" version_string="0.2.0"><![CDATA[one day]]></phrase>
+    <phrase title="threemagw_one_hour" version_id="2" version_string="0.2.0"><![CDATA[one hour]]></phrase>
+    <phrase title="threemagw_one_minute" version_id="2" version_string="0.2.0"><![CDATA[minute]]></phrase>
     <phrase title="threemagw_permission_error" version_id="1" version_string="0.1.0"><![CDATA[There was a permission error.]]></phrase>
     <phrase title="threemagw_phpkeystore_example" version_id="1" version_string="0.1.0"><![CDATA[keystore.php]]></phrase>
     <phrase title="threemagw_privatekeyfile_example" version_id="1" version_string="0.1.0"><![CDATA[privateKey.txt]]></phrase>
@@ -849,6 +889,8 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 </form>]]></template>
     <template title="account_two_step_threemagw_fast_manage" version_id="2" version_string="0.2.0"><![CDATA[<xen:title>{xen:phrase two_step_verification_setup}: {$provider.title}</xen:title>
+<!-- used for intendation css -->
+<xen:require css="threemagw.css" />
 
 <form method="post" class="xenForm {xen:if $newProviderHtml, AutoValidator}"
 <xen:comment>Use /enable link when setting provider up and use /manage link when changing setting later.</xen:comment>
@@ -913,8 +955,43 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 			<dd><ul>
 				<li>
 					<label><input type="checkbox" name="useShortMessage" value="1" {xen:if $providerData.useShortMessage, 'checked=""'} /> {xen:phrase tfa_threemagw_use_short_message}</label>
-		            <p class="explain">{xen:phrase tfa_threemagw_use_short_message_explain}</p>
+					<p class="explain">{xen:phrase tfa_threemagw_use_short_message_explain}</p>
 				</li>
+
+				<xen:if is="{$declinePermissionsSet}">
+					<li>
+						<p>{xen:phrase tfa_threemagw_fast_when_decline}</p>
+					</li>
+					<div class="threemagw_intend">
+						<xen:if is="{$declinePermissions.blockedNotification}">
+							<li>
+								<label><input type="checkbox" name="blockedNotification" value="1" {xen:if $providerData.blockedNotification, 'checked=""'} /> {xen:phrase tfa_threemagw_notify_of_block}</label>
+								<p class="explain">{xen:phrase tfa_threemagw_notify_of_block_explain}</p>
+							</li>
+						</xen:if>
+
+						<xen:if is="{$declinePermissions.blockLogin}">
+							<li>
+								<label><input type="checkbox" name="blockLogin" value="1" {xen:if $providerData.blockLogin, 'checked=""'} /> {xen:phrase tfa_threemagw_block_login}</label>
+								<p class="explain">{xen:phrase tfa_threemagw_block_login_explain, 'time={$blockTime}'}</p>
+							</li>
+						</xen:if>
+
+						<xen:if is="{$declinePermissions.blockUser}">
+							<li>
+								<label><input type="checkbox" name="blockUser" value="1" {xen:if $providerData.blockUser, 'checked=""'} /> {xen:phrase tfa_threemagw_block_user}</label>
+								<p class="explain">{xen:phrase tfa_threemagw_block_user_explain, 'time={$blockTimeDayRounded}'}</p>
+							</li>
+						</xen:if>
+
+						<xen:if is="{$declinePermissions.blockIp}">
+							<li>
+								<label><input type="checkbox" name="blockIp" value="1" {xen:if $providerData.blockIp, 'checked=""'} /> {xen:phrase tfa_threemagw_block_ip}</label>
+								<p class="explain">{xen:phrase tfa_threemagw_block_ip_explain}</p>
+							</li>
+						</xen:if>
+					</div>
+				</xen:if>
 			</ul></dd>
 		</dl>
 
@@ -1036,7 +1113,11 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 	<input type="hidden" name="_xfConfirm" value="1" />
 	<input type="hidden" name="_xfToken" value="{$visitor.csrf_token_page}" />
 </form>]]></template>
-    <template title="threemagw.css" version_id="2" version_string="0.2.0"><![CDATA[.inputThreemaId {
+    <template title="threemagw.css" version_id="2" version_string="0.2.0"><![CDATA[.threemagw_intend {
+  margin-left: 15px;
+}
+
+.inputThreemaId {
   text-transform: uppercase;
 }
 

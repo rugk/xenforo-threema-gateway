@@ -43,12 +43,23 @@ class ThreemaGateway_Installer
             // add permissions
             /** @var ThreemaGateway_Installer_Permissions $permissionsInstaller */
             $permissionsInstaller = new ThreemaGateway_Installer_Permissions;
+            // allow everything for registered users by default
             $permissionsInstaller->addForUserGroup(2, 'use', 'allow');
             $permissionsInstaller->addForUserGroup(2, 'send', 'allow');
             $permissionsInstaller->addForUserGroup(2, 'receive', 'allow');
             $permissionsInstaller->addForUserGroup(2, 'fetch', 'allow');
             $permissionsInstaller->addForUserGroup(2, 'lookup', 'allow');
             $permissionsInstaller->addForUserGroup(2, 'tfa', 'allow');
+
+            // allow registered users some basic (uncritical) block actions
+            $permissionsInstaller->addForUserGroup(2, 'blockedNotification', 'allow');
+            $permissionsInstaller->addForUserGroup(2, 'blockLogin', 'allow');
+
+            // allow all block actions for mods (& thus also admins)
+            $permissionsInstaller->addForUserGroup(4, 'blockedNotification', 'allow');
+            $permissionsInstaller->addForUserGroup(4, 'blockLogin', 'allow');
+            $permissionsInstaller->addForUserGroup(4, 'blockUser', 'allow');
+            $permissionsInstaller->addForUserGroup(4, 'blockIp', 'allow');
 
             // create public key store
             /** @var ThreemaGateway_Installer_Keystore $keystoreInstaller */

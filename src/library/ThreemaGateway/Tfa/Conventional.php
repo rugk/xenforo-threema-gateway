@@ -239,10 +239,11 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
      *
      * @param array  $viewParams
      * @param string $context
+     * @param array  $user
      *
      * @return array
      */
-    protected function adjustViewParams(array $viewParams, $context)
+    protected function adjustViewParams(array $viewParams, $context, array $user)
     {
         return $viewParams;
     }

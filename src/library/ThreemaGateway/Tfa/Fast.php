@@ -92,7 +92,10 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         // whether the login is still blocked right now
         if ($this->userIsBlocked($providerData, true)) {
             $isBlocked = true;
-            if (!$providerData['blockedNotification']) {
+            if (
+                $this->gatewayPermissions->hasPermission('blockedNotification') &&
+                !$providerData['blockedNotification']
+            ) {
                 // skip message sending
                 // This is not recommend as it makes the whole request faster,
                 // which means timing attacks can be used to detect that the
@@ -237,8 +240,6 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             ThreemaGateway_Model_TfaPendingMessagesConfirmation::PENDING_REQUEST_DELIVERY_RECEIPT
         );
 
-        // TODO: unban user/… if needed
-
         // unset data
         //
         // IMPORTANT: This is very important here as some data cannot be replay-
@@ -264,15 +265,31 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         /** @var array $providerData */
         $providerData = parent::verifySetupFromInput($input, $user, $error);
 
+        /** @var XenForo_Options $xenOptions */
+        $xenOptions = XenForo_Application::getOptions();
+
         //add other options to provider data
         $providerData['useShortMessage'] = $input->filterSingle('useShortMessage', XenForo_Input::BOOLEAN);
 
-        // static values
-        $providerData['blockLogin'] = true; //TODO: make optional
-        $providerData['blockedNotification'] = true;
-        $providerData['blockUser'] = false; //TODO: make optional
-        $providerData['blockIp'] = false; //TODO: make optional
-        $providerData['blockTime'] = 5 * 60; // 5 minutes //TODO: make ACP
+        // default values (if not passed/set/allowed as permissions)
+        $providerData['blockedNotification'] = false;
+        $providerData['blockLogin'] = false;
+        $providerData['blockUser'] = false;
+        $providerData['blockIp'] = false;
+
+        // decline options
+        if ($this->gatewayPermissions->hasPermission('blockedNotification')) {
+            $providerData['blockedNotification'] = $input->filterSingle('blockedNotification', XenForo_Input::BOOLEAN);
+        }
+        if ($this->gatewayPermissions->hasPermission('blockLogin')) {
+            $providerData['blockLogin'] = $input->filterSingle('blockLogin', XenForo_Input::BOOLEAN);
+        }
+        if ($this->gatewayPermissions->hasPermission('blockUser')) {
+            $providerData['blockUser'] = $input->filterSingle('blockUser', XenForo_Input::BOOLEAN);
+        }
+        if ($this->gatewayPermissions->hasPermission('blockIp')) {
+            $providerData['blockIp'] = $input->filterSingle('blockIp', XenForo_Input::BOOLEAN);
+        }
 
         return $providerData;
     }
@@ -300,6 +317,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     {
         return [
             'useShortMessage' => false,
+            'blockedNotification' => true,
             'blockLogin' => true,
             'blockUser' => false,
             'blockIp' => false
@@ -312,18 +330,32 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      *
      * @param array  $viewParams
      * @param string $context
+     * @param array  $user
      *
      * @return array
      */
-    protected function adjustViewParams(array $viewParams, $context)
+    protected function adjustViewParams(array $viewParams, $context, array $user)
     {
         /** @var XenForo_Options $xenOptions */
         $xenOptions = XenForo_Application::getOptions();
 
+        /** @var array $declinePermissions all permissions when declining a message */
+        $declinePermissions = [
+            'blockedNotification' => $this->gatewayPermissions->hasPermission('blockedNotification'),
+            'blockLogin' => $this->gatewayPermissions->hasPermission('blockLogin'),
+            'blockUser' => $this->gatewayPermissions->hasPermission('blockUser'),
+            'blockIp' => $this->gatewayPermissions->hasPermission('blockIp'),
+        ];
+
         $viewParams += [
             'https' => XenForo_Application::$secure,
             'showqrcode' => $xenOptions->threema_gateway_tfa_fast_show_qr_code,
-            'gatewayid' => $this->gatewaySettings->getId()
+            'gatewayid' => $this->gatewaySettings->getId(),
+            'blockTime' => $this->parseTime($xenOptions->threema_gateway_tfa_blocking_time * 60),
+            'blockTimeDayRounded' => $this->parseTime(ThreemaGateway_Helper_General::roundToDayRelative($xenOptions->threema_gateway_tfa_blocking_time * 60, true)),
+            // permissions for decline options
+            'declinePermissionsSet' => in_array(true, $declinePermissions, true),
+            'declinePermissions' => $declinePermissions,
         ];
 
         return $viewParams;
@@ -361,6 +393,9 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         if (isset($providerData['blockedBy'])) {
             unset($providerData['blockedBy']);
         }
+        if (isset($providerData['messageDeclineHandeled'])) {
+            unset($providerData['messageDeclineHandeled']);
+        }
     }
 
     /**
@@ -375,7 +410,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     private function userIsBlocked(array $providerData, $messageYetToSent = false)
     {
         // not blocked when not marked as beeing blocked
-        if (!isset($providerData['blocked']) || !$providerData['blocked']) {
+        if (empty($providerData['blocked'])) {
             return false;
         }
 
@@ -386,8 +421,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
 
         // as message ID is evaluated below, we need to assure that it is
         // correct/already set
-        if (!$messageYetToSent) {
-            // if the message ID is not set yet, we know the user is blocked
+        if ($messageYetToSent) {
+            // if the message ID is not sent yet, we know the user is blocked
             return true;
         }
 
@@ -416,22 +451,43 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      */
     private function handleMessageDecline(array &$providerData, array $user, $ip = null)
     {
+        /** @var XenForo_Options $xenOptions */
+        $xenOptions = XenForo_Application::getOptions();
+        /** @var int $blockingTime seconds how long users should be blocked */
+        $blockingTime = $xenOptions->threema_gateway_tfa_blocking_time * 60;
+
         if (!$ip) {
             $ip = $providerData['triggerIp'];
         }
+        // cancel, if already handeled
+        if (!empty($providerData['messageDeclineHandeled'])) {
+            return;
+        }
+
+        /** @var string $blockActions description of actions taken */
+        $blockActions = '';
 
         // silently ban 2FA login
-        if ($providerData['blockLogin']) {
+        if ($this->gatewayPermissions->hasPermission('blockLogin') &&
+            $providerData['blockLogin']
+        ) {
             // ban this 2FA method
             $providerData['blocked'] = true;
             $providerData['blockedBy'] = $providerData['code'];
-            $providerData['blockedUntil'] = XenForo_Application::$time + $providerData['blockTime'];
+            $providerData['blockedUntil'] = XenForo_Application::$time + $blockingTime;
+
+            // append to action list
+            $blockActions .= ' ' . (new XenForo_Phrase('tfa_threemagw_message_blocked_login', [
+                'blockTime' => $this->parseTime($blockingTime),
+            ]))->render();
         }
 
         // ban user
-        // Also note that the user is not blocked from logging in, in this case;
+        // Note that the user is not blocked from logging in, in this case;
         // they are just shown a blocking message after logging in.
-        if ($providerData['blockUser']) {
+        if ($this->gatewayPermissions->hasPermission('blockUser') &&
+            $providerData['blockUser']
+        ) {
             /** @var XenForo_DataWriter_UserBan $userBanDw */
             $userBanDw = XenForo_DataWriter::create('XenForo_DataWriter_UserBan', XenForo_DataWriter::ERROR_SILENT);
             $userBanDw->set('user_id', $user['user_id']);
@@ -440,47 +496,46 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             // as the ban is only lifted daily we need to set a useful day time
             $userBanDw->set('end_date',
                 // round unix time to day (00:00)
-                $receiveDate = ThreemaGateway_Helper_General::roundToDate(
-                    XenForo_Application::$time + $providerData['blockTime'],
+                ThreemaGateway_Helper_General::roundToDay(
+                    XenForo_Application::$time + $blockingTime,
                     true // round up to next full day
                 )
             );
             $userBanDw->set('triggered', 1);
             $userBanDw->save();
+
+            // append to action list
+            $blockActions .= ' ' . (new XenForo_Phrase('tfa_threemagw_message_blocked_user', [
+                'blockTime' => $this->parseTime(ThreemaGateway_Helper_General::roundToDayRelative($blockingTime, true)),
+            ]))->render();
         }
 
         // ban ip
-        if ($providerData['blockIp']) {
+        if ($this->gatewayPermissions->hasPermission('blockIp') &&
+            $providerData['blockIp']
+        ) {
             /** @var XenForo_Model_Banning $ipBanModel */
             $ipBanModel = XenForo_Model::create('XenForo_Model_Banning');
             $ipBanModel->banIp($ip);
-        }
 
-        // send notification message
-        if (!$providerData['blockedNotification']) {
-            return;
-        }
-
-        /** @var string $blockActions description of actions taken */
-        $blockActions = '';
-
-        if ($providerData['blockLogin']) {
-            $blockActions .= ' ' . (new XenForo_Phrase('tfa_threemagw_message_blocked_login', [
-                'blockTime' => $this->parseTime($providerData['blockTime']),
-            ]))->render();
-        }
-        if ($providerData['blockUser']) {
-            $blockActions .= ' ' . (new XenForo_Phrase('tfa_threemagw_message_blocked_user', [
-                'blockTime' => 'one day',
-            ]))->render();
-        }
-        if ($providerData['blockIp']) {
+            // append to action list
             $blockActions .= ' ' . (new XenForo_Phrase('tfa_threemagw_message_blocked_ip'))->render();
         }
 
-        if ($blockActions) {
+        // send notification message
+        if ($this->gatewayPermissions->hasPermission('blockedNotification') &&
+            $providerData['blockedNotification']
+        ) {
             // remove unneccessary whitespace
             $blockActions = trim($blockActions);
+
+            if ($blockActions) {
+                $blockActions = PHP_EOL . $blockActions . PHP_EOL;
+            } else {
+                // theoretically we could explicitly state that nothing has
+                // been done, but this is not particularly useful:
+                // $blockActions = (new XenForo_Phrase('tfa_threemagw_message_blocked_nothing'))->render();
+            }
 
             /** @var XenForo_Options $options */
             $options = XenForo_Application::getOptions();
@@ -496,5 +551,10 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
 
             $this->sendMessage($providerData['threemaid'], $message);
         }
+
+        // set value to prevent duplicate handling by this method
+        // This is needed as otherwise this method is executed again and again
+        // if the user has not activated blockLogin.
+        $providerData['messageDeclineHandeled'] = true;
     }
 }

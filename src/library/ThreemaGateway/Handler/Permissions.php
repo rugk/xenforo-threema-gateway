@@ -28,6 +28,34 @@ class ThreemaGateway_Handler_Permissions
     private static $instance = null;
 
     /**
+     * @var string identifier of the permission group of this addon
+     */
+    const PERMISSION_GROUP = 'threemagw';
+
+    /**
+     * @var array all possible permissions of this add-on
+     */
+    const PERMISSION_LIST = [
+        ['id' => 'use'],
+        ['id' => 'send'],
+        ['id' => 'receive'],
+        ['id' => 'fetch'],
+        ['id' => 'lookup'],
+        ['id' => 'tfa'],
+        // 2FA fast mode
+        ['id' => 'blockedNotification'],
+        ['id' => 'blockLogin'],
+        ['id' => 'blockUser'],
+        ['id' => 'blockIp'],
+        // admin
+        [
+            'id' => 'credits',
+            'adminOnly' => true,
+            'adminName' => 'showcredits'
+        ]
+    ];
+
+    /**
      * @var array|null User who is using the Threema Gateway
      */
     protected $user = null;
@@ -112,7 +140,7 @@ class ThreemaGateway_Handler_Permissions
 
         //change user Id
         $this->user = $newUser;
-        $this->hasPermission(null, true);
+        $this->renewCache($newUserId);
         return true;
     }
 
@@ -129,14 +157,11 @@ class ThreemaGateway_Handler_Permissions
      * to admins.
      *
      * @param  string     $action  (optional) The action you want to do
-     * @param  string     $noCache (optional) Forces the cache to reload
+     * @param  bool       $noCache (optional) Forces the cache to reload
      * @return bool|array
      */
     public function hasPermission($action = null, $noCache = false)
     {
-        /** @var array $permissions Temporary variable for permissions */
-        $permissions = [];
-
         if ($this->user === null) {
             /** @var int|null $userId User id of user (from class) */
             $userId = null;
@@ -145,62 +170,75 @@ class ThreemaGateway_Handler_Permissions
             $userId = $this->user['user_id'];
         }
 
-        // get permissions and cache them
-        if (!$noCache && is_array($this->permissions)) {
-            // load from cache
-            $permissions = $this->permissions;
-        } else {
-            if ($this->userIsDefault($userId)) {
-                //normal visitor
-                /** @var XenForo_Visitor $visitor */
-                $visitor = XenForo_Visitor::getInstance();
-
-                $permissions['use']     = $visitor->hasPermission('threemagw', 'use');
-                $permissions['send']    = $visitor->hasPermission('threemagw', 'send');
-                $permissions['receive'] = $visitor->hasPermission('threemagw', 'receive');
-                $permissions['fetch']   = $visitor->hasPermission('threemagw', 'fetch');
-                $permissions['lookup']  = $visitor->hasPermission('threemagw', 'lookup');
-                $permissions['tfa']     = $visitor->hasPermission('threemagw', 'tfa');
-                $permissions['credits'] = $visitor->hasAdminPermission('threemagw_showcredits');
-            } else {
-                if (!array_key_exists('permissions', $this->user)) {
-                    if (!array_key_exists('global_permission_cache', $this->user) || !$this->user['global_permission_cache']) {
-                        // used code by XenForo_Visitor::setup
-                        // get permissions from cache
-                        $perms = XenForo_Model::create('XenForo_Model_Permission')->rebuildPermissionCombinationById(
-                            $this->user['permission_combination_id']
-                        );
-                        $this->user['permissions'] = $perms ? $perms : [];
-                    } else {
-                        $this->user['permissions'] = XenForo_Permission::unserializePermissions($this->user['global_permission_cache']);
-                    }
-                }
-
-                //get permissions
-                $permissions['use']     = XenForo_Permission::hasPermission($this->user['permissions'], 'threemagw', 'use');
-                $permissions['send']    = XenForo_Permission::hasPermission($this->user['permissions'], 'threemagw', 'send');
-                $permissions['receive'] = XenForo_Permission::hasPermission($this->user['permissions'], 'threemagw', 'receive');
-                $permissions['fetch']   = XenForo_Permission::hasPermission($this->user['permissions'], 'threemagw', 'fetch');
-                $permissions['lookup']  = XenForo_Permission::hasPermission($this->user['permissions'], 'threemagw', 'lookup');
-                $permissions['tfa']     = XenForo_Permission::hasPermission($this->user['permissions'], 'threemagw', 'tfa');
-                // Getting admin permission would be extensive and admins should
-                // also only have special permissions if they are really logged in.
-                // Therefore all admin permissions are set to false
-                $permissions['credits'] = false;
-            }
-            $this->permissions = $permissions;
+        // check permission cache
+        if ($noCache || !is_array($this->permissions)) {
+            // (need to) renew cache
+            $this->renewCache($userId);
         }
 
-        // Return permission
+        // return permission
         if ($action) {
-            if (!array_key_exists($action, $permissions)) {
+            if (!array_key_exists($action, $this->permissions)) {
                 // invalid action
                 return false;
             }
-            return $permissions[$action];
+            return $this->permissions[$action];
         }
 
-        return $permissions;
+        return $this->permissions;
+    }
+
+    /**
+     * Reload the permission cache.
+     *
+     * @param string $userId the ID of the user
+     */
+    protected function renewCache($userId)
+    {
+        /** @var array $permissions Temporary variable for permissions */
+        $permissions = [];
+
+        if ($this->userIsDefault($userId)) {
+            /** @var XenForo_Visitor $visitor */
+            $visitor = XenForo_Visitor::getInstance();
+
+            //normal visitor, use simple methods
+            foreach (self::PERMISSION_LIST as $testPerm) {
+                if (!empty($testPerm['adminOnly'])) {
+                    $permissions[$testPerm['id']] = $visitor->hasAdminPermission(self::PERMISSION_GROUP . '_' . $testPerm['adminName']);
+                } else {
+                    $permissions[$testPerm['id']] = $visitor->hasPermission(self::PERMISSION_GROUP, $testPerm['id']);
+                }
+            }
+        } else {
+            // fetch permissions (from DB) if needed
+            if (!array_key_exists('permissions', $this->user)) {
+                if (!array_key_exists('global_permission_cache', $this->user) || !$this->user['global_permission_cache']) {
+                    // used code by XenForo_Visitor::setup
+                    // get permissions from cache
+                    $perms = XenForo_Model::create('XenForo_Model_Permission')->rebuildPermissionCombinationById(
+                        $this->user['permission_combination_id']
+                    );
+                    $this->user['permissions'] = $perms ? $perms : [];
+                } else {
+                    $this->user['permissions'] = XenForo_Permission::unserializePermissions($this->user['global_permission_cache']);
+                }
+            }
+
+            //get permissions
+            foreach (self::PERMISSION_LIST as $testPerm) {
+                if (!empty($testPerm['adminOnly'])) {
+                    // Getting admin permission would be extensive and admins should
+                    // also only have special permissions if they are really logged in.
+                    // Therefore all admin permissions are set to false
+                    $permissions[$testPerm['id']] = false;
+                } else {
+                    $permissions[$testPerm['id']] = XenForo_Permission::hasPermission($this->user['permissions'], self::PERMISSION_GROUP, $testPerm['id']);
+                }
+            }
+        }
+
+        $this->permissions = $permissions;
     }
 
     /**

@@ -260,10 +260,11 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
      *
      * @param array  $viewParams
      * @param string $context
+     * @param array  $user
      *
      * @return array
      */
-    protected function adjustViewParams(array $viewParams, $context)
+    protected function adjustViewParams(array $viewParams, $context, array $user)
     {
         /** @var XenForo_Options $xenOptions */
         $xenOptions = XenForo_Application::getOptions();
@@ -278,8 +279,8 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-    * Resets the provider options to make sure the current 2FA verification
-    * does not affect the next one.
+     * Resets the provider options to make sure the current 2FA verification
+     * does not affect the next one.
      *
      * @param string $context
      * @param array $providerData

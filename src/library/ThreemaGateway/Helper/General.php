@@ -85,7 +85,7 @@ class ThreemaGateway_Helper_General
      *
      * @return int
      */
-    public static function roundToDate($time, $roundUp = false)
+    public static function roundToDay($time, $roundUp = false)
     {
         // calculate days and round down to previous day time
         /** @var int $days */
@@ -98,5 +98,18 @@ class ThreemaGateway_Helper_General
 
         // calculate seconds again
         return $days * 24 * 60 * 60;
+    }
+
+    /**
+     * Rounds a given amount of minutes.
+     *
+     * Also just uses {@see roundToDay()} in the background, but minutes must be
+     * given as a parameter.
+     *
+     * @return int
+     */
+    public static function roundToDayRelative($minutes, $roundUp = false)
+    {
+        return self::roundToDay($minutes * 60, $roundUp);
     }
 }

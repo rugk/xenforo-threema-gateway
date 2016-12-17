@@ -106,7 +106,7 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
      *
      * @throws XenForo_Exception
      */
-    protected function initiate($threemaId = null)
+    protected function initiate(&$threemaId = null)
     {
         if (!$this->isPermissionChecked) {
             if (!$this->permissions->hasPermission('send')) {

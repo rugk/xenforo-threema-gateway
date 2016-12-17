@@ -44,8 +44,8 @@ $debugMode = XenForo_Application::debugMode();
 // could use ThreemaGateway_Handler_Settings->isDebug() here, but that would
 // not be good here as we really only need the RAW debug mode setting.
 
-/** @var array $logExtra */
-$logExtra = [];
+/** @var Exception|null $logException */
+$logException = null;
 /** @var null|string $logMessage */
 $logMessage = null;
 /** @var null|string $logMessagePublic */
@@ -90,7 +90,7 @@ try {
     $logType               = 'error';
     $logMessage            = 'Exception: ' . $e->getMessage();
     $logMessagePublic      = 'Message cannot be processed';
-    $logExtra['exception'] = $e;
+    $logException          = $e;
 }
 
 // debug: write log file
@@ -103,10 +103,11 @@ if ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode) {
 
         $fhandle = fopen($options->threema_gateway_logreceivedmsgs['path'], 'a');
         fwrite($fhandle, $logheader . $logMessage . PHP_EOL);
-        if ($logExtra) {
-            // error muted as circular refertence errors should be ignored (for
-            // some reason the output is still returned in this case)
-            fwrite($fhandle, PHP_EOL . @var_export($logExtra, true) . PHP_EOL);
+        if ($logException) {
+            fwrite(
+                $fhandle,
+                PHP_EOL . get_class($logException) . ' - ' . $logException . PHP_EOL
+            );
         }
         fclose($fhandle);
     } catch (Exception $e) {

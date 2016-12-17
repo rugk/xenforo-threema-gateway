@@ -52,16 +52,6 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     protected $gatewaySender;
 
     /**
-     * Special variable stating that the provider has been called irregularely
-     * from the Threema Gateway Callback.
-     *
-     * This can be set with {@see isSpecialGatewayCallback()}.
-     *
-     * @var bool
-     */
-    protected $isSpecialReceiverCallback = false;
-
-    /**
      * Create provider.
      *
      * @param string $id Provider id
@@ -73,15 +63,6 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         $this->gatewaySettings    = new ThreemaGateway_Handler_Settings;
         $this->gatewayServer      = new ThreemaGateway_Handler_Action_GatewayServer;
         $this->gatewaySender      = new ThreemaGateway_Handler_Action_Sender;
-    }
-
-    /**
-     * When called this states that this provider has been called from the
-     * Threema Gateway server called.
-     */
-    public function thisIsSpecialGatewayCallback()
-    {
-        $this->isSpecialReceiverCallback = true;
     }
 
     /**
@@ -384,7 +365,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
             'context' => $context,
             'threemaId' => $threemaId
         ];
-        $viewParams = $this->adjustViewParams($viewParams, $context);
+        $viewParams = $this->adjustViewParams($viewParams, $context, $user);
 
         return $controller->responseView(
             'ThreemaGateway_ViewPublic_TfaManage',
@@ -445,10 +426,11 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      *
      * @param array  $viewParams
      * @param string $context
+     * @param array  $user
      *
      * @return array
      */
-    abstract protected function adjustViewParams(array $viewParams, $context);
+    abstract protected function adjustViewParams(array $viewParams, $context, array $user);
 
     /**
      * Saves new provider options to database.
@@ -491,11 +473,6 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         // parse message
         $messageText = $xenPhrase->render();
         $messageText = ThreemaGateway_Helper_Emoji::parseUnicode($messageText);
-
-        // skip permission check if called from Gateway callback
-        if ($this->isSpecialReceiverCallback) {
-            $this->gatewaySender->skipPermissionCheck();
-        }
 
         // send message
         return $this->gatewaySender->sendAuto($receiverId, $messageText);
@@ -718,22 +695,37 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     }
 
     /**
-     * Parse a given number of minutes to a human-readble format.
+     * Parse a given number of seconds to a human-readble format.
      *
-     * @param  int    $minutes
+     * @param  int    $seconds
      * @return string
      */
-    final protected function parseTime($minutes)
+    final protected function parseTime($seconds)
     {
-        /** @var string $vadilityTimeDisplay */
-        $vadilityTimeDisplay = floor($minutes / 60);
-        if ($vadilityTimeDisplay <= 1) {
-            $vadilityTimeDisplay .= ' ' . new XenForo_Phrase('threemagw_minute');
+        /** @var string $displayTime output/result */
+        $displayTime = '';
+        /** @var int $minutes */
+        $minutes = floor($seconds / 60);
+        /** @var int $hours */
+        $hours = floor($minutes / 60);
+
+        if ($minutes <= 1) {
+            $displayTime = new XenForo_Phrase('threemagw_one_minute');
+        } elseif ($minutes < 60) {
+            $displayTime = $minutes . ' ' . new XenForo_Phrase('threemagw_minutes');
+        // hours below (more than 60 minutes)
+        } elseif ($minutes <= 61) {
+            $displayTime = new XenForo_Phrase('threemagw_one_hour');
+        } elseif ($hours <= 1) {
+            $displayTime = $hours . ' ' . new XenForo_Phrase('threemagw_hours');
+        // days below (more than 1 hour)
+        } elseif ($hours <= 24) {
+            $displayTime = new XenForo_Phrase('threemagw_one_day');
         } else {
-            $vadilityTimeDisplay .= ' ' . new XenForo_Phrase('threemagw_minutes');
+            $displayTime = floor($hours / 24) . ' ' . new XenForo_Phrase('threemagw_days');
         }
 
-        return $vadilityTimeDisplay;
+        return (string)$displayTime;
     }
 
     /**
