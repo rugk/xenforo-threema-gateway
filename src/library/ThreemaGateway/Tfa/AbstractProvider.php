@@ -134,8 +134,6 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     /**
      * Called when trying to verify user. Checks whether a given secret is valid.
      *
-     * At the end, please call {@see resetProviderOptionsForTrigger()}.
-     *
      * @param string $context
      * @param array  $input
      * @param array  $user
@@ -146,6 +144,9 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     public function verifyFromInput($context, XenForo_Input $input, array $user, array &$providerData)
     {
         $this->gatewayPermissions->setUserId($user);
+
+        // if we returned nothing, the child methods would fail if they properly check the result
+        return true;
     }
 
     /**

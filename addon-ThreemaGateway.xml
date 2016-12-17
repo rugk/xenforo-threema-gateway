@@ -174,13 +174,13 @@
 </p>
 
 <div class="threemagw_centerwrapper threemagw_code">
-	{xen:phrase tfa_threemagw_reversed_show_code, 'code={$trigger.code}'}
+	{xen:phrase tfa_threemagw_reversed_show_code, 'secret={$trigger.secret}'}
 </div>
 <div class="threemagw_centerwrapper threemagw_send_link">
-	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
+	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.secret, $trigger.secretWithSmiley}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>
 </div>
 <div class="threemagw_centerwrapper threemagw_qrcode_send">
-	<span class="threemagw_createqr threemagw_qr" data-qrcode="{xen:if $providerData.useNumberSmilies, $trigger.code, $trigger.codeSmileys}"></span>
+	<span class="threemagw_createqr threemagw_qr" data-qrcode="{xen:if $providerData.useNumberSmilies, $trigger.secret, $trigger.secretWithSmiley}"></span>
 </div>
 
 <p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>
@@ -621,7 +621,7 @@ When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, a
 Hi {user},
 to complete the second step of the two-factor authentication, you must enter the following code:
 
-{code}
+{secret}
 
 The code is valid for {validationTime}.
 
@@ -633,7 +633,7 @@ Thanks,
     <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_continue" version_id="2" version_string="0.2.0"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to continue.]]></phrase>
     <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login" version_id="2" version_string="0.2.0"><![CDATA[A Threema message has been sent to <b>{threemaid}</b> with a single-use code. Please enter that code to complete login.]]></phrase>
     <phrase title="tfa_threemagw_conventional_message_short" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11
-Code: {code}
+Code: {secret}
 IP: {ip}
 Validity: {validationTime}
 
@@ -742,7 +742,7 @@ When you are browsing this website from a device where Threema is installed, you
 In case you are on your desktop, you can scan the QR code.]]></phrase>
     <phrase title="tfa_threemagw_reversed_setup_descr" version_id="2" version_string="0.2.0"><![CDATA[This mode shows you a 6 digit code, which you have to send via Threema to this forum to login. Thus it is the "reversed" version of the conventional mode.]]></phrase>
     <phrase title="tfa_threemagw_reversed_show_code" version_id="2" version_string="0.2.0"><![CDATA[<p>Code:</p>
-<code class="textCtrl threemagw_given_code">{code}</code>]]></phrase>
+<code class="textCtrl threemagw_given_code">{secret}</code>]]></phrase>
     <phrase title="tfa_threemagw_reversed_validation_time" version_id="2" version_string="0.2.0"><![CDATA[The code is valid for {validationTime}.]]></phrase>
     <phrase title="tfa_threemagw_setup_generaldescr" version_id="1" version_string="0.1"><![CDATA[This two factor authentication mode uses the <a href="https://threema.ch" target="_blank">Threema</a> app. Before you can proceed you have to download it. It is available <a href="https://threema.ch/get-threema" target="_blank">for many platforms</a>. <br />
 Setup your Threema ID and enter it below.]]></phrase>
@@ -1268,7 +1268,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 </p>
 
 <div class="threemagw_centerwrapper threemagw_code">
-	{xen:phrase tfa_threemagw_reversed_show_code, 'code={$trigger.secret}'}
+	{xen:phrase tfa_threemagw_reversed_show_code, 'secret={$trigger.secret}'}
 </div>
 <div class="threemagw_centerwrapper threemagw_send_link">
 	<a class="button" href="threema://compose?text={xen:if $providerData.useNumberSmilies, $trigger.secret, $trigger.secretWithSmiley}&id={$gatewayid}" title="{xen:phrase tfa_threemagw_reversed_button_tooltip}" accesskey="c">{xen:phrase tfa_threemagw_reversed_button_text}</a>

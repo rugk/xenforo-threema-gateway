@@ -129,7 +129,9 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
 
         $triggerData['secret'] = $providerData['secret'];
         if ($providerData['useNumberSmilies']) {
-            $triggerData['secretWithSmiley'] = ThreemaGateway_Helper_Emoji::parseUnicode(ThreemaGateway_Helper_Emoji::replaceDigits($triggerData['secret']));
+            $triggerData['secretWithSmiley'] = ThreemaGateway_Helper_Emoji::parseUnicode(
+                ThreemaGateway_Helper_Emoji::replaceDigits($triggerData['secret'])
+            );
         }
 
         $params = [

@@ -178,7 +178,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      */
     public function verifyFromInput($context, XenForo_Input $input, array $user, array &$providerData)
     {
-        parent::verifyFromInput($context, $input, $user, $providerData);
+        $result = parent::verifyFromInput($context, $input, $user, $providerData);
 
         // let errors pass through
         if (!$result) {

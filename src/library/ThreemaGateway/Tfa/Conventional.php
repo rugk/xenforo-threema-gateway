@@ -154,7 +154,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
      */
     public function verifyFromInput($context, XenForo_Input $input, array $user, array &$providerData)
     {
-        parent::verifyFromInput($context, $input, $user, $providerData);
+        $result = parent::verifyFromInput($context, $input, $user, $providerData);
 
         // let errors pass through
         if (!$result) {
@@ -167,7 +167,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         }
 
         /** @var string $secret 6 digit string given as parameter */
-        $secret = $input->filterSingle('secret', XenForo_Input::STRING);
+        $secret = $input->filterSingle('code', XenForo_Input::STRING);
         $secret = preg_replace('/[^0-9]/', '', $secret); //remove all non-numeric characters
         if (!$secret) {
             return false;

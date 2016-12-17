@@ -46,16 +46,16 @@ class ThreemaGateway_Installer_TfaProvider
     /**
      * Add the new provider to the database.
      *
-     * @param bool|int $this->activated (optional) Whether the provider should
-     *                                  be activated or disabled.
+     * @param bool|int $enabled (optional) Whether the provider should
+     *                          be activated or disabled.
      */
-    public function add($activated = true)
+    public function add($enabled = true)
     {
         $db = XenForo_Application::get('db');
         $db->query('INSERT ' . (XenForo_Application::get('options')->enableInsertDelayed ? 'DELAYED' : '') . ' INTO `xf_tfa_provider`
                   (`provider_id`, `provider_class`, `priority`, `active`)
                   VALUES (?, ?, ?, ?)',
-                  [$this->TfaId, $this->TfaClass, $this->TfaPriority, (int) $activated]);
+                  [$this->TfaId, $this->TfaClass, $this->TfaPriority, (int) $enabled]);
     }
 
     /**
@@ -64,6 +64,18 @@ class ThreemaGateway_Installer_TfaProvider
     public function delete()
     {
         $db = XenForo_Application::get('db');
+        // delete user data
+        $db->delete('xf_user_tfa', [
+            'provider_id = ?' => $providerId
+        ]);
+
+        // unfortunately I do not want to go through each deleted user data here
+        // to test whether the user has no 2FA mode anymore as it is done in
+        // XenForo_Model_Tfa->disableTfaForUser().
+        // I have not experienced any issues when this is not done and when the
+        // deleted data is stored there this is not very bad.
+
+        // delete provider itself
         $db->query('DELETE FROM `xf_tfa_provider`
                     WHERE `provider_id`=?',
                     [$this->TfaId]);

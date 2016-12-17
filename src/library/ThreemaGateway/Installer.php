@@ -106,8 +106,6 @@ class ThreemaGateway_Installer
         $messageDbInstaller = new ThreemaGateway_Installer_MessagesDb;
         $messageDbInstaller->destroy();
 
-        // TODO: remove user data of provider via XenForo_Model_Tfa
-
         /** @var array $providerInstaller An array with the models of all providers */
         $providerInstaller = self::getProviderInstaller();
 
