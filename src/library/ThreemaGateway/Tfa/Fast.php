@@ -271,9 +271,9 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         //add other options to provider data
         $providerData['useShortMessage'] = $input->filterSingle('useShortMessage', XenForo_Input::BOOLEAN);
 
-        // default values (if not passed/set/allowed as permissions)
+        // default to false (if not passed/set/allowed as permissions)
         $providerData['blockedNotification'] = false;
-        $providerData['blockLogin'] = false;
+        $providerData['blockTfaMode'] = false;
         $providerData['blockUser'] = false;
         $providerData['blockIp'] = false;
 
@@ -281,8 +281,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         if ($this->gatewayPermissions->hasPermission('blockedNotification')) {
             $providerData['blockedNotification'] = $input->filterSingle('blockedNotification', XenForo_Input::BOOLEAN);
         }
-        if ($this->gatewayPermissions->hasPermission('blockLogin')) {
-            $providerData['blockLogin'] = $input->filterSingle('blockLogin', XenForo_Input::BOOLEAN);
+        if ($this->gatewayPermissions->hasPermission('blockTfaMode')) {
+            $providerData['blockTfaMode'] = $input->filterSingle('blockTfaMode', XenForo_Input::BOOLEAN);
         }
         if ($this->gatewayPermissions->hasPermission('blockUser')) {
             $providerData['blockUser'] = $input->filterSingle('blockUser', XenForo_Input::BOOLEAN);
@@ -318,7 +318,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         return [
             'useShortMessage' => false,
             'blockedNotification' => true,
-            'blockLogin' => true,
+            'blockTfaMode' => true,
             'blockUser' => false,
             'blockIp' => false
         ];
@@ -342,10 +342,15 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         /** @var array $declinePermissions all permissions when declining a message */
         $declinePermissions = [
             'blockedNotification' => $this->gatewayPermissions->hasPermission('blockedNotification'),
-            'blockLogin' => $this->gatewayPermissions->hasPermission('blockLogin'),
+            'blockTfaMode' => $this->gatewayPermissions->hasPermission('blockTfaMode'),
             'blockUser' => $this->gatewayPermissions->hasPermission('blockUser'),
             'blockIp' => $this->gatewayPermissions->hasPermission('blockIp'),
         ];
+
+        // if user is admin/mod we unfortunately cannot ban them as it is not supported by XenForo
+        if ($user['is_moderator'] || $user['is_admin']) {
+            $declinePermissions['blockUser'] = false;
+        }
 
         $viewParams += [
             'https' => XenForo_Application::$secure,
@@ -468,8 +473,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         $blockActions = '';
 
         // silently ban 2FA login
-        if ($this->gatewayPermissions->hasPermission('blockLogin') &&
-            $providerData['blockLogin']
+        if ($this->gatewayPermissions->hasPermission('blockTfaMode') &&
+            $providerData['blockTfaMode']
         ) {
             // ban this 2FA method
             $providerData['blocked'] = true;
@@ -529,12 +534,21 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             // remove unneccessary whitespace
             $blockActions = trim($blockActions);
 
+            // add line breaks if actions were executed
             if ($blockActions) {
-                $blockActions = PHP_EOL . $blockActions . PHP_EOL;
+                $blockActions = PHP_EOL . $blockActions;
             } else {
                 // theoretically we could explicitly state that nothing has
                 // been done, but this is not particularly useful:
                 // $blockActions = (new XenForo_Phrase('tfa_threemagw_message_blocked_nothing'))->render();
+            }
+
+            // add information that this is reversible if no permanent block actions
+            // have been executed
+            if (!$providerData['blockIp'] &&
+                !$providerData['blockUser']
+            ) {
+                $blockActions = PHP_EOL . PHP_EOL . (new XenForo_Phrase('tfa_threemagw_message_blocked_canreverse'))->render();
             }
 
             /** @var XenForo_Options $options */
@@ -554,7 +568,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
 
         // set value to prevent duplicate handling by this method
         // This is needed as otherwise this method is executed again and again
-        // if the user has not activated blockLogin.
+        // if the user has not activated blockTfaMode.
         $providerData['messageDeclineHandeled'] = true;
     }
 }

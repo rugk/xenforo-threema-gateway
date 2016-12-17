@@ -44,7 +44,7 @@ class ThreemaGateway_Handler_Permissions
         ['id' => 'tfa'],
         // 2FA fast mode
         ['id' => 'blockedNotification'],
-        ['id' => 'blockLogin'],
+        ['id' => 'blockTfaMode'],
         ['id' => 'blockUser'],
         ['id' => 'blockIp'],
         // admin

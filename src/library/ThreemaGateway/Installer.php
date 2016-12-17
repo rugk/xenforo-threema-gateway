@@ -53,11 +53,11 @@ class ThreemaGateway_Installer
 
             // allow registered users some basic (uncritical) block actions
             $permissionsInstaller->addForUserGroup(2, 'blockedNotification', 'allow');
-            $permissionsInstaller->addForUserGroup(2, 'blockLogin', 'allow');
+            $permissionsInstaller->addForUserGroup(2, 'blockTfaMode', 'allow');
 
             // allow all block actions for mods (& thus also admins)
             $permissionsInstaller->addForUserGroup(4, 'blockedNotification', 'allow');
-            $permissionsInstaller->addForUserGroup(4, 'blockLogin', 'allow');
+            $permissionsInstaller->addForUserGroup(4, 'blockTfaMode', 'allow');
             $permissionsInstaller->addForUserGroup(4, 'blockUser', 'allow');
             $permissionsInstaller->addForUserGroup(4, 'blockIp', 'allow');
 

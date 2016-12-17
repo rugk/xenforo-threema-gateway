@@ -99,7 +99,7 @@
     <template title="threemagw_option_list_static_explain"><![CDATA[<xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
 	<xen:explain></xen:explain>
 	<xen:html>
-		<p>{xen:raw $preparedOption.explain}</p>
+		<p class="dimmed">{xen:raw $preparedOption.explain}</p>
 		
 		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
 		{xen:raw $editLink}
@@ -451,7 +451,7 @@ time</sub_options>
     </permission_groups>
     <permissions>
       <permission permission_group_id="threemagw" permission_id="blockIp" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="20"/>
-      <permission permission_group_id="threemagw" permission_id="blockLogin" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="10"/>
+      <permission permission_group_id="threemagw" permission_id="blockTfaMode" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="10"/>
       <permission permission_group_id="threemagw" permission_id="blockUser" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="15"/>
       <permission permission_group_id="threemagw" permission_id="blockedNotification" permission_type="flag" depend_permission_id="tfa" default_value="unset" interface_group_id="threemagw_tfa" display_order="5"/>
       <permission permission_group_id="threemagw" permission_id="fetch" permission_type="flag" depend_permission_id="use" default_value="unset" interface_group_id="threemagw" display_order="20"/>
@@ -596,7 +596,7 @@ When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, a
     <phrase title="permission_interface_threemagw_tfa" version_id="2" version_string="0.2.0"><![CDATA[Threema - Two-step-authentication]]></phrase>
     <phrase title="permission_threemagw_blockedNotification" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow notification]]></phrase>
     <phrase title="permission_threemagw_blockIp" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow IP block]]></phrase>
-    <phrase title="permission_threemagw_blockLogin" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow temporary 2FA method block]]></phrase>
+    <phrase title="permission_threemagw_blockTfaMode" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow temporary 2FA method block]]></phrase>
     <phrase title="permission_threemagw_blockUser" version_id="2" version_string="0.2.0"><![CDATA[Fast mode (decline) - Allow user block (for one day)]]></phrase>
     <phrase title="permission_threemagw_fetch" version_id="1" version_string="0.1.0"><![CDATA[Fetch public key (based on ID)]]></phrase>
     <phrase title="permission_threemagw_lookup" version_id="1" version_string="0.1.0"><![CDATA[Lookup ID/public key based on any criteria]]></phrase>
@@ -609,8 +609,8 @@ When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, a
     <phrase title="tfa_threemagw_add_threema_id_button_tooltip" version_id="2" version_string="0.2.0"><![CDATA[Adds {threemaid} to your contact list]]></phrase>
     <phrase title="tfa_threemagw_block_ip" version_id="2" version_string="0.2.0"><![CDATA[block the IP of the user trying to login]]></phrase>
     <phrase title="tfa_threemagw_block_ip_explain" version_id="2" version_string="0.2.0"><![CDATA[This <b>permanently</b> blocks the IP of the user, who tried to login. Use this option with care!]]></phrase>
-    <phrase title="tfa_threemagw_block_login" version_id="2" version_string="0.2.0"><![CDATA[block the 2FA login method]]></phrase>
-    <phrase title="tfa_threemagw_block_login_explain" version_id="2" version_string="0.2.0"><![CDATA[This prevents the user from using the 2FA method for <b>{time}</b>, but does not show any notification to the user trying to login to not attract the attackers attention.]]></phrase>
+    <phrase title="tfa_threemagw_block_tfa_mode" version_id="2" version_string="0.2.0"><![CDATA[block the 2FA login method]]></phrase>
+    <phrase title="tfa_threemagw_block_tfa_mode_explain" version_id="2" version_string="0.2.0"><![CDATA[This prevents the user from using the 2FA method for <b>{time}</b>, but does not show any notification to the user trying to login to not attract the attackers attention.]]></phrase>
     <phrase title="tfa_threemagw_block_user" version_id="2" version_string="0.2.0"><![CDATA[block the user account for one day.]]></phrase>
     <phrase title="tfa_threemagw_block_user_explain" version_id="2" version_string="0.2.0"><![CDATA[This bans the user account for {time}. The account can only be unbanned by admins.]]></phrase>
     <phrase title="tfa_threemagw_contact_qrcode_text" version_id="2" version_string="0.2.0"><![CDATA[3mid:{threemaid},{publickey}]]></phrase>
@@ -715,14 +715,14 @@ Acknowledge this message to allow the request.
     <phrase title="tfa_threemagw_fast_when_decline" version_id="2" version_string="0.2.0"><![CDATA[When you decline a login message…]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies" version_id="2" version_string="0.2.0"><![CDATA[I like Emojis!]]></phrase>
     <phrase title="tfa_threemagw_i_like_smilies_explain" version_id="2" version_string="0.2.0"><![CDATA[Check this only if you like emoticons/smileys.]]></phrase>
+    <phrase title="tfa_threemagw_message_blocked_canreverse" version_id="2" version_string="0.2.0"><![CDATA[\uD83D\uDC49 In case you did this accidentally you can still *change* the status of the (previous!) *login* *request* *message* to
+    \uD83D\uDC4D acknowledge
+to allow the login.]]></phrase>
     <phrase title="tfa_threemagw_message_blocked_general" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 Login access blocked!
 
 Hi {user},
 as you declined the login message, the user with the *IP* *{ip}* has been prevented from accessing your account.
 {blockActions}
-\uD83D\uDC49 In case you did this accidentally you can still *change* the status of the (previous!) *login* *request* *message* to
-    "\uD83D\uDC4D acknowledge"
-to allow the login.
 
 Thanks,
 {board}
@@ -970,10 +970,10 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 							</li>
 						</xen:if>
 
-						<xen:if is="{$declinePermissions.blockLogin}">
+						<xen:if is="{$declinePermissions.blockTfaMode}">
 							<li>
-								<label><input type="checkbox" name="blockLogin" value="1" {xen:if $providerData.blockLogin, 'checked=""'} /> {xen:phrase tfa_threemagw_block_login}</label>
-								<p class="explain">{xen:phrase tfa_threemagw_block_login_explain, 'time={$blockTime}'}</p>
+								<label><input type="checkbox" name="blockTfaMode" value="1" {xen:if $providerData.blockTfaMode, 'checked=""'} /> {xen:phrase tfa_threemagw_block_tfa_mode}</label>
+								<p class="explain">{xen:phrase tfa_threemagw_block_tfa_mode_explain, 'time={$blockTime}'}</p>
 							</li>
 						</xen:if>
 
