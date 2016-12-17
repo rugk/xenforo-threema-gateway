@@ -22,7 +22,7 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
     protected function _getFields()
     {
         return [
-            ThreemaGateway_Model_Keystore::DbTable => [
+            ThreemaGateway_Model_Keystore::DB_TABLE => [
                 'threema_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,

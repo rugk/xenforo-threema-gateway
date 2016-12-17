@@ -214,7 +214,7 @@ class ThreemaGateway_Handler_Permissions
             // fetch permissions (from DB) if needed
             if (!array_key_exists('permissions', $this->user)) {
                 if (!array_key_exists('global_permission_cache', $this->user) || !$this->user['global_permission_cache']) {
-                    // used code by XenForo_Visitor::setup
+                    // used code by XenForo_Visitor::setup()
                     // get permissions from cache
                     $perms = XenForo_Model::create('XenForo_Model_Permission')->rebuildPermissionCombinationById(
                         $this->user['permission_combination_id']

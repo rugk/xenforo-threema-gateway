@@ -13,42 +13,42 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     /**
      * @var string database table (prefix) for messages
      */
-    const DbTableMessages = 'xf_threemagw_messages';
+    const DB_TABLE_MESSAGES = 'xf_threemagw_messages';
 
     /**
      * @var string database table for files
      */
-    const DbTableFiles = 'xf_threemagw_files';
+    const DB_TABLE_FILES = 'xf_threemagw_files';
 
     /**
-     * @var string database table for acknowledged messages
+     * @var string database table for acknowledged messages/delivery receipts
      */
-    const DbTableAckMsgs = 'xf_threemagw_ackmsgs';
-
-    /**
-     * @var int constant for type code
-     */
-    const TypeCode_DeliveryMessage = 0x80;
+    const DB_TABLE_DELIVERY_RECEIPT = 'xf_threemagw_ackmsgs';
 
     /**
      * @var int constant for type code
      */
-    const TypeCode_FileMessage = 0x17;
+    const TYPE_DELIVERY_MESSAGE = 0x80;
 
     /**
      * @var int constant for type code
      */
-    const TypeCode_ImageMessage = 0x02;
+    const TYPE_FILE_MESSAGE = 0x17;
 
     /**
      * @var int constant for type code
      */
-    const TypeCode_TextMessage = 0x01;
+    const TYPE_IMAGE_MESSAGE = 0x02;
+
+    /**
+     * @var int constant for type code
+     */
+    const TYPE_TEXT_MESSAGE = 0x01;
 
     /**
      * @var array constant for type code
      */
-    const OrderChoice = [
+    const ORDER_CHOICE = [
         'id' => 'message_id',
         'date_send' => 'date_send',
         'date_received' => 'date_received',
@@ -141,7 +141,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     /**
      * Sets the type code(s) for querying only one (or a few) type.
      *
-     * Please use the TypeCode_* constants for specifying the type code(s).
+     * Please use the TYPE_* constants for specifying the type code(s).
      * You should avoid using this and rather use {@link getMessageDataByType()}
      * directly if you know the type code.
      * If you want to limit the types you want to query this method would be a
@@ -323,7 +323,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         $extraJoin   = '';
         if ($includeMetaData) {
             $extraSelect = ', metamessage.*';
-            $extraJoin   = 'INNER JOIN `' . self::DbTableMessages . '` AS `metamessage` ON
+            $extraJoin   = 'INNER JOIN `' . self::DB_TABLE_MESSAGES . '` AS `metamessage` ON
                 (message.message_id = metamessage.message_id)';
         }
 
@@ -333,7 +333,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         /** @var string $conditionsClause */
         $conditionsClause = $this->getConditionsForClause($this->fetchOptions['where']);
         /** @var string $orderByClause */
-        $orderByClause    = $this->getOrderByClause(self::OrderChoice, $this->fetchOptions);
+        $orderByClause    = $this->getOrderByClause(self::ORDER_CHOICE, $this->fetchOptions);
 
         // query data
         /** @var array $output */
@@ -343,13 +343,13 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         /** @var string $resultindex index to use for additional data from query */
         $resultindex = '';
         switch ($messageType) {
-            case self::TypeCode_DeliveryMessage:
+            case self::TYPE_DELIVERY_MESSAGE:
                 $result = $this->_getDb()->fetchAll(
                     $this->limitQueryResults('
                         SELECT message.*, ack_messages.* ' . $extraSelect . '
-                        FROM `' . self::DbTableMessages . '_delivery_receipt` AS `message`
+                        FROM `' . self::DB_TABLE_MESSAGES . '_delivery_receipt` AS `message`
                         ' . $extraJoin . '
-                        INNER JOIN `' . self::DbTableAckMsgs . '` AS `ack_messages` ON
+                        INNER JOIN `' . self::DB_TABLE_DELIVERY_RECEIPT . '` AS `ack_messages` ON
                             (message.message_id = ack_messages.message_id)
                         WHERE ' . $conditionsClause . '
                         ' . $orderByClause . '
@@ -359,13 +359,13 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                 $resultindex = 'ackmsgs';
                 break;
 
-            case self::TypeCode_FileMessage:
+            case self::TYPE_FILE_MESSAGE:
                 $result = $this->_getDb()->fetchAll(
                     $this->limitQueryResults('
                         SELECT message.*, filelist.* ' . $extraSelect . '
-                        FROM `' . self::DbTableMessages . '_file` AS `message`
+                        FROM `' . self::DB_TABLE_MESSAGES . '_file` AS `message`
                         ' . $extraJoin . '
-                        INNER JOIN `' . self::DbTableFiles . '` AS `filelist` ON
+                        INNER JOIN `' . self::DB_TABLE_FILES . '` AS `filelist` ON
                             (filelist.message_id = message.message_id)
                         WHERE ' . $conditionsClause . '
                         ' . $orderByClause . '
@@ -375,13 +375,13 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                 $resultindex = 'files';
                 break;
 
-            case self::TypeCode_ImageMessage:
+            case self::TYPE_IMAGE_MESSAGE:
                 $result = $this->_getDb()->fetchAll(
                     $this->limitQueryResults('
                         SELECT message.*, filelist.* ' . $extraSelect . '
-                        FROM `' . self::DbTableMessages . '_image` AS `message`
+                        FROM `' . self::DB_TABLE_MESSAGES . '_image` AS `message`
                         ' . $extraJoin . '
-                        INNER JOIN `' . self::DbTableFiles . '` AS `filelist` ON
+                        INNER JOIN `' . self::DB_TABLE_FILES . '` AS `filelist` ON
                             (filelist.message_id = message.message_id)
                         WHERE ' . $conditionsClause . '
                         ' . $orderByClause . '
@@ -391,11 +391,11 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                 $resultindex = 'files';
                 break;
 
-            case self::TypeCode_TextMessage:
+            case self::TYPE_TEXT_MESSAGE:
                 $result = $this->_getDb()->fetchAll(
                     $this->limitQueryResults('
                         SELECT message.* ' . $extraSelect . '
-                        FROM `' . self::DbTableMessages . '_text` AS `message`
+                        FROM `' . self::DB_TABLE_MESSAGES . '_text` AS `message`
                         ' . $extraJoin . '
                         WHERE ' . $conditionsClause . '
                         ' . $orderByClause . '
@@ -480,9 +480,9 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         $limitOptions = $this->prepareLimitFetchOptions($this->fetchOptions);
 
         $result = $this->_getDb()->fetchAll(
-        $this->limitQueryResults('SELECT * FROM `' . self::DbTableMessages . '` AS `metamessage`
+        $this->limitQueryResults('SELECT * FROM `' . self::DB_TABLE_MESSAGES . '` AS `metamessage`
             WHERE ' . $this->getConditionsForClause($this->fetchOptions['where']) . '
-            ' . $this->getOrderByClause(self::OrderChoice, $this->fetchOptions),
+            ' . $this->getOrderByClause(self::ORDER_CHOICE, $this->fetchOptions),
         $limitOptions['limit'], $limitOptions['offset']),
         $this->fetchOptions['params']);
 
@@ -528,7 +528,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     {
         if ($removeOnlyField) {
             $this->_getDb()->update(
-                self::DbTableMessages,
+                self::DB_TABLE_MESSAGES,
                 array_combine(
                     $removeOnlyField,
                     array_fill(0, count($removeOnlyField), null)
@@ -540,7 +540,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
             );
         } else {
             $this->_getDb()->delete(
-                self::DbTableMessages,
+                self::DB_TABLE_MESSAGES,
                 array_merge(array_combine(
                     $this->fetchOptions['where'], $this->fetchOptions['params']),
                     $additionalConditions

@@ -16,7 +16,7 @@ class ThreemaGateway_Installer_Keystore
     /**
      * @var string database table name
      */
-    const DbTable = 'xf_threemagw_keystore';
+    const DB_TABLE = 'xf_threemagw_keystore';
 
     /**
      * Create a new keystore (table) in the database.
@@ -24,7 +24,7 @@ class ThreemaGateway_Installer_Keystore
     public function create()
     {
         $db = XenForo_Application::get('db');
-        $db->query('CREATE TABLE `' . self::DbTable . '`
+        $db->query('CREATE TABLE `' . self::DB_TABLE . '`
             (`threema_id` CHAR(8) NOT NULL PRIMARY KEY,
             `public_key` CHAR(64) NOT NULL)
             ');
@@ -36,6 +36,6 @@ class ThreemaGateway_Installer_Keystore
     public function destroy()
     {
         $db = XenForo_Application::get('db');
-        $db->query('DROP TABLE `' . self::DbTable . '`');
+        $db->query('DROP TABLE `' . self::DB_TABLE . '`');
     }
 }

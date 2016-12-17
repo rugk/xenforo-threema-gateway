@@ -448,9 +448,9 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
 
         $dataWriter->set('message_id', $receiveResult->getMessageId()); // this is set for all tables
-        $dataWriter->set('message_type_code', $threemaMsg->getTypeCode(), ThreemaGateway_Model_Messages::DbTableMessages);
-        $dataWriter->set('sender_threema_id', $this->filtered['from'], ThreemaGateway_Model_Messages::DbTableMessages);
-        $dataWriter->set('date_send', $this->filtered['date'], ThreemaGateway_Model_Messages::DbTableMessages);
+        $dataWriter->set('message_type_code', $threemaMsg->getTypeCode(), ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES);
+        $dataWriter->set('sender_threema_id', $this->filtered['from'], ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES);
+        $dataWriter->set('date_send', $this->filtered['date'], ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES);
         // $dataWriter->set('date_received', XenForo_Application::$time); //= default
 
         // files
@@ -458,36 +458,36 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             /** @var array $fileList the files associated to the message */
             $fileList = $receiveResult->getFiles();
             // set current (first) type/path
-            $dataWriter->set('file_type', key($fileList), ThreemaGateway_Model_Messages::DbTableFiles);
-            $dataWriter->set('file_path', $dataWriter->normalizeFilePath(current($fileList)), ThreemaGateway_Model_Messages::DbTableFiles);
+            $dataWriter->set('file_type', key($fileList), ThreemaGateway_Model_Messages::DB_TABLE_FILES);
+            $dataWriter->set('file_path', $dataWriter->normalizeFilePath(current($fileList)), ThreemaGateway_Model_Messages::DB_TABLE_FILES);
             // remove current value from array
             unset($fileList[key($fileList)]);
             // pass as extra data for later saving
-            $dataWriter->setExtraData(ThreemaGateway_DataWriter_Messages::DataFiles, $fileList);
+            $dataWriter->setExtraData(ThreemaGateway_DataWriter_Messages::DATA_FILES, $fileList);
         }
 
         // set values for each message type
         if ($threemaMsg instanceof Threema\MsgApi\Messages\TextMessage) {
-            $dataWriter->set('text', $threemaMsg->getText(), ThreemaGateway_Model_Messages::DbTableMessages . '_text');
+            $dataWriter->set('text', $threemaMsg->getText(), ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_text');
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
-            $dataWriter->set('receipt_type', $threemaMsg->getReceiptType(), ThreemaGateway_Model_Messages::DbTableMessages . '_delivery_receipt');
+            $dataWriter->set('receipt_type', $threemaMsg->getReceiptType(), ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_delivery_receipt');
 
             /** @var array $ackedMsgIds the acknowledged message IDs */
             $ackedMsgIds = $this->bin2hexArray($threemaMsg->getAckedMessageIds());
             if (count($ackedMsgIds) >= 1) {
                 // set current (first) type/path
-                $dataWriter->set('ack_message_id', $ackedMsgIds[0], ThreemaGateway_Model_Messages::DbTableAckMsgs);
+                $dataWriter->set('ack_message_id', $ackedMsgIds[0], ThreemaGateway_Model_Messages::DB_TABLE_DELIVERY_RECEIPT);
                 // remove current value from array
                 unset($ackedMsgIds[0]);
                 // pass as extra data for later saving
-                $dataWriter->setExtraData(ThreemaGateway_DataWriter_Messages::DataAckedMsgIds, $ackedMsgIds);
+                $dataWriter->setExtraData(ThreemaGateway_DataWriter_Messages::DATA_ACKED_MSG_IDS, $ackedMsgIds);
             }
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\FileMessage) {
-            $dataWriter->set('file_size', $threemaMsg->getSize(), ThreemaGateway_Model_Messages::DbTableMessages . '_file');
-            $dataWriter->set('file_name', $threemaMsg->getFilename(), ThreemaGateway_Model_Messages::DbTableMessages . '_file');
-            $dataWriter->set('mime_type', $threemaMsg->getMimeType(), ThreemaGateway_Model_Messages::DbTableMessages . '_file');
+            $dataWriter->set('file_size', $threemaMsg->getSize(), ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_file');
+            $dataWriter->set('file_name', $threemaMsg->getFilename(), ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_file');
+            $dataWriter->set('mime_type', $threemaMsg->getMimeType(), ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_file');
         } elseif ($threemaMsg instanceof Threema\MsgApi\Messages\ImageMessage) {
-            $dataWriter->set('file_size', $threemaMsg->getLength(), ThreemaGateway_Model_Messages::DbTableMessages . '_image');
+            $dataWriter->set('file_size', $threemaMsg->getLength(), ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_image');
         }
 
         return $dataWriter->save();
@@ -504,7 +504,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     {
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_Messages');
 
-        $dataWriter->set('message_id', $messageId, ThreemaGateway_Model_Messages::DbTableMessages);
+        $dataWriter->set('message_id', $messageId, ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES);
         $dataWriter->roundReceiveDate(); // reduce amount of meta data stored
 
         return $dataWriter->save();

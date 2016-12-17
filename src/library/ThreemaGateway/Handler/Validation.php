@@ -25,7 +25,7 @@ class ThreemaGateway_Handler_Validation
         $threemaid = strtoupper($threemaid);
 
         // check whether an id is formally correct
-        if (!preg_match('/' . ThreemaGateway_Constants::RegExThreemaId[$type] . '/', $threemaid)) {
+        if (!preg_match('/' . ThreemaGateway_Constants::REGEX_THREEMA_ID[$type] . '/', $threemaid)) {
             $error = (new XenForo_Phrase('threemagw_invalid_threema_id'))->render();
             return false;
         }

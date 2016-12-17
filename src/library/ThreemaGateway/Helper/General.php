@@ -14,14 +14,14 @@ class ThreemaGateway_Helper_General
      * XenForo template helper: threemaregex.
      *
      * Returns the regular expression for a group of Threema IDs from
-     * ThreemaGateway_Constants::RegExThreemaId.
+     * ThreemaGateway_Constants::REGEX_THREEMA_ID.
      *
      * @param  string $idgroup gateway, personal or any
      * @return string
      */
     public static function threemaRegEx($idgroup)
     {
-        return ThreemaGateway_Constants::RegExThreemaId[$idgroup];
+        return ThreemaGateway_Constants::REGEX_THREEMA_ID[$idgroup];
     }
 
     /**

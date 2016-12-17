@@ -13,7 +13,7 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
     /**
      * @var int Chars not to censor when displaying secret
      */
-    const notCensorChars = 2;
+    const CHARS_LEAVE_UNCENSORED = 2;
 
     /**
      * Renders the Threema Gateway Secret text input field.
@@ -29,7 +29,7 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
     {
         if ($preparedOption['option_value']) {
             //censor option
-            $preparedOption['option_value'] = ThreemaGateway_Helper_General::censorString($preparedOption['option_value'], self::notCensorChars);
+            $preparedOption['option_value'] = ThreemaGateway_Helper_General::censorString($preparedOption['option_value'], self::CHARS_LEAVE_UNCENSORED);
 
             // add note to explain *** in field
             $preparedOption['explain']->setParams([
@@ -63,7 +63,7 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
     {
         //check whether change was really done by user
         // https://regex101.com/r/eY2uE3/3
-        if (preg_match('/\*{' . (16 - self::notCensorChars) . '}[A-Za-z0-9]*/', $threemagwsecret)) {
+        if (preg_match('/\*{' . (16 - self::CHARS_LEAVE_UNCENSORED) . '}[A-Za-z0-9]*/', $threemagwsecret)) {
             $threemagwsecret = $dw->getExisting('option_value'); //reset old value
             return true;
         }

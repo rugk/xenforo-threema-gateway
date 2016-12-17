@@ -587,7 +587,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         // check whether the same request is already issued, if so overwrite it
         if ($model->getPending($providerData['threemaid'], $this->_providerId, $pendingType)) {
             $dataWriter->setExistingData([
-                ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable => [
+                ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE => [
                     'threema_id' => $providerData['threemaid'],
                     'provider_id' => $this->_providerId,
                     'pending_type' => $pendingType
@@ -626,7 +626,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         $dataWriter = XenForo_DataWriter::create('ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation');
 
         $dataWriter->setExistingData([
-            ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable => [
+            ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE => [
                 'threema_id' => $providerData['threemaid'],
                 $this->_providerId,
                 'pending_type' => $pendingType

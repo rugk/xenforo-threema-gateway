@@ -223,7 +223,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             $mimeType !== 'image/jpeg') {
             // we can skip the image table as it is impossible that image files
             // would be returned in this query
-            $messageType = ThreemaGateway_Model_Messages::TypeCode_FileMessage;
+            $messageType = ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE;
 
             // and we can already set the mime type as a condition
             $model->injectFetchOption('where', 'message.mime_type = ?', true);
@@ -276,7 +276,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
                 // (without mime type setting as images can only have one
                 // message type anyway)
                 /** @var array|null $images */
-                $images = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TypeCode_ImageMessage, true);
+                $images = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_IMAGE_MESSAGE, true);
 
                 // now set the MIME type if there is one
                 if ($mimeType) {
@@ -286,7 +286,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
 
                 // and now query all other files
                 /** @var array|null $files */
-                $files = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TypeCode_FileMessage, true);
+                $files = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE, true);
                 $model->resetFetchOptions();
 
                 // handle empty queries transparently
@@ -377,7 +377,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             $model->setResultLimit($limitQuery);
         }
 
-        return $model->getMessageDataByType(ThreemaGateway_Model_Messages::TypeCode_DeliveryMessage, $getMetaData);
+        return $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_DELIVERY_MESSAGE, $getMetaData);
     }
 
     /**
@@ -385,13 +385,13 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      *
      * @return array
      */
-    public function getTypeCodeArray()
+    public function getTypesArray()
     {
         return [
-            ThreemaGateway_Model_Messages::TypeCode_DeliveryMessage,
-            ThreemaGateway_Model_Messages::TypeCode_FileMessage,
-            ThreemaGateway_Model_Messages::TypeCode_ImageMessage,
-            ThreemaGateway_Model_Messages::TypeCode_TextMessage
+            ThreemaGateway_Model_Messages::TYPE_DELIVERY_MESSAGE,
+            ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE,
+            ThreemaGateway_Model_Messages::TYPE_IMAGE_MESSAGE,
+            ThreemaGateway_Model_Messages::TYPE_TEXT_MESSAGE
         ];
     }
 

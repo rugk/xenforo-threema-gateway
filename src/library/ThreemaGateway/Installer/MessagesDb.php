@@ -16,7 +16,7 @@ class ThreemaGateway_Installer_MessagesDb
     /**
      * @var string database table prefix
      */
-    const DbTablePrefix = 'xf_threemagw';
+    const DB_TABLE_PREFIX = 'xf_threemagw';
 
     /**
      * Create a new message tables in the database.
@@ -29,7 +29,7 @@ class ThreemaGateway_Installer_MessagesDb
         $db->query('SET NAMES utf8mb4');
 
         // main table
-        $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages`
+        $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_messages`
             (`message_id` CHAR(16),
             `message_type_code` ENUM(' . $this->getMsgTypes() . ') COMMENT \'determinates type of message\',
             `sender_threema_id` CHAR(8),
@@ -42,57 +42,57 @@ class ThreemaGateway_Installer_MessagesDb
         // be reused in this case
 
         // files associated with messages
-        $db->query('CREATE TABLE `' . self::DbTablePrefix . '_files`
+        $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_files`
             (`file_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
             `message_id` CHAR(16) NOT NULL,
             `file_path` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
             `file_type` VARCHAR(100) NOT NULL,
             `is_saved` BOOLEAN NOT NULL DEFAULT true,
             PRIMARY KEY (`file_id`),
-            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DB_TABLE_PREFIX . '_messages(`message_id`)
             ) COMMENT=\'Stores files associated with messages.\'');
 
         // text messages
-        $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_text`
+        $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_messages_text`
             (`message_id` CHAR(16) NOT NULL,
             `text` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
             PRIMARY KEY (`message_id`),
-            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DB_TABLE_PREFIX . '_messages(`message_id`)
             )');
 
         // delivery receipt
-        $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_delivery_receipt`
+        $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_messages_delivery_receipt`
             (`message_id` CHAR(16) NOT NULL,
             `receipt_type` TINYINT UNSIGNED NOT NULL,
             PRIMARY KEY (`message_id`)
-            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DB_TABLE_PREFIX . '_messages(`message_id`)
             )');
 
         // file message
-        $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_file`
+        $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_messages_file`
             (`message_id` CHAR(16) NOT NULL,
             `file_size` INT UNSIGNED NOT NULL,
             `file_name` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
             `mime_type` VARCHAR(255) NOT NULL,
             PRIMARY KEY (`message_id`),
-            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DB_TABLE_PREFIX . '_messages(`message_id`)
             )');
 
         // image message
-        $db->query('CREATE TABLE `' . self::DbTablePrefix . '_messages_image`
+        $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_messages_image`
             (`message_id` CHAR(16) NOT NULL,
             `file_size` INT UNSIGNED NOT NULL,
             PRIMARY KEY (`message_id`),
-            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`)
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DB_TABLE_PREFIX . '_messages(`message_id`)
             )');
 
         // acknowledged messages associated with delivery receipt messages
-        $db->query('CREATE TABLE `' . self::DbTablePrefix . '_ackmsgs`
+        $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_ackmsgs`
             (`ack_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
             `message_id` CHAR(16) NOT NULL COMMENT \'the id of the delivery receipt message, which acknowledges other messages\',
             `ack_message_id` CHAR(16) NOT NULL COMMENT \'the id of the message, which has been acknowledged \',
             PRIMARY KEY(`ack_id`),
-            FOREIGN KEY (`message_id`) REFERENCES ' . self::DbTablePrefix . '_messages(`message_id`),
+            FOREIGN KEY (`message_id`) REFERENCES ' . self::DB_TABLE_PREFIX . '_messages(`message_id`),
             INDEX(`ack_message_id`)
             ) COMMENT=\'Stores acknowledged message IDs.\'');
     }
@@ -103,13 +103,13 @@ class ThreemaGateway_Installer_MessagesDb
     public function destroy()
     {
         $db = XenForo_Application::get('db');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_ackmsgs`');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_file`');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_delivery_receipt`');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_image`');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages_text`');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_files`');
-        $db->query('DROP TABLE `' . self::DbTablePrefix . '_messages`');
+        $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_ackmsgs`');
+        $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_messages_file`');
+        $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_messages_delivery_receipt`');
+        $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_messages_image`');
+        $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_messages_text`');
+        $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_files`');
+        $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_messages`');
     }
 
     /**
@@ -120,6 +120,6 @@ class ThreemaGateway_Installer_MessagesDb
     protected function getMsgTypes()
     {
         $receiver = new ThreemaGateway_Handler_Action_Receiver;
-        return implode(', ', $receiver->getTypeCodeArray());
+        return implode(', ', $receiver->getTypesArray());
     }
 }

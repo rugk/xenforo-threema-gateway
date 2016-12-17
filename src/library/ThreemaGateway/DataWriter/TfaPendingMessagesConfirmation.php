@@ -19,7 +19,7 @@ class ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation extends XenForo_D
     protected function _getFields()
     {
         return [
-            ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable => [
+            ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE => [
                 'request_id' => [
                     'type' => self::TYPE_UINT,
                     'autoIncrement' => true
@@ -71,29 +71,29 @@ class ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation extends XenForo_D
         /** @var string $requestId */
         if ($requestId = $this->_getExistingPrimaryKey($data, 'request_id')) {
             return [
-                ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable =>
+                ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE =>
                     $this->_getPendingConfirmMsgModel()->getPendingById($requestId)
             ];
         }
 
         // or use other keys
-        if (isset($data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable]['threema_id'])) {
+        if (isset($data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE]['threema_id'])) {
             /** @var string|null $pendingType */
             $pendingType = null;
             /** @var string|null $providerId */
             $providerId = null;
 
-            if (isset($data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable]['provider_id'])) {
-                $pendingType = $data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable]['provider_id'];
+            if (isset($data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE]['provider_id'])) {
+                $pendingType = $data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE]['provider_id'];
             }
 
-            if (isset($data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable]['pending_type'])) {
-                $pendingType = $data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable]['pending_type'];
+            if (isset($data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE]['pending_type'])) {
+                $pendingType = $data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE]['pending_type'];
             }
 
             /** @var array|null $result database query result */
             $result = $this->_getPendingConfirmMsgModel()->getPending(
-                $data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable]['threema_id'],
+                $data[ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE]['threema_id'],
                 $providerId,
                 $pendingType
             );
@@ -105,7 +105,7 @@ class ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation extends XenForo_D
             // as result is keyed we just use the first value here (usually there should
             // only be one value anyway)
             return [
-                ThreemaGateway_Model_TfaPendingMessagesConfirmation::DbTable =>
+                ThreemaGateway_Model_TfaPendingMessagesConfirmation::DB_TABLE =>
                     current($result)
             ];
         }

@@ -13,7 +13,7 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
     /**
      * @var string database table name
      */
-    const DbTable = 'xf_threemagw_keystore';
+    const DB_TABLE = 'xf_threemagw_keystore';
 
     /**
      * Find public key. Returns false if the public key is not found in the
@@ -26,7 +26,7 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
     public function findPublicKey($threemaId)
     {
         /** @var mixed $result result of SQL query */
-        $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DbTable . '`
+        $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DB_TABLE . '`
                   WHERE `threema_id` = ?',
                   $threemaId);
 

@@ -13,12 +13,12 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     /**
      * @var string extra data - files
      */
-    const DataFiles = 'files';
+    const DATA_FILES = 'files';
 
     /**
      * @var string extra data - acknowledged message IDs
      */
-    const DataAckedMsgIds = 'ack_message_id';
+    const DATA_ACKED_MSG_IDS = 'ack_message_id';
 
     /**
      * Gets the fields that are defined for the table. See parent for explanation.
@@ -29,7 +29,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     protected function _getFields()
     {
         return [
-            ThreemaGateway_Model_Messages::DbTableMessages => [
+            ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -51,7 +51,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'default' => XenForo_Application::$time
                 ]
             ],
-            ThreemaGateway_Model_Messages::DbTableFiles => [
+            ThreemaGateway_Model_Messages::DB_TABLE_FILES => [
                 'file_id' => [
                     'type' => self::TYPE_UINT,
                     'autoIncrement' => true
@@ -78,7 +78,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'default' => true
                 ]
             ],
-            ThreemaGateway_Model_Messages::DbTableAckMsgs => [
+            ThreemaGateway_Model_Messages::DB_TABLE_DELIVERY_RECEIPT => [
                 'ack_id' => [
                     'type' => self::TYPE_UINT,
                     'autoIncrement' => true
@@ -94,7 +94,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'maxLength' => 16
                 ]
             ],
-            ThreemaGateway_Model_Messages::DbTableMessages . '_delivery_receipt' => [
+            ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_delivery_receipt' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -105,7 +105,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'required'  => true
                 ]
             ],
-            ThreemaGateway_Model_Messages::DbTableMessages . '_file' => [
+            ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_file' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -126,7 +126,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'maxLength' => 255
                 ]
             ],
-            ThreemaGateway_Model_Messages::DbTableMessages . '_image' => [
+            ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_image' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -137,7 +137,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                     'required'  => true
                 ]
             ],
-            ThreemaGateway_Model_Messages::DbTableMessages . '_text' => [
+            ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_text' => [
                 'message_id' => [
                     'type' => self::TYPE_STRING,
                     'required'  => true,
@@ -205,7 +205,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         $metaData = $this->_getMessagesModel()->getMessageMetaData();
 
         // add main table to array (this is the only complete table using)
-        $existing[ThreemaGateway_Model_Messages::DbTableMessages] = reset($metaData);
+        $existing[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES] = reset($metaData);
 
         /** @var int $messageType Extracted message type from metadata. */
         $messageType = reset($metaData)['message_type_code'];
@@ -213,38 +213,38 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         // conditionally add data from other tables depending on message
         // type
         switch ($messageType) {
-            case ThreemaGateway_Model_Messages::TypeCode_DeliveryMessage:
-                $existing[ThreemaGateway_Model_Messages::DbTableMessages . '_delivery_receipt'] = [
+            case ThreemaGateway_Model_Messages::TYPE_DELIVERY_MESSAGE:
+                $existing[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_delivery_receipt'] = [
                     'message_id' => $messageId
                 ];
-                $existing[ThreemaGateway_Model_Messages::DbTableAckMsgs] = [
-                    'message_id' => $messageId
-                ];
-                break;
-
-            case ThreemaGateway_Model_Messages::TypeCode_FileMessage:
-                $existing[ThreemaGateway_Model_Messages::DbTableMessages . '_file'] = [
-                    'message_id' => $messageId
-                ];
-                $existing[ThreemaGateway_Model_Messages::DbTableFiles] = [
+                $existing[ThreemaGateway_Model_Messages::DB_TABLE_DELIVERY_RECEIPT] = [
                     'message_id' => $messageId
                 ];
                 break;
 
-            case ThreemaGateway_Model_Messages::TypeCode_ImageMessage:
-                $existing[ThreemaGateway_Model_Messages::DbTableMessages . '_image'] = [
+            case ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE:
+                $existing[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_file'] = [
                     'message_id' => $messageId
                 ];
-                $existing[ThreemaGateway_Model_Messages::DbTableFiles] = [
+                $existing[ThreemaGateway_Model_Messages::DB_TABLE_FILES] = [
                     'message_id' => $messageId
                 ];
                 break;
 
-            case ThreemaGateway_Model_Messages::TypeCode_TextMessage:
-                $existing[ThreemaGateway_Model_Messages::DbTableMessages . '_text'] = [
+            case ThreemaGateway_Model_Messages::TYPE_IMAGE_MESSAGE:
+                $existing[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_image'] = [
                     'message_id' => $messageId
                 ];
-                $existing[ThreemaGateway_Model_Messages::DbTableFiles] = [
+                $existing[ThreemaGateway_Model_Messages::DB_TABLE_FILES] = [
+                    'message_id' => $messageId
+                ];
+                break;
+
+            case ThreemaGateway_Model_Messages::TYPE_TEXT_MESSAGE:
+                $existing[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '_text'] = [
+                    'message_id' => $messageId
+                ];
+                $existing[ThreemaGateway_Model_Messages::DB_TABLE_FILES] = [
                     'message_id' => $messageId
                 ];
                 break;
@@ -291,7 +291,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
             if (
                 !array_key_exists($tableName, $newData) || // no data OR
                 !array_key_exists('message_id', $newData[$tableName]) || // missing message_id OR
-                (count($newData[$tableName]) == 1 && $tableName != ThreemaGateway_Model_Messages::DbTableMessages) // message_id as the only data set (and it's not the main message table where this is valid)
+                (count($newData[$tableName]) == 1 && $tableName != ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES) // message_id as the only data set (and it's not the main message table where this is valid)
             ) {
                 // and remove them
                 unset($this->_fields[$tableName]);
@@ -301,7 +301,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         // check whether there is other data in the main table
         /** @var bool $isData whether in the main table is other data than the message ID */
         $isData = false;
-        foreach ($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages] as $field => $fieldData) {
+        foreach ($this->_fields[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES] as $field => $fieldData) {
             if ($field == 'message_id') {
                 // skip as requirement already checked
                 continue;
@@ -310,14 +310,14 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 continue;
             }
 
-            if ($this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages)) {
+            if ($this->getNew($field, ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES)) {
                 $isData = true;
                 break;
             }
         }
 
         // validate data (either main table contains only basic data *OR* it requires all data fields)
-        foreach ($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages] as $field => $fieldData) {
+        foreach ($this->_fields[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES] as $field => $fieldData) {
             if ($field == 'message_id') {
                 // skip as requirement already checked
                 continue;
@@ -330,16 +330,16 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
             if ($isData) {
                 //but required key is missing
                 if (
-                    !$this->getNew($field, ThreemaGateway_Model_Messages::DbTableMessages) &&
+                    !$this->getNew($field, ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES) &&
                     !isset($fieldData['default']) // exception: a default value is set
                 ) {
-                    $this->_triggerRequiredFieldError(ThreemaGateway_Model_Messages::DbTableMessages, $field);
+                    $this->_triggerRequiredFieldError(ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES, $field);
                 }
             } else {
                 // table does not contain data,
                 // so make sure data is really "null" and not some other type of data by removing it completly from the model
-                unset($this->_newData[ThreemaGateway_Model_Messages::DbTableMessages][$field]);
-                unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages][$field]);
+                unset($this->_newData[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES][$field]);
+                unset($this->_fields[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES][$field]);
             }
         }
 
@@ -358,9 +358,9 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     protected function _preDelete()
     {
         // we may need to store the message ID to prevent replay attacks
-        if (ThreemaGateway_Helper_Message::isAtRiskOfReplayAttack($this->_existingData[ThreemaGateway_Model_Messages::DbTableMessages])) {
+        if (ThreemaGateway_Helper_Message::isAtRiskOfReplayAttack($this->_existingData[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES])) {
             // remove main table from deletion as it is handled in _postDelete().
-            unset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages]);
+            unset($this->_fields[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES]);
         }
 
         // similar to _preSave() filter data
@@ -387,15 +387,15 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     protected function _postSave()
     {
         // get data
-        $allFiles    = $this->getExtraData(self::DataFiles);
-        $ackedMsgIds = $this->getExtraData(self::DataAckedMsgIds);
+        $allFiles    = $this->getExtraData(self::DATA_FILES);
+        $ackedMsgIds = $this->getExtraData(self::DATA_ACKED_MSG_IDS);
 
         // add additional data
         if ($allFiles) {
             foreach ($allFiles as $fileType => $filePath) {
                 // get table fields
                 /** @var array $tableFields fields of table "files" */
-                $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableFiles];
+                $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DB_TABLE_FILES];
                 // remove keys, which are automatically set
                 unset($tableFields['file_id']);  // (auto increment)
                 unset($tableFields['is_saved']); // (default value=1)
@@ -404,7 +404,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 $tableKeys = array_keys($tableFields);
 
                 // create insert query for this item
-                $this->_db->query('INSERT INTO `' . ThreemaGateway_Model_Messages::DbTableFiles . '`
+                $this->_db->query('INSERT INTO `' . ThreemaGateway_Model_Messages::DB_TABLE_FILES . '`
                     ( `' . implode('`, `',  $tableKeys) . '`)
                     VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
                     [
@@ -419,7 +419,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
             foreach ($ackedMsgIds as $ackedMessageId) {
                 // get table fields
                 /** @var array $tableFields fields of table "ackmsgs" */
-                $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableAckMsgs];
+                $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DB_TABLE_DELIVERY_RECEIPT];
                 // remove key(s), which are automatically set
                 unset($tableFields['ack_id']); // (auto increment)
                 // we do only care about the keys
@@ -427,7 +427,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 $tableKeys = array_keys($tableFields);
 
                 // create insert query for this item
-                $this->_db->query('INSERT INTO `' . ThreemaGateway_Model_Messages::DbTableAckMsgs . '`
+                $this->_db->query('INSERT INTO `' . ThreemaGateway_Model_Messages::DB_TABLE_DELIVERY_RECEIPT . '`
                     ( `' . implode('`, `',  $tableKeys) . '`)
                     VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
                     [
@@ -452,13 +452,13 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     {
         // skip custom deletion if main table has already been deleted and is
         // therefore stil in the fields array
-        if (isset($this->_fields[ThreemaGateway_Model_Messages::DbTableMessages])) {
+        if (isset($this->_fields[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES])) {
             return;
         }
 
         // get table fields
         /** @var array $tableFields fields of main message table */
-        $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableMessages];
+        $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES];
         // remove keys, which should stay in the database
         unset($tableFields['message_id']);
         unset($tableFields['date_received']);
@@ -471,10 +471,10 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         $tableKeys = array_keys($tableFields);
 
         // remove values from database
-        $this->_db->query('UPDATE `' . ThreemaGateway_Model_Messages::DbTableMessages . '`
+        $this->_db->query('UPDATE `' . ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '`
             SET `' . implode('`=null, `',  $tableKeys) . '`=null,
             `date_received`=' . $this->_db->quote($this->getRoundedReceiveDate()) . '
-            WHERE ' . $this->getUpdateCondition(ThreemaGateway_Model_Messages::DbTableMessages));
+            WHERE ' . $this->getUpdateCondition(ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES));
     }
 
     /**
@@ -490,7 +490,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
 
         // get default if not set
         if (!$receiveDate) {
-            $receiveDate = $this->_getFields()[ThreemaGateway_Model_Messages::DbTableMessages]['date_received']['default'];
+            $receiveDate = $this->_getFields()[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES]['date_received']['default'];
         }
 
         // round unix time to day (00:00)

@@ -155,17 +155,17 @@ class ThreemaGateway_Installer
 
         // add provider
         $providerInstaller['conventional'] = new ThreemaGateway_Installer_TfaProvider(
-            ThreemaGateway_Constants::TfaIDprefix . '_conventional',
+            ThreemaGateway_Constants::TFA_ID_PREFIX . '_conventional',
             'ThreemaGateway_Tfa_Conventional',
-            ThreemaGateway_Constants::TfaBasePriority - 15);
+            ThreemaGateway_Constants::TFA_BASE_PRIORITY - 15);
         $providerInstaller['reversed'] = new ThreemaGateway_Installer_TfaProvider(
-            ThreemaGateway_Constants::TfaIDprefix . '_reversed',
+            ThreemaGateway_Constants::TFA_ID_PREFIX . '_reversed',
             'ThreemaGateway_Tfa_Reversed',
-            ThreemaGateway_Constants::TfaBasePriority - 10);
+            ThreemaGateway_Constants::TFA_BASE_PRIORITY - 10);
         $providerInstaller['fast'] = new ThreemaGateway_Installer_TfaProvider(
-            ThreemaGateway_Constants::TfaIDprefix . '_fast',
+            ThreemaGateway_Constants::TFA_ID_PREFIX . '_fast',
             'ThreemaGateway_Tfa_Fast',
-            ThreemaGateway_Constants::TfaBasePriority - 5);
+            ThreemaGateway_Constants::TFA_BASE_PRIORITY - 5);
 
         return $providerInstaller;
     }

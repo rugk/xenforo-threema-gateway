@@ -13,7 +13,7 @@ class ThreemaGateway_Option_DebugModeLog
     /**
      * @var string Default file path
      */
-    const DefaultPath = 'internal_data/threemagateway/receivedmsgs.log';
+    const DEFAULT_PATH = 'internal_data/threemagateway/receivedmsgs.log';
 
     /**
      * Renders the debug mode log setting.
@@ -42,8 +42,8 @@ class ThreemaGateway_Option_DebugModeLog
             'onoff' => 'enabled',
             'value' => 'path',
             'type' => 'textbox',
-            'default' => self::DefaultPath,
-            'placeholder' => self::DefaultPath
+            'default' => self::DEFAULT_PATH,
+            'placeholder' => self::DEFAULT_PATH
         ];
 
         //pass this to the default handler
@@ -116,7 +116,7 @@ class ThreemaGateway_Option_DebugModeLog
 
         // set default value
         if (empty($option['path'])) {
-            $option['path'] = self::DefaultPath;
+            $option['path'] = self::DEFAULT_PATH;
         }
 
         // correct path

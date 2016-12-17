@@ -16,17 +16,17 @@ class ThreemaGateway_Constants
     /**
      * @var string ID of 2FA methode in general
      */
-    const TfaIDprefix = 'threemagw';
+    const TFA_ID_PREFIX = 'threemagw';
 
     /**
      * @var int Priority of 2FA methode in general
      */
-    const TfaBasePriority = 40;
+    const TFA_BASE_PRIORITY = 40;
 
     /**
      * @var array[string] Regular expressions for Threema IDs
      */
-    const RegExThreemaId = [
+    const REGEX_THREEMA_ID = [
         'gateway' => '^\*[A-Za-z0-9]{7}$', // https://regex101.com/r/fF9hQ0/4
         'personal' => '^([A-Za-z0-9]{8})$', // https://regex101.com/r/sX9pY0/3
         'any' => '^((\*[A-Za-z0-9]{7})|([A-Za-z0-9]{8}))$' // https://regex101.com/r/bF6xV5/7
@@ -35,7 +35,7 @@ class ThreemaGateway_Constants
     /**
      * @var string file path of threema callback php file
      */
-    const CallbackFile = 'threema_callback.php';
+    const CALLBACK_FILE = 'threema_callback.php';
 
     /**
      * @var string Type of delivery receipt messages

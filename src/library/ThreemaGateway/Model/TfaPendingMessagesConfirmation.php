@@ -13,7 +13,7 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
     /**
      * @var string database table name
      */
-    const DbTable = 'xf_threemagw_tfa_pending_msgs_confirm';
+    const DB_TABLE = 'xf_threemagw_tfa_pending_msgs_confirm';
 
     /**
      * @var int Pending type: a 6 digit code is requested
@@ -35,7 +35,7 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
     public function getPendingById($requestId)
     {
         /** @var mixed $result result of SQL query */
-        $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DbTable . '`
+        $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DB_TABLE . '`
                   WHERE `request_id` = ?',
                   $requestId);
 
@@ -77,7 +77,7 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
         }
 
         /** @var mixed $result result of SQL query */
-        $result = $this->fetchAllKeyed('SELECT * FROM `' . self::DbTable . '`
+        $result = $this->fetchAllKeyed('SELECT * FROM `' . self::DB_TABLE . '`
                   WHERE ' . $this->getConditionsForClause($conditionsArray),
                   'request_id', $paramsArray);
 
@@ -97,7 +97,7 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
      */
     public function deleteExpired()
     {
-        $this->_getDb()->delete(self::DbTable,
+        $this->_getDb()->delete(self::DB_TABLE,
             [
                 '? > expiry_date' => XenForo_Application::$time
             ]

@@ -1,7 +1,7 @@
 # Two factor authentication methods
 ## Overview
-Basic priority: 30 (see ThreemaGateway_Constants::TfaBasePriority)  
-Range reserved: `TfaBasePriority-5` to `TfaBasePriority`
+Basic priority: 40 (see ThreemaGateway_Constants::TFA_BASE_PRIORITY)  
+Range reserved: `TFA_BASE_PRIORITY-29` to `TFA_BASE_PRIORITY-1` (currently 21-39)
 
 name         | server                                       | client                                     | user                                             | implemented (class)             | priority
 ------------ | -------------------------------------------- | ------------------------------------------ | ------------------------------------------------ | ------------------------------- | --------

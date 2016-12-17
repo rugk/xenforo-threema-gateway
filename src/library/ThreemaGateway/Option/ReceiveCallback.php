@@ -13,7 +13,7 @@ class ThreemaGateway_Option_ReceiveCallback
     /**
      * @var int The default length of an access token
      */
-    const AccessTokenLength = 46;
+    const ACCESS_TOKEN_LENGTH = 46;
 
     /**
      * Renders the debug mode text input field with on/off buttons.
@@ -39,7 +39,7 @@ class ThreemaGateway_Option_ReceiveCallback
         $preparedOption['edit_format']  = 'template';
         $preparedOption['formatParams'] = [
             'template' => 'threemagw_option_list_receivecallback',
-            'basetext' => $options->boardUrl . '/' . ThreemaGateway_Constants::CallbackFile . '?accesstoken=',
+            'basetext' => $options->boardUrl . '/' . ThreemaGateway_Constants::CALLBACK_FILE . '?accesstoken=',
             'placeholder' => ''
         ];
 
@@ -73,6 +73,6 @@ class ThreemaGateway_Option_ReceiveCallback
      */
     protected static function generateDefault()
     {
-        return ThreemaGateway_Helper_Random::getRandomAlphaNum(self::AccessTokenLength);
+        return ThreemaGateway_Helper_Random::getRandomAlphaNum(self::ACCESS_TOKEN_LENGTH);
     }
 }

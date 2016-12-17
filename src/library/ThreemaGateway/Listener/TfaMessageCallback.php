@@ -117,7 +117,7 @@ class ThreemaGateway_Listener_TfaMessageCallback
                     'saveKeyReceiptType'           => 'receivedDeliveryReceipt',
                     'saveKeyReceiptTypeLargest'    => 'receivedDeliveryReceiptLargest',
                     'tfaProviderCallbackOnDecline' => 'ThreemaGateway_Tfa_Fast',
-                    'tfaProviderId'                => ThreemaGateway_Constants::TfaIDprefix . '_fast',
+                    'tfaProviderId'                => ThreemaGateway_Constants::TFA_ID_PREFIX . '_fast',
                 ])) {
                     $isError = false;
                 }

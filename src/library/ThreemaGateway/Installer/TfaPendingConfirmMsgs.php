@@ -16,7 +16,7 @@ class ThreemaGateway_Installer_TfaPendingConfirmMsgs
     /**
      * @var string database table name
      */
-    const DbTable = 'xf_threemagw_tfa_pending_msgs_confirm';
+    const DB_TABLE = 'xf_threemagw_tfa_pending_msgs_confirm';
 
     /**
      * Create a new keystore (table) in the database.
@@ -24,7 +24,7 @@ class ThreemaGateway_Installer_TfaPendingConfirmMsgs
     public function create()
     {
         $db = XenForo_Application::get('db');
-        $db->query('CREATE TABLE `' . self::DbTable . '`
+        $db->query('CREATE TABLE `' . self::DB_TABLE . '`
             (`request_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
             `threema_id` CHAR(8) NOT NULL,
             `provider_id` VARBINARY(25) NOT NULL,
@@ -44,6 +44,6 @@ class ThreemaGateway_Installer_TfaPendingConfirmMsgs
     public function destroy()
     {
         $db = XenForo_Application::get('db');
-        $db->query('DROP TABLE `' . self::DbTable . '`');
+        $db->query('DROP TABLE `' . self::DB_TABLE . '`');
     }
 }
