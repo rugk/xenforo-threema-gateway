@@ -63,6 +63,13 @@ Additionally it is always good to have a second 2FA method activated as a backup
 
 We will see. Currently I could not test it.
 
+### What about a web interface so admins can communicate with Threema users via the Gateway ID?
+
+This is a nice idea and from a technical point of view certainly possible. All incoming messages are already saved in the database and sending messages is as simple as calling a method in the Sender action handler.
+
+However a web interface implementation is a huge tasks, if it is considered to be a complete implementation.
+This feature request is tracked in issue [#??](https://github.com/#TODO) and if you want to help, please have a look there.
+
 ## Using Two-factor-authentication
 
 ### Which 2FA mode should I choose?
