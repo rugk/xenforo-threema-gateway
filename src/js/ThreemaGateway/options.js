@@ -21,9 +21,9 @@ jQuery(document).ready(function() {
  */
 var ReceiveCallback = (function (window, document) {
     'use strict';
-    var inputElem = '.threemagw_receivecallback_input';
-    var hiddenElem = '.threemagw_receivecallback_hiddeninput';
     var me = {};
+    var $inputElem;
+    var $hiddenElem;
 
     /**
      * getOrgData - Returns the input data of the field the user can see.
@@ -32,7 +32,7 @@ var ReceiveCallback = (function (window, document) {
      * @return {string}
      */
     function getOrgData() {
-        return $(inputElem).text();
+        return $inputElem.text();
     }
 
     /**
@@ -43,8 +43,8 @@ var ReceiveCallback = (function (window, document) {
      * @return {string}
      */
     function setOrgData(data) {
-        if ($(inputElem).text() !== data) {
-            return $(inputElem).text(data);
+        if ($inputElem.text() !== data) {
+            return $inputElem.text(data);
         }
     }
 
@@ -56,7 +56,7 @@ var ReceiveCallback = (function (window, document) {
      * @return {string}
      */
     function setHiddenData(data) {
-        return $(hiddenElem).val(data);
+        return $hiddenElem.val(data);
     }
 
     /**
@@ -77,7 +77,12 @@ var ReceiveCallback = (function (window, document) {
      *
      */
     me.init = function init() {
-        $(inputElem).on('input', me.update);
+        // set variables
+        $inputElem = $('.threemagw_receivecallback_input');
+        $hiddenElem = $('.threemagw_receivecallback_hiddeninput');
+
+        // register input trigger/event
+        $inputElem.on('input', me.update);
     };
 
     /**

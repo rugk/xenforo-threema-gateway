@@ -336,7 +336,7 @@ userfield</sub_options>
       <default_value>5</default_value>
       <edit_format_params>min=1</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw_tfa" display_order="341"/>
+      <relation group_id="threemagw_tfa" display_order="361"/>
     </option>
     <option option_id="threema_gateway_tfa_conventional" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
@@ -362,11 +362,17 @@ userfield</sub_options>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="305"/>
     </option>
+    <option option_id="threema_gateway_tfa_fast_auto_trigger" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="340"/>
+    </option>
     <option option_id="threema_gateway_tfa_fast_block" edit_format="template" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
       <edit_format_params>threemagw_option_list_static_explain</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw_tfa" display_order="340"/>
+      <relation group_id="threemagw_tfa" display_order="360"/>
     </option>
     <option option_id="threema_gateway_tfa_fast_show_qr_code" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
@@ -391,6 +397,12 @@ userfield</sub_options>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw_tfa" display_order="205"/>
+    </option>
+    <option option_id="threema_gateway_tfa_reversed_auto_trigger" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw_tfa" display_order="240"/>
     </option>
     <option option_id="threema_gateway_tfa_reversed_show_qr_code" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
@@ -474,7 +486,7 @@ time</sub_options>
     <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank">Threema Gateway</a>.]]></phrase>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
     <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the two-factor-authentication modes of the Threema Gateway. Please note that the general Threema Gateway settings must be configured before.]]></phrase>
-    <phrase title="option_threema_gateway_allow_get_receive" version_id="2" version_string="0.2.0"><![CDATA[Allow GET requests when receiving messages (debug mode)]]></phrase>
+    <phrase title="option_threema_gateway_allow_get_receive" version_id="2" version_string="0.2.0"><![CDATA[Allow GET requests for incoming messages (debug mode)]]></phrase>
     <phrase title="option_threema_gateway_allow_get_receive_explain" version_id="2" version_string="0.2.0"><![CDATA[Usually the Gateway server only sends data via POST request. This option also allows GET requests, which may be useful for debugging.<br>
 <b>Note:</b> For security reasons this setting is ignored when XenForo is not running in debug mode.]]></phrase>
     <phrase title="option_threema_gateway_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[Download path for files]]></phrase>
@@ -494,7 +506,7 @@ You may try to set this as high as possible. If you experience problems connecti
     <phrase title="option_threema_gateway_keystorefile" version_id="1" version_string="0.1.0"><![CDATA[Use PHP Keystore (not recommend)]]></phrase>
     <phrase title="option_threema_gateway_keystorefile_explain" version_id="1" version_string="0.1.0"><![CDATA[By default the database is used to store the public keys of Threema users. When enabling this option you can specify a php file to use. This file <b>must already exist</b>!
 Note that the file must be stored in <code>library/ThreemaGateway</code>, but you can use relative paths to change this location.]]></phrase>
-    <phrase title="option_threema_gateway_logreceivedmsgs" version_id="1" version_string="0.1.0"><![CDATA[Log received messages (debug mode)]]></phrase>
+    <phrase title="option_threema_gateway_logreceivedmsgs" version_id="2" version_string="0.2.0"><![CDATA[Log incoming messages (debug mode)]]></phrase>
     <phrase title="option_threema_gateway_logreceivedmsgs_explain" version_id="2" version_string="0.2.0"><![CDATA[When activated this logs all received messages to a path you specify. The path must be relative to the XenForo root.<br>
 <b>Note:</b> Please only use this for temporarily for debugging purposes as it dumps secret information to your disk.<br>
 When the path is publicly accessible everyone can see every message!
@@ -543,7 +555,7 @@ Additionally many 2FA methods will be disabled if you do not install libsodium.]
 Add the ID of the custom user field in the input box, where it should be looked for phone numbers.<br />
 <b>Important:</b> When the phone number in this custom user field is not verified when it is saved this allows forum members to lookup arbitrary phone numbers of any Threema user.]]></phrase>
     <phrase title="option_threema_gateway_tfa_blocking_time" version_id="2" version_string="0.2.0"><![CDATA[Time to block (minutes)]]></phrase>
-    <phrase title="option_threema_gateway_tfa_blocking_time_explain" version_id="2" version_string="0.2.0"><![CDATA[How many minutes the login via the 2FA method should be blocked when a user chooses to do so. This value can not be configured by a user. It is always the same for each user.]]></phrase>
+    <phrase title="option_threema_gateway_tfa_blocking_time_explain" version_id="2" version_string="0.2.0"><![CDATA[How many minutes the login via the 2FA method should be blocked when a user chooses to do so. This value cannot be configured by a user. It is always the same for each user.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional" version_id="2" version_string="0.2.0"><![CDATA[Activate conventional mode]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_explain" version_id="1" version_string="0.1.0"><![CDATA[Allow users to use the "Conventional" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_conventional_validation" version_id="2" version_string="0.2.0"><![CDATA[Validation time]]></phrase>
@@ -552,10 +564,13 @@ Add the ID of the custom user field in the input box, where it should be looked 
     <phrase title="option_threema_gateway_tfa_conventional_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the one time code should be valid when setting up the 2FA method. (in minutes)<br>
 It is useful that this value is a bit higher than the previous one, to give the user more time to read through the explanations or similar things. The first setup is assumed to take a bit longer.]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast" version_id="2" version_string="0.2.0"><![CDATA[Activate fast login mode]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_auto_trigger" version_id="2" version_string="0.2.0"><![CDATA[Automatically trigger validation]]></phrase>
+    <phrase title="option_threema_gateway_tfa_fast_auto_trigger_explain" version_id="2" version_string="0.2.0"><![CDATA[If enabled the submit button is hidden and it is automatically verified whether the validation criteria is satisfied.<br>
+If the option is disabled the user has to click the submit button manually.]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_block" version_id="2" version_string="0.2.0"><![CDATA[Blocking options]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_block_explain" version_id="2" version_string="0.2.0"><![CDATA[In the Fast mode users can decline messages. In the setup of the Fast mode users can configure what to do when they do so.<br>
 
-You can configure what users are allowed to do in this case, in the permission options for all user groups (at "Threema - Two-step-authentication"). By defaults users can only do some notifications and login blocking and admins and moderators can do everything.]]></phrase>
+You can configure what users are allowed to do in this case in the permission options for all user groups (at "Threema - Two-step-authentication"). By defaults users can only do some notifications and login blocking and admins and moderators can do everything.]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_explain" version_id="2" version_string="0.2.0"><![CDATA[Allows users to use the "Fast login" method]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_show_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Show QR code of Gateway ID]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_show_qr_code_explain" version_id="2" version_string="0.2.0"><![CDATA[When enabled this suggests the user to scan the QR code of the Gateway ID. As you usually cannot meet a Gateway ID in person anyway, it is reasonable to offer this.<br>
@@ -566,6 +581,9 @@ The default time limit is so high (compared with the other 2FA modes) as here a 
     <phrase title="option_threema_gateway_tfa_fast_validation_setup" version_id="2" version_string="0.2.0"><![CDATA[Validation time when setting up]]></phrase>
     <phrase title="option_threema_gateway_tfa_fast_validation_setup_explain" version_id="2" version_string="0.2.0"><![CDATA[How long the message should be able to confirm or decline the message when setting up the 2FA method. (in minutes)]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed" version_id="2" version_string="0.2.0"><![CDATA[Activate reversed mode]]></phrase>
+    <phrase title="option_threema_gateway_tfa_reversed_auto_trigger" version_id="2" version_string="0.2.0"><![CDATA[Automatically trigger validation]]></phrase>
+    <phrase title="option_threema_gateway_tfa_reversed_auto_trigger_explain" version_id="2" version_string="0.2.0"><![CDATA[If enabled the submit button is hidden and it is automatically verified whether the validation criteria is satisfied.<br>
+If the option is disabled the user has to click the submit button manually.]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_explain" version_id="2" version_string="0.2.0"><![CDATA[Allow users to use the "Reversed" 2FA method.]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_show_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Show QR code of Gateway ID]]></phrase>
     <phrase title="option_threema_gateway_tfa_reversed_show_qr_code_explain" version_id="2" version_string="0.2.0"><![CDATA[When enabled this suggests the user to scan the QR code of the Gateway ID. As you usually cannot meet a Gateway ID in person anyway, it is reasonable to offer this.<br>
@@ -586,7 +604,7 @@ It is useful that this value is a bit higher than the previous one, to give the 
 Note that it is not verified whether the Threema ID <strong>belongs</strong> to the user.]]></phrase>
     <phrase title="option_threema_gateway_usesource" version_id="1" version_string="0.1.0"><![CDATA[Use source code of PHP SDK]]></phrase>
     <phrase title="option_threema_gateway_usesource_explain" version_id="1" version_string="0.1.0"><![CDATA[Instead of using the .phar file this forces the add-on to use the source code of the PHP SDK. This is in most cases only useful for debugging.]]></phrase>
-    <phrase title="option_threema_gateway_verify_receive_time" version_id="2" version_string="0.2.0"><![CDATA[Reject old messages when receiving]]></phrase>
+    <phrase title="option_threema_gateway_verify_receive_time" version_id="2" version_string="0.2.0"><![CDATA[Reject old incoming messages]]></phrase>
     <phrase title="option_threema_gateway_verify_receive_time_explain" version_id="2" version_string="0.2.0"><![CDATA[When activated, this verifies the time, when messages are received, so old messages are rejected. The format of the date must be a valid one, which can be processed by <a href="https://secure.php.net/manual/function.strtotime.php" target="_blank"><code>strtotime</code></a>. The date must be a <a href="https://secure.php.net/manual/datetime.formats.relative.php" target="_blank">relative one</a>.
 The recommend minimum value is 20 minutes (<code>-20 min</code>) as the Gateway server retries sending a message for a maximum of 15 minutes. 5 minutes should be a minimum tolerance for server delays.
 <br>
@@ -607,6 +625,7 @@ When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, a
     <phrase title="sendto_threema" version_id="1" version_string="0.1"><![CDATA[Send to Threema]]></phrase>
     <phrase title="tfa_threemagw_add_threema_id_button" version_id="2" version_string="0.2.0"><![CDATA[Add Threema ID]]></phrase>
     <phrase title="tfa_threemagw_add_threema_id_button_tooltip" version_id="2" version_string="0.2.0"><![CDATA[Adds {threemaid} to your contact list]]></phrase>
+    <phrase title="tfa_threemagw_automatically_continues" version_id="2" version_string="0.2.0"><![CDATA[Waiting for confirmation…]]></phrase>
     <phrase title="tfa_threemagw_block_ip" version_id="2" version_string="0.2.0"><![CDATA[block the IP of the user trying to login]]></phrase>
     <phrase title="tfa_threemagw_block_ip_explain" version_id="2" version_string="0.2.0"><![CDATA[This <b>permanently</b> blocks the IP of the user, who tried to login. Use this option with care!]]></phrase>
     <phrase title="tfa_threemagw_block_tfa_mode" version_id="2" version_string="0.2.0"><![CDATA[block the 2FA login method]]></phrase>
@@ -1117,6 +1136,20 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
   margin-left: 15px;
 }
 
+#threemagw_auto_trigger {
+  display: none;
+}
+
+#threemagw_auto_trigger_loading {
+  display: block;
+  height: 19px;
+}
+
+#threemagw_auto_trigger_explanation {
+  padding-left: 5px;
+  margin-top: -4px;
+}
+
 .inputThreemaId {
   text-transform: uppercase;
 }
@@ -1141,7 +1174,7 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
   margin-bottom: 5px;
 }
 
-/* this needs to be so strong specified to overwrite the auto value from .textCtrl */
+/* this needs to be so "overspecified" to overwrite the auto value from .textCtrl */
 .threemagw_code > code.textCtrl.threemagw_given_code {
   display: inline-block;
   font-size: 18pt; /* same as titleBar > h1 title */
@@ -1190,6 +1223,20 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 		<a class="button threemagw_emphasized_button" href="threema://add?id={$gatewayid}" title="{xen:phrase tfa_threemagw_add_threema_id_button_tooltip, 'threemaid={$gatewayid}'}" accesskey="c">{xen:phrase tfa_threemagw_add_threema_id_button, 'threemaid={$gatewayid}'}</a>
 	</dd>
 </dl>]]></template>
+    <template title="threemagw_auto_trigger" version_id="2" version_string="0.2.0"><![CDATA[<xen:comment>
+automatically triggers the form submission via JavaScript -->
+</xen:comment>
+
+<xen:require css="threemagw.css" />
+<xen:require js="js/ThreemaGateway/threematfa.js" />
+
+<xen:if is="{$autoTrigger}">
+	<dl id="threemagw_auto_trigger" class="ctrlUnit" data-expectederror="{xen:phrase two_step_verification_value_could_not_be_confirmed}">
+		<dt id="threemagw_auto_trigger_loading" class="InProgress"></dt>
+		<dd id="threemagw_auto_trigger_explanation">{xen:phrase tfa_threemagw_automatically_continues}</dd>
+	</dl>
+</xen:if>
+]]></template>
     <template title="threemagw_pubkey_userverify" version_id="2" version_string="0.2.0"><![CDATA[<xen:if is="{$context} == 'setup'">
 	<xen:comment>Show public key of Threema ID</xen:comment>
 	<xen:comment>This allows the user to verify the public key received by the server, so potential man-in-the-middle attacks can be mitigated.</xen:comment>
@@ -1243,6 +1290,8 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 	<p>{xen:phrase tfa_threemagw_fast_validation_time, 'validationTime={$validationTime}'}</p>
 </xen:comment>
 
+<xen:include template="threemagw_auto_trigger" />
+
 <xen:comment>main content end</xen:comment>
 
 <xen:if is="{$context} == 'setup'">
@@ -1278,6 +1327,9 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 </div>
 
 <p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>
+
+
+<xen:include template="threemagw_auto_trigger" />
 
 <xen:comment>main content end</xen:comment>
 

@@ -155,12 +155,16 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::renderVerification($view, $context, $user, $providerData, $triggerData);
 
+        /** @var XenForo_Options $xenOptions */
+        $xenOptions = XenForo_Application::getOptions();
+
         $params = [
             'data' => $providerData,
             'trigger' => $triggerData,
             'context' => $context,
             'validationTime' => $this->parseTime($providerData['validationTime']),
-            'gatewayid' => $this->gatewaySettings->getId()
+            'gatewayid' => $this->gatewaySettings->getId(),
+            'autoTrigger' => $xenOptions->threema_gateway_tfa_fast_auto_trigger
         ];
         return $view->createTemplateObject('two_step_threemagw_fast', $params)->render();
     }

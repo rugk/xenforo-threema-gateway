@@ -134,12 +134,16 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
             );
         }
 
+        /** @var XenForo_Options $xenOptions */
+        $xenOptions = XenForo_Application::getOptions();
+
         $params = [
             'data' => $providerData,
             'trigger' => $triggerData,
             'context' => $context,
             'validationTime' => $this->parseTime($providerData['validationTime']),
-            'gatewayid' => $this->gatewaySettings->getId()
+            'gatewayid' => $this->gatewaySettings->getId(),
+            'autoTrigger' => $xenOptions->threema_gateway_tfa_reversed_auto_trigger
         ];
         return $view->createTemplateObject('two_step_threemagw_reversed', $params)->render();
     }
