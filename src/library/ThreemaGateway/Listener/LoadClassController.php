@@ -11,16 +11,25 @@
 class ThreemaGateway_Listener_LoadClassController
 {
     /**
-     * Extent XenForo_ControllerPublic_Account with ThreemaGateway_ControllerPublic_Account.
+     * Extent XenForos controllers.
      *
      * @param string $class
      * @param array  $extend
      */
     public static function extendAccountController($class, array &$extend)
     {
-        //check not really necessary as we use an event hint, but just to be sure...
-        if ($class == 'XenForo_ControllerPublic_Account') {
-            $extend[] = 'ThreemaGateway_ControllerPublic_Account';
+        switch ($class) {
+            case 'XenForo_ControllerPublic_Account':
+                $extend[] = 'ThreemaGateway_ControllerPublic_Account';
+                break;
+
+            case 'XenForo_ControllerPublic_Login':
+                $extend[] = 'ThreemaGateway_ControllerPublic_Login';
+                break;
+
+            case 'XenForo_ControllerAdmin_Login':
+                $extend[] = 'ThreemaGateway_ControllerAdmin_Login';
+                break;
         }
     }
 }

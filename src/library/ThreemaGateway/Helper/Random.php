@@ -51,7 +51,7 @@ class ThreemaGateway_Helper_Random
      * Generates a random string.
      *
      * Note that they $keyspace parameter may be ignored if libsodium is not
-     * available as XenForo's native method has a hardcoded namespace.
+     * available as XenForo's native method has a hardcoded keyspace.
      *
      * @link https://paragonie.com/blog/2015/07/how-safely-generate-random-strings-and-integers-in-php
      * @param  int    $length   The length of the string

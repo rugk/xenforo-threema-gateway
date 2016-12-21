@@ -14,7 +14,25 @@
     <template title="threemagateway_option_list_option_hidden.css"><![CDATA[.threemagateway_option_hidden {
   display: none;
 }]]></template>
-    <template title="threemagw.css"><![CDATA[.inputThreemaId {
+    <template title="threemagw.css"><![CDATA[.threemagw_intend {
+  margin-left: 15px;
+}
+
+#threemagw_auto_trigger {
+  display: none;
+}
+
+#threemagw_auto_trigger_loading {
+  display: block;
+  height: 19px;
+}
+
+#threemagw_auto_trigger_explanation {
+  padding-left: 5px;
+  margin-top: -4px;
+}
+
+.inputThreemaId {
   text-transform: uppercase;
 }
 
@@ -38,7 +56,7 @@
   margin-bottom: 5px;
 }
 
-/* this needs to be so strong specified to overwrite the auto value from .textCtrl */
+/* this needs to be so "overspecified" to overwrite the auto value from .textCtrl */
 .threemagw_code > code.textCtrl.threemagw_given_code {
   display: inline-block;
   font-size: 18pt; /* same as titleBar > h1 title */
@@ -47,6 +65,20 @@
   margin-bottom: 2px;
   width: auto;
 }]]></template>
+    <template title="threemagw_auto_trigger"><![CDATA[<xen:comment>
+automatically triggers the form submission via JavaScript
+</xen:comment>
+
+<xen:if is="{$autoTrigger}">
+	<xen:require css="threemagw.css" />
+	<xen:require js="js/ThreemaGateway/threematfa.js" />
+
+	<dl id="threemagw_auto_trigger" class="ctrlUnit" data-expectederror="{xen:phrase two_step_verification_value_could_not_be_confirmed}">
+		<dt id="threemagw_auto_trigger_loading" class="InProgress"></dt>
+		<dd id="threemagw_auto_trigger_explanation">{xen:phrase tfa_threemagw_automatically_continues}</dd>
+	</dl>
+</xen:if>
+]]></template>
     <template title="threemagw_option_list_receivecallback"><![CDATA[<xen:require css="threemagw_option_list_receivecallback.css" />
 <xen:require js="js/ThreemaGateway/options.js" />
 
@@ -161,9 +193,17 @@
 </p>
 
 <xen:comment>
+As the require statement in threemagw_auto_trigger seems to be ignored, we need to embed the JS here
+</xen:comment>
+
+<xen:require js="js/ThreemaGateway/threematfa.js" />
+
+<xen:comment>
 	display of validation time currently disabled as it is really high by default and displaying it would be useless
 	<p>{xen:phrase tfa_threemagw_fast_validation_time, 'validationTime={$validationTime}'}</p>
-</xen:comment>]]></template>
+</xen:comment>
+
+<xen:include template="threemagw_auto_trigger" />]]></template>
     <template title="two_step_threemagw_reversed"><![CDATA[<xen:require css="threemagw.css" />
 <xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />
 <xen:require js="js/ThreemaGateway/threematfa.js" />
@@ -184,7 +224,8 @@
 </div>
 
 <p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>
-]]></template>
+
+<xen:include template="threemagw_auto_trigger" />]]></template>
   </admin_templates>
   <admin_template_modifications/>
   <code_events>
@@ -229,7 +270,8 @@
     <listener event_id="file_health_check" execute_order="10" callback_class="ThreemaGateway_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description="Integrate add-on into health check"/>
     <listener event_id="init_dependencies" execute_order="10" callback_class="ThreemaGateway_Listener_InitDependencies" callback_method="addHelpers" active="1" hint="" description="Extend init_dependencies for template helpers"/>
     <listener event_id="load_class" execute_order="10" callback_class="ThreemaGateway_Listener_LoadClass" callback_method="extendClass" active="1" hint="XenForo_Session" description="Extend XF class loader for session"/>
-    <listener event_id="load_class_controller" execute_order="10" callback_class="ThreemaGateway_Listener_LoadClassController" callback_method="extendAccountController" active="1" hint="XenForo_ControllerPublic_Account" description="Extend XF account controller for 2FA"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="ThreemaGateway_Listener_LoadClassController" callback_method="extendAccountController" active="1" hint="" description="Extend XF account controller for 2FA"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="ThreemaGateway_Listener_LoadClassModel" callback_method="extendClass" active="1" hint="XenForo_Model_Tfa" description="Extend XF Tfa Model"/>
     <listener event_id="threemagw_message_callback_presave" execute_order="160" callback_class="ThreemaGateway_Listener_TfaMessageCallback" callback_method="checkForReceiverCode" active="1" hint="1" description="2FA Reversed - message processing callback"/>
     <listener event_id="threemagw_message_callback_presave" execute_order="240" callback_class="ThreemaGateway_Listener_TfaMessageCallback" callback_method="checkForDeliveryReceipt" active="1" hint="128" description="2FA Fast - message processing callback"/>
   </code_event_listeners>
@@ -805,6 +847,7 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="threemagw_phpkeystore_example" version_id="1" version_string="0.1.0"><![CDATA[keystore.php]]></phrase>
     <phrase title="threemagw_privatekeyfile_example" version_id="1" version_string="0.1.0"><![CDATA[privateKey.txt]]></phrase>
     <phrase title="threemagw_sending_failed" version_id="1" version_string="0.1.0"><![CDATA[Sending message failed.]]></phrase>
+    <phrase title="threemagw_tfa_confirmation" version_id="2" version_string="0.2.0"><![CDATA[2FA confirmation]]></phrase>
     <phrase title="threemagw_tfa_user_banned" version_id="2" version_string="0.2.0"><![CDATA[2FA login failure]]></phrase>
     <phrase title="threemagw_this_tfa_mode_is_not_setup" version_id="2" version_string="0.2.0"><![CDATA[This 2FA mode has not been setup correctly.]]></phrase>
     <phrase title="threemagw_threemaid" version_id="1" version_string="0.1.0"><![CDATA[Threema ID]]></phrase>
@@ -1183,7 +1226,10 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
   margin-bottom: 2px;
   width: auto;
 }]]></template>
-    <template title="threemagw_add_gateway_id" version_id="2" version_string="0.2.0"><![CDATA[<!-- show Threema Gateway QR code or button to allow users to add ID to their contacts. -->
+    <template title="threemagw_add_gateway_id" version_id="2" version_string="0.2.0"><![CDATA[<xen:comment>
+Show Threema Gateway QR code or button to allow users to add the ID to their contact list.
+</xen:comment>
+
 <xen:require css="threemagw.css" />
 
 <dl class="ctrlUnit">
@@ -1224,13 +1270,13 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 	</dd>
 </dl>]]></template>
     <template title="threemagw_auto_trigger" version_id="2" version_string="0.2.0"><![CDATA[<xen:comment>
-automatically triggers the form submission via JavaScript -->
+automatically triggers the form submission via JavaScript
 </xen:comment>
 
-<xen:require css="threemagw.css" />
-<xen:require js="js/ThreemaGateway/threematfa.js" />
-
 <xen:if is="{$autoTrigger}">
+	<xen:require css="threemagw.css" />
+	<xen:require js="js/ThreemaGateway/threematfa.js" />
+
 	<dl id="threemagw_auto_trigger" class="ctrlUnit" data-expectederror="{xen:phrase two_step_verification_value_could_not_be_confirmed}">
 		<dt id="threemagw_auto_trigger_loading" class="InProgress"></dt>
 		<dd id="threemagw_auto_trigger_explanation">{xen:phrase tfa_threemagw_automatically_continues}</dd>
@@ -1247,8 +1293,11 @@ automatically triggers the form submission via JavaScript -->
 		</dd>
 	</dl>
 </xen:if>]]></template>
-    <template title="threemagw_threemaid_input_field" version_id="2" version_string="0.2.0"><![CDATA[<xen:require css="threemagw.css" />
-<xen:comment>Show Threema ID input and all other settings as this is not the validation page.</xen:comment>
+    <template title="threemagw_threemaid_input_field" version_id="2" version_string="0.2.0"><![CDATA[<xen:comment>
+Show Threema ID input and all other settings as this is not the validation page.
+</xen:comment>
+
+<xen:require css="threemagw.css" />
 <dt>
 	<label for="{$id}">{xen:phrase threemagw_threemaid}:</label>
 </dt>
@@ -1274,13 +1323,16 @@ automatically triggers the form submission via JavaScript -->
 </dl>
 
 <xen:include template="threemagw_pubkey_userverify" />]]></template>
-    <template title="two_step_threemagw_fast" version_id="2" version_string="0.2.0"><![CDATA[<xen:if is="{$context} == 'setup'">
+    <template title="two_step_threemagw_fast" version_id="2" version_string="0.2.0"><![CDATA[<xen:include template="threemagw_pubkey_userverify" />
+
+<xen:if is="{$context} == 'setup'">
 	<dl class="ctrlUnit">
-		<dt></dt>
+		<dt>{xen:phrase threemagw_tfa_confirmation}</dt>
 			<dd>
 </xen:if>
 
 <xen:comment>main content begin</xen:comment>
+
 <p>
 	{xen:phrase tfa_threemagw_fast_please_confirm_message, 'gatewayid={$gatewayid}', 'threemaid={$data.threemaid}'}
 </p>
@@ -1297,9 +1349,7 @@ automatically triggers the form submission via JavaScript -->
 <xen:if is="{$context} == 'setup'">
 		</dd>
 	</dl>
-</xen:if>
-
-<xen:include template="threemagw_pubkey_userverify" />]]></template>
+</xen:if>]]></template>
     <template title="two_step_threemagw_reversed" version_id="2" version_string="0.2.0"><![CDATA[<xen:require css="threemagw.css" />
 <xen:if is="{$context} == 'setup'">
 	<dl class="ctrlUnit">

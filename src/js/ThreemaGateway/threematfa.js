@@ -68,7 +68,7 @@ var AutoTriggerer = (function (window, document) {
 
     var $indicator;
     var $form;
-    var $submitButton;
+    var $submitUnit;
     var $ajaxProgressWrapper = null;
 
     /**
@@ -179,12 +179,12 @@ var AutoTriggerer = (function (window, document) {
 
         // set variables
         $form = $('form.xenForm.AutoValidator');
-        $submitButton = $form.find('.button.primary');
+        $submitUnit = $form.find('.submitUnit .button.primary').parents().eq(1);
         expectedError = $indicator.data('expectederror');
 
-        // hide button as it is useless with autoTriggering enabled
+        // hide button/unit as it is useless with autoTriggering enabled
         // replace elements
-        $submitButton.parent().parent().parent().append($indicator);
+        $submitUnit.after($indicator);
     };
 
     /**
@@ -212,7 +212,7 @@ var AutoTriggerer = (function (window, document) {
 
         // finally show status & hide button as it is useless now
         $indicator.show();
-        $submitButton.parent().parent().children().hide();
+        $submitUnit.children().hide();
 
         console.log('AutoTriggerer enabled.');
     };
@@ -233,7 +233,7 @@ var AutoTriggerer = (function (window, document) {
 
         // restore button and hide own indicator
         $indicator.hide();
-        $submitButton.parent().parent().children().show();
+        $submitUnit.children().show();
 
         console.log('AutoTriggerer disabled.');
     };

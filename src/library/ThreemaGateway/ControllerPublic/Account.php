@@ -8,45 +8,40 @@
  * @license MIT
  */
 
-
 class ThreemaGateway_ControllerPublic_Account extends XFCP_ThreemaGateway_ControllerPublic_Account
 {
     /**
-     * @var array PROVIDER_ARRAY list of providers handled
-     */
-    const PROVIDER_ARRAY = [
-        'threemagw_conventional',
-        'threemagw_reversed',
-        'threemagw_fast'
-    ];
-
-    /**
      * Expand XenForos two factor enable managment as it is not properly implemented.
      *
-     * https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047
-     *
+     * @see https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047
      * @return XenForo_ControllerResponse_View
      */
     public function actionTwoStepEnable()
     {
+        /** @var XenForo_ControllerResponse_View $parent */
         $parent = parent::actionTwoStepEnable();
 
         if ($parent instanceof XenForo_ControllerResponse_View) {
             // read params
-            $params       = $parent->subView->params;
-            $provider     = $params['provider'];
-            $providerId   = $params['providerId'];
-            $user         = $params['user'];
+            /** @var array $params */
+            $params = $parent->subView->params;
+            /** @var XenForo_Tfa_AbstractProvider $provider */
+            $provider = $params['provider'];
+            /** @var string $providerId */
+            $providerId = $params['providerId'];
+            /** @var array $providerData */
             $providerData = [];
             if (array_key_exists('providerData', $params)) {
                 $providerData = $params['providerData'];
             }
 
-            if (in_array($providerId, self::PROVIDER_ARRAY)) {
+            if (in_array($providerId, ThreemaGateway_Constants::TFA_PROVIDER_ARRAY)) {
                 //get additional data
+                /** @var XenForo_Visitor $visitor */
                 $visitor = XenForo_Visitor::getInstance();
 
                 //forward request to manager
+                /** @var XenForo_ControllerResponse|null $result */
                 $result = $provider->handleManage($this, $visitor->toArray(), $providerData);
 
                 if (!$result) {

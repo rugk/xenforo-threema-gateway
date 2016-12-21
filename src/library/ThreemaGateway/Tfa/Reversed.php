@@ -202,24 +202,6 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-     * Called when setting up the provider before the setup page is shown.
-     *
-     * Currently this is not correctly implemented in XenForo.
-     * See {@link https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047}
-     *
-     * @param XenForo_Input $input
-     * @param array         $user
-     * @param array         $error
-     *
-     * @return string HTML code
-     */
-    public function renderSetup(XenForo_View $view, array $user)
-    {
-        // redirected by ThreemaGateway_ControllerPublic_Account->actionTwoStepEnable
-        // to handleManage.
-    }
-
-    /**
      * Verifies the Treema ID formally after it was entered/changed.
      *
      * @param XenForo_Input $input

@@ -24,7 +24,7 @@ class ThreemaGateway_Constants
     const TFA_BASE_PRIORITY = 40;
 
     /**
-     * @var array[string] Regular expressions for Threema IDs
+     * @var array Regular expressions for Threema IDs
      */
     const REGEX_THREEMA_ID = [
         'gateway' => '^\*[A-Za-z0-9]{7}$', // https://regex101.com/r/fF9hQ0/4
@@ -45,5 +45,14 @@ class ThreemaGateway_Constants
         'read' => 2,
         'userack' => 3,
         'userdec' => 4,
+    ];
+
+    /**
+     * @var array TFA_PROVIDER_ARRAY list of all 2FA providers
+     */
+    const TFA_PROVIDER_ARRAY = [
+        'threemagw_conventional',
+        'threemagw_reversed',
+        'threemagw_fast'
     ];
 }
