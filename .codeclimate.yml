@@ -25,4 +25,5 @@ ratings:
   - "**.php"
   - "**.py"
   - "**.rb"
-exclude_paths: []
+exclude_paths:
+  - "src/library/ThreemaGateway/threema-msgapi-sdk-php/**"
