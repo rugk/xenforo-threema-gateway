@@ -16,7 +16,7 @@
 
 ## Developer
 * This add-on can easily be extended as it provides an API you can use to do your own things with the Threema Gateway.
-* You can find extensive instructions in the [`doc`](/doc/) dir.
+* You can find extensive instructions in the [`docs`](/docs/) dir.
 
 ## Security
 * This add-on is open source, so you and other people can check what it does and that nothing malicious is done.
