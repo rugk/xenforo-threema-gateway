@@ -9,6 +9,9 @@
 jQuery(document).ready(function() {
     'use strict';
 
+    // global variable
+    window.DEBUG = true;
+
     QrCodeCreator.createQr();
     AutoTriggerer.init();
     AutoTriggerer.triggerStart();
@@ -113,7 +116,7 @@ var AutoTriggerer = (function (window, document) {
         }
 
         // apart from logging the event, just ignore it
-        console.log(event);
+        if (window.DEBUG) console.log(event);
         console.log('The automatic form submission failed: ' + error);
 
         // prevent error overlay from appearing
@@ -130,7 +133,7 @@ var AutoTriggerer = (function (window, document) {
         $(document).off('ajaxStart', hideAjaxLoadingInit)
 
         // wrap loading indicator into div
-        console.log('Wrapping AJAX Loading indicator…');
+        if (window.DEBUG) console.log('Wrapping AJAX Loading indicator…');
         $ajaxProgressWrapper = $('#AjaxProgress').wrap('<div></div>').parent();
 
         // as an immediate measure we need to hide the progress indicator right
@@ -151,7 +154,7 @@ var AutoTriggerer = (function (window, document) {
             // as it is only created when an ajax call starts, we need to wait for it and then wrap the indicator
             $(document).on('ajaxStart', hideAjaxLoadingInit)
         } else {
-            console.log('hide ajax loading indicator', $ajaxProgressWrapper);
+            if (window.DEBUG) console.log('hide ajax loading indicator', $ajaxProgressWrapper);
             $ajaxProgressWrapper.hide();
         }
     };
@@ -166,7 +169,7 @@ var AutoTriggerer = (function (window, document) {
             return;
         }
 
-        console.log('show ajax loading indicator', $ajaxProgressWrapper);
+        if (window.DEBUG) console.log('show ajax loading indicator', $ajaxProgressWrapper);
         $ajaxProgressWrapper.show();
     };
 

@@ -21,10 +21,14 @@ class ThreemaGateway_Model_Tfa extends XFCP_ThreemaGateway_Model_Tfa
         'threemagw_reversed' => [
             [60 * 5, 150], // in 5 minutes: 150 tries (every 2 seconds)
             [60, 30], // in 1 minutes: 30 tries (every 2 seconds)
+            [12, 6], // in 12 seconds: 6 requests
+            [8, 4], // in 8 seconds: 4 requests
         ],
         'threemagw_fast' => [
             [60 * 5, 150], // in 5 minutes: 150 tries (every 2 seconds)
             [60, 30], // in 1 minutes: 30 tries (every 2 seconds)
+            [12, 6], // in 12 seconds: 6 requests
+            [8, 4], // in 8 seconds: 4 requests
         ]
     ];
 
