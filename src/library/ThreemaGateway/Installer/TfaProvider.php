@@ -52,7 +52,7 @@ class ThreemaGateway_Installer_TfaProvider
     public function add($enabled = true)
     {
         $db = XenForo_Application::get('db');
-        $db->query('INSERT ' . (XenForo_Application::get('options')->enableInsertDelayed ? 'DELAYED' : '') . ' INTO `xf_tfa_provider`
+        $db->query('INSERT INTO `xf_tfa_provider`
                   (`provider_id`, `provider_class`, `priority`, `active`)
                   VALUES (?, ?, ?, ?)',
                   [$this->TfaId, $this->TfaClass, $this->TfaPriority, (int) $enabled]);
@@ -66,7 +66,7 @@ class ThreemaGateway_Installer_TfaProvider
         $db = XenForo_Application::get('db');
         // delete user data
         $db->delete('xf_user_tfa', [
-            'provider_id = ?' => $providerId
+            'provider_id = ?' => $this->TfaId
         ]);
 
         // unfortunately I do not want to go through each deleted user data here
@@ -76,8 +76,8 @@ class ThreemaGateway_Installer_TfaProvider
         // deleted data is stored there this is not very bad.
 
         // delete provider itself
-        $db->query('DELETE FROM `xf_tfa_provider`
-                    WHERE `provider_id`=?',
-                    [$this->TfaId]);
+        $db->delete('xf_tfa_provider', [
+            'provider_id = ?' => $this->TfaId
+        ]);
     }
 }

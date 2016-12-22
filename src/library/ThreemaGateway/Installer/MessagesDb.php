@@ -31,7 +31,7 @@ class ThreemaGateway_Installer_MessagesDb
         // main table
         $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_messages`
             (`message_id` CHAR(16),
-            `message_type_code` ENUM(' . $this->getMsgTypes() . ') COMMENT \'determinates type of message\',
+            `message_type_code` INT UNSIGNED COMMENT \'determinates type of message\',
             `sender_threema_id` CHAR(8),
             `date_send` INT UNSIGNED COMMENT \'the date/time delivered by the Gateway server stored as unix timestamp\',
             `date_received` INT UNSIGNED COMMENT \'the date/time when msg was received by this server stored as unix timestamp\',
@@ -64,7 +64,7 @@ class ThreemaGateway_Installer_MessagesDb
         $db->query('CREATE TABLE `' . self::DB_TABLE_PREFIX . '_messages_delivery_receipt`
             (`message_id` CHAR(16) NOT NULL,
             `receipt_type` TINYINT UNSIGNED NOT NULL,
-            PRIMARY KEY (`message_id`)
+            PRIMARY KEY (`message_id`),
             FOREIGN KEY (`message_id`) REFERENCES ' . self::DB_TABLE_PREFIX . '_messages(`message_id`)
             )');
 
@@ -110,16 +110,5 @@ class ThreemaGateway_Installer_MessagesDb
         $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_messages_text`');
         $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_files`');
         $db->query('DROP TABLE `' . self::DB_TABLE_PREFIX . '_messages`');
-    }
-
-    /**
-     * Returns a string of all available message types.
-     *
-     * @return string
-     */
-    protected function getMsgTypes()
-    {
-        $receiver = new ThreemaGateway_Handler_Action_Receiver;
-        return implode(', ', $receiver->getTypesArray());
     }
 }

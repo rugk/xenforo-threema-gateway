@@ -398,14 +398,15 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
     /**
      * Remove a message from the database.
      *
-     * Note that the message is never completly removed and the message ID will
-     * stay in the database.
+     * Note that the message is usually not completly removed and the message ID
+     * will stay in the database. The exact behaviour depends on the ACP "Harden
+     * against replay attacks" setting.
      * This prevents replay attacks as otherwise a message with the same message
      * ID could be inserted again into the database and would therefore be
      * considered a new message, which has just been received altghough it
      * actually had been received two times.
      * However the message ID alone does not reveal any data (as all data &
-     * meta data, even including the message type is deleted).
+     * meta data, even the message type, is deleted).
      *
      * @param string $messageId
      */

@@ -23,7 +23,7 @@ class ThreemaGateway_Installer
     {
         /** @var array $providerInstaller An array with the models of all providers */
         $providerInstaller = self::getProviderInstaller();
-
+        // var_dump((new ThreemaGateway_Installer_MessagesDb)->create());exit;
         // check requirements of Gateway
         if (!self::meetsRequirements($error)) {
             throw new XenForo_Exception($error);
@@ -127,18 +127,28 @@ class ThreemaGateway_Installer
         // delete custom user field (if it exists)
         /** @var XenForo_Model_UserField $userFieldModel */
         $userFieldModel = XenForo_Model::create('XenForo_Model_UserField');
-        if ($userFieldModel->getUserFieldById('threemaid')) {
+        /** @var array $userFieldData fetched data from database */
+        if ($userFieldData = $userFieldModel->getUserFieldById('threemaid')) {
             /** @var XenForo_DataWriter $userFieldWriter */
             $userFieldWriter = XenForo_DataWriter::create('XenForo_DataWriter_UserField');
-            $userFieldWriter->setExistingData('threemaid');
+            $userFieldWriter->setExistingData($userFieldData);
             $userFieldWriter->delete();
         }
 
         /** @var XenForo_Options $xenOptions */
         $xenOptions = XenForo_Application::getOptions();
 
-        //delete debug log files
-        ThreemaGateway_Option_DebugModeLog::removeLog($xenOptions->threema_gateway_logreceivedmsgs);
+        try {
+            //delete debug log file
+            ThreemaGateway_Option_DebugModeLog::removeLog($xenOptions->threema_gateway_logreceivedmsgs);
+
+            //delete private key file if possible
+            ThreemaGateway_Option_PrivateKeyPath::removePrivateKey($xenOptions->threema_gateway_privatekeyfile);
+        } catch (Exception $e) {
+            // ignore errors as deletion operations are additional security
+            // features, which may fail in an excpected way, e.g. when XenForo
+            // does not have access to the files
+        }
     }
 
     /**
@@ -190,12 +200,6 @@ class ThreemaGateway_Installer
         // check PHP version
         if (version_compare(PHP_VERSION, '5.4', '<')) {
             $error .= 'Threema Gateway requires PHP version 5.4 or higher. Current version: ' . PHP_VERSION . PHP_EOL;
-            $isError = true;
-        }
-
-        // check MySql version
-        if (mysqli_get_server_version() < 50503) { //require v5.5.3
-            $error .= 'Threema Gateway requires MySQL version 5.5.3 or higher. Current version: ' . mysqli_get_server_info() . PHP_EOL;
             $isError = true;
         }
 

@@ -71,10 +71,8 @@ class ThreemaGateway_Option_DebugModeLog
             return false;
         }
 
-        // auto-remove existing file if disabled
-        if (!$filepath['enabled'] && file_exists($filepath['path'])) {
-            self::removeLog($filepath);
-        }
+        // auto-remove existing file if necessary
+        self::removeLog($filepath);
 
         return true;
     }
@@ -82,24 +80,27 @@ class ThreemaGateway_Option_DebugModeLog
     /**
      * Remove the log file.
      *
-     * Attention: This does not check whether it is good/useful to remove the
-     * file! Please do so before or just catch all exceptions.
-     *
-     * @param  array $filepath option setting
+     * @param  array $option option setting
      * @return bool
      */
-    protected static function removeLog($filepath)
+    public static function removeLog($option)
     {
         // to be sure check the path again
-        $filepath = self::correctOption($filepath);
+        $option = self::correctOption($option);
 
-        return unlink(realpath($filepath['path']));
+        // check pre-conditions
+        if (!$option['enabled'] || !file_exists($option['path'])) {
+            return false;
+        }
+
+        // remove file
+        return unlink(realpath($option['path']));
     }
 
     /**
      * Corrects the option array.
      *
-     * @param  string $option
+     * @param  array $option
      * @return string
      */
     protected static function correctOption($option)

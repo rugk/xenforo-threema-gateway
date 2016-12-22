@@ -31,7 +31,7 @@ class ThreemaGateway_Installer_TfaPendingConfirmMsgs
             `pending_type` TINYINT(3) UNSIGNED NOT NULL,
             `user_id` INT(10) UNSIGNED NOT NULL,
             `session_id` VARBINARY(32) NOT NULL,
-            `extra_data` BLOB COMMENT=\'any extra data, which may be used for verifying whether a request is valid\',
+            `extra_data` BLOB COMMENT \'any extra data, which may be used for verifying whether a request is valid\',
             `expiry_date` INT(10) UNSIGNED NOT NULL,
             PRIMARY KEY(`request_id`),
             INDEX(`expiry_date`)

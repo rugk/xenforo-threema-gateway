@@ -36,7 +36,7 @@ class ThreemaGateway_Installer_Permissions
     {
         $db = XenForo_Application::get('db');
 
-        $db->query('INSERT ' . (XenForo_Application::get('options')->enableInsertDelayed ? 'DELAYED' : '') . ' IGNORE INTO xf_permission_entry
+        $db->query('INSERT IGNORE INTO xf_permission_entry
                 (user_group_id, user_id, permission_group_id, permission_id, permission_value, permission_value_int)
                 VALUES (?, 0, ?, ?, ?, ?)',
                 [$userGroupId, self::GROUP_ID, $permissionId, $permissionValue, $permissionValueInt]);
@@ -49,8 +49,8 @@ class ThreemaGateway_Installer_Permissions
     {
         $db = XenForo_Application::get('db');
 
-        $db->query('DELETE FROM xf_permission_entry
-                WHERE permission_group_id=?',
-                [self::GROUP_ID]);
+        $db->delete('xf_permission_entry', [
+            'permission_group_id = ?' => self::GROUP_ID
+        ]);
     }
 }

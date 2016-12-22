@@ -1,6 +1,6 @@
 # XenForo - Threema Gateway (two-factor-authentication)
 
-[TODO: short explanation of what this is]
+This add-on integrates the secure instant-messaging app [Threema](https://threema.ch) into the forum software XenForo. Using the [Threema Gateway](https://gateway.threema.ch) it offers three new [two-step authentication](https://xenforo.com/community/threads/two-step-verification-and-security-improvements.99881/) (also called two-factor authentication) modes for users and admins.
 
 ## User
 * Multiple two step/two factor authentication modes allow you to choose the most suitable for yourself.
@@ -20,15 +20,16 @@
 
 ## Security
 * This add-on is open source, so you and other people can check what it does and that nothing malicious is done.
-* Sensitive settings are hidden in the ACP.
 * You can set permissions which users can send or receive messages with the Threema Gateway.
-* You can generate the private key on the server and even place it outside of the web root by just specifying the file where it is saved. This means your private key never leaves the server!
-* You can hardcode your private key and other details into the PHP file instead of using the XenForo settings, which stores the secrets in your database.
+* Threema ID verification QR codes are shown when appropiate. Their generation is done (locally) on the XenForo seerver/in the browser.
+* Sensitive settings are hidden in the ACP and you can even prevent some administrators from viewing your remaining credits.
+* You can generate the private key on the server and even place it outside of the web root by just specifying the file where it is saved. This means your private key never leaves the server! You also do not have to enter it into the web interface and it is not saved in the database.
+* You can even hardcode your private key and other details into the PHP file instead of using the XenForo settings or the file storage (for the private key file).
 * Permissions allow you to control every aspect of your Gateway.
 * This add-on does only make external calls to the Threema Gateway server.
 * By default the add-on uses the [advanced settings](https://github.com/rugk/threema-msgapi-sdk-php#user-content-creating-a-connection-with-advanced-options) of the PHP SDK, which provide better HTTPS security when sending messages.
 * You can further improve the advanced connection settings with a few clicks in the ACP.
-* The Gateway server pin is automatically [pinned](https://www.owasp.org/index.php/Certificate_and_Public_Key_Pinning) when possible. (needs cURL >= v7.39)
+* The Gateway server pin is automatically [pinned](https://www.owasp.org/index.php/Certificate_and_Public_Key_Pinning) when possible. (requires cURL >= v7.39)
 
 # Requirements
 * PHP 5.4 or later
@@ -36,4 +37,5 @@
 * Libsodium (recommend, required for receiving messages, install guide included)
 * curl (>= v7.39 suggested for better security)
 * MySQL 5.5.3 or higher
-* HTTPS on server (recommend, required for receiving messages and some details), if you have not set it up using [Let's Encrypt](https://letsencrypt.org/), certificates must be valid, self-signed certificates are not accepted
+* HTTPS on server (recommend, required for receiving messages and some details)  
+   If you have not set it up use [Let's Encrypt](https://letsencrypt.org/), certificates must be valid (self-signed certificates are not accepted).
