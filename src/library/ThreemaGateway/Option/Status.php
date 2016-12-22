@@ -31,10 +31,6 @@ class ThreemaGateway_Option_Status
         /** @var string $additionalerrors */
         $additionalerrors = '';
 
-        //get XenForo required things
-        /** @var XenForo_Visitor $visitor */
-        $visitor = XenForo_Visitor::getInstance();
-
         if (!XenForo_Application::$secure) {
             $additionalerrors[]['text'] = new XenForo_Phrase('option_threema_gateway_status_no_https');
         }
