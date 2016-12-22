@@ -42,7 +42,7 @@ This is the most convenient mode for the user, but it does not depend on a secre
 
 ![fast login sketch: server sends message to user, user acknowledges or declines it](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/master/docs/images/FastLogin.svg)
 
-This is secure, because here the message ID acts as a secret only known to the server and the client. This secret is never transfered outside of the Threema network or the forum sever itself. Nevertheless the security of the system does not depend on this secret.  
+This is secure, because here the message ID acts as a secret only known to the server and the client. This secret is never transfered outside of the Threema network or the forum sever itself. Nevertheless the security of the system does not depend on this confidentially of this "secret" - in contrast to the other two 2FA methods, i.e. it does not hurt if the secret becomes known publicy.  
 By acknowledging a message the client creates an authenticated and end-to-end-encrypted message stating that the previously received message ID (and therefore the message) has been acknowledged. As the message asks the question whether to allow login this is a cryptographic proof of the users decicion and can therefore be validated by the server.
 
 The security mostly depends on how the user can estimate the vadility of the login request (which includes the IP address). An attacker could try to login at the same time and trick the user into acknowledging the wrong message.
