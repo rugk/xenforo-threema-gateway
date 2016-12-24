@@ -79,6 +79,28 @@ automatically triggers the form submission via JavaScript
 	</dl>
 </xen:if>
 ]]></template>
+    <template title="threemagw_option_list_donate"><![CDATA[<xen:controlunit label="{$preparedOption.title}" hint="{$preparedOption.hint}">
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<p>{xen:phrase threemagw_donate_like_addon_and_support_dev}</p><br>
+		
+		<p>{xen:phrase threemagw_donate_consider_donating}</p>
+		{xen:phrase threemagw_donate_paypal_me}:
+		<a href="https://paypal.me/rugk/1" target="_blank" rel="noopener noreferrer">{xen:phrase threemagw_donate_currency, 'num=1'}</a> |
+		<a href="https://paypal.me/rugk/5" target="_blank" rel="noopener noreferrer">{xen:phrase threemagw_donate_currency, 'num=5'}</a> |
+		<a href="https://paypal.me/rugk/15" target="_blank" rel="noopener noreferrer">{xen:phrase threemagw_donate_currency, 'num=15'}</a> |
+		<a href="https://paypal.me/rugk" target="_blank" rel="noopener noreferrer">{xen:phrase threemagw_donate_other_amount}</a>
+		
+		<br>
+		{xen:phrase threemagw_donate_paypal}: <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q" target="_blank" rel="noopener noreferrer">{xen:phrase threemagw_donate_paypal_button_text}</a>
+		
+		<br>
+		{xen:phrase threemagw_donate_micro_donation}: <a href="https://flattr.com/submit/auto?user_id=rugk&url=https%3A%2F%2Fgithub.com%2Frugk%2Fxenforo-threema-gateway&title=xenforo-threema-gateway%20-%20in-app&language={xen:phrase threemagw_donate_flattr_language_code}&tags=threema,2fa,security&category=software" target="_blank" rel="noopener noreferrer">{xen:phrase threemagw_donate_flattr}</a>
+		
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:controlunit>]]></template>
     <template title="threemagw_option_list_receivecallback"><![CDATA[<xen:require css="threemagw_option_list_receivecallback.css" />
 <xen:require js="js/ThreemaGateway/options.js" />
 
@@ -289,6 +311,12 @@ As the require statement in threemagw_auto_trigger seems to be ignored, we need 
       <edit_format_params>ThreemaGateway_Option_AllowGet::renderOption</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="370"/>
+    </option>
+    <option option_id="threema_gateway_donate" edit_format="template" data_type="boolean" can_backup="1">
+      <default_value>1</default_value>
+      <edit_format_params>threemagw_option_list_donate</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="10"/>
     </option>
     <option option_id="threema_gateway_downloadpath" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_DownloadPath" validation_method="verifyOption">
       <default_value>internal_data/threemagateway/recfiles</default_value>
@@ -525,12 +553,15 @@ time</sub_options>
     <phrase title="cron_entry_threemagwCleanUpMsgs" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway: Clean up old deleted Threema messages]]></phrase>
     <phrase title="cron_entry_threemagwCleanUpTfaPend" version_id="2" version_string="0.2.0"><![CDATA[Threema 2FA: Clean up expired pending requests]]></phrase>
     <phrase title="option_group_threemagw" version_id="1" version_string="0.1"><![CDATA[Threema Gateway]]></phrase>
-    <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank">Threema Gateway</a>.]]></phrase>
+    <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank" rel="noopener noreferrer">Threema Gateway</a>.]]></phrase>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
     <phrase title="option_group_threemagw_tfa_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the two-factor-authentication modes of the Threema Gateway. Please note that the general Threema Gateway settings must be configured before.]]></phrase>
     <phrase title="option_threema_gateway_allow_get_receive" version_id="2" version_string="0.2.0"><![CDATA[Allow GET requests for incoming messages (debug mode)]]></phrase>
     <phrase title="option_threema_gateway_allow_get_receive_explain" version_id="2" version_string="0.2.0"><![CDATA[Usually the Gateway server only sends data via POST request. This option also allows GET requests, which may be useful for debugging.<br>
 <b>Note:</b> For security reasons this setting is ignored when XenForo is not running in debug mode.]]></phrase>
+    <phrase title="option_threema_gateway_donate" version_id="2" version_string="0.2.0"><![CDATA[Donate]]></phrase>
+    <phrase title="option_threema_gateway_donate_explain" version_id="2" version_string="0.2.0"><![CDATA[As this is a non-commercial open-source project I rely on your donations. Any amount helps!<br>
+Of course, you can also help in other ways such as contributing to the project on GitHub.]]></phrase>
     <phrase title="option_threema_gateway_downloadpath" version_id="1" version_string="0.1.0"><![CDATA[Download path for files]]></phrase>
     <phrase title="option_threema_gateway_downloadpath_explain" version_id="1" version_string="0.1.0"><![CDATA[This is the path where files send to your ID should be saved (in decrypted form!). When no path is given the files are not downloaded (not recommend!). The path must be relative to the XenForo root.]]></phrase>
     <phrase title="option_threema_gateway_e2e" version_id="1" version_string="0.1"><![CDATA[Operation mode]]></phrase>
@@ -538,7 +569,7 @@ time</sub_options>
     <phrase title="option_threema_gateway_harden_reply_attack_protection" version_id="2" version_string="0.2.0"><![CDATA[Harden replay attack protection]]></phrase>
     <phrase title="option_threema_gateway_harden_reply_attack_protection_explain" version_id="2" version_string="0.2.0"><![CDATA[If you are concerned that the Threema server could trick you into maliciously re-delivering you a message, which has already be delivered tick this option.
 When enabled this may store more data in your database than when it is disabled.<br>
-A strong replay-attack protection is always used, so it is not necessary to enable this option. More information can <a href="https://SOMEWHERE-TODO-" target="_blank">can be found in the FAQ</a>.]]></phrase>
+A strong replay-attack protection is always used, so it is not necessary to enable this option. More information can <a href="https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ#what-are-replay-attacks-and-what-does-the-checkbox-harden-replay-attack-protection-do" target="_blank" rel="noopener noreferrer">can be found in the FAQ</a>.]]></phrase>
     <phrase title="option_threema_gateway_httpshardening" version_id="2" version_string="0.2.0"><![CDATA[Harden HTTPS connection (recommend)]]></phrase>
     <phrase title="option_threema_gateway_httpshardening_basic" version_id="1" version_string="0.1.0"><![CDATA[Basic hardening]]></phrase>
     <phrase title="option_threema_gateway_httpshardening_enhanced" version_id="1" version_string="0.1.0"><![CDATA[Enhanced hardening]]></phrase>
@@ -557,7 +588,7 @@ For security reasons this setting <b>is ignored</b> when XenForo is not running 
     <phrase title="option_threema_gateway_mode_e2e" version_id="1" version_string="0.1.0"><![CDATA[End-to-end encrypted mode]]></phrase>
     <phrase title="option_threema_gateway_privatekeyfile" version_id="1" version_string="0.1.0"><![CDATA[Private key file]]></phrase>
     <phrase title="option_threema_gateway_privatekeyfile_explain" version_id="1" version_string="0.1.0"><![CDATA[If you use the end-to-end encrypted mode enter the path to your private key file here. The file must be placed in <code>library/ThreemaGateway</code>. You can however use relative paths to place it somewhere else.<br />
-<a href="https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#4-generate-a-keypair-by-running-the-tool" target="_blank">In the wiki</a> you can find an explanation how to do this. You can begin with step 4 as the msgapi tool is already included in <code>library/ThreemaGateway/threema-msgapi-sdk-php/threema-msgapi-tool.php</code>.]]></phrase>
+<a href="https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#4-generate-a-keypair-by-running-the-tool" target="_blank" rel="noopener noreferrer">In the wiki</a> you can find an explanation how to do this. You can begin with step 4 as the msgapi tool is already included in <code>library/ThreemaGateway/threema-msgapi-sdk-php/threema-msgapi-tool.php</code>.]]></phrase>
     <phrase title="option_threema_gateway_receivecallback" version_id="1" version_string="0.1.0"><![CDATA[Callback for Threema Gateway server]]></phrase>
     <phrase title="option_threema_gateway_receivecallback_explain" version_id="1" version_string="0.1.0"><![CDATA[Here you can find your callback URL for the Threema Gateway server, which you need for receiving messages. The access token you can change here should be a random string.
 It has been randomly generated at the installation of this add-on. You can regenerate it by leaving this field empty.]]></phrase>
@@ -569,7 +600,7 @@ It has been randomly generated at the installation of this add-on. You can regen
     <phrase title="option_threema_gateway_status_credits_low" version_id="1" version_string="0.1"><![CDATA[Your credits are getting low. Please consider recharging them.]]></phrase>
     <phrase title="option_threema_gateway_status_credits_out" version_id="1" version_string="0.1"><![CDATA[You have no credits (anymore). Without any credits you cannot send messages any more.]]></phrase>
     <phrase title="option_threema_gateway_status_credits_permission" version_id="1" version_string="0.1.0"><![CDATA[You are not allowed to view the remaining credits.]]></phrase>
-    <phrase title="option_threema_gateway_status_credits_recharge" version_id="1" version_string="0.1.0"><![CDATA[(<a href="https://gateway.threema.ch/en/load" target="_blank">recharge</a>)]]></phrase>
+    <phrase title="option_threema_gateway_status_credits_recharge" version_id="1" version_string="0.1.0"><![CDATA[(<a href="https://gateway.threema.ch/en/load" target="_blank" rel="noopener noreferrer">recharge</a>)]]></phrase>
     <phrase title="option_threema_gateway_status_custom_gwserver_error" version_id="1" version_string="0.1.0"><![CDATA[Gateway Server error: ]]></phrase>
     <phrase title="option_threema_gateway_status_custom_phpsdk_error" version_id="1" version_string="0.1.0"><![CDATA[Error in PHP-SDK: ]]></phrase>
     <phrase title="option_threema_gateway_status_debug_mode_active" version_id="2" version_string="0.2.0"><![CDATA[The debug mode is currently enabled, which means some or all messages are logged into a text file or other advanced settings are activated! You should <a href="#_threema_gateway_logreceivedmsgs">disable this below</a> after you finished debugging.]]></phrase>
@@ -577,19 +608,19 @@ It has been randomly generated at the installation of this add-on. You can regen
     <phrase title="option_threema_gateway_status_error" version_id="1" version_string="0.1"><![CDATA[You have some errors in your configuration. Until you resolve them it will not be possible to use this addon properly.]]></phrase>
     <phrase title="option_threema_gateway_status_explain" version_id="1" version_string="0.1"><![CDATA[]]></phrase>
     <phrase title="option_threema_gateway_status_libsodiumphp_outdated" version_id="1" version_string="0.1.0"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium-php (at least v1.0.1).]]></phrase>
-    <phrase title="option_threema_gateway_status_libsodiumphp_version" version_id="1" version_string="0.1.0"><![CDATA[<a href="https://github.com/jedisct1/libsodium-php" target="_blank">Sodium-PHP</a> version: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodiumphp_version" version_id="1" version_string="0.1.0"><![CDATA[<a href="https://github.com/jedisct1/libsodium-php" target="_blank" rel="noopener noreferrer">Sodium-PHP</a> version: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_not_installed" version_id="1" version_string="0.1"><![CDATA[Libsodium is not installed.]]></phrase>
-    <phrase title="option_threema_gateway_status_libsodium_not_installed_recommend" version_id="1" version_string="0.1.0"><![CDATA[For performance and security reasons it is very much recommend to install <a href="https://download.libsodium.org/doc/" target="_blank">libsodium</a> and the <a href="https://github.com/jedisct1/libsodium-php" target="_blank">php extension</a>. You can follow <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">this guide</a> for doing so.<br />
+    <phrase title="option_threema_gateway_status_libsodium_not_installed_recommend" version_id="1" version_string="0.1.0"><![CDATA[For performance and security reasons it is very much recommend to install <a href="https://download.libsodium.org/doc/" target="_blank" rel="noopener noreferrer">libsodium</a> and the <a href="https://github.com/jedisct1/libsodium-php" target="_blank" rel="noopener noreferrer">php extension</a>. You can follow <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank" rel="noopener noreferrer">this guide</a> for doing so.<br />
 Additionally many 2FA methods will be disabled if you do not install libsodium.]]></phrase>
-    <phrase title="option_threema_gateway_status_libsodium_not_installed_required_64bit" version_id="1" version_string="0.1.0"><![CDATA[You can only use the pure PHP implementation with a 64bit version of PHP, so you either have to install PHP x64 or <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank">install libsodium</a>, which also provides more speed and security advantages.]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_not_installed_required_64bit" version_id="1" version_string="0.1.0"><![CDATA[You can only use the pure PHP implementation with a 64bit version of PHP, so you either have to install PHP x64 or <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank" rel="noopener noreferrer">install libsodium</a>, which also provides more speed and security advantages.]]></phrase>
     <phrase title="option_threema_gateway_status_libsodium_outdated" version_id="1" version_string="0.1"><![CDATA[This version is outdated. It is strongly recommend to upgrade to a newer version of libsodium.]]></phrase>
-    <phrase title="option_threema_gateway_status_libsodium_version" version_id="1" version_string="0.1.0"><![CDATA[<a href="https://download.libsodium.org/doc/" target="_blank">Sodium</a> version: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_status_libsodium_version" version_id="1" version_string="0.1.0"><![CDATA[<a href="https://download.libsodium.org/doc/" target="_blank" rel="noopener noreferrer">Sodium</a> version: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_status_missing_private_key" version_id="1" version_string="0.1.0"><![CDATA[Currently it is not possible to use the Threema Gateway, because the private key is malformed or not specified.]]></phrase>
     <phrase title="option_threema_gateway_status_no_https" version_id="1" version_string="0.1.0"><![CDATA[You do not use HTTPS. Without HTTPS not only the secrets you enter here are unprotected, but also some settings and 2FA methods may not be available. Especially you will not be able to receive messages as Threema requires HTTPS for their callback.]]></phrase>
     <phrase title="option_threema_gateway_status_phpsdk_featurelevel" version_id="1" version_string="0.1.0"><![CDATA[(feature level: <b>{level}</b>)]]></phrase>
     <phrase title="option_threema_gateway_status_phpsdk_not_ready" version_id="1" version_string="0.1.0"><![CDATA[The PHP-SDK is not ready and cannot be used. You may need to check your setup.]]></phrase>
     <phrase title="option_threema_gateway_status_phpsdk_not_ready_yet" version_id="1" version_string="0.1.0"><![CDATA[The PHP-SDK is not ready yet and cannot be used. You may need to setup it first.]]></phrase>
-    <phrase title="option_threema_gateway_status_phpsdk_version" version_id="1" version_string="0.1.0"><![CDATA[Version of <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blank">Threema PHP SDK</a>: <b>{version}</b>]]></phrase>
+    <phrase title="option_threema_gateway_status_phpsdk_version" version_id="1" version_string="0.1.0"><![CDATA[Version of <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blank" rel="noopener noreferrer">Threema PHP SDK</a>: <b>{version}</b>]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupmail" version_id="1" version_string="0.1.0"><![CDATA[Automatically lookup mail addresses]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupmail_explain" version_id="1" version_string="0.1.0"><![CDATA[When the user activates a 2FA mode this option automatically tries to get the Threema ID associated with the mail address of the user. The mail address is hashed before it is send to the Threema server.]]></phrase>
     <phrase title="option_threema_gateway_tfa_autolookupphone" version_id="1" version_string="0.1.0"><![CDATA[Automatically lookup phone numbers]]></phrase>
@@ -647,7 +678,7 @@ Note that it is not verified whether the Threema ID <strong>belongs</strong> to 
     <phrase title="option_threema_gateway_usesource" version_id="1" version_string="0.1.0"><![CDATA[Use source code of PHP SDK]]></phrase>
     <phrase title="option_threema_gateway_usesource_explain" version_id="1" version_string="0.1.0"><![CDATA[Instead of using the .phar file this forces the add-on to use the source code of the PHP SDK. This is in most cases only useful for debugging.]]></phrase>
     <phrase title="option_threema_gateway_verify_receive_time" version_id="2" version_string="0.2.0"><![CDATA[Reject old incoming messages]]></phrase>
-    <phrase title="option_threema_gateway_verify_receive_time_explain" version_id="2" version_string="0.2.0"><![CDATA[When activated, this verifies the time, when messages are received, so old messages are rejected. The format of the date must be a valid one, which can be processed by <a href="https://secure.php.net/manual/function.strtotime.php" target="_blank"><code>strtotime</code></a>. The date must be a <a href="https://secure.php.net/manual/datetime.formats.relative.php" target="_blank">relative one</a>.
+    <phrase title="option_threema_gateway_verify_receive_time_explain" version_id="2" version_string="0.2.0"><![CDATA[When activated, this verifies the time, when messages are received, so old messages are rejected. The format of the date must be a valid one, which can be processed by <a href="https://secure.php.net/manual/function.strtotime.php" target="_blank" rel="noopener noreferrer"><code>strtotime</code></a>. The date must be a <a href="https://secure.php.net/manual/datetime.formats.relative.php" target="_blank" rel="noopener noreferrer">relative one</a>.
 The recommend minimum value is 20 minutes (<code>-20 min</code>) as the Gateway server retries sending a message for a maximum of 15 minutes. 5 minutes should be a minimum tolerance for server delays.
 <br>
 When disabled a hardcoded fallback to 14 days (<code>-14 days</code>) is used, as messages can never be older than 14 days as they are deleted from the Gateway server.]]></phrase>
@@ -806,7 +837,7 @@ In case you are on your desktop, you can scan the QR code.]]></phrase>
     <phrase title="tfa_threemagw_reversed_show_code" version_id="2" version_string="0.2.0"><![CDATA[<p>Code:</p>
 <code class="textCtrl threemagw_given_code">{secret}</code>]]></phrase>
     <phrase title="tfa_threemagw_reversed_validation_time" version_id="2" version_string="0.2.0"><![CDATA[The code is valid for {validationTime}.]]></phrase>
-    <phrase title="tfa_threemagw_setup_generaldescr" version_id="1" version_string="0.1"><![CDATA[This two factor authentication mode uses the <a href="https://threema.ch" target="_blank">Threema</a> app. Before you can proceed you have to download it. It is available <a href="https://threema.ch/get-threema" target="_blank">for many platforms</a>. <br />
+    <phrase title="tfa_threemagw_setup_generaldescr" version_id="1" version_string="0.1"><![CDATA[This two factor authentication mode uses the <a href="https://threema.ch" target="_blank" rel="noopener noreferrer">Threema</a> app. Before you can proceed you have to download it. It is available <a href="https://threema.ch/get-threema" target="_blank" rel="noopener noreferrer">for many platforms</a>. <br />
 Setup your Threema ID and enter it below.]]></phrase>
     <phrase title="tfa_threemagw_setup_please_add_threema_id" version_id="2" version_string="0.2.0"><![CDATA[Please add the Threema ID <b>{gatewayid}</b> to your contact list before proceeding.]]></phrase>
     <phrase title="tfa_threemagw_setup_please_scan_qr_code" version_id="2" version_string="0.2.0"><![CDATA[Please scan the following QR code with Threema before proceeding. The Threema ID <b>{gatewayid}</b> should be added!]]></phrase>
@@ -814,7 +845,7 @@ Setup your Threema ID and enter it below.]]></phrase>
     <phrase title="tfa_threemagw_setup_public_key_descr" version_id="2" version_string="0.2.0"><![CDATA[Before proceeding, please confirm that the following fingerprint of your Threema ID is correct. Often you can find it on the same page where you can also see your Threema ID and QR code.<br>
 <b>Key fingerprint:</b> {pubKeyShort}<br /><br />
 Please check each character of the code and confirm it is the same as displayed on your device. Should you notice any discrepancy when doing so, please <i>do not continue</i> and contact the forum admin.<br />
-The displayed fingerprint is derived from the public key, which is linked to your Threema ID. More information <a href="https://threema.ch/en/faq/threema_id" target="_blank">in the Threema FAQ</a>.]]></phrase>
+The displayed fingerprint is derived from the public key, which is linked to your Threema ID. More information <a href="https://threema.ch/en/faq/threema_id" target="_blank" rel="noopener noreferrer">in the Threema FAQ</a>.]]></phrase>
     <phrase title="tfa_threemagw_setup_use_button_below_to_add_threema_id" version_id="2" version_string="0.2.0"><![CDATA[In case you are currently using a device where Threema is installed you can just use the button below to add the ID:]]></phrase>
     <phrase title="tfa_threemagw_use_number_smilies" version_id="1" version_string="0.1"><![CDATA[Use smilies as digits]]></phrase>
     <phrase title="tfa_threemagw_use_number_smilies_explain" version_id="1" version_string="0.1"><![CDATA[Replaces the numbers in the code with smilies.]]></phrase>
@@ -822,6 +853,16 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="tfa_threemagw_use_short_message_explain" version_id="2" version_string="0.2.0"><![CDATA[Uses short messages instead of long ones to allow you to see your verification code directly in the notification, so you do not have to open Threema to see it.]]></phrase>
     <phrase title="threemagw_confirmation_code" version_id="1" version_string="0.1"><![CDATA[Threema Confirmation Code]]></phrase>
     <phrase title="threemagw_days" version_id="2" version_string="0.2.0"><![CDATA[days]]></phrase>
+    <phrase title="threemagw_donate_consider_donating" version_id="2" version_string="0.2.0"><![CDATA[<b>Consider donating!</b> ❤️]]></phrase>
+    <phrase title="threemagw_donate_currency" version_id="2" version_string="0.2.0"><![CDATA[{num}€]]></phrase>
+    <phrase title="threemagw_donate_flattr" version_id="2" version_string="0.2.0"><![CDATA[Flattr]]></phrase>
+    <phrase title="threemagw_donate_flattr_language_code" version_id="2" version_string="0.2.0"><![CDATA[en_GB]]></phrase>
+    <phrase title="threemagw_donate_like_addon_and_support_dev" version_id="2" version_string="0.2.0"><![CDATA[You like this add-on and want to <b>support</b> the development?]]></phrase>
+    <phrase title="threemagw_donate_micro_donation" version_id="2" version_string="0.2.0"><![CDATA[Micro-donation]]></phrase>
+    <phrase title="threemagw_donate_other_amount" version_id="2" version_string="0.2.0"><![CDATA[other amount]]></phrase>
+    <phrase title="threemagw_donate_paypal" version_id="2" version_string="0.2.0"><![CDATA[PayPal]]></phrase>
+    <phrase title="threemagw_donate_paypal_button_text" version_id="2" version_string="0.2.0"><![CDATA[Donate]]></phrase>
+    <phrase title="threemagw_donate_paypal_me" version_id="2" version_string="0.2.0"><![CDATA[PayPal.me]]></phrase>
     <phrase title="threemagw_fetching_publickey_failed" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
     <phrase title="threemagw_getting_credits_failed" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
     <phrase title="threemagw_hours" version_id="2" version_string="0.2.0"><![CDATA[hours]]></phrase>

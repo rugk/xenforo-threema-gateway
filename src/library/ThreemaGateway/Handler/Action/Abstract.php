@@ -67,6 +67,29 @@ abstract class ThreemaGateway_Handler_Action_Abstract
     }
 
     /**
+     * Returns the Threema Receiver
+     *
+     * Note that you may need to call $this->getSdk(); manually if you want to
+     * pass a specific type via the $type param.
+     *
+     * @param string $value the query value (Threema ID, phone number, …)
+     * @param string $type the type of the queried data (use constzants of Threema\MsgApi\Receiver)
+     *
+     * @return Threema\MsgApi\Receiver
+     */
+    protected function getThreemaReceiver($value, $type = null)
+    {
+        // make sure the SDK is loaded
+        $this->getSdk();
+
+        if ($type === null) {
+            $type = Threema\MsgApi\Receiver::TYPE_ID;
+        }
+
+        return new Threema\MsgApi\Receiver($value, $type);
+    }
+
+    /**
      * Returns the PHP SDK crypt tool.
      *
      * @return Threema\MsgApi\Tools\CryptTool

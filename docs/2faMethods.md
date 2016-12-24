@@ -20,7 +20,7 @@ This is like SMS verification, but it uses Threema and is therefore much more se
 ![conventional sketch: server sends code, client receives it](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/master/docs/images/Conventional.svg)
 
 This security model is well-tested and proven to work when the secret is transmitted over secure channels and only the receipient can read it. This is satisfied by the end-to-end-encryption.
-Thus if no end-to-end-encryption is used the security level is weakend very much and therefore a small mesage is shown to the 2FA user when E2E encryotion is used, so one can differenciate this even as a user of the 2FA mode.
+Thus if no end-to-end-encryption is used the security level is weakend very much and therefore a small message is shown to the 2FA user when E2E encryption is used, so one can differenciate this even as a user of the 2FA mode.
 
 ## Reversed
 **Pro:** Security depends on unique secret  

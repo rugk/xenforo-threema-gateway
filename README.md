@@ -31,7 +31,7 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 * You can further improve the advanced connection settings with a few clicks in the ACP.
 * The Gateway server pin is automatically [pinned](https://www.owasp.org/index.php/Certificate_and_Public_Key_Pinning) when possible. (requires cURL >= v7.39)
 
-# Requirements
+## Requirements
 * PHP 5.4 or later
 * XenForo 1.5 or later
 * Libsodium (recommend, required for receiving messages, install guide included)
@@ -39,3 +39,20 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 * MySQL 5.5.3 or higher
 * HTTPS on server (recommend, required for receiving messages and some details)  
    If you have not set it up use [Let's Encrypt](https://letsencrypt.org/), certificates must be valid (self-signed certificates are not accepted).
+
+## Support this project
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="W97D7EVM95V2Q">
+<input type="image" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="Jetzt einfach, schnell und sicher online bezahlen – mit PayPal.">
+<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+([link](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q))
+
+or [donate easily via PayPal.me](https://paypal.me/rugk).
+
+<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q" target="_blank" rel="noopener noreferrer">
+  <img src="https://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this project1" />
+</a>
