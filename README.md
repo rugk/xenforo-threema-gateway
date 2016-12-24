@@ -42,11 +42,7 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 
 ## Support this project
 
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q" target="_blank" rel="noopener noreferrer">
-  <img alt="Donate via PayPal" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif">
-</a>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q" target="_blank" rel="noopener noreferrer">
-  <img src="https://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this project1" />
-</a>
+[![Donate via PayPal](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-pill-paypal-26px.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q)
+[![Flattr this project](https://api.flattr.com/button/flattr-badge-large.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q)
 
-or <a href="https://paypal.me/rugk" target="_blank" rel="noopener noreferrer">donate easily via PayPal.me</a>.
+or [donate easily via PayPal.me](https://paypal.me/rugk).
