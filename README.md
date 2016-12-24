@@ -43,6 +43,6 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 ## Support this project
 
 [![Donate via PayPal](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-pill-paypal-26px.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q)
-[![Flattr this project](https://api.flattr.com/button/flattr-badge-large.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q)
+[![Flattr this project](https://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=rugk&url=https%3A%2F%2Fgithub.com%2Frugk%2Fxenforo-threema-gateway&title=xenforo-threema-gateway%20-%20in-app&tags=threema,2fa,security&category=software)
 
 or [donate easily via PayPal.me](https://paypal.me/rugk).
