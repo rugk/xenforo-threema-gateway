@@ -215,17 +215,14 @@ automatically triggers the form submission via JavaScript
 </p>
 
 <xen:comment>
-As the require statement in threemagw_auto_trigger seems to be ignored, we need to embed the JS here
-</xen:comment>
-
-<xen:require js="js/ThreemaGateway/threematfa.js" />
-
-<xen:comment>
 	display of validation time currently disabled as it is really high by default and displaying it would be useless
 	<p>{xen:phrase tfa_threemagw_fast_validation_time, 'validationTime={$validationTime}'}</p>
 </xen:comment>
 
-<xen:include template="threemagw_auto_trigger" />]]></template>
+<xen:include template="threemagw_auto_trigger">
+	<xen:set var="$expectedError">{xen:phrase two_step_verification_value_could_not_be_confirmed}</xen:set>
+	<xen:set var="$explanation">{xen:phrase tfa_threemagw_automatically_continues}</xen:set>
+</xen:include>]]></template>
     <template title="two_step_threemagw_reversed"><![CDATA[<xen:require css="threemagw.css" />
 <xen:require js="js/jquery/jquery.qrcode-0.12.0.min.js" />
 <xen:require js="js/ThreemaGateway/threematfa.js" />
@@ -246,8 +243,10 @@ As the require statement in threemagw_auto_trigger seems to be ignored, we need 
 </div>
 
 <p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>
-
-<xen:include template="threemagw_auto_trigger" />]]></template>
+<xen:include template="threemagw_auto_trigger">
+	<xen:set var="$expectedError">{xen:phrase two_step_verification_value_could_not_be_confirmed}</xen:set>
+	<xen:set var="$explanation">{xen:phrase tfa_threemagw_automatically_continues}</xen:set>
+</xen:include>]]></template>
   </admin_templates>
   <admin_template_modifications/>
   <code_events>
@@ -945,7 +944,9 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 	<xen:else />
 		<dl class="ctrlUnit">
 			<xen:comment>Show Threema ID input and all other settings as this is not the validation page.</xen:comment>
-			<xen:include template="threemagw_threemaid_input_field" id="ctrl_threemagw_conventional_threemaid" />
+			<xen:include template="threemagw_threemaid_input_field">
+				<xen:set var="$id">ctrl_threemagw_fast_threemaid</xen:set>
+			</xen:include>
 		</dl>
 
 		<dl class="ctrlUnit">
@@ -1050,7 +1051,9 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 				
 			</xen:if>
 
-			<xen:include template="threemagw_threemaid_input_field" id="ctrl_threemagw_fast_threemaid" />
+			<xen:include template="threemagw_threemaid_input_field">
+				<xen:set var="$id">ctrl_threemagw_fast_threemaid</xen:set>
+			</xen:include>
 		</dl>
 
 		<xen:comment>Other options</xen:comment>
@@ -1179,7 +1182,9 @@ action=<xen:if is="{$context} == 'firstsetup' or {$context} == 'setupvalidation'
 				<xen:comment>no need for an explanation as this is nearly the only input field on the page</xen:comment>
 			</xen:if>
 
-			<xen:include template="threemagw_threemaid_input_field" id="ctrl_threemagw_reversed_threemaid" />
+			<xen:include template="threemagw_threemaid_input_field">
+				<xen:set var="$id">ctrl_threemagw_reversed_threemaid</xen:set>
+			</xen:include>
 		</dl>
 
 		<xen:comment>Other options</xen:comment>
@@ -1319,9 +1324,9 @@ automatically triggers the form submission via JavaScript
 	<xen:require css="threemagw.css" />
 	<xen:require js="js/ThreemaGateway/threematfa.js" />
 
-	<dl id="threemagw_auto_trigger" class="ctrlUnit" data-expectederror="{xen:phrase two_step_verification_value_could_not_be_confirmed}">
+	<dl id="threemagw_auto_trigger" class="ctrlUnit" data-expectederror="{$expectedError}">
 		<dt id="threemagw_auto_trigger_loading" class="InProgress"></dt>
-		<dd id="threemagw_auto_trigger_explanation">{xen:phrase tfa_threemagw_automatically_continues}</dd>
+		<dd id="threemagw_auto_trigger_explanation">{$explanation}</dd>
 	</dl>
 </xen:if>
 ]]></template>
@@ -1364,8 +1369,12 @@ Show Threema ID input and all other settings as this is not the validation page.
 	</dd>
 </dl>
 
-<xen:include template="threemagw_pubkey_userverify" />]]></template>
-    <template title="two_step_threemagw_fast" version_id="2" version_string="0.2.0"><![CDATA[<xen:include template="threemagw_pubkey_userverify" />
+<xen:include template="threemagw_pubkey_userverify">
+	<xen:set var="$threemaid">{$data.threemaid}</xen:set>
+</xen:include>]]></template>
+    <template title="two_step_threemagw_fast" version_id="2" version_string="0.2.0"><![CDATA[<xen:include template="threemagw_pubkey_userverify">
+	<xen:set var="$threemaid">{$data.threemaid}</xen:set>
+</xen:include>
 
 <xen:if is="{$context} == 'setup'">
 	<dl class="ctrlUnit">
@@ -1384,7 +1393,10 @@ Show Threema ID input and all other settings as this is not the validation page.
 	<p>{xen:phrase tfa_threemagw_fast_validation_time, 'validationTime={$validationTime}'}</p>
 </xen:comment>
 
-<xen:include template="threemagw_auto_trigger" />
+<xen:include template="threemagw_auto_trigger">
+	<xen:set var="$expectedError">{xen:phrase two_step_verification_value_could_not_be_confirmed}</xen:set>
+	<xen:set var="$explanation">{xen:phrase tfa_threemagw_automatically_continues}</xen:set>
+</xen:include>
 
 <xen:comment>main content end</xen:comment>
 
@@ -1421,7 +1433,10 @@ Show Threema ID input and all other settings as this is not the validation page.
 <p>{xen:phrase tfa_threemagw_reversed_validation_time, 'validationTime={$validationTime}'}</p>
 
 
-<xen:include template="threemagw_auto_trigger" />
+<xen:include template="threemagw_auto_trigger">
+	<xen:set var="$expectedError">{xen:phrase two_step_verification_value_could_not_be_confirmed}</xen:set>
+	<xen:set var="$explanation">{xen:phrase tfa_threemagw_automatically_continues}</xen:set>
+</xen:include>
 
 <xen:comment>main content end</xen:comment>
 
