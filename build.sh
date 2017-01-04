@@ -4,12 +4,12 @@
 # Creates a new release
 #
 
-SOURCE_DIR="./src"
-SCRIPT_DIR="./scripts"
-DOC_DIR="./doc"
-LANG_DIR="./languages"
-BUILD_DIR="./build"
-VERBOSE=0
+CURR_DIR="$( pwd )"
+SOURCE_DIR="$CURR_DIR/src"
+SCRIPT_DIR="$CURR_DIR/scripts"
+DOC_DIR="$CURR_DIR/docs"
+LANG_DIR="$CURR_DIR/languages"
+BUILD_DIR="$CURR_DIR/build"
 ADD_HASHES=1
 
 # functions
@@ -25,9 +25,6 @@ while getopts "h?vcl:" opt; do
     h|\?)
         show_help
         exit 0
-        ;;
-    v|verbose)
-        VERBOSE=1
         ;;
     c|copydoc)
         copyDoc=1
@@ -48,12 +45,13 @@ if [ "$XENFORO_DIR" = "" ]; then
     if [ "${XENFORO_DIR}" = "" ]; then
         exit 1
     fi
+
     # make sure to export the variable
-    export XENFORO_DIR="${XENFORO_DIR}"
+    export XENFORO_DIR
 fi
 
 # build
-echo "Clean & Create dir…"
+echo "Clean & create dir…"
 if [ -d "$BUILD_DIR" ]; then
     rm -rf "$BUILD_DIR"
 fi
@@ -62,13 +60,13 @@ mkdir -p "$BUILD_DIR"
 echo "Copy add-on XML…"
 cp -a "addon-ThreemaGateway.xml" "$BUILD_DIR"
 
-echo "Copy PHP files…"
+echo "Copy source files…"
 mkdir -p "$BUILD_DIR/upload"
 rsync -a "$SOURCE_DIR/" "$BUILD_DIR/upload/"
 
 for lang in $languages; do
     mkdir -p "$BUILD_DIR/languages"
-    # complete langauge attributions
+    # complete language attributions
     case $lang in
         en)
             lang="en-US"
@@ -81,13 +79,13 @@ for lang in $languages; do
     cp -a "$LANG_DIR/$lang.xml" "$BUILD_DIR/languages"
 done
 
-if [ $ADD_HASHES ]; then
-    echo "Generating and file hashes…"
-    php "$SCRIPT_DIR/AddHealthCheckHashes.php" "$BUILD_DIR/upload"
+if [ $ADD_HASHES = 1 ]; then
+    echo "Generating file hashes…"
+    php "$SCRIPT_DIR/GenFileHashes.php" "$BUILD_DIR/upload"
 fi
 
-if [ $copyDoc ]; then
+if [ $copyDoc = 1 ]; then
     echo "Copy doc files…"
-    mkdir -p "$BUILD_DIR/doc"
-    rsync -a "$DOC_DIR/" "$BUILD_DIR/doc/"
+    mkdir -p "$BUILD_DIR/docs"
+    rsync -a "$DOC_DIR/" "$BUILD_DIR/docs/"
 fi
