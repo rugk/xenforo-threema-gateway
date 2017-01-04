@@ -13,7 +13,7 @@
 
 /** @var int $startTime time of application start */
 $startTime = microtime(true);
-/** @var int $fileDir current dir */
+/** @var string $fileDir current dir */
 $fileDir = dirname(__FILE__);
 if (!file_exists($fileDir . '/library/XenForo/Autoloader.php')) {
     // second try

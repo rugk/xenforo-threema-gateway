@@ -23,7 +23,7 @@ class ThreemaGateway_Listener_FileHealthCheck
      */
     public static function fileHealthCheck(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)
     {
-        // Code coming soon;
-        return $hashes;
+        // pass to real hashes file generated at built time
+        array_merge($hashes, ThreemaGateway_Helper_FileSums::getHashes());
     }
 }

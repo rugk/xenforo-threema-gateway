@@ -5,10 +5,12 @@
 #
 
 SOURCE_DIR="./src"
+SCRIPT_DIR="./scripts"
 DOC_DIR="./doc"
 LANG_DIR="./languages"
 BUILD_DIR="./build"
 VERBOSE=0
+ADD_HASHES=1
 
 # functions
 show_help() {
@@ -40,6 +42,16 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
+# get potential user input
+if [ "$XENFORO_DIR" = "" ]; then
+    read -p "Please enter the dir to XenForo: " XENFORO_DIR
+    if [ "${XENFORO_DIR}" = "" ]; then
+        exit 1
+    fi
+    # make sure to export the variable
+    export XENFORO_DIR="${XENFORO_DIR}"
+fi
+
 # build
 echo "Clean & Create dir…"
 if [ -d "$BUILD_DIR" ]; then
@@ -68,6 +80,11 @@ for lang in $languages; do
 
     cp -a "$LANG_DIR/$lang.xml" "$BUILD_DIR/languages"
 done
+
+if [ $ADD_HASHES ]; then
+    echo "Generating and file hashes…"
+    php "$SCRIPT_DIR/AddHealthCheckHashes.php" "$BUILD_DIR/upload"
+fi
 
 if [ $copyDoc ]; then
     echo "Copy doc files…"
