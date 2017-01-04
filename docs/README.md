@@ -4,9 +4,9 @@ This is the (technical) documentation for the [Threema Gateway](https://github.c
 
 ## Content
 
-* [Build instructions](Build.html)
-* [an overview over all 2FA methods](2faMethods.html)
-* [information for other add-on developers](AddonDevelopers.html)
+* [Build instructions](Build.md)
+* [an overview over all 2FA methods](2faMethods.md)
+* [information for other add-on developers](AddonDevelopers.md)
 
 ## More information
 
