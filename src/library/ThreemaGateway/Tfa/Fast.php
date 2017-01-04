@@ -189,6 +189,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             return $result;
         }
 
+
         // assure that secret has not expired yet
         if (!$this->verifySecretIsInTime($providerData)) {
             return false;
@@ -433,7 +434,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             return false;
         }
 
-        // check if block is not expired
+        // assure that block is not expired yet
         if (XenForo_Application::$time > $providerData['blockedUntil']) {
             return false;
         }
@@ -441,15 +442,15 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         // as message ID is evaluated below, we need to assure that it is
         // correct/already set
         if ($messageYetToSent) {
-            // if the message ID is not sent yet, we know the user is blocked
+            // if the message ID has not been sent yet, we know the user is blocked
             return true;
         }
 
         // exception: ignore blocking if the message ID is the same and the
-        // delivery receipt is not a decline message (which would cause
-        // another blocking)
+        // delivery receipt is an accept message (which overwrites decline
+        // messages in this case)
         if ($this->stringCompare($providerData['blockedBy'], $providerData['secret']) &&
-            $providerData['receivedDeliveryReceipt'] !== 4
+            $providerData['receivedDeliveryReceipt'] == 3
         ) {
             // this makes it possible to 'correct' a possible wrong tap on 'decline'
             return false;

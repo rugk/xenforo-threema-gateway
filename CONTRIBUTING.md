@@ -41,7 +41,7 @@ Use the **[PHP Coding Style Fixer](http://cs.sensiolabs.org/)** to clean up your
 
 Additionally there some other rules:
 - Use **PHPdoc**
-- Do **not require** a **higher PHP version** as described in the current [system requirements](./README.md#Requirements) without prior discussion this. Actually I think the current required PHP version is already quite high, so you should be able to use most of the nice features of recent PHP versions.
+- Do **not require** a **higher PHP version** as described in the current [system requirements](./README.md#Requirements) without prior discussing this. Actually I think the current required PHP version is already quite high, so you should be able to use most of the nice features of recent PHP versions.
 - **Test your changes!** (except when you only edit the documentation)
 - use **camelCase** for variable and function names
 - start any new file like this:
@@ -55,7 +55,7 @@ Additionally there some other rules:
    *
    * @package ThreemaGateway
    * @author rugk
-   * @copyright Copyright (c) rugk, 2016
+   * @copyright Copyright (c) rugk, 2017
    * @license MIT/Expat license, see LICENSE.md for details
    */
   ```
@@ -72,6 +72,10 @@ Additionally there some other rules:
 
 ### MySQL
 * Always use prepared statements if possible.
+
+### JavaScript/jQuery
+
+* We use the [extensible module](http://www.adequatelygood.com/JavaScript-Module-Pattern-In-Depth.html) pattern, which is a variation of the popular Revealing Module Pattern. Please follow the style shown in the already existing JS files.
 
 ### XenForo
 * Intend templates correctly with tabs.

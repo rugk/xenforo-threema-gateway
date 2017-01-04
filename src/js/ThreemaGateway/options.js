@@ -15,11 +15,9 @@ jQuery(document).ready(function() {
 /**
  * ReceiveCallback - Handling the option threema_gateway_receivecallback.
  *
- * @param  {object} window
- * @param  {object} document
  * @return {object} Methods: update
  */
-var ReceiveCallback = (function (window, document) {
+var ReceiveCallback = (function () {
     'use strict';
     var me = {};
     var $inputElem;
@@ -89,9 +87,8 @@ var ReceiveCallback = (function (window, document) {
      * update - Update the output field (and, if necessary, also the output
      * field)
      *
-     * @param {object} event jQuery event
      */
-    me.update = function update(event) {
+    me.update = function update() {
         var data;
 
         data = filterData(getOrgData());
@@ -100,4 +97,4 @@ var ReceiveCallback = (function (window, document) {
     };
 
     return me;
-})(window, document);
+})();

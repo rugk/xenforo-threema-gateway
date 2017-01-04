@@ -22,11 +22,9 @@ jQuery(document).ready(function() {
  *
  * Needs jquery.qrcode. (tested with v0.12.0)
  *
- * @param  {object} window
- * @param  {object} document
  * @return {object} Methods: createQr
  */
-var QrCodeCreator = (function (window, document) {
+var QrCodeCreator = (function () {
     'use strict';
     var me = {};
     var qrCodeElem = '.threemagw_createqr';
@@ -34,9 +32,8 @@ var QrCodeCreator = (function (window, document) {
     /**
      * createQr - Create the QR codes out of the given data.
      *
-     * @param {object} event jQuery event
      */
-    me.createQr = function createQr(event) {
+    me.createQr = function createQr() {
         var $el = $(qrCodeElem);
 
         // do not continue if library is not loaded
@@ -44,13 +41,13 @@ var QrCodeCreator = (function (window, document) {
             return;
         }
 
-    	$el.qrcode({
-    		text: $el.data('qrcode')
-    	});
+        $el.qrcode({
+            text: $el.data('qrcode')
+        });
     };
 
     return me;
-})(window, document);
+})();
 
 /**
  * AutoTriggerer - Automatically submits the form and hides
@@ -60,7 +57,7 @@ var QrCodeCreator = (function (window, document) {
  * @param  {object} document
  * @return {object} Methods: init, triggerStart, triggerStop
  */
-var AutoTriggerer = (function (window, document) {
+var AutoTriggerer = (function(window, document) {
     'use strict';
     var me = {};
     var indicatorElem = '#threemagw_auto_trigger';
@@ -88,7 +85,7 @@ var AutoTriggerer = (function (window, document) {
         $form.submit();
         // reregister timeout
         setTimeout(triggerCheck, period);
-    };
+    }
 
     /**
      * errorHandler - handles errors when verifying the 2FA mode
@@ -108,7 +105,7 @@ var AutoTriggerer = (function (window, document) {
         var error = event.ajaxData.error;
 
         // only handle the expected error
-        if (error.length != 1 || error[0] != expectedError) {
+        if (error.length !== 1 || error[0] !== expectedError) {
             // when other unexpected error happens, stop whole module
             // so we fall back to the "traditional" input
             me.triggerStop();
@@ -121,16 +118,15 @@ var AutoTriggerer = (function (window, document) {
 
         // prevent error overlay from appearing
         event.preventDefault();
-    };
+    }
 
     /**
      * hideAjaxLoadingInit - wraps ajax loader, so it can be hidden later
      *
-     * @param {object} event jQuery event
      */
-    function hideAjaxLoadingInit(event) {
+    function hideAjaxLoadingInit() {
         // unregister myself
-        $(document).off('ajaxStart', hideAjaxLoadingInit)
+        $(document).off('ajaxStart', hideAjaxLoadingInit);
 
         // wrap loading indicator into div
         if (window.DEBUG) console.log('Wrapping AJAX Loading indicator…');
@@ -142,7 +138,7 @@ var AutoTriggerer = (function (window, document) {
 
         // and finally hide
         hideAjaxLoading();
-    };
+    }
 
     /**
      * hideAjaxLoading - hides the AJAX loading overlay
@@ -152,12 +148,12 @@ var AutoTriggerer = (function (window, document) {
         // let XenForo create element if needed
         if ($ajaxProgressWrapper === null || !$ajaxProgressWrapper.length) {
             // as it is only created when an ajax call starts, we need to wait for it and then wrap the indicator
-            $(document).on('ajaxStart', hideAjaxLoadingInit)
+            $(document).on('ajaxStart', hideAjaxLoadingInit);
         } else {
             if (window.DEBUG) console.log('hide ajax loading indicator', $ajaxProgressWrapper);
             $ajaxProgressWrapper.hide();
         }
-    };
+    }
 
     /**
      * hideAjaxLoading - shows the AJAX loading overlay
@@ -171,7 +167,7 @@ var AutoTriggerer = (function (window, document) {
 
         if (window.DEBUG) console.log('show ajax loading indicator', $ajaxProgressWrapper);
         $ajaxProgressWrapper.show();
-    };
+    }
 
     /**
      * init - initialize everything

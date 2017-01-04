@@ -11,6 +11,11 @@
 class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Action_Abstract
 {
     /**
+     * @var string used by strtotime to allow messages sent in the future
+     */
+    const ALLOW_FUTURE_MESSAGE_TIME = '+5 sec';
+
+    /**
      * @var XenForo_Input raw parameters
      */
     protected $input;
@@ -162,7 +167,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      * validation deals with secret data and furthermore assures that the send
      * request is valid.
      * It is used to prevent malformed (but verified) bad requests to get to the
-     * decryption part, whcih cannot decrypt them anyway.
+     * decryption part, which cannot decrypt them anyway.
      *
      * @param string|array $errorString Output error string/array
      *
@@ -193,7 +198,9 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
             return false;
         }
 
-        if ($this->filtered['date'] > XenForo_Application::$time) {
+        // discard messages sent in the future
+        // (to handle leap seconds or so we allow some seconds difference)
+        if ($this->filtered['date'] > strtotime(self::ALLOW_FUTURE_MESSAGE_TIME, XenForo_Application::$time)) {
             $errorString = [null, 'Message cannot be processed: Message is send in the future (send at ' . date('Y-m-d H:i:s', $this->filtered['date']) . ', please check your server clock)', 'Message cannot be processed'];
             return false;
         }

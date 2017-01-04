@@ -155,7 +155,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      *
      * Returns "false" if the process should be canceled. Otherwise "true".
      *
-     * @param  array             $processOptions options, whcih are passed to {@link processConfirmRequest()}.
+     * @param  array             $processOptions options, which are passed to {@link processConfirmRequest()}.
      * @throws XenForo_Exception
      *
      * @return bool
@@ -365,7 +365,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
     }
 
     /**
-     * Does stuff, whcih needs to be done after processing the requests.
+     * Does stuff, which needs to be done after processing the requests.
      *
      * Returns "false" if the process should be canceled. Otherwise "true".
      * Childs should call the parent here as the things done in this class are
