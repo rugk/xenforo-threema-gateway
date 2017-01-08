@@ -24,15 +24,15 @@ class ThreemaGateway_Listener_FileHealthCheck
     public static function fileHealthCheck(XenForo_ControllerAdmin_Abstract $controller, array &$hashes)
     {
         // check whether class with file hashes exists, if not this file is already invalid
-        if (!class_exists('ThreemaGateway_Helper_FileSums')) {
+        if (!class_exists('ThreemaGateway_Listener_Data_FileSums')) {
             // if class is not loadable, mark the file as invalid (with a wrong faked 'hash' here)
-            $hashes['ThreemaGateway/Helper/FileSums.php'] = '0';
+            $hashes['ThreemaGateway/Listener/Data/FileSums.php'] = '0';
             // and show another error message for a detailed explanation
             $hashes['ThreemaGateway: The integrity of the Threema Gateway add-on could not be checked.'] = '0';
             return;
         }
 
         // add hashes from file generated at built time
-        $hashes = array_merge($hashes, ThreemaGateway_Helper_FileSums::getHashes());
+        $hashes = array_merge($hashes, ThreemaGateway_Listener_Data_FileSums::getHashes());
     }
 }

@@ -12,8 +12,8 @@
  */
 
 define('FILE_EXTENSIONS', '.php|.js');
-define('FILE_PATH', 'library/ThreemaGateway/Helper/FileSums.php');
-define('FILE_CLASS', 'ThreemaGateway_Helper_FileSums');
+define('FILE_PATH', 'library/ThreemaGateway/Listener/Data/FileSums.php');
+define('FILE_CLASS', 'ThreemaGateway_Listener_Data_FileSums');
 define('FILE_INTRO',
 '<?php
 /**
@@ -40,10 +40,10 @@ XenForo_Application::set('page_start_time', $startTime);
 if (empty($argv[1]) || !is_dir($argv[1])) {
     throw new XenForo_Exception('Missing or incorrect first parameter.');
 }
-define('UPLOAD_DIR', $argv[1]);
+$uploadDir = $argv[1];
 
 // get hashes
-chdir(UPLOAD_DIR); // we ned to switch to the path as otherwise we would get full paths instead of relative ones
+chdir($uploadDir); // we need to switch to the path as otherwise we would get full paths instead of relative ones
 /** @var array $hashes list of file hashes */
 $hashes = XenForo_Helper_Hash::hashDirectory('.', explode('|', FILE_EXTENSIONS));
 
@@ -53,6 +53,10 @@ $hashCode = XenForo_Helper_Hash::getHashClassCode(FILE_CLASS, $hashes);
 // add own intro to code
 $hashCode = str_replace('<?php', FILE_INTRO, $hashCode);
 
-$fp = fopen(UPLOAD_DIR . '/' . FILE_PATH, 'w+');
+if (!file_exists(dirname(FILE_PATH))) {
+    mkdir(dirname(FILE_PATH));
+}
+
+$fp = fopen($uploadDir . '/' . FILE_PATH, 'w+');
 fwrite($fp, $hashCode);
 fclose($fp);
