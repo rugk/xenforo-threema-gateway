@@ -28,7 +28,7 @@ class ThreemaGateway_Listener_FileHealthCheck
             // if class is not loadable, mark the file as invalid (with a wrong faked 'hash' here)
             $hashes['ThreemaGateway/Listener/Data/FileSums.php'] = '0';
             // and show another error message for a detailed explanation
-            $hashes['ThreemaGateway: The integrity of the Threema Gateway add-on could not be checked.'] = '0';
+            $hashes[(new XenForo_Phrase('threemagw_integrity_of_addon_could_not_checked'))->render()] = '0';
             return;
         }
 

@@ -36,7 +36,7 @@ XenForo_Autoloader::getInstance()->setupAutoloader($xenForoDir . '/library');
 XenForo_Application::initialize($xenForoDir . '/library', $xenForoDir);
 XenForo_Application::set('page_start_time', $startTime);
 
-//get/verify arguments
+// get/verify arguments
 if (empty($argv[1]) || !is_dir($argv[1])) {
     throw new XenForo_Exception('Missing or incorrect first parameter.');
 }

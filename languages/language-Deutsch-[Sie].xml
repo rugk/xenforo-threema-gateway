@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language title="Deutsch [Sie]" date_format="j. F Y" time_format="H:i" decimal_point="," thousands_separator="." language_code="de-DE" text_direction="LTR" addon_id="ThreemaGateway">
+  <phrase title="admin_permission_threemagw_showcredits" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway: Credits anzeigen]]></phrase>
+  <phrase title="cron_entry_threemagwCleanUpMsgs" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway: Räume alte, gelöschte Threema-Nachrichten auf]]></phrase>
+  <phrase title="cron_entry_threemagwCleanUpTfaPend" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema 2FA: Räume abgelaufene Pending Requests auf]]></phrase>
+  <phrase title="option_group_threemagw" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway]]></phrase>
+  <phrase title="option_group_threemagw_description" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Hier können Sie die allgemeinen Einstellungen des <a href="https://gateway.threema.ch" target="_blank" rel="noopener noreferrer">Threema Gateways</a> konfigurieren.]]></phrase>
+  <phrase title="option_group_threemagw_tfa" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway - Zwei-Faktor-Authentifizierung]]></phrase>
+  <phrase title="option_group_threemagw_tfa_description" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Hier können Sie die Zwei-Faktor-Authentifizierungsmodi des Threema Gateways konfigurieren. Bitte beachte, dass die allgemeinen Threema-Gateway-Einstellungen zuvor bereits konfiguriert sein müssen.]]></phrase>
+  <phrase title="option_threema_gateway_allow_get_receive" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erlaube GET-Requests für eingehende Nachrichten (Debug-Modus)]]></phrase>
+  <phrase title="option_threema_gateway_allow_get_receive_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Normalerweise sendet der Gateway-Server nur POST-Requests. Diese Option erlaubt auch GET-Requests, was zum Debuggen nützlich sein könnte.<br>
+<b>Hinweis:</b> Aus Sicherheitsgründen wird diese Einstellung ignoriert, wenn XenForo nicht im Debug-Modus läuft.]]></phrase>
+  <phrase title="option_threema_gateway_donate" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Spenden]]></phrase>
+  <phrase title="option_threema_gateway_donate_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Da dies ein unkommerzielles Open-Source-Projekt ist, bin ich auf Ihre Spenden angewiesen. Jeder Betrag hilft!<br>
+Natürlich können Sie auch auf andere Weise helfen, z.B. indem Sie diesem Projekt auf GitHub helfen.]]></phrase>
+  <phrase title="option_threema_gateway_downloadpath" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Downloadpfad für Dateien]]></phrase>
+  <phrase title="option_threema_gateway_downloadpath_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies ist der Pfad, unter dem an Ihre ID gesendete Dateien abgespeichert werden (in unverschlüsselter Form!). Wenn kein Pfad übergeben wird, werden die Dateien nicht herunter geladen (nicht empfohlen!). Der Pfad muss relativ zum XenForo-Haupt-/Rootverzeichnis sein.]]></phrase>
+  <phrase title="option_threema_gateway_e2e" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Betriebsart]]></phrase>
+  <phrase title="option_threema_gateway_e2e_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wähle den Modus aus, den Sie beim Erstellen Ihrer Threema ID ausgewählt hast. Wenn Sie nicht den Ende-zu-Ende-verschlüsselten Modus nehmen, werden viele Optionen nicht verfügbar sein.]]></phrase>
+  <phrase title="option_threema_gateway_harden_reply_attack_protection" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Replay-Angriffsschutz verstärken]]></phrase>
+  <phrase title="option_threema_gateway_harden_reply_attack_protection_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn Sie denken, dass der Threema-Server Ihnen unerlaubterweise eine Nachricht nocheinmal zustellen könnte, die Sie bereits empfangen haben, dann aktivieren Sie diese Option.
+Wenn aktiviert, können etwas mehr Daten in Ihrer Datenbank gespeichert werden als wenn die Option deaktiviert ist.<br>
+Ein starker Schutz gegen Replay-Angriffe wird immer benutzt. Es ist also nicht notwendig diese Option zu aktivieren. Mehr Informationen <a href="https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ#what-are-replay-attacks-and-what-does-the-checkbox-harden-replay-attack-protection-do" target="_blank" rel="noopener noreferrer">können in der FAQ gefunden werden</a> (englisch).]]></phrase>
+  <phrase title="option_threema_gateway_httpshardening" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[HTTPS-Verbindung verstärken]]></phrase>
+  <phrase title="option_threema_gateway_httpshardening_basic" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Einfaches Hardening]]></phrase>
+  <phrase title="option_threema_gateway_httpshardening_enhanced" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erweitertes Hardening]]></phrase>
+  <phrase title="option_threema_gateway_httpshardening_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn Nachrichten gesendet werden, verhindern dies Fallback-Angriffe auf die TLS/HTTPS-Verbindung indem es die TLS-Version und Cipher auf eine moderne Auswahl limitiert.
+Sie solltest versuchen, dies so hoch wie möglich zu setzen. Wenn Sie Verbindungsprobleme zum Threema-Server bemerken (z.B. wenn die Credits nicht korrekt angezeigt werden können) kennen Sie Ihr Limit.]]></phrase>
+  <phrase title="option_threema_gateway_httpshardening_no" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Kein Hardening]]></phrase>
+  <phrase title="option_threema_gateway_keystorefile" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Den PHP-Keystore benutzen (nicht empfohlen)]]></phrase>
+  <phrase title="option_threema_gateway_keystorefile_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Standardmäßig wird die Datenbank zum Speichern der öffentlichen Schlüssel der Threema-Nutzer verwendet. Wenn diese Option aktiviert wird, können Sie eine PHP-Datei angeben, welche stattdessen genutzt wird. Diese Datei <b>muss bereits existieren</b>!
+Beachte, dass die Datei in <code>library/ThreemaGateway</code> gespeichert werden muss, aber Sie kannst relative Pfade nutzen um diesen Pfad anzupassen.]]></phrase>
+  <phrase title="option_threema_gateway_logreceivedmsgs" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Logge eingehende Nachrichten (Debug-Modus)]]></phrase>
+  <phrase title="option_threema_gateway_logreceivedmsgs_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn aktiviert, werden alle empfangenen Nachrichten in einer Datei Ihrer Wahl geloggt. Der Pfad muss relativ zum XenForo-Haupt-/Rootverzeichnis sein.<br>
+<b>Hinweis:</b> Bitte benutzeen Sie dies nur temporär zum Debuggen, da es geheime Informationen auf Ihre Festplatte schreibt.<br>
+Wenn der Pfad öffentlich erreichbar ist, kann jeder jede eingehende Nachricht sehen!
+Aus Sicherheitsgründen wird diese Einstellung ignoriert, wenn XenForo nicht im Debug-Modus läuft.]]></phrase>
+  <phrase title="option_threema_gateway_mode_basic" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Basic-Modus]]></phrase>
+  <phrase title="option_threema_gateway_mode_e2e" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Ende-zu-Ende-verschlüsselter Modus]]></phrase>
+  <phrase title="option_threema_gateway_privatekeyfile" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Datei mit privatem Schlüssel]]></phrase>
+  <phrase title="option_threema_gateway_privatekeyfile_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn Sie den Ende-zu-Ende-verschlüsselten Modus nutzen, geben Sie den Pfad zu Ihrem privaten Schlüssel hier an. Die Datei muss in <code>library/ThreemaGateway</code> platziert sein. Sie können allerdigs relative Pfade nutzen, um sie woanders abzulegen.<br />
+<a href="https://github.com/rugk/threema-msgapi-sdk-php/wiki/How-to-generate-a-new-key-pair-and-send-a-message#4-generate-a-keypair-by-running-the-tool" target="_blank" rel="noopener noreferrer">Im Wiki</a> (englisch) können Sie eine Erklärung finden, wie Sie dies tun können. Sie kannst mit Schritt 4 beginnen, da das Msgapi-Tool bereits in <code>library/ThreemaGateway/threema-msgapi-sdk-php/threema-msgapi-tool.php</code> mit im Add-on enthalten ist.]]></phrase>
+  <phrase title="option_threema_gateway_receivecallback" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Callback für den Threema Gateway-Server]]></phrase>
+  <phrase title="option_threema_gateway_receivecallback_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Hier können Sie die URL für eingehende Nachrichten für den Threema Gateway-Server finden, welche Sie benötigen um Nachrichten zu empfangen. Den Zugriffstoken, den Sie hier verändern können, sollte ein zufälliger String sein.
+Dieser wurde bei Installation dieses Add-ons zufällig generiert. Sie können das Feld leer lassen, um ihn neu generieren zu lassen.]]></phrase>
+  <phrase title="option_threema_gateway_static_advanced_settings_warning" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erweiterte Optionen]]></phrase>
+  <phrase title="option_threema_gateway_static_advanced_settings_warning_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<b>Warnung:</b> Unten sind spezielle Einstellungen für fortgeschrittene Nutzer aufgelistet! Es wird im Allgemeinen nicht empfohlen, sie zu ändern. <b>Änderen Sie diese nur wenn Sie wissen, was Sie tun!</b>]]></phrase>
+  <phrase title="option_threema_gateway_status" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Status]]></phrase>
+  <phrase title="option_threema_gateway_status_credits" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Verbleibende Credits: <b>{credits}</b>]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_error" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Es gab einen Fehler beim Abrufen der Credits. Sie haben vielleicht eine falsche Threema-Gateway-ID oder -Secret eingeben oder es gab einen Verbindungsfehler.]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_low" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Ihre Credits werden weniger. Bitte erwägen Sie, sie aufzuladen.]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_out" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie haben keine Credits (mehr). Ohne Credits können Sie keine Nachrichten mehr versenden.]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_permission" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie haben keine Berechtigung zum Einsehen der Credits.]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_recharge" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[(<a href="https://gateway.threema.ch/de/load" target="_blank" rel="noopener noreferrer">aufladen</a>)]]></phrase>
+  <phrase title="option_threema_gateway_status_custom_gwserver_error" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gateway-Server Fehler: ]]></phrase>
+  <phrase title="option_threema_gateway_status_custom_phpsdk_error" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Fehler im PHP-SDK: ]]></phrase>
+  <phrase title="option_threema_gateway_status_debug_mode_active" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Der Debug-Modus ist derzeit aktiviert, d.h. einige oder alle Nachrichten werden in eine Textdatei geloggt oder andere erweiterte Optionen sind aktiviert! Sie sollten diese <a href="#_threema_gateway_logreceivedmsgs">unten deaktivieren</a> wenn Sie fertig mit dem Debuggen sind.]]></phrase>
+  <phrase title="option_threema_gateway_status_debug_mode_potentially_active" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Der Debug-Modus ist derzeit aktiviert, d.h. einige oder alle Nachrichten könnten in eine Textdatei geloggt werden wenn Sie XenForos Debug-Modus aktivieren oder andere erweiterte Optionen sind aktiviert! Wenn dies nicht Ihre Absicht ist, sollten Sie <a href="#_threema_gateway_logreceivedmsgs">die entsprechenden Einstellungen unten deaktivieren</a>.]]></phrase>
+  <phrase title="option_threema_gateway_status_error" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie haben Fehler in Ihrer Konfiguration. Bis Sie diese Fehler beheben, wird es nicht möglich sein das Add-on zu benutzen.]]></phrase>
+  <phrase title="option_threema_gateway_status_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_not_installed" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Libsodium ist nicht installiert.]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_not_installed_recommend" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Aus Geschwindigkeits- und Sicherheitsgründen wird es dringend empfohlen <a href="https://download.libsodium.org/doc/" target="_blank" rel="noopener noreferrer">Libsodium</a> und die <a href="https://github.com/jedisct1/libsodium-php" target="_blank" rel="noopener noreferrer">PHP-Erweiterung</a> zu installieren. Sie können <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank" rel="noopener noreferrer">dieser Anleitung</a> (englisch) folgen um dies zu tun.<br />
+Zusätzlich werden viele 2FA-Methoden deaktiviert sein, wenn Sie Libsodium nicht installieren.]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_not_installed_required_64bit" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie können die reine PHP-Implementation nur mit einer 64bit-Version von PHP benutzen, also müssen Sie entweder PHP x64 oder <a href="https://paragonie.com/book/pecl-libsodium/read/00-intro.md#installing-libsodium" target="_blank" rel="noopener noreferrer">Libsodium</a> installieren, welches auch performance- und sicherheitstechnisch überlegen ist.]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_outdated" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Diese Version ist veraltet. Es wird dringend empfohlen eine neuere Version von libsodium zu installieren.]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodium_version" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<a href="https://download.libsodium.org/doc/" target="_blank" rel="noopener noreferrer">Sodium</a> Version: <b>{version}</b>]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodiumphp_outdated" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Diese Version ist veraltet. Es wird dringend empfohlen eine neuere Version von libsodium-php zu installieren (mindestens v1.0.1).]]></phrase>
+  <phrase title="option_threema_gateway_status_libsodiumphp_version" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<a href="https://github.com/jedisct1/libsodium-php" target="_blank" rel="noopener noreferrer">Sodium-PHP</a> Version: <b>{version}</b>]]></phrase>
+  <phrase title="option_threema_gateway_status_missing_private_key" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Es ist derzeit nicht möglich das Threema Gateway zu benutzen, weil der private Schlüssel fehlerhaft ist oder nicht spezifiziert wurde.]]></phrase>
+  <phrase title="option_threema_gateway_status_no_https" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie benutzen nicht HTTPS. Ohne HTTPS sind nicht nur die Daten, die Sie hier eingeben, ungeschützt, sondern auch einige Einstellungen und 2FA-Methoden werden nicht verfügbar sein. Insbesondere werden Sie nicht in der Lage sein Nachrichten zu empfangen, da Threema HTTPS für den Callback verlangt.]]></phrase>
+  <phrase title="option_threema_gateway_status_phpsdk_featurelevel" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[(Feature-Level: <b>{level}</b>)]]></phrase>
+  <phrase title="option_threema_gateway_status_phpsdk_not_ready" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Das PHP-SDK ist nicht bereit und kann nicht genutzt werden. Sie sollten Ihr Setup überprüfen.]]></phrase>
+  <phrase title="option_threema_gateway_status_phpsdk_not_ready_yet" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Das PHP-SDK ist nicht bereit und kann nicht genutzt werden. Sie müssen es vielleicht erst einrichten.]]></phrase>
+  <phrase title="option_threema_gateway_status_phpsdk_version" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Version des <a href="https://github.com/rugk/threema-msgapi-sdk-php" target="_blank" rel="noopener noreferrer">Threema PHP-SDKs</a>: <b>{version}</b>]]></phrase>
+  <phrase title="option_threema_gateway_tfa_autolookupmail" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Suche automatisch nach E-Mail-Adressen]]></phrase>
+  <phrase title="option_threema_gateway_tfa_autolookupmail_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn der Nutzer einen 2FA-Modus aktiviert, löst diese Option automatisch eine Suche nach der Threema-ID aus, die der Mail-Addresse des Nutzers zugeordnet ist. Die E-Mail-Adresse wird gehasht, bevor sie an den Threema-Server gesendet wird.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_autolookupphone" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Suche automatisch nach Telefonnummern]]></phrase>
+  <phrase title="option_threema_gateway_tfa_autolookupphone_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn der Nutzer einen 2FA-Modus aktiviert, versucht diese Option automatisch eine Suche nach der Threema-ID aus, die der Telefonnummer des Nutzers zugeordnet ist. Die Telefonnummer wird gehasht, bevor sie an den Threema-Server gesendet wird.<br />
+Geben Sie die ID des Benutzerfeldes in das Eingabefeld ein, in welchem nach der Telefonnummer gesucht werden soll.<br />
+<b>Wichtig:</b> Wenn die Telefonnummer in diesem Benutzerfeld nicht verifiziert wird, wenn die gespeichert wird, ermöglicht dies Forumsmitgliedern das Nachschlagen der Telefonnummern jedes Threema-Benutzers.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_blocking_time" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Zeit zum Blockieren (Minuten)]]></phrase>
+  <phrase title="option_threema_gateway_tfa_blocking_time_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie viele Minuten der Login mit der 2FA-Methode blockiert werden soll, wenn der Nutzer dies auswählt. Dieser Wert kann vom Nutzer später nicht konfiguriert werden. Er ist für jeden Nutzer gleich.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_conventional" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Aktiviere den klassischen Modus]]></phrase>
+  <phrase title="option_threema_gateway_tfa_conventional_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies erlaubt Nutzern die Benutzung der 2FA-Methode "Klassisch".]]></phrase>
+  <phrase title="option_threema_gateway_tfa_conventional_validation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer]]></phrase>
+  <phrase title="option_threema_gateway_tfa_conventional_validation_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll. (in Minuten)]]></phrase>
+  <phrase title="option_threema_gateway_tfa_conventional_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer beim Setup]]></phrase>
+  <phrase title="option_threema_gateway_tfa_conventional_validation_setup_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll, wenn die 2FA-Methode eingerichtet wird. (in Minuten)<br>
+Es ist nützlich, wenn dieser Wert etwas höher ist als der vorherige, um dem Nutzer etwas mehr Zeit zu geben die Erklärungen o.ä. durchzulesen. Es wird angenommen, dass die erste Einrichtung etwas länger dauert.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Aktiviere den schnellen Modus]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_auto_trigger" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Löse die Überprüfung automatisch aus]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_auto_trigger_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn aktiviert wird der "Bestätigen"-Knopf versteckt und es wird automatisch verifiziert, ob Validierungskriterien erfüllt sind.<br>
+Wenn die Option deaktiviert ist, muss der Nutzer den "Bestätigen"-Knopf manuell anklicken.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_block" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Blockierungsoptionen]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_block_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Im schnellen Modus können Nutzer Nachrichten ablehnen. In den Einstellungen des schnellen Modus können Nutzer konfigurieren, was geschehen soll, wenn sie dies tun.<br>
+
+Sie können für alle Nutzergruppen in den Berechtigungen (bei "Threema - Zwei-Schritt-Authentifizierung") festlegen, was Nutzer in diesem Fall tun dürfen. Standardmäßig können normale Nutzer nur Benachrichtigungen anzeigen und den Login blockieren und Admins und Moderatoren können alles tun.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erlaube Nutzern die Benutzung der 2FA-Methode "schneller Login".]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_show_qr_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Zeige den QR-Code der Gateway-ID]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_show_qr_code_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn aktiviert, wird dem Nutzer empfohlen den QR-Code der Gateway-ID zu scannen. Da man normalerweise eine Gateway-ID sowieso nicht persönlich treffen kann, ist es angemessen dies anzubieten.<br>
+<b>Hinweis:</b> Aus Sicherheitsgründen wird diese Option immer ignoriert, wenn kein HTTPS benutzt wird.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_validation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_validation_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll. (in Minuten)<br>
+Das Standartzeitlimit ist so hoch (im Vergleich zu anderen 2FA-Methoden), da hier eine lange Gültigkeitsdauer die Sicherheit nicht verringert (da die Nachrichten-ID als stärkeres Geheimnis bei diesem Modus verwendet wird) und da die Gültigkeitsdauer auch die Zeit limitiert, die ein Nutzer die Nachricht spätestens ablehnen kann, um eine (bösartigen) Eindringling zu blockieren. Deswegen ist es hier sogar nützlich ein hohes Limit festzulegen.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer beim Setup]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_validation_setup_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Nutzer in der Lage sein sollte, die Nachricht zu bestätigen oder abzulehnen, wenn die 2FA-Methode eingerichtet wird. (in Minuten)]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Aktiviere den umgekehrten Modus]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_auto_trigger" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Löse die Überprüfung automatisch aus]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_auto_trigger_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn aktiviert wird der "Bestätigen"-Knopf versteckt und es wird automatisch verifiziert, ob Validierungskriterien erfüllt sind.<br>
+Wenn die Option deaktiviert ist, muss der Nutzer den "Bestätigen"-Knopf manuell anklicken.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erlaubt Nutzern die Benutzung der 2FA-Methode "Umgekehrt".]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_show_qr_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Zeige den QR-Code der Gateway-ID]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_show_qr_code_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn aktiviert, wird dem Nutzer empfohlen den QR-Code der Gateway-ID zu scannen. Da man normalerweise eine Gateway-ID sowieso nicht persönlich treffen kann, ist es angemessen dies anzubieten.<br>
+<b>Hinweis:</b> Aus Sicherheitsgründen wird diese Option immer ignoriert, wenn kein HTTPS benutzt wird.]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_validation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_validation_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll. (in Minuten)]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer beim Setup]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_validation_setup_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll, wenn die 2FA-Methode eingerichtet wird. (in Minuten)<br>
+Es ist nützlich, wenn dieser Wert etwas höher ist als der vorherige, um dem Nutzer etwas mehr Zeit zu geben die Erklärungen o.ä. durchzulesen. Es wird angenommen, dass die erste Einrichtung etwas länger dauert.]]></phrase>
+  <phrase title="option_threema_gateway_threema_id" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema-Gateway-ID]]></phrase>
+  <phrase title="option_threema_gateway_threema_id_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Geben Sie hier die Threema-ID Ihres Gateway-Accounts ein. (z.B. <code>*MYAPIID</code>) ]]></phrase>
+  <phrase title="option_threema_gateway_threema_id_secret" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema-ID Secret]]></phrase>
+  <phrase title="option_threema_gateway_threema_id_secret_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Geben Sie hier Ihr Secret zum Zugriff auf das Threema Gateway ein.{note}]]></phrase>
+  <phrase title="option_threema_gateway_threema_id_secret_explain_note" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<br >
+<b>Hinweis:</b> Aus Sicherheitsgründen ist das Secret hier größtenteils versteckt und wird nur geändert, wenn Sie den Wert hier ersetzen.]]></phrase>
+  <phrase title="option_threema_gateway_userfield_verifyexist" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Verifiziere die Existenz von Threema-IDs in Benutzerfeldern]]></phrase>
+  <phrase title="option_threema_gateway_userfield_verifyexist_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn diese Option deaktiviert ist, wird nur das Format der Threema-ID überprüft. Ist sie aktiviert, wird der Threema-Server auch gefragt, ob die ID wirklich existiert.<br>
+Bedenke, dass nicht geprüft wird, ob die Threema ID wirklich zu dem Nutzer <b>gehört</b>.]]></phrase>
+  <phrase title="option_threema_gateway_usesource" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Benutze den Quellcode des PHP-SDKs]]></phrase>
+  <phrase title="option_threema_gateway_usesource_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Anstatt die .phar-Datei zu benutzen, zwingt diese Option das Add-on dazu den Quellcode des PHP-SDKs zu benutzen. Dies ist in den meisten Fällen nur nützlich zum Debuggen.]]></phrase>
+  <phrase title="option_threema_gateway_verify_receive_time" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Lehne alte eingehende Nachrichten ab]]></phrase>
+  <phrase title="option_threema_gateway_verify_receive_time_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn aktiviert, verifiziert dies die Zeit, wenn Nachrichten empfangen werden, sodass alte Nachrichten abgelehnt werden. Das Format des Datums muss ein gültiges sein, welches vn <a href="https://secure.php.net/manual/function.strtotime.php" target="_blank" rel="noopener noreferrer"><code>strtotime</code></a> verarbeitet werden kann. Das Datum muss ein <a href="https://secure.php.net/manual/datetime.formats.relative.php" target="_blank" rel="noopener noreferrer">relatives sein</a> und in der Vergangenheit liegen (<code>-</code> voranstellen).
+Die empfohlene minimale Dauer sind 20 Minuten (<code>-20 min</code>) da der Gateway-Server eine Nachricht regulär maximal 15 Minuten später sendet. 5 Minuten sollten die minimale Toleranz für Serververzögerungen sein.
+<br>
+Wenn deaktiviert, wird ein einprogrammiertes Fallback auf 14 Tage genutzt (<code>-14 days</code>), da Nachrichten niemals älter als 14 Tage sein können, da sie danach vom Gateway-Server gelöscht werden.]]></phrase>
+  <phrase title="permission_group_threemagw" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway]]></phrase>
+  <phrase title="permission_interface_threemagw" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway]]></phrase>
+  <phrase title="permission_interface_threemagw_tfa" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema - Zwei-Schritt-Authentifizierung]]></phrase>
+  <phrase title="permission_threemagw_blockIp" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Schneller Modus (ablehnen) - Erlaube IP-Blockierung]]></phrase>
+  <phrase title="permission_threemagw_blockTfaMode" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Schneller Modus (ablehnen) - Erlaube temporäre 2FA-Modus-Blockierung]]></phrase>
+  <phrase title="permission_threemagw_blockUser" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Schneller Modus (ablehnen) - Erlaube Nutzersperrung (für einen Tag)]]></phrase>
+  <phrase title="permission_threemagw_blockedNotification" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Schneller Modus (ablehnen) - Erlaube Benachrichtigung]]></phrase>
+  <phrase title="permission_threemagw_fetch" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Öffentlichen Schlüssel abrufen (basierend auf ID)]]></phrase>
+  <phrase title="permission_threemagw_lookup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Nachschlagen der ID/des öffentlichen Schlüssels basierend auf irgendeinem Kriterium]]></phrase>
+  <phrase title="permission_threemagw_receive" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Nachrichten empfangen]]></phrase>
+  <phrase title="permission_threemagw_send" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Nachrichten senden]]></phrase>
+  <phrase title="permission_threemagw_tfa" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema-2FA benutzen]]></phrase>
+  <phrase title="permission_threemagw_use" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema-Gateway benutzen]]></phrase>
+  <phrase title="sendto_threema" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Senden an Threema]]></phrase>
+  <phrase title="tfa_threemagw_add_threema_id_button" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Füge Threema-ID hinzu]]></phrase>
+  <phrase title="tfa_threemagw_add_threema_id_button_tooltip" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Fügt {threemaid} Ihrer Kontaktliste hinzu]]></phrase>
+  <phrase title="tfa_threemagw_automatically_continues" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Warten auf Bestätigung…]]></phrase>
+  <phrase title="tfa_threemagw_block_ip" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[blockiere die IP des Nutzers, welcher versucht einzuloggen]]></phrase>
+  <phrase title="tfa_threemagw_block_ip_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies blockiert <b>dauerhaft</b> die IP des Nutzers, der versucht sich einzuloggen. Benutze diese Option mit Vorsicht!]]></phrase>
+  <phrase title="tfa_threemagw_block_tfa_mode" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[blockiere den 2FA-Login-Modus]]></phrase>
+  <phrase title="tfa_threemagw_block_tfa_mode_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies verhindert für <b>{time}</b>, dass der Nutzer die 2FA-Methode benutzen kann, aber es zeigt dem Benutzer, der den Loginversuch vornimmt, keinen Hinweis um nicht die Aufmerksamkeit des Angreifers zu erregen.<br>
+Beachten Sie, dass dies Option umkehrbar ist, d.h. nach dem Ablehnen einer Nachricht können Sie diese immer noch bestätigen, um die Blockade aufzuheben.]]></phrase>
+  <phrase title="tfa_threemagw_block_user" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[blockiere den Nutzer-Account für einen Tag.]]></phrase>
+  <phrase title="tfa_threemagw_block_user_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies bannt den Nutzeraccount für {time}. Der Account kann nur von Administratoren wieder entsperrt werden.]]></phrase>
+  <phrase title="tfa_threemagw_contact_qrcode_text" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[3mid:{threemaid},{publickey}]]></phrase>
+  <phrase title="tfa_threemagw_conventional" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema - Klassisch]]></phrase>
+  <phrase title="tfa_threemagw_conventional_desc" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies wird dir einen 6-stelligen Code zum Login via Threema senden.{e2e}]]></phrase>
+  <phrase title="tfa_threemagw_conventional_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Verifizierung
+
+Hallo {user},
+um den zweiten Schritt der Zwei-Faktor-Authentifizierung zu vervollständigen, müssen Sie den folgenden Code eingeben:
+
+{secret}
+
+Der Code ist gültig für {validationTime}.
+
+Der Login wurde mit der IP *IP* *{ip}* angefordert. Wenn Sie diese Anfrage nicht ausgelöst haben, sollten Sie Ihr Passwort dringend ändern.
+
+Danke,
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_continue" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Eine Threema-Nachricht wurde mit einem Einmalcode zu <b>{threemaid}</b> gesendet. Bitte geben Sie diesen Code ein um fortzufahren.]]></phrase>
+  <phrase title="tfa_threemagw_conventional_message_has_been_send_to_x_with_code_login" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Eine Threema-Nachricht wurde mit einem Einmalcode zu <b>{threemaid}</b> gesendet. Bitte geben Sie diesen Code ein um den Login abzuschließen.]]></phrase>
+  <phrase title="tfa_threemagw_conventional_message_short" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11
+Code: {secret}
+IP: {ip}
+Gültigkeit: {validationTime}
+
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_conventional_setup_descr" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dieser Modus sendet Ihnen einen 6-stelligen Code an Ihre Threema-ID, welchen Sie beim Login eingeben müssen.]]></phrase>
+  <phrase title="tfa_threemagw_enter_own_threema_id_below" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Bitte geben Sie Ihre eigene Threema-ID unten ein.]]></phrase>
+  <phrase title="tfa_threemagw_fast" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema - Schneller Login]]></phrase>
+  <phrase title="tfa_threemagw_fast_desc" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies wird Ihnen eine Nachricht mit einigen Details darüber senden, wer den Login auslöste, und Sie können sie bestätigen oder ablehnen.]]></phrase>
+  <phrase title="tfa_threemagw_fast_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Verifizierung
+
+Hallo {user},
+ein Nutzer mit der *IP* *{ip}* forderte eine Loginbestätigung für Ihren Account an.
+
+Um den Login zu erlauben, müssen Sie diese Nachricht bestätigen.
+
+Wenn Sie diese Anfrage nicht ausgelöst haben, sollten Sie diese Nachricht ablehnen und dringend Ihr Passwort ändern.
+
+Danke,
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_fast_message_blocked" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 Login-Zugriff blockiert!
+
+\u26A0 *Wichtige* *Nachricht!*
+
+Hallo {user},
+ein Nutzer mit der *IP* *{ip}* versuchte sich (erneut) mit dem "Threema - Schneller Login"-2FA-Modus einzuloggen.
+
+Dies wurde blockiert, da der Nutzer durch eine abgelehnte Loginanfrage Ihrerseits vorher blockiert wurde.
+Falls Sie dies aus Versehen getan haben, müssen Sie warten bis die Blockade aufgehoben wurde.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_fast_message_short" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
+*IP* *{ip}* versucht sich als _{user}_ einzuloggen.
+
+Bestätigen Sie diese Nachricht, um den Login zu erlauben.
+
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_fast_please_confirm_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Bitte <a href="https://threema.ch/de/faq/agree_disagree_feature" target="_blank" rel="noopener noreferrer">bestätigen Sie die Nachricht</a>, welche gerade zu von <b>{gatewayid}</b> nach <b>{threemaid}</b> gesendet wurde.<br>
+Falls Sie aus Versehen auf "Ablehnen" getippt haben, können Sie die Nachricht üblicherweise danach immer noch bestätigen, um trotzdem einzuloggen.]]></phrase>
+  <phrase title="tfa_threemagw_fast_setup_descr" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dieser Modus sendet Ihnen eine Nachricht, welche Sie bestätigen müssen, um die Login-Anfrage zu erlauben. Wenn Sie diese ablehnen, wird der Login verhindert.]]></phrase>
+  <phrase title="tfa_threemagw_fast_setup_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Verifizierung
+
+Hallo {user},
+ein Nutzer mit der *IP* *{ip}* forderte eine Bestätigung zur Aktivierung dieser 2FA-Methode für Ihren Account an.
+
+Um die Anfrage zu erlauben, müssen Sie diese Nachricht bestätigen.
+
+Wenn Sie diese Anfrage nicht ausgelöst haben, sollten Sie diese Nachricht ablehnen und dringend Ihr Passwort ändern.
+
+Danke,
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_fast_setup_message_blocked" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 2FA-Aktivierung blockiert!
+
+\u26A0 *Wichtige* *Nachricht!*
+
+Hallo {user},
+ein Nutzer mit der *IP* *{ip}* versuchte den "Threema - Schneller Login"-2FA-Modus zu aktivieren.
+
+Dies wurde blockiert, da der Nutzer durch eine abgelehnte Loginanfrage Ihrerseits vorher blockiert wurde.
+Falls Sie dies aus Versehen getan haben, müssen Sie warten bis die Blockade aufgehoben wurde.
+
+Thanks,
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_fast_setup_message_short" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
+*IP* *{ip}* versuchte den 2FA-Modus als _{user}_ zu aktivieren.
+
+Bestätigen Sie diese Nachricht um die Anfrage zu erlauben.
+
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_fast_user_banned" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[2FA-Login-Verstoß]]></phrase>
+  <phrase title="tfa_threemagw_fast_validation_time" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie haben {validationTime} um dies zu tun.]]></phrase>
+  <phrase title="tfa_threemagw_fast_when_decline" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn Sie eine Login-Nachricht ablehnen, dann…]]></phrase>
+  <phrase title="tfa_threemagw_i_like_smilies" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Ich mag Emojis!]]></phrase>
+  <phrase title="tfa_threemagw_i_like_smilies_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Aktivieren Sie dies nur, wenn Sie Emoticons/Smileys mögen.]]></phrase>
+  <phrase title="tfa_threemagw_message_blocked_canreverse" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\uD83D\uDC49 Falls Sie dies aus Versehen getan haben, können Sie immer noch den Status der (vorherigen!) *Login-Nachricht* nach
+    \uD83D\uDC4D Bestätigen
+*ändern*, um den Login zu erlauben.]]></phrase>
+  <phrase title="tfa_threemagw_message_blocked_general" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 Login-Zugriff blockiert!
+
+Hallo {user},
+da Sie eine Login-Nachricht abgelehnt haben, wurde verhindert, dass der Nutzer mit der *IP* *{ip}* auf Ihren Account zugreift.
+{blockActions}
+
+Thanks,
+{board}
+{board_url}]]></phrase>
+  <phrase title="tfa_threemagw_message_blocked_ip" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Die IP wurde dauerhaft gesperrt.]]></phrase>
+  <phrase title="tfa_threemagw_message_blocked_login" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Die 2FA-Login-Methode wurde für {blockTime} blockiert.]]></phrase>
+  <phrase title="tfa_threemagw_message_blocked_nothing" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Nichts wurde getan, um zu verhindern, dass der Nutzer auf Ihren Account zugreift, da Sie nichts derartiges konfiguriert haben.]]></phrase>
+  <phrase title="tfa_threemagw_message_blocked_user" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dieser Account wurde für {blockTime} gebannt.]]></phrase>
+  <phrase title="tfa_threemagw_notify_of_block" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[benachrichtige mich von den getätigten Aktionen via Threema]]></phrase>
+  <phrase title="tfa_threemagw_notify_of_block_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies informiert den Nutzer via Threema über die ausgeführten Aktionen bei der Blockierung und nachfolgende Loginversuche mit dieser 2FA-Methode. Diese Option wird empfohlen.]]></phrase>
+  <phrase title="tfa_threemagw_reversed" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema - Umgekehrt]]></phrase>
+  <phrase title="tfa_threemagw_reversed_button_text" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sende Nachricht]]></phrase>
+  <phrase title="tfa_threemagw_reversed_button_tooltip" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sende den Code mit Ihrem mobilen Gerät]]></phrase>
+  <phrase title="tfa_threemagw_reversed_desc" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies wird Ihnen einen 6-stelligen Code geben, den Sie via Threema an {board} senden musst, um den Login zu bestätigen.]]></phrase>
+  <phrase title="tfa_threemagw_reversed_message_please_enter_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Bitte senden Sie eine Nachricht an <b>{gatewayid}</b> mit dem folgenden Code.<br>
+Wenn Sie diese Webseite von einem Gerät besuchen, auf dem Threema installiert ist, können Sie auch einfach den Knopf drücken, um die Nachricht zu senden.
+Falls Sie am Desktop sind, können Sie den QR-Code einscannen.]]></phrase>
+  <phrase title="tfa_threemagw_reversed_setup_descr" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dieser Modus zeigt Ihnen einen 6-stelligen Code, den Sie an Threema senden müssen, um einzuloggen. Deswegen ist es die "umgekehrte" Version des klassischen Modi.]]></phrase>
+  <phrase title="tfa_threemagw_reversed_show_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<p>Code:</p>
+<code class="textCtrl threemagw_given_code">{secret}</code>]]></phrase>
+  <phrase title="tfa_threemagw_reversed_validation_time" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dieser Code ist gültig für {validationTime}.]]></phrase>
+  <phrase title="tfa_threemagw_setup_generaldescr" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dieser Zwei-Faktor-Authentifizierungsmodus nutzt die <a href="https://threema.ch" target="_blank" rel="noopener noreferrer">Threema</a>-App. Bevor Sie fortfähren, müssen Sie diese App downloaden. Sie ist <a href="https://threema.ch/get-threema" target="_blank" rel="noopener noreferrer">für viele Platformen</a> verfügbar. <br />
+Legen Sie eine Threema ID an und geben Sie diese unten ein.]]></phrase>
+  <phrase title="tfa_threemagw_setup_please_add_threema_id" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Bitte fügen Sie die Threema-ID <b>{gatewayid}</b> zu Ihrer Kontaktliste hinzu, bevor Sie fortfähren.]]></phrase>
+  <phrase title="tfa_threemagw_setup_please_scan_qr_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Bitte scannen Sie den folgenden QR-Code mit Threema ein, bevor Sie fortfähren. Die Threema-ID <b>{gatewayid}</b> sollte hinzugefügt werden!]]></phrase>
+  <phrase title="tfa_threemagw_setup_public_key" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Öffentlicher Schlüssel]]></phrase>
+  <phrase title="tfa_threemagw_setup_public_key_descr" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Bevor Sie fortfähren, stellen Sie bitte sicher, dass der folgende Fingerabdruck Ihrer Threema-ID korrekt ist. Oft können Sie ihn auf der selben Seite finden, wo Sie auch Ihre Threema-ID und Ihren QR-Code sehen können.<br>
+<b>Schlüssel-Fingerabdruck:</b> {pubKeyShort}<br /><br />
+Bitte überprüfen Sie jedes Zeichen des Codes und stellen Sie sicher, dass es der selbe ist, wie der auf Ihrem Gerät dargestellte. Sollten Sie dabei irgendeine Abweichung bemerken <i>fahren Sie nicht fort</i> und kontaktieren Sie den Forumsadministrator.<br />
+Der dargestellte Fingerabdruck ist von Ihrem öffentlichen Schlüssel abgeleitet, welcher zu Ihrer Threema-ID verknüpft ist. Mehr Informationen <a href="https://threema.ch/de/faq/threema_id" target="_blank" rel="noopener noreferrer">in der Threema-FAQ</a>.]]></phrase>
+  <phrase title="tfa_threemagw_setup_use_button_below_to_add_threema_id" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Falls Sie gerade ein Gerät nutzen, auf dem Threema installiert ist, können Sie einfach folgenden Knopf unten drücken, um die ID hinzuzufügen:]]></phrase>
+  <phrase title="tfa_threemagw_use_number_smilies" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Benutze Smileys als Ziffern]]></phrase>
+  <phrase title="tfa_threemagw_use_number_smilies_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Ersetzt die Nummern im Code mit Smileys.]]></phrase>
+  <phrase title="tfa_threemagw_use_short_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Benutze kurze Nachrichten]]></phrase>
+  <phrase title="tfa_threemagw_use_short_message_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Benutzt kurze Nachrichten anstatt langen Nachrichten, um es möglich zu machen, dass Sie den Verifikationscode direkt in der Benachrichtigung sehen, sodass Sie Threema nicht extra öffnen müssen, um ihn zu sehen.]]></phrase>
+  <phrase title="threema_this_action_required_e2e" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Diese Aktion benötigt den Ende-zu-Ende-verschlüsselten Threema-Modus.]]></phrase>
+  <phrase title="threemagw_confirmation_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Bestätigungscode]]></phrase>
+  <phrase title="threemagw_days" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Tage]]></phrase>
+  <phrase title="threemagw_donate_consider_donating" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<b>Erwägen Sie eine Spende!</b> ❤️]]></phrase>
+  <phrase title="threemagw_donate_currency" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[{num}€]]></phrase>
+  <phrase title="threemagw_donate_flattr" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Flattr]]></phrase>
+  <phrase title="threemagw_donate_flattr_language_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[de_DE]]></phrase>
+  <phrase title="threemagw_donate_like_addon_and_support_dev" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie mögen dieses Add-on und möchten die Entwicklung <b>unterstützen</b>?]]></phrase>
+  <phrase title="threemagw_donate_micro_donation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Micro-Spende]]></phrase>
+  <phrase title="threemagw_donate_other_amount" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[anderen Betrag]]></phrase>
+  <phrase title="threemagw_donate_paypal" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[PayPal]]></phrase>
+  <phrase title="threemagw_donate_paypal_button_text" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Spenden]]></phrase>
+  <phrase title="threemagw_donate_paypal_me" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[PayPal.me]]></phrase>
+  <phrase title="threemagw_fetching_publickey_failed" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Abfrage des öffentlichen Schlüssels fehlgeschlagen.]]></phrase>
+  <phrase title="threemagw_getting_credits_failed" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erhalten der Credits fehlgeschlagen.]]></phrase>
+  <phrase title="threemagw_hours" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Stunden]]></phrase>
+  <phrase title="threemagw_integrity_of_addon_could_not_checked" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[ThreemaGateway: Die Integrität des Threema-Gateway-Add-ons konnte nicht geprüft werden.]]></phrase>
+  <phrase title="threemagw_invalid_debuglogpath" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Der Pfad der Nachrichten-Debug-Log-Datei ist ungültig. Bitte überprüfe die Berechtigungen.]]></phrase>
+  <phrase title="threemagw_invalid_discard_old_date" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Das Datum zum Verwerfen alter Nachrichten ist ungültig.]]></phrase>
+  <phrase title="threemagw_invalid_downloadpath" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Das Verzeichnis kann nicht genutzt werden. Bitte überprüfe das Verzeichnis und dessen Berechtigungen.]]></phrase>
+  <phrase title="threemagw_invalid_httpshardening_option" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Die HTTPS-Hardening-Option ist ungültig.]]></phrase>
+  <phrase title="threemagw_invalid_keystorepath" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Der Pfad zur PHP-Keystore-Datei ist ungültig.]]></phrase>
+  <phrase title="threemagw_invalid_privatekey" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Der private Schlüssel ist ungültig oder konnte nicht gefunden werden.]]></phrase>
+  <phrase title="threemagw_invalid_privkeypath" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Der Pfad zum privaten Schlüssel ist ungültig.]]></phrase>
+  <phrase title="threemagw_invalid_threema_id" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Die Threema-ID ist ungültig.]]></phrase>
+  <phrase title="threemagw_invalid_threema_secret" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Das Threema-ID-Secret ist ungültig.]]></phrase>
+  <phrase title="threemagw_libsodium_error" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Fehler beim Versuch Libsodium zu benutzen.]]></phrase>
+  <phrase title="threemagw_message_is_sent_e2e" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[ Die Nachricht wird Ende-zu-Ende-verschlüsselt gesendet.]]></phrase>
+  <phrase title="threemagw_minutes" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Minuten]]></phrase>
+  <phrase title="threemagw_missing_database_data" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Einige Daten in der Datenbank fehlen.]]></phrase>
+  <phrase title="threemagw_missing_e2e_helper" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Der E2E-Helper fehlt. Vielleicht wurde versucht es zu benutzen, obwohl das Gateway nicht im E2E-Modus ist.]]></phrase>
+  <phrase title="threemagw_missing_sdk" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Das PHP-SDK für das Threema Gateway fehlt.]]></phrase>
+  <phrase title="threemagw_not_writable_keystorefile" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Die PHP-Keystore-Datei ist nicht beschreibbar.]]></phrase>
+  <phrase title="threemagw_one_day" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[ein Tag]]></phrase>
+  <phrase title="threemagw_one_hour" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[eine Stunde]]></phrase>
+  <phrase title="threemagw_one_minute" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Minute]]></phrase>
+  <phrase title="threemagw_permission_error" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Es gab einen Berechtigungsfehler.]]></phrase>
+  <phrase title="threemagw_phpkeystore_example" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[keystore.php]]></phrase>
+  <phrase title="threemagw_privatekeyfile_example" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[privateKey.txt]]></phrase>
+  <phrase title="threemagw_sending_failed" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Das Senden der Nachricht ist fehlgeschlagen.]]></phrase>
+  <phrase title="threemagw_tfa_confirmation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[2FA-Bestätigung]]></phrase>
+  <phrase title="threemagw_tfa_user_banned" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[2FA-Login-Fehlschlag]]></phrase>
+  <phrase title="threemagw_this_tfa_mode_is_not_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dieser 2FA-Modus wurde nicht korrekt eingerichtet.]]></phrase>
+  <phrase title="threemagw_threema_id_does_not_exist" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema-ID existiert nicht.]]></phrase>
+  <phrase title="threemagw_threemaid" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema-ID]]></phrase>
+  <phrase title="threemagw_unknown_message_type" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Unbekannter Nachrichtentyp]]></phrase>
+  <phrase title="user_field_threemaid" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema-ID]]></phrase>
+  <phrase title="user_field_threemaid_desc" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[]]></phrase>
+</language>

@@ -14,6 +14,7 @@ ADD_HASHES=1
 
 # functions
 show_help() {
+    # TODO
     return;
 }
 
@@ -64,19 +65,35 @@ echo "Copy source files…"
 mkdir -p "$BUILD_DIR/upload"
 rsync -a "$SOURCE_DIR/" "$BUILD_DIR/upload/"
 
-for lang in $languages; do
+if [ "$languages" ]; then
     mkdir -p "$BUILD_DIR/languages"
+fi
+
+langFiles=''
+for lang in $languages; do
     # complete language attributions
     case $lang in
         en)
-            lang="en-US"
+            lang="en_US"
             ;;
         de)
-            lang="de-DE"
+            lang="de_DE_du de_DE_Sie"
             ;;
     esac
 
-    cp -a "$LANG_DIR/$lang.xml" "$BUILD_DIR/languages"
+    for langVariant in $lang; do
+        # convert to full file names
+        case $langVariant in
+            en_US) langFiles="${langFiles} language-English-(US)";;
+            de_DE_du) langFiles="${langFiles} language-Deutsch-[Du]";;
+            de_DE_Sie) langFiles="${langFiles} language-Deutsch-[Sie]";;
+            *) langFiles="${langFiles} ${langVariant}";;
+        esac
+    done
+done
+
+for langFile in $langFiles; do
+    cp -a "$LANG_DIR/$langFile.xml" "$BUILD_DIR/languages"
 done
 
 if [ $ADD_HASHES = 1 ]; then
