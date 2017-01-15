@@ -18,4 +18,6 @@ More information can be found…
 - [check sign and cross
 sign](https://openclipart.org/detail/11118/check-sign-and-cross-sign) by jetxee,
 CC0
+- [Play button (transparent)](https://openclipart.org/detail/270781/play-button-transparent) by rugkme,
+CC0, based on [simple play](https://openclipart.org/detail/169272/simple-play) by txapelgorri
 
