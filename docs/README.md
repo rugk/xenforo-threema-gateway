@@ -11,6 +11,7 @@ This is the (technical) documentation for the [Threema Gateway](https://github.c
 ## More information
 
 More information can be found…
+
 * in the [wiki](https://github.com/rugk/xenforo-threema-gateway/wiki)
 
 ## Licenses for used images

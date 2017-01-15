@@ -26,7 +26,7 @@ class ThreemaGateway_Handler_Settings
     protected $GatewayId = '';
 
     /**
-     * @var string $gatewaySecret Your own Threema Gateway Secret
+     * @var string $gatewaySecret Your own Threema Gateway secret
      */
     protected $gatewaySecret = '';
 
@@ -60,7 +60,9 @@ class ThreemaGateway_Handler_Settings
             $this->gatewaySecret = $this->xenOptions->threema_gateway_threema_id_secret;
         }
         if (!$this->privateKey) {
-            $this->privateKeyBase = $this->xenOptions->threema_gateway_privatekeyfile;
+            if (!$this->$privateKeyBase) {
+                $this->privateKeyBase = $this->xenOptions->threema_gateway_privatekeyfile;
+            }
 
             // vadility check & processing is later done when private key is actually requested
             // {@see convertPrivateKey()}
