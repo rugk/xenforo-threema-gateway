@@ -1,6 +1,6 @@
 # XenForo - Threema Gateway (two-factor-authentication)
 
-[<img alt="preview of 2FA modes" style="float: right; margin: 5px" align="right"  src="https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/gifs/allLoginMobilePlaySmall.gif">](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/screencasts/allMobile.webm)
+[<img alt="preview of 2FA modes" align="right"  src="https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/gifs/allLoginMobilePlaySmall.gif">](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/screencasts/allMobile.webm)
 
 This add-on integrates the secure instant-messaging app [Threema](https://threema.ch) into the forum software XenForo. Using the [Threema Gateway](https://gateway.threema.ch) it offers three new [two-step authentication](https://xenforo.com/community/threads/two-step-verification-and-security-improvements.99881/) (also called two-factor authentication) modes for users and admins.
 
