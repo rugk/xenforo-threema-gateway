@@ -1,6 +1,6 @@
 # Two factor authentication methods
 ## Overview
-Basic priority: 40 (see ThreemaGateway_Constants::TFA_BASE_PRIORITY)  
+Basic priority: 40 (see `ThreemaGateway_Constants::TFA_BASE_PRIORITY`)  
 Range reserved: `TFA_BASE_PRIORITY-29` to `TFA_BASE_PRIORITY-1` (currently 21-39)
 
 name         | server                                       | client                                     | user                                             | implemented (class)             | priority
@@ -22,6 +22,8 @@ This is like SMS verification, but it uses Threema and is therefore much more se
 This security model is well-tested and proven to work when the secret is transmitted over secure channels and only the receipient can read it. This is satisfied by the end-to-end-encryption.
 Thus if no end-to-end-encryption is used the security level is weakend very much and therefore a small message is shown to the 2FA user when E2E encryption is used, so one can differenciate this even as a user of the 2FA mode.
 
+[![preview of 2FA conventional mode](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/8802cf95/docs/screenshots/conventionalLoginDesktopPlaySmall.png)](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/8802cf95/docs/screencasts/conventionalLoginDesktop.webm)
+
 ## Reversed
 **Pro:** Security depends on unique secret  
 **Contra:** Still quite inconvenient as one has to handle the secret
@@ -32,6 +34,8 @@ This is as secure as the first methods, but it may be more convenient for the us
 ![reversed sketch: server sends code to user, client sends it to server via Threema](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/master/docs/images/Reversed.svg)
 
 The random code must not be taken as a secret here as the authentication is mostly done only by ensuring that the (previously registered) Threema ID sended a message stating to allow the login. The NaCl encryption ensures authentity of a message and the secret should just be unique to prevent potential replay attacks.
+
+[![preview of 2FA reversed mode](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/8802cf95/docs/screenshots/reversedLoginDesktopPlaySmall.png)](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/8802cf95/docs/screencasts/reversedLoginDesktop.webm)
 
 ## Fast login
 **Pro:** Very convenient and fast to use  
@@ -48,3 +52,5 @@ By acknowledging a message the client creates an authenticated and end-to-end-en
 The security mostly depends on how the user can estimate the vadility of the login request (which includes the IP address). An attacker could try to login at the same time and trick the user into acknowledging the wrong message.
 
 As an extra with this method users can explicitly state that the login access was unwanted (by declining a message). This allows one to execute different actions when this happens, such as banning the IP/user, who tried to login.
+
+[![preview of 2FA fast mode](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/8802cf95/docs/screenshots/fastLoginDesktopPlaySmall.png)](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/8802cf95/docs/screencasts/fastLoginDesktop.webm)
