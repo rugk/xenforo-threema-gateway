@@ -7,6 +7,7 @@ This is the (technical) documentation for the [Threema Gateway](https://github.c
 * [Build instructions](Build.md)
 * [an overview over all 2FA methods](2faMethods.md)
 * [information for other add-on developers](AddonDevelopers.md)
+* [videos/screencasts](screencasts/), [screenshots](screenshots/) and [animated gifs](gifs/) showing the add-on in action
 
 ## More information
 
@@ -21,4 +22,3 @@ sign](https://openclipart.org/detail/11118/check-sign-and-cross-sign) by jetxee,
 CC0
 - [Play button (transparent)](https://openclipart.org/detail/270781/play-button-transparent) by rugkme,
 CC0, based on [simple play](https://openclipart.org/detail/169272/simple-play) by txapelgorri
-
