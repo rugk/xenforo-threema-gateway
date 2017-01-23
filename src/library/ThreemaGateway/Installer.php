@@ -23,7 +23,6 @@ class ThreemaGateway_Installer
     {
         /** @var array $providerInstaller An array with the models of all providers */
         $providerInstaller = self::getProviderInstaller();
-        // var_dump((new ThreemaGateway_Installer_MessagesDb)->create());exit;
         // check requirements of Gateway
         if (!self::meetsRequirements($error)) {
             throw new XenForo_Exception($error);

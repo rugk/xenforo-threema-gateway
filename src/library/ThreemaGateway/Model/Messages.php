@@ -599,7 +599,9 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
             $baseArray[$key] = $subArray[0][$key];
 
             // then delete it from sub array
-            for ($i = 0; $i < count($subArray); $i++) {
+            /** @var int $subArrayCount */
+            $subArrayCount = count($subArray);
+            for ($i = 0; $i < $subArrayCount; $i++) {
                 unset($subArray[$i][$key]);
             }
         }

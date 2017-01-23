@@ -41,9 +41,6 @@ class ThreemaGateway_Listener_MessageCallback
             return;
         }
 
-        /** @var ThreemaGateway_Handler_Action_Receiver $receiver */
-        $receiver = new ThreemaGateway_Handler_Action_Receiver;
-
         // first check whether message has already been saved to prevent replay attacks
         $handler->assertNoReplayAttack($receiveResult->getMessageId());
 

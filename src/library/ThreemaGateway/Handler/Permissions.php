@@ -14,9 +14,6 @@
  * @license MIT
  */
 
-use Threema\MsgApi\Receiver;
-use Threema\MsgApi\Helpers\E2EHelper;
-
 /**
  * This manages the permissions of all actions.
  */

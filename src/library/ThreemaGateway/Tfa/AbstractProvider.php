@@ -487,8 +487,6 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     final protected function generateRandomSecret($length = 6)
     {
-        /** @var XenForo_Options $options */
-        $options = XenForo_Application::getOptions();
         /** @var string $secret */
         $secret = '';
 

@@ -280,9 +280,6 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             return $providerData;
         }
 
-        /** @var XenForo_Options $xenOptions */
-        $xenOptions = XenForo_Application::getOptions();
-
         //add other options to provider data
         $providerData['useShortMessage'] = $input->filterSingle('useShortMessage', XenForo_Input::BOOLEAN);
 

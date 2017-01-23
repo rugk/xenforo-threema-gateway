@@ -39,8 +39,7 @@ class ThreemaGateway_Handler_Validation
 
         // fetches public key of an id to check whether it exists
         try {
-            /** @var string $publicKey */
-            $publicKey = $gwServer->fetchPublicKey($threemaid);
+            $gwServer->fetchPublicKey($threemaid);
         } catch (Exception $e) {
             // to show detailed error messages: $error = new XenForo_Phrase('threemagw_threema_id_does_not_exist') . ' ' . $e->getMessage();
             $error = (new XenForo_Phrase('threemagw_threema_id_does_not_exist'))->render();
