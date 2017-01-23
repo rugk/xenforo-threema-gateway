@@ -58,7 +58,6 @@ class ThreemaGateway_Listener_MessageCallback
      * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult
      * @param Threema\MsgApi\Messages\ThreemaMessage      $threemaMsg
      * @param array|string                                $output        [$logType, $debugLog, $publicLog]
-     * @param bool                                        $saveMessage
      * @param bool                                        $debugMode
      */
     public static function testCallbackPostSave(ThreemaGateway_Handler_Action_Callback $handler,

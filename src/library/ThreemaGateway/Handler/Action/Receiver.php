@@ -196,23 +196,17 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * Grouping this result ({@see groupByMessageType()}) is not supported.
      * Note that the result is still the usual array of all other message
      * queries here.
-     * Note: When passing a message ID please avoid using other parameters as
-     * it may produce errors. When you have a message ID it is also not
-     * really necessary to specify other conditions.
      *
      * @param  string     $threemaId     filter by Threema ID (optional)
      * @param  string     $mimeType      Filter by mime type (optional).
      * @param  string     $fileType      The file type, e.g. thumbnail/file or image (optional).
      *                                   This is a Threema-internal type and may not
      *                                   be particular useful.
-     * @param  string     $messageId     If you know the message ID you can skip
-     *                                   the previous paeameters and just use this
-     *                                   one to get all data.
      * @param  bool       $queryMetaData Set to false, to prevent querying for meta
      *                                   data, which might speed up the query. (default: true)
      * @return null|array
      */
-    public function getFileList($mimeType = null, $fileType = null, $threemaId = null, $messageId = null, $queryMetaData = true)
+    public function getFileList($mimeType = null, $fileType = null, $threemaId = null, $queryMetaData = true)
     {
         $this->initiate();
         $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
@@ -247,62 +241,55 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // reset grouping as it cannot be processed
         $this->groupByMessageType = false;
 
-        /** @var array $result */
-        $result = null;
-
-        // a message id overtrumps them all :)
-        if ($messageId) {
-            $model->setMessageId($messageId, 'metamessage');
-            // direct query
-            $result = $this->execute($model, $messageType);
+        if ($messageType) {
+            // this can only be done when the mime type is set to something
+            // different than image/jpeg, so now all images are already
+            // excluded.
+            // This makes it possible to return the data with one query.
+            /** @var array $result */
+            $result = $model->getMessageDataByType($messageType, $queryMetaData);
         } else {
-            if ($messageType) {
-                // this can only be done when the mime type is set to something
-                // different than image/jpeg, as now all images are already
-                // excluded
-                $result = $model->getMessageDataByType($messageType, true);
-            } else {
-                // It's more complex if we want to query image & file messages
-                // together, as the mime type includes image files.
-                //
-                // Forunately this problem can be solved by just querying each
-                // message type individually. This does also only do 2 queries,
-                // which is even less than if we would use getAllMessageData, as
-                // there we need 3 queries: metadata + msg type 1 + msg type 2.
-                // As we know the possible message types this is possible. In
-                // all other ways one must query the metadata and filter or split
-                // it accordingly, to later execute the queries.
+            // It's more complex if we want to query image & file messages
+            // together, as the MIME type includes image files.
+            //
+            // Forunately this problem can be solved by just querying each
+            // message type individually. This does also only do 2 queries,
+            // which is even less than if we would use getAllMessageData, as
+            // there we need 3 queries: metadata + msg type 1 + msg type 2.
+            // As we know the possible message types this is possible. In
+            // all other ways one must query the metadata and filter or split
+            // it accordingly, to later execute the queries.
 
-                // first we query the image files
-                // (without mime type setting as images can only have one
-                // message type anyway)
-                /** @var array|null $images */
-                $images = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_IMAGE_MESSAGE, true);
+            // first we query the image files
+            // (without MIME type setting as images can only have one
+            // MIME type anyway)
+            /** @var array|null $images */
+            $images = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_IMAGE_MESSAGE, $queryMetaData);
 
-                // now set the MIME type if there is one
-                if ($mimeType) {
-                    $model->injectFetchOption('where', 'message.mime_type = ?', true);
-                    $model->injectFetchOption('params', $mimeType, true);
-                }
+            // now set the MIME type if there is one
+            if ($mimeType) {
+                $model->injectFetchOption('where', 'message.mime_type = ?', true);
+                $model->injectFetchOption('params', $mimeType, true);
+            }
 
-                // and now query all other files
-                /** @var array|null $files */
-                $files = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE, true);
-                $model->resetFetchOptions();
+            // and now query all other files
+            /** @var array|null $files */
+            $files = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE, $queryMetaData);
+            $model->resetFetchOptions();
 
-                // handle empty queries transparently
-                if (!$images) {
-                    $images = [];
-                }
-                if (!$files) {
-                    $files = [];
-                }
-                // and combine results
-                $result = array_merge($images, $files);
+            // handle empty queries transparently
+            if (!$images) {
+                $images = [];
+            }
+            if (!$files) {
+                $files = [];
+            }
+            // and combine results
+            /** @var array $result */
+            $result = array_merge($images, $files);
 
-                if (empty($result)) {
-                    $result = null;
-                }
+            if (empty($result)) {
+                $result = null;
             }
         }
 

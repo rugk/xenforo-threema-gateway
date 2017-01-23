@@ -389,30 +389,14 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::resetProviderOptionsForTrigger($context, $providerData);
 
-        if (isset($providerData['receivedSecret'])) {
-            unset($providerData['receivedSecret']);
-        }
-        if (isset($providerData['receivedDeliveryReceipt'])) {
-            unset($providerData['receivedDeliveryReceipt']);
-        }
-        if (isset($providerData['receivedDeliveryReceiptLargest'])) {
-            unset($providerData['receivedDeliveryReceiptLargest']);
-        }
-        if (isset($providerData['triggerIp'])) {
-            unset($providerData['triggerIp']);
-        }
-        if (isset($providerData['blocked'])) {
-            unset($providerData['blocked']);
-        }
-        if (isset($providerData['blockedUntil'])) {
-            unset($providerData['blockedUntil']);
-        }
-        if (isset($providerData['blockedBy'])) {
-            unset($providerData['blockedBy']);
-        }
-        if (isset($providerData['messageDeclineHandeled'])) {
-            unset($providerData['messageDeclineHandeled']);
-        }
+        unset($providerData['receivedSecret']);
+        unset($providerData['receivedDeliveryReceipt']);
+        unset($providerData['receivedDeliveryReceiptLargest']);
+        unset($providerData['triggerIp']);
+        unset($providerData['blocked']);
+        unset($providerData['blockedUntil']);
+        unset($providerData['blockedBy']);
+        unset($providerData['messageDeclineHandeled']);
     }
 
     /**

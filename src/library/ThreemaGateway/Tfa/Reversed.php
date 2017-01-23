@@ -287,8 +287,6 @@ class ThreemaGateway_Tfa_Reversed extends ThreemaGateway_Tfa_AbstractProvider
     {
         parent::resetProviderOptionsForTrigger($context, $providerData);
 
-        if (isset($providerData['receivedSecret'])) {
-            unset($providerData['receivedSecret']);
-        }
+        unset($providerData['receivedSecret']);
     }
 }
