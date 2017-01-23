@@ -320,10 +320,6 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     {
         /** @var array $output */
         $output = [];
-        /** @var Zend_Db_Table_Select $select */
-        $select;
-        /** @var string $resultIndex index to use for additional data from query */
-        $resultIndex = '';
 
         // prepare query
         /** @var array $limitOptions */
@@ -332,6 +328,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         // built query
         switch ($messageType) {
             case self::TYPE_DELIVERY_MESSAGE:
+                /** @var Zend_Db_Table_Select $select */
                 $select = $this->_getDb()->select()
                     ->from(['message' => self::DB_TABLE_MESSAGES . '_delivery_receipt'])
                     ->joinInner(
@@ -339,10 +336,12 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                         'message.message_id = ack_messages.message_id'
                     );
 
+                /** @var string $resultIndex index to use for additional data from query */
                 $resultIndex = 'ackmsgs';
                 break;
 
             case self::TYPE_FILE_MESSAGE:
+                /** @var Zend_Db_Table_Select $select */
                 $select = $this->_getDb()->select()
                     ->from(['message' => self::DB_TABLE_MESSAGES . '_file'])
                     ->joinInner(
@@ -350,10 +349,12 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                         'filelist.message_id = message.message_id'
                     );
 
+                /** @var string $resultIndex index to use for additional data from query */
                 $resultIndex = 'files';
                 break;
 
             case self::TYPE_IMAGE_MESSAGE:
+                /** @var Zend_Db_Table_Select $select */
                 $select = $this->_getDb()->select()
                     ->from(['message' => self::DB_TABLE_MESSAGES . '_image'])
                     ->joinInner(
@@ -361,15 +362,18 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
                         'filelist.message_id = message.message_id'
                     );
 
+                /** @var string $resultIndex index to use for additional data from query */
                 $resultIndex = 'files';
                 break;
 
             case self::TYPE_TEXT_MESSAGE:
-            $select = $this->_getDb()->select()
-                ->from(['message' => self::DB_TABLE_MESSAGES . '_text']);
+                /** @var Zend_Db_Table_Select $select */
+                $select = $this->_getDb()->select()
+                    ->from(['message' => self::DB_TABLE_MESSAGES . '_text']);
 
                 // although this is not strictly necessary, to ease the
                 // processing the data later, we also index this
+                /** @var string $resultIndex index to use for additional data from query */
                 $resultIndex = 'text';
                 break;
 
