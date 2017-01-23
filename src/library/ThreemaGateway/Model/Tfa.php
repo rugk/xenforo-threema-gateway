@@ -1,6 +1,6 @@
 <?php
 /**
- * Extends XenForos Tfa Model.
+ * Extends XenForo's Tfa Model.
  *
  * @package ThreemaGateway
  * @author rugk

@@ -24,39 +24,42 @@ As explained above you can use `ThreemaGateway_Handler_Settings->isReady()` to c
 Then you can create the necessary handlers. All handlers usually check the permissions they require, but if you do not want to catch exceptions you should check all required permissions via `ThreemaGateway_Handler_Permissions->hasPermission()` before.
 You may also consider checking `ThreemaGateway_Handler_Settings->isEndToEnd()` for security-sensitive data or when you want to test whether you can receive messages. (When the E2E mode is not set up you also cannot receive any messages.)
 
-### Emoticons
-
-The only handler you may want to call before sending a message is the [`Emoji`](../Handler/Emoji.php) handler. It allows you to add, respectively convert, all the smilies used in Threema. An example implementation of this can be found in the traditional 2FA method (see [`ThreemaGateway_Tfa_AbstractProvider->sendMessage()`](../Tfa/AbstractProvider.php).
-Smileys of received messages are stored as-is, which means they are stored UTF-8-enocoded as Unicode smileys.
-
 ## Helpers
 
 The template helpers are also considered an "API" according to "Semantic Versioning". You can find them in the "Helper" dir. There also the name is mentioned you can use to access it in a template. They are available globally and obviously you can use them both in templates and in PHP files.  
 Currently there are helpers for showing some regular expressions to evaluate Threema IDs and some helpers for displaying and converting public keys.
 
+### Emoticons
+
+One important helper you may want to use before sending a message is the [`Emoji`](../src/library/ThreemaGateway/Helper/Emoji.php) helper. It allows you to add, respectively convert, all the smilies used in Threema. An example implementation of this can be found in the traditional 2FA method (see [`ThreemaGateway_Tfa_AbstractProvider->sendMessage()`](../src/library/ThreemaGateway/Tfa/AbstractProvider.php).
+Smileys of received messages are stored as-is, which means they are stored UTF-8-enocoded as Unicode smileys.
+
 ## Models
 
-Usually you should only need to interact with the messages model (`ThreemaGateway_Model_Messages`). However you can (and should) even avoid this as there is also a Handler for it: `ThreemaGateway_Handler_Action_Receiver`. The handler can be used for the mayority of the cases.
+Usually you only interact with the messages model (`ThreemaGateway_Model_Messages`) if you want to get received messages. However you can (and should) even avoid this as there is also a Handler for it: `ThreemaGateway_Handler_Action_Receiver`. The handler can be used for the mayority of the cases and makes sure permissions are checked etc.
 
 However if you want to use the message model here are the basic steps you should keep in mind:
-1. First you need to create the model and call `preQuery` if not already done before
+
+1. First you need to create the model and call `preQuery` if not already done before.
 2. Later you need to set all conditions you know via the `set...` methods.  
 3. To receive the data you finally either need to call `getMessageDataByType` if you know the message type or (which is slightly slower) `getMessageMetaData` and afterwards pass the result to `getAllMessageData`.  
-   If you only care about the message metadata you can however of course also only call `getMessageMetaData` (propably with `getMessageMetaData(true)` so that messages are grouped by their ID).
+   If you only care about the message metadata you can however of course also only call `getMessageMetaData` (propably with `getMessageMetaData(true)` so that result is grouped by the message IDs).
 
 Notes:
+
 *   For performance reasons `getAllMessageData` does one query for each message type of the messages, which is determinated by the meta data you have to pass to it. That's why it is always recommend to limit the amount of different message types you query. In the best case you already know the message type and can use `getMessageDataByType`.
 *   Note that `setMessageId` may need a table prefix as the second parameter unless you only query the meta data via `getMessageMetaData`. What prefix to use (`message` or `metamessage`) depends on your query data. As a rule of thumb `metamessage` is good as long as your query includes the meta data.
-*   The Handler `ThreemaGateway_Handler_Action_Receiver` can also serve as a good example  on how to query the message model. So if you want to do so, you may have a look at it.
+*   The Handler `ThreemaGateway_Handler_Action_Receiver` can also serve as a good example on how to query the message model. So if you want to do so, you may have a look at it.
 
 ## Listeners
-It may be more effective to not always query the database for (new) messages, but to handle the messages directly after receiving them. Additionally if you have just some commands to handle you may even not want to save the messages in the database. Thanks to XenForo's Listeners model, both is easily possible.
+It may be more effective to not always query the database for (new) messages, but to handle the messages directly after receiving them. Additionally if you e.g. only handle some commands you may not even want to save the messages in the database. Thanks to XenForo's Listeners model, both is easily possible.
 
 In the ACP you can find these listeners created by the add-on:
+
 *   `threemagw_message_callback_presave`
 *   `threemagw_message_callback_postsave`
 
-The name already shows when they run (before & after saving the message to the database) and they are also documented in the ACP. Usually you shouzld choose the post-save version over the pre-save one (as you do not have to pay attention to replay attacks there) unless you do not want to save the message in the database.
+The name already shows when they run (before & after saving the message to the database) and they are also documented in the ACP. Usually you should choose the post-save version over the pre-save one (as you do not have to pay attention to replay attacks there) unless you do not want to save the message in the database.
 An example implementation of a simple listener for text messages can be seen in [`examples/MessageCallback.php`](examples/MessageCallback.php). 
 
 As for the callback execution order, please choose one in accordance to these performance recommendations:

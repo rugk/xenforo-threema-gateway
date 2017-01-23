@@ -11,7 +11,7 @@
 class ThreemaGateway_Listener_LoadClassController
 {
     /**
-     * Extent XenForos controllers.
+     * Extent XenForo's controllers.
      *
      * @param string $class
      * @param array  $extend

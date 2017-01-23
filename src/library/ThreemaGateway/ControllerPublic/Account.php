@@ -11,7 +11,7 @@
 class ThreemaGateway_ControllerPublic_Account extends XFCP_ThreemaGateway_ControllerPublic_Account
 {
     /**
-     * Expand XenForos two factor enable managment as it is not properly implemented.
+     * Expand XenForo's two factor enable managment as it is not properly implemented.
      *
      * @see https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047
      * @return XenForo_ControllerResponse_View

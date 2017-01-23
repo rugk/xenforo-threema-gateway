@@ -115,7 +115,7 @@ class ThreemaGateway_Helper_Random
             }
         }
 
-        // use XenForos native method as the last fallback
+        // use XenForo's native method as the last fallback
         if (!$output) {
             $output = XenForo_Application::generateRandomString($number, true);
         }

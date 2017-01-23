@@ -14,7 +14,7 @@
 class ThreemaGateway_Listener_FileHealthCheck
 {
     /**
-     * Adds own file hashes to XenForos health check.
+     * Adds own file hashes to XenForo's health check.
      *
      * @param object $controller
      * @param array  $hashes
