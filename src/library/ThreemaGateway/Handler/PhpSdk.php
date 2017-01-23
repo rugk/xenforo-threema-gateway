@@ -101,6 +101,7 @@ class ThreemaGateway_Handler_PhpSdk
      * @param ThreemaGateway_Handler_Settings If you already used the settings
      *                                        you can pass them here, so the
      *                                        class can reuse them.
+     * @param ThreemaGateway_Handler_Settings $settings
      * @throws XenForo_Exception
      * @return void
      */
@@ -126,7 +127,7 @@ class ThreemaGateway_Handler_PhpSdk
     /**
      * Returns the feature level of the SDK.
      *
-     * @return string
+     * @return integer
      */
     public function getFeatureLevel()
     {

@@ -59,7 +59,7 @@ class ThreemaGateway_Handler_Action_GatewayServer extends ThreemaGateway_Handler
     public function lookupMail($mail)
     {
         // check permission
-        if (! $this->permissions->hasPermission('lookup')) {
+        if (!$this->permissions->hasPermission('lookup')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 
@@ -86,7 +86,7 @@ class ThreemaGateway_Handler_Action_GatewayServer extends ThreemaGateway_Handler
     public function getCapabilities($threemaId)
     {
         // check permission
-        if (! $this->permissions->hasPermission('lookup')) {
+        if (!$this->permissions->hasPermission('lookup')) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
         }
 

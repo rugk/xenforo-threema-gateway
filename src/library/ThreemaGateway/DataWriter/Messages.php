@@ -261,7 +261,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      *
      * @param string $tableName
      * @see XenForo_DataWriter::_getUpdateCondition()
-     * @return bool
+     * @return string
      */
     protected function _getUpdateCondition($tableName)
     {
