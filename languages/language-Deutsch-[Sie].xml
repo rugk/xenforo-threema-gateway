@@ -160,7 +160,7 @@ Beachten Sie, dass dies Option umkehrbar ist, d.h. nach dem Ablehnen einer Nachr
   <phrase title="tfa_threemagw_contact_qrcode_text" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[3mid:{threemaid},{publickey}]]></phrase>
   <phrase title="tfa_threemagw_conventional" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema - Klassisch]]></phrase>
   <phrase title="tfa_threemagw_conventional_desc" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies wird dir einen 6-stelligen Code zum Login via Threema senden.{e2e}]]></phrase>
-  <phrase title="tfa_threemagw_conventional_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Verifizierung
+  <phrase title="tfa_threemagw_conventional_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Authentifizierung
 
 Hallo {user},
 um den zweiten Schritt der Zwei-Faktor-Authentifizierung zu vervollständigen, müssen Sie den folgenden Code eingeben:
@@ -187,7 +187,7 @@ Gültigkeit: {validationTime}
   <phrase title="tfa_threemagw_enter_own_threema_id_below" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Bitte geben Sie Ihre eigene Threema-ID unten ein.]]></phrase>
   <phrase title="tfa_threemagw_fast" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema - Schneller Login]]></phrase>
   <phrase title="tfa_threemagw_fast_desc" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies wird Ihnen eine Nachricht mit einigen Details darüber senden, wer den Login auslöste, und Sie können sie bestätigen oder ablehnen.]]></phrase>
-  <phrase title="tfa_threemagw_fast_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Verifizierung
+  <phrase title="tfa_threemagw_fast_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Authentifizierung
 
 Hallo {user},
 ein Nutzer mit der *IP* *{ip}* forderte eine Loginbestätigung für Ihren Account an.
@@ -222,7 +222,7 @@ Bestätigen Sie diese Nachricht, um den Login zu erlauben.
   <phrase title="tfa_threemagw_fast_please_confirm_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Bitte <a href="https://threema.ch/de/faq/agree_disagree_feature" target="_blank" rel="noopener noreferrer">bestätigen Sie die Nachricht</a>, welche gerade zu von <b>{gatewayid}</b> nach <b>{threemaid}</b> gesendet wurde.<br>
 Falls Sie aus Versehen auf "Ablehnen" getippt haben, können Sie die Nachricht üblicherweise danach immer noch bestätigen, um trotzdem einzuloggen.]]></phrase>
   <phrase title="tfa_threemagw_fast_setup_descr" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dieser Modus sendet Ihnen eine Nachricht, welche Sie bestätigen müssen, um die Login-Anfrage zu erlauben. Wenn Sie diese ablehnen, wird der Login verhindert.]]></phrase>
-  <phrase title="tfa_threemagw_fast_setup_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Verifizierung
+  <phrase title="tfa_threemagw_fast_setup_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd11 Zwei-Faktor-Authentifizierung
 
 Hallo {user},
 ein Nutzer mit der *IP* *{ip}* forderte eine Bestätigung zur Aktivierung dieser 2FA-Methode für Ihren Account an.

@@ -60,7 +60,7 @@ class ThreemaGateway_Handler_Settings
             $this->gatewaySecret = $this->xenOptions->threema_gateway_threema_id_secret;
         }
         if (!$this->privateKey) {
-            if (!$this->$privateKeyBase) {
+            if (!$this->privateKeyBase) {
                 $this->privateKeyBase = $this->xenOptions->threema_gateway_privatekeyfile;
             }
 

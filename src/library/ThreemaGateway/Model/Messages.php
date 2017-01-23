@@ -318,99 +318,86 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      */
     public function getMessageDataByType($messageType, $includeMetaData = true)
     {
-        // add table if necessary
-        $extraSelect = '';
-        $extraJoin   = '';
-        if ($includeMetaData) {
-            $extraSelect = ', metamessage.*';
-            $extraJoin   = 'INNER JOIN `' . self::DB_TABLE_MESSAGES . '` AS `metamessage` ON
-                (message.message_id = metamessage.message_id)';
-        }
-
-        // prepare query
-        /** @var string $limitOptions */
-        $limitOptions     = $this->prepareLimitFetchOptions($this->fetchOptions);
-        /** @var string $conditionsClause */
-        $conditionsClause = $this->getConditionsForClause($this->fetchOptions['where']);
-        /** @var string $orderByClause */
-        $orderByClause    = $this->getOrderByClause(self::ORDER_CHOICE, $this->fetchOptions);
-
-        // query data
         /** @var array $output */
         $output = [];
-        /** @var array|null $result database query result */
-        $result      = null;
-        /** @var string $resultindex index to use for additional data from query */
-        $resultindex = '';
+        /** @var Zend_Db_Table_Select $select */
+        $select;
+        /** @var string $resultIndex index to use for additional data from query */
+        $resultIndex = '';
+
+        // prepare query
+        /** @var array $limitOptions */
+        $limitOptions = $this->prepareLimitFetchOptions($this->fetchOptions);
+
+        // built query
         switch ($messageType) {
             case self::TYPE_DELIVERY_MESSAGE:
-                $result = $this->_getDb()->fetchAll(
-                    $this->limitQueryResults('
-                        SELECT message.*, ack_messages.* ' . $extraSelect . '
-                        FROM `' . self::DB_TABLE_MESSAGES . '_delivery_receipt` AS `message`
-                        ' . $extraJoin . '
-                        INNER JOIN `' . self::DB_TABLE_DELIVERY_RECEIPT . '` AS `ack_messages` ON
-                            (message.message_id = ack_messages.message_id)
-                        WHERE ' . $conditionsClause . '
-                        ' . $orderByClause . '
-                    ', $limitOptions['limit'], $limitOptions['offset']),
-                $this->fetchOptions['params']);
+                $select = $this->_getDb()->select()
+                    ->from(['message' => self::DB_TABLE_MESSAGES . '_delivery_receipt'])
+                    ->joinInner(
+                        ['ack_messages' => self::DB_TABLE_DELIVERY_RECEIPT],
+                        'message.message_id = ack_messages.message_id'
+                    );
 
-                $resultindex = 'ackmsgs';
+                $resultIndex = 'ackmsgs';
                 break;
 
             case self::TYPE_FILE_MESSAGE:
-                $result = $this->_getDb()->fetchAll(
-                    $this->limitQueryResults('
-                        SELECT message.*, filelist.* ' . $extraSelect . '
-                        FROM `' . self::DB_TABLE_MESSAGES . '_file` AS `message`
-                        ' . $extraJoin . '
-                        INNER JOIN `' . self::DB_TABLE_FILES . '` AS `filelist` ON
-                            (filelist.message_id = message.message_id)
-                        WHERE ' . $conditionsClause . '
-                        ' . $orderByClause . '
-                    ', $limitOptions['limit'], $limitOptions['offset']),
-                $this->fetchOptions['params']);
+                $select = $this->_getDb()->select()
+                    ->from(['message' => self::DB_TABLE_MESSAGES . '_file'])
+                    ->joinInner(
+                        ['filelist' => self::DB_TABLE_FILES],
+                        'filelist.message_id = message.message_id'
+                    );
 
-                $resultindex = 'files';
+                $resultIndex = 'files';
                 break;
 
             case self::TYPE_IMAGE_MESSAGE:
-                $result = $this->_getDb()->fetchAll(
-                    $this->limitQueryResults('
-                        SELECT message.*, filelist.* ' . $extraSelect . '
-                        FROM `' . self::DB_TABLE_MESSAGES . '_image` AS `message`
-                        ' . $extraJoin . '
-                        INNER JOIN `' . self::DB_TABLE_FILES . '` AS `filelist` ON
-                            (filelist.message_id = message.message_id)
-                        WHERE ' . $conditionsClause . '
-                        ' . $orderByClause . '
-                    ', $limitOptions['limit'], $limitOptions['offset']),
-                $this->fetchOptions['params']);
+                $select = $this->_getDb()->select()
+                    ->from(['message' => self::DB_TABLE_MESSAGES . '_image'])
+                    ->joinInner(
+                        ['filelist' => self::DB_TABLE_FILES],
+                        'filelist.message_id = message.message_id'
+                    );
 
-                $resultindex = 'files';
+                $resultIndex = 'files';
                 break;
 
             case self::TYPE_TEXT_MESSAGE:
-                $result = $this->_getDb()->fetchAll(
-                    $this->limitQueryResults('
-                        SELECT message.* ' . $extraSelect . '
-                        FROM `' . self::DB_TABLE_MESSAGES . '_text` AS `message`
-                        ' . $extraJoin . '
-                        WHERE ' . $conditionsClause . '
-                        ' . $orderByClause . '
-                    ', $limitOptions['limit'], $limitOptions['offset']),
-                $this->fetchOptions['params']);
+            $select = $this->_getDb()->select()
+                ->from(['message' => self::DB_TABLE_MESSAGES . '_text']);
 
-                // although this is not strictly necessary for the ease of
+                // although this is not strictly necessary, to ease the
                 // processing the data later, we also index this
-                $resultindex = 'text';
+                $resultIndex = 'text';
                 break;
 
             default:
                 throw new XenForo_Exception(new XenForo_Phrase('threemagw_unknown_message_type'));
                 break;
         }
+
+        // add table if necessary
+        if ($includeMetaData) {
+            $select->joinInner(
+                ['metamessage' => self::DB_TABLE_MESSAGES],
+                'message.message_id = metamessage.message_id'
+            );
+        }
+
+        // general options for query
+        $select
+            ->where($this->getConditionsForClause($this->fetchOptions['where']))
+            ->order($this->getOrderByClause(self::ORDER_CHOICE, $this->fetchOptions));
+
+        // execute query
+        /** @var array|null $result database query result */
+        $result = $this->_getDb()->fetchAll(
+            $this->limitQueryResults(
+                $select,
+                $limitOptions['limit'], $limitOptions['offset']),
+        $this->fetchOptions['params']);
 
         // throw error if data is missing
         if (!is_array($result)) {
@@ -441,7 +428,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         }
 
         // push general attributes one array up
-        if (!$resultindex) {
+        if (!$resultIndex) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_unknown_message_type'));
             break;
         }
@@ -452,7 +439,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
             $output[$msgId] = $this->pushArrayKeys($output[$msgId],
                                     $resultForId,
                                     $removeAttributes);
-            $output[$msgId][$resultindex] = $resultForId;
+            $output[$msgId][$resultIndex] = $resultForId;
 
             // remove unnecessary message_id (the ID is already the key)
             if (array_key_exists('message_id', $output[$msgId])) {
@@ -477,13 +464,17 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      */
     public function getMessageMetaData($groupById = false, $ignoreInvalid = true)
     {
+        /** @var array $limitOptions */
         $limitOptions = $this->prepareLimitFetchOptions($this->fetchOptions);
 
+        /** @var array $result query result */
         $result = $this->_getDb()->fetchAll(
-        $this->limitQueryResults('SELECT * FROM `' . self::DB_TABLE_MESSAGES . '` AS `metamessage`
-            WHERE ' . $this->getConditionsForClause($this->fetchOptions['where']) . '
-            ' . $this->getOrderByClause(self::ORDER_CHOICE, $this->fetchOptions),
-        $limitOptions['limit'], $limitOptions['offset']),
+            $this->limitQueryResults(
+                $this->_getDb()->select()
+                    ->from(['metamessage' => self::DB_TABLE_MESSAGES])
+                    ->where($this->getConditionsForClause($this->fetchOptions['where']))
+                    ->order($this->getOrderByClause(self::ORDER_CHOICE, $this->fetchOptions)),
+            $limitOptions['limit'], $limitOptions['offset']),
         $this->fetchOptions['params']);
 
         // fail if there is no data
@@ -529,20 +520,17 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
         if ($removeOnlyField) {
             $this->_getDb()->update(
                 self::DB_TABLE_MESSAGES,
-                array_combine(
-                    $removeOnlyField,
-                    array_fill(0, count($removeOnlyField), null)
-                ),
-                array_merge(array_combine(
-                    $this->fetchOptions['where'], $this->fetchOptions['params']),
+                array_fill_keys($removeOnlyField, null),
+                array_merge(
+                    array_combine($this->fetchOptions['where'], $this->fetchOptions['params']),
                     $additionalConditions
                 )
             );
         } else {
             $this->_getDb()->delete(
                 self::DB_TABLE_MESSAGES,
-                array_merge(array_combine(
-                    $this->fetchOptions['where'], $this->fetchOptions['params']),
+                array_merge(
+                    array_combine($this->fetchOptions['where'], $this->fetchOptions['params']),
                     $additionalConditions
                 )
             );

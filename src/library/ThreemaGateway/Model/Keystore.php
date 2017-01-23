@@ -26,9 +26,11 @@ class ThreemaGateway_Model_Keystore extends XenForo_Model
     public function findPublicKey($threemaId)
     {
         /** @var mixed $result result of SQL query */
-        $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DB_TABLE . '`
-                  WHERE `threema_id` = ?',
-                  $threemaId);
+        $result = $this->_getDb()->fetchRow(
+            $this->_getDb()->select()
+                ->from(self::DB_TABLE)
+                ->where('threema_id = ?', $threemaId)
+        );
 
         if (is_array($result) && array_key_exists('public_key', $result)) {
             return (string) $result['public_key'];

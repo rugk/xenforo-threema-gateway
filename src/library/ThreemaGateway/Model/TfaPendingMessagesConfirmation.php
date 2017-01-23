@@ -35,9 +35,11 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
     public function getPendingById($requestId)
     {
         /** @var mixed $result result of SQL query */
-        $result = $this->_getDb()->fetchRow('SELECT * FROM `' . self::DB_TABLE . '`
-                  WHERE `request_id` = ?',
-                  $requestId);
+        $result = $this->_getDb()->fetchRow(
+            $this->_getDb()->select()
+                ->from(self::DB_TABLE)
+                ->where('request_id = ?', $requestId)
+        );
 
         if (!$result) {
             return null;
@@ -77,9 +79,11 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
         }
 
         /** @var mixed $result result of SQL query */
-        $result = $this->fetchAllKeyed('SELECT * FROM `' . self::DB_TABLE . '`
-                  WHERE ' . $this->getConditionsForClause($conditionsArray),
-                  'request_id', $paramsArray);
+        $result = $this->fetchAllKeyed(
+            $this->_getDb()->select()
+                ->from(self::DB_TABLE)
+                ->where($this->getConditionsForClause($conditionsArray)),
+            'request_id', $paramsArray);
 
         if (!$result) {
             return null;

@@ -97,6 +97,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      *
      * @param  string     $threemaId   filter by Threema ID (optional)
      * @param  string     $messageType filter by message type (optional, use Model constants)
+     * @param  string     $timeSpan    a relative time (parsable by strtotime) to limit the query (e.g. '-7 days')
      * @param  string     $keyword     filter by this string, which represents
      *                                 the text in a text message (Wildcards: * and ?)
      * @return null|array

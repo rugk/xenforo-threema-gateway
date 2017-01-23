@@ -251,7 +251,6 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
 
             default:
                 throw new XenForo_Exception(new XenForo_Phrase('threemagw_unknown_message_type'));
-                break;
         }
 
         return $existing;
@@ -393,47 +392,26 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         // add additional data
         if ($allFiles) {
             foreach ($allFiles as $fileType => $filePath) {
-                // get table fields
-                /** @var array $tableFields fields of table "files" */
-                $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DB_TABLE_FILES];
-                // remove keys, which are automatically set
-                unset($tableFields['file_id']);  // (auto increment)
-                unset($tableFields['is_saved']); // (default value=1)
-                // we do only care about the keys
-                /** @var array $tableKeys extracted keys from fields */
-                $tableKeys = array_keys($tableFields);
-
-                // create insert query for this item
-                $this->_db->query('INSERT INTO `' . ThreemaGateway_Model_Messages::DB_TABLE_FILES . '`
-                    ( `' . implode('`, `',  $tableKeys) . '`)
-                    VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
+                // insert additional files into database
+                $this->_db->insert(ThreemaGateway_Model_Messages::DB_TABLE_FILES,
                     [
-                        $this->get('message_id'), //message_id
-                        $this->normalizeFilePath($filePath), //file_path
-                        $fileType, //file_type
-                    ]);
+                        'message_id' => $this->get('message_id'),
+                        'file_path' => $this->normalizeFilePath($filePath),
+                        'file_type' => $fileType
+                    ]
+                );
             }
         }
 
         if ($ackedMsgIds) {
             foreach ($ackedMsgIds as $ackedMessageId) {
-                // get table fields
-                /** @var array $tableFields fields of table "ackmsgs" */
-                $tableFields = $this->_getFields()[ThreemaGateway_Model_Messages::DB_TABLE_DELIVERY_RECEIPT];
-                // remove key(s), which are automatically set
-                unset($tableFields['ack_id']); // (auto increment)
-                // we do only care about the keys
-                /** @var array $tableKeys extracted keys from fields */
-                $tableKeys = array_keys($tableFields);
-
-                // create insert query for this item
-                $this->_db->query('INSERT INTO `' . ThreemaGateway_Model_Messages::DB_TABLE_DELIVERY_RECEIPT . '`
-                    ( `' . implode('`, `',  $tableKeys) . '`)
-                    VALUES (' . implode(', ', array_fill(0, count($tableKeys), '?')) . ')', // only (?, ?, ...)
+                // insert additional data into database
+                $this->_db->insert(ThreemaGateway_Model_Messages::DB_TABLE_DELIVERY_RECEIPT,
                     [
-                        $this->get('message_id'), //message_id
-                        $ackedMessageId, //ack_message_id
-                    ]);
+                        'message_id' => $this->get('message_id'),
+                        'ack_message_id' => $ackedMessageId
+                    ]
+                );
             }
         }
     }
@@ -471,10 +449,13 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         $tableKeys = array_keys($tableFields);
 
         // remove values from database
-        $this->_db->query('UPDATE `' . ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES . '`
-            SET `' . implode('`=null, `',  $tableKeys) . '`=null,
-            `date_received`=' . $this->_db->quote($this->getRoundedReceiveDate()) . '
-            WHERE ' . $this->getUpdateCondition(ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES));
+        $this->_db->update(ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES,
+            array_merge(
+                array_fill_keys($tableKeys, null),
+                ['date_received' => $this->getRoundedReceiveDate()]
+            ),
+            $this->getUpdateCondition(ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES)
+        );
     }
 
     /**
@@ -496,7 +477,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         // round unix time to day (00:00)
         $receiveDate = ThreemaGateway_Helper_General::roundToDay($receiveDate);
 
-        return (int) $receiveDate;
+        return (int)$receiveDate;
     }
 
     /**
