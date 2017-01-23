@@ -50,7 +50,6 @@ class ThreemaGateway_Option_ReceiveCallback
     /**
      * Verifies whether the dir of the file is valid (can be created) and is writable.
      *
-     * @param string             $filepath   Input
      * @param XenForo_DataWriter $dataWriter
      * @param string             $fieldName  Name of field/option
      *
