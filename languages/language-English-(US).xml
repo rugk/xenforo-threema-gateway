@@ -318,6 +318,7 @@ The displayed fingerprint is derived from the public key, which is linked to you
   <phrase title="threemagw_fetching_publickey_failed" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
   <phrase title="threemagw_getting_credits_failed" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
   <phrase title="threemagw_hours" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[hours]]></phrase>
+  <phrase title="threemagw_integrity_of_addon_could_not_checked" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[ThreemaGateway: The integrity of the Threema Gateway add-on could not be checked.]]></phrase>
   <phrase title="threemagw_invalid_debuglogpath" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[The path of the message debug log file is invalid. Please check the permissions.]]></phrase>
   <phrase title="threemagw_invalid_discard_old_date" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[The date given for discarding old messages is invalid.]]></phrase>
   <phrase title="threemagw_invalid_downloadpath" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[The directory cannot be used. Please check the directory and it's permissions.]]></phrase>

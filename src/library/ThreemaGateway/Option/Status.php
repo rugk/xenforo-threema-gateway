@@ -78,8 +78,8 @@ class ThreemaGateway_Option_Status
             'editLink' => $editLink,
             'status' => $status,
             'additionalerror' => $extraError,
-            'isConfError' => (!$technSuccess),
-            'isPhpSdkError' => (!$phpSdkSuccess),
+            'technSuccess' => $technSuccess,
+            'phpSdkSuccess' => $phpSdkSuccess,
         ]);
     }
 

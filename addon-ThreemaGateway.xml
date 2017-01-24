@@ -183,7 +183,7 @@ automatically triggers the form submission via JavaScript
 			</xen:foreach>
 		</xen:if>
 
-		<xen:if is="{$isConfError}">
+		<xen:if is="!{$technSuccess}">
 			<br />
 			<p class="error">{xen:phrase option_threema_gateway_status_error}</p>
 		</xen:if>
