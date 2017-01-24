@@ -84,8 +84,8 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * option call it this way: injectFetchOption('where', []).
      *
      * @param string $option The option name to inject
-     * @param mixed  $value  The value of the option to set.
-     * @param mixed  $append If set to true, the value is not overriden, but
+     * @param string $value  The value of the option to set.
+     * @param bool   $append If set to true, the value is not overriden, but
      *                       just appended as an array. (default: false)
      */
     public function injectFetchOption($option, $value, $append = false)
@@ -147,7 +147,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * If you want to limit the types you want to query this method would be a
      * good way for you to use.
      *
-     * @param string $typeCode one (string) or more (array) mtype codes
+     * @param string $typeCodes one (string) or more (array) type codes(s)
      */
     public function setTypeCode($typeCodes)
     {
@@ -197,7 +197,6 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * Limit the result to a number of datasets.
      *
      * @param int $limit   oldest date of messages
-     * @param int $dateMax latest date of messages (optional)
      */
     public function setResultLimit($limit)
     {
@@ -513,11 +512,11 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * submit additional conditions with the first parameter.
      * Attention: This ignores the limit/offset clause for simplicity.
      *
-     * @param array $additionalConditions Add additional where conditions if
-     *                                    neccessary.
-     * @param array $removeOnlyField      When set only the passed fields are
-     *                                    updated to "null" rather than deleting
-     *                                    the whole record.
+     * @param string[] $additionalConditions Add additional where conditions if
+     *                                       neccessary.
+     * @param string[] $removeOnlyField      When set only the passed fields are
+     *                                       updated to "null" rather than deleting
+     *                                       the whole record.
      */
     public function removeMetaData(array $additionalConditions = [], array $removeOnlyField = [])
     {
@@ -572,9 +571,9 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * It assumes that the 0-index of $subArray is there, including the data,
      * which should be pushed to $baseArray.
      *
-     * @param array $baseArray  the main array, where the key/value pairs get to
-     * @param array $subArray   the array, which keys should be removed
-     * @param array $removeKeys an array of keys, which should be removed
+     * @param array    $baseArray  the main array, where the key/value pairs get to
+     * @param array    $subArray   the array, which keys should be removed
+     * @param string[] $removeKeys an array of keys, which should be removed
      *
      * @throws XenForo_Exception
      * @return false|array
