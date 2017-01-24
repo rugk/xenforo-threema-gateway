@@ -18,7 +18,7 @@ class ThreemaGateway_Handler_PhpSdk
     /**
      * @var Singleton
      */
-    private static $instance = null;
+    protected static $instance = null;
 
     /**
      * @var string Path to Threema Gateway PHP SDK
@@ -67,7 +67,7 @@ class ThreemaGateway_Handler_PhpSdk
      * @param ThreemaGateway_Handler_Settings|null $settings
      * @throws XenForo_Exception
      */
-    private function __construct($settings = null)
+    protected function __construct($settings = null)
     {
         // get options
         if ($settings !== null) {
@@ -89,7 +89,7 @@ class ThreemaGateway_Handler_PhpSdk
     /**
      * Prevent cloning for Singleton.
      */
-    private function __clone()
+    protected function __clone()
     {
         // I smash clones!
     }
@@ -197,7 +197,8 @@ class ThreemaGateway_Handler_PhpSdk
     protected function loadLib()
     {
         // use source option can force the use of the source code, but there is
-        // also an automatic fallback to the source
+        // also an automatic fallback to the source (when the phar does not
+        // exist)
         if (!XenForo_Application::getOptions()->threema_gateway_usesource &&
             file_exists($this->sdkDir . '/threema_msgapi.phar')
         ) {

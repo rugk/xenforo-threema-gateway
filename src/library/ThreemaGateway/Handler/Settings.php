@@ -83,7 +83,7 @@ class ThreemaGateway_Handler_Settings
     {
         if (!$this->gatewayId ||
             !$this->gatewaySecret ||
-            $this->xenOptions->threema_gateway_e2e == ''
+            XenForo_Application::getOptions()->threema_gateway_e2e == ''
         ) {
             return false;
         }

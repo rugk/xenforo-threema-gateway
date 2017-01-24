@@ -22,7 +22,7 @@ class ThreemaGateway_Handler_Permissions
     /**
      * @var Singleton
      */
-    private static $instance = null;
+    protected static $instance = null;
 
     /**
      * @var string identifier of the permission group of this addon
@@ -68,7 +68,7 @@ class ThreemaGateway_Handler_Permissions
      *
      * @return true
      */
-    private function __construct()
+    protected function __construct()
     {
         // do nothing
     }
@@ -76,7 +76,7 @@ class ThreemaGateway_Handler_Permissions
     /**
      * Prevent cloning for Singleton.
      */
-    private function __clone()
+    protected function __clone()
     {
         // I smash clones!
     }
