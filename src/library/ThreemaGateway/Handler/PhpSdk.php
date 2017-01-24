@@ -23,7 +23,7 @@ class ThreemaGateway_Handler_PhpSdk
     /**
      * @var string Path to Threema Gateway PHP SDK
      */
-    protected $SdkDir = __DIR__ . '/../threema-msgapi-sdk-php';
+    protected $sdkDir = __DIR__ . '/../threema-msgapi-sdk-php';
 
     /**
      * @var ThreemaGateway_Handler_Settings
@@ -199,13 +199,13 @@ class ThreemaGateway_Handler_PhpSdk
     {
         // use source option can force the use of the source code, but there is
         // also an automatic fallback to the source
-        if (!$this->xenOptions->threema_gateway_usesource && file_exists($this->SdkDir . '/threema_msgapi.phar')) {
+        if (!$this->xenOptions->threema_gateway_usesource && file_exists($this->sdkDir . '/threema_msgapi.phar')) {
             // PHAR mode
-            require_once $this->SdkDir . '/threema_msgapi.phar';
-        } elseif (file_exists($this->SdkDir . '/source/bootstrap.php')) {
+            require_once $this->sdkDir . '/threema_msgapi.phar';
+        } elseif (file_exists($this->sdkDir . '/source/bootstrap.php')) {
             // source mode
-            $this->SdkDir = $this->SdkDir . '/source';
-            require_once $this->SdkDir . '/bootstrap.php';
+            $this->sdkDir = $this->sdkDir . '/source';
+            require_once $this->sdkDir . '/bootstrap.php';
         } else {
             // error
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_missing_sdk'));
@@ -258,13 +258,13 @@ class ThreemaGateway_Handler_PhpSdk
     /**
      * Creates connection settings.
      *
-     * @param string $GatewayId     Your own gateway ID
-     * @param string $GatewaySecret Your own gateway secret
+     * @param string $gatewayId     Your own gateway ID
+     * @param string $gatewaySecret Your own gateway secret
      *
      * @throws XenForoException
      * @return ConnectionSettings
      */
-    protected function createConnectionSettings($GatewayId, $GatewaySecret)
+    protected function createConnectionSettings($gatewayId, $gatewaySecret)
     {
         /** @var null|ConnectionSettings $settings */
         $settings = null;
@@ -294,16 +294,16 @@ class ThreemaGateway_Handler_PhpSdk
             }
 
             $settings = new ConnectionSettings(
-                $GatewayId,
-                $GatewaySecret,
+                $gatewayId,
+                $gatewaySecret,
                 null,
                 $tlsSettings
             );
         } else {
             //create a connection with default options
             $settings = new ConnectionSettings(
-                $GatewayId,
-                $GatewaySecret
+                $gatewayId,
+                $gatewaySecret
             );
         }
 

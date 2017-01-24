@@ -129,8 +129,8 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
             return false;
         }
 
-        /** @var bool $successfullyProcessed */
-        $successfullyProcessed = false;
+        /** @var bool $success */
+        $success = false;
 
         // go through each message ID and try to save data
         foreach ($this->ackedMsgIds as $ackedMsgId) {
@@ -158,14 +158,14 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
             // whether the code is the same as the requested one is verified in
             // the actual 2FA provider (verifyFromInput) later
 
-            $successfullyProcessed = true;
+            $success = true;
         }
 
-        if (!$successfullyProcessed) {
+        if (!$success) {
             $this->log('It turned out the message actually seems to be a delivery message unrelated to this 2FA mode.');
         }
 
-        return $successfullyProcessed;
+        return $success;
     }
 
     /**

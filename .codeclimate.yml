@@ -4,9 +4,7 @@ engines:
     enabled: true
     config:
       languages:
-      - ruby
       - javascript
-      - python
       - php
   eslint:
     enabled: true
@@ -14,8 +12,9 @@ engines:
     enabled: true
   phpmd:
     enabled: true
-    Controversial/CamelCaseClassName:
-        enabled: false
+    checks:
+        Controversial/CamelCaseClassName:
+            enabled: false
 ratings:
   paths:
   - "**.php"

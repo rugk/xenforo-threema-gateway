@@ -177,27 +177,27 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     /**
      * Sets the a time limit for what messages should be queried.
      *
-     * @param int|null $date_min  oldest date of messages (optional)
-     * @param int|null $date_max  latest date of messages (optional)
+     * @param int|null $dateMin   oldest date of messages (optional)
+     * @param int|null $dateMax  latest date of messages (optional)
      * @param string   $attribute Set the atttribute to apply this to.
      */
-    public function setTimeLimit($date_min = null, $date_max = null, $attribute = 'metamessage.date_send')
+    public function setTimeLimit($dateMin = null, $dateMax = null, $attribute = 'metamessage.date_send')
     {
-        if ($date_min) {
+        if ($dateMin) {
             $this->fetchOptions['where'][]  = $attribute . ' >= ?';
-            $this->fetchOptions['params'][] = $date_min;
+            $this->fetchOptions['params'][] = $dateMin;
         }
-        if ($date_max) {
+        if ($dateMax) {
             $this->fetchOptions['where'][]  = $attribute . ' <= ?';
-            $this->fetchOptions['params'][] = $date_max;
+            $this->fetchOptions['params'][] = $dateMax;
         }
     }
 
     /**
      * Limit the result to a number of datasets.
      *
-     * @param int $limit    oldest date of messages
-     * @param int $date_max latest date of messages (optional)
+     * @param int $limit   oldest date of messages
+     * @param int $dateMax latest date of messages (optional)
      */
     public function setResultLimit($limit)
     {

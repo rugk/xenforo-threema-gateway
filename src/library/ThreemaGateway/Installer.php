@@ -84,9 +84,9 @@ class ThreemaGateway_Installer
             $messageDbInstaller->create();
 
             // create tfa tables
-            /** @var ThreemaGateway_Installer_TfaPendingConfirmMsgs $prendingConfirmMsgInstaller */
-            $prendingConfirmMsgInstaller = new ThreemaGateway_Installer_TfaPendingConfirmMsgs;
-            $prendingConfirmMsgInstaller->create();
+            /** @var ThreemaGateway_Installer_TfaPendingConfirmMsgs $pendReqInstaller */
+            $pendReqInstaller = new ThreemaGateway_Installer_TfaPendingConfirmMsgs;
+            $pendReqInstaller->create();
         }
     }
 
@@ -96,9 +96,9 @@ class ThreemaGateway_Installer
     public static function uninstall()
     {
         // delete tfa tables
-        /** @var ThreemaGateway_Installer_TfaPendingConfirmMsgs $prendingConfirmMsgInstaller */
-        $prendingConfirmMsgInstaller = new ThreemaGateway_Installer_TfaPendingConfirmMsgs;
-        $prendingConfirmMsgInstaller->destroy();
+        /** @var ThreemaGateway_Installer_TfaPendingConfirmMsgs $pendReqInstaller */
+        $pendReqInstaller = new ThreemaGateway_Installer_TfaPendingConfirmMsgs;
+        $pendReqInstaller->destroy();
 
         // remove message tables
         /** @var ThreemaGateway_Installer_MessagesDb $messageDbInstaller */

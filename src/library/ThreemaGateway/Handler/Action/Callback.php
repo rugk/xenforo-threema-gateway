@@ -400,41 +400,41 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
         Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,
         Threema\MsgApi\Messages\ThreemaMessage $threemaMsg
     ) {
-        $EOL = PHP_EOL;
+        $eol = PHP_EOL;
 
         // common heading
-        $publicLog  = 'New message from ' . $this->filtered['from'] . $EOL . $EOL;
-        $publicLog .= 'ID: ' . $receiveResult->getMessageId() . $EOL;
-        $publicLog .= 'message.type: ' . $threemaMsg->getTypeCode() . ' (' . $threemaMsg . ')' . $EOL;
-        $publicLog .= 'message.date: ' . date('Y-m-d H:i:s', $this->filtered['date']) . $EOL;
+        $publicLog  = 'New message from ' . $this->filtered['from'] . $eol . $eol;
+        $publicLog .= 'ID: ' . $receiveResult->getMessageId() . $eol;
+        $publicLog .= 'message.type: ' . $threemaMsg->getTypeCode() . ' (' . $threemaMsg . ')' . $eol;
+        $publicLog .= 'message.date: ' . date('Y-m-d H:i:s', $this->filtered['date']) . $eol;
         $debugLog = $publicLog;
-        $publicLog .= '[...]' . $EOL;
+        $publicLog .= '[...]' . $eol;
 
         // secret part of heading
-        $debugLog .= 'files: ' . implode('|', $receiveResult->getFiles()) . $EOL;
+        $debugLog .= 'files: ' . implode('|', $receiveResult->getFiles()) . $eol;
         // NOTE: File type (key of array) is not logged here!
 
         // detailed result (is secret)
         if ($threemaMsg instanceof Threema\MsgApi\Messages\TextMessage) {
-            $debugLog .= 'message.getText: ' . $threemaMsg->getText() . $EOL;
+            $debugLog .= 'message.getText: ' . $threemaMsg->getText() . $eol;
         }
         if ($threemaMsg instanceof Threema\MsgApi\Messages\DeliveryReceipt) {
-            $debugLog .= 'message.getReceiptType: ' . $threemaMsg->getReceiptType() . $EOL;
-            $debugLog .= 'message.getReceiptTypeName: ' . $threemaMsg->getReceiptTypeName() . $EOL;
-            $debugLog .= 'message.getAckedMessageIds: ' . implode('|', $this->bin2hexArray($threemaMsg->getAckedMessageIds())) . $EOL;
+            $debugLog .= 'message.getReceiptType: ' . $threemaMsg->getReceiptType() . $eol;
+            $debugLog .= 'message.getReceiptTypeName: ' . $threemaMsg->getReceiptTypeName() . $eol;
+            $debugLog .= 'message.getAckedMessageIds: ' . implode('|', $this->bin2hexArray($threemaMsg->getAckedMessageIds())) . $eol;
         }
         if ($threemaMsg instanceof Threema\MsgApi\Messages\FileMessage) {
-            $debugLog .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $EOL;
-            $debugLog .= 'message.getEncryptionKey: ' . $threemaMsg->getEncryptionKey() . $EOL;
-            $debugLog .= 'message.getFilename: ' . $threemaMsg->getFilename() . $EOL;
-            $debugLog .= 'message.getMimeType: ' . $threemaMsg->getMimeType() . $EOL;
-            $debugLog .= 'message.getSize: ' . $threemaMsg->getSize() . $EOL;
-            $debugLog .= 'message.getThumbnailBlobId: ' . $threemaMsg->getThumbnailBlobId() . $EOL;
+            $debugLog .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $eol;
+            $debugLog .= 'message.getEncryptionKey: ' . $threemaMsg->getEncryptionKey() . $eol;
+            $debugLog .= 'message.getFilename: ' . $threemaMsg->getFilename() . $eol;
+            $debugLog .= 'message.getMimeType: ' . $threemaMsg->getMimeType() . $eol;
+            $debugLog .= 'message.getSize: ' . $threemaMsg->getSize() . $eol;
+            $debugLog .= 'message.getThumbnailBlobId: ' . $threemaMsg->getThumbnailBlobId() . $eol;
         }
         if ($threemaMsg instanceof Threema\MsgApi\Messages\ImageMessage) {
-            $debugLog .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $EOL;
-            $debugLog .= 'message.getLength: ' . $threemaMsg->getLength() . $EOL;
-            $debugLog .= 'message.getNonce: ' . $this->getCryptTool()->bin2hex($threemaMsg->getNonce()) . $EOL;
+            $debugLog .= 'message.getBlobId: ' . $threemaMsg->getBlobId() . $eol;
+            $debugLog .= 'message.getLength: ' . $threemaMsg->getLength() . $eol;
+            $debugLog .= 'message.getNonce: ' . $this->getCryptTool()->bin2hex($threemaMsg->getNonce()) . $eol;
         }
 
         return [null, $debugLog, $publicLog];
