@@ -26,7 +26,7 @@ class ThreemaGateway_Installer_Permissions
      *                                   2 = registered
      *                                   3 = administrator
      *                                   4 = moderator
-     * @param string $applyPermissionId  The permission id
+     * @param string $permissionId       The permission id
      * @param string $permissionValue    (optional) The value of the permission: allow, deny
      *                                   use_int
      * @param int    $permissionValueInt (optional) When using an integer (use_int)

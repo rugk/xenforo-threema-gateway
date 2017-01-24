@@ -61,7 +61,7 @@ class ThreemaGateway_Helper_Key
      * XenForo template helper: threemaisvalidpubkey.
      *
      * @param  string $threemaid Threema ID
-     * @return string
+     * @return bool
      */
     public static function checkPublic($pubKey)
     {
@@ -81,7 +81,7 @@ class ThreemaGateway_Helper_Key
     public static function check($publicKey, $suffix = '')
     {
         // RegExp: https://regex101.com/r/sU5tC8/1
-        return preg_match('/^(' . $suffix . ')?[[:alnum:]]{64}$/', $publicKey);
+        return (preg_match('/^(' . $suffix . ')?[[:alnum:]]{64}$/', $publicKey) === 1);
     }
 
     /**

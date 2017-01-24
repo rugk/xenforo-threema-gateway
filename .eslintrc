@@ -14,9 +14,6 @@ extends: 'eslint:recommended'
 # http://eslint.org/docs/rules/
 rules:
   no-eval: 2
-  indent:
-    - error
-    - 4
   linebreak-style:
     - error
     - unix

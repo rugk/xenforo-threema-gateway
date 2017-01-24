@@ -53,9 +53,9 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
     /**
      * Verifies the Threema Gateway Secret format.
      *
-     * @param string             $threemaid  Input threema ID
+     * @param string             $threemagwsecret Input Threema ID secret
      * @param XenForo_DataWriter $dataWriter
-     * @param string             $fieldName  Name of field/option
+     * @param string             $fieldName       Name of field/option
      *
      * @return bool
      */

@@ -263,7 +263,6 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      * @param mixed $filterData  any data the filter uses
      * @param bool  $failOnError whether the filter should fail on errors (true)
      *                           or silently ignore them (false)
-     * @param bool  $saveMessage
      */
     public function addFilter($filterType, $filterData, $failOnError = true)
     {
@@ -332,7 +331,6 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      *
      * @param array $confirmRequest the confirm request
      * @param array $providerData   old data read
-     * @param array $setData        new data to set
      * @param array $processOptions custom options (optional)
      *
      * @throws XenForo_Exception
@@ -358,7 +356,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
         // check whether message has already been saved to prevent replay attacks
         $this->callback->assertNoReplayAttack($this->receiveResult->getMessageId());
 
-        /** @var array|false $this->pendingRequests all pending requets (or false if there are none) */
+        /** @var array|false $this->pendingRequests all pending requests (or false if there are none) */
         if (!$this->pendingRequests = $this->getPendingRequests()) {
             return false;
         }

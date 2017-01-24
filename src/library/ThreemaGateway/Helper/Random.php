@@ -61,7 +61,7 @@ class ThreemaGateway_Helper_Random
     public static function getRandomString($length, $keyspace = 'abcdefghijklmnopqrstuvwxyz01234567')
     {
         /** @var string $output */
-        $output  = '';
+        $output = '';
         if (self::canUseLibsodium()) {
             /** @var int $keysize */
             $keysize = strlen($keyspace);
@@ -86,7 +86,7 @@ class ThreemaGateway_Helper_Random
      * Generates some random bytes.
      *
      * @link https://paragonie.com/book/pecl-libsodium/read/02-random-data.md
-     * @param  int    $bytes Number of bytes to return
+     * @param  int    $number Number of bytes to return
      * @return string
      */
     public static function getRandomBytes($number)

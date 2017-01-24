@@ -8,8 +8,8 @@
  * @license MIT
  */
 
- class ThreemaGateway_Helper_Emoji
- {
+class ThreemaGateway_Helper_Emoji
+    {
      /**
      * Replaces unicode escape sequence with the correct UNICODE character.
      *
@@ -25,7 +25,7 @@
         // https://stackoverflow.com/questions/6058394/unicode-character-in-php-string
 
         // RegEx: https://regex101.com/r/yS2zX8/3
-        return preg_replace_callback('/(\\\\u([0-9a-fA-F]{4}))+/', function ($match) {
+        return preg_replace_callback('/(\\\\u([0-9a-fA-F]{4}))+/', function($match) {
             return json_decode('"' . $match[0] . '"');
         }, $string);
     }
@@ -47,4 +47,4 @@
         // https://regex101.com/r/aQ3eA3/1
         return preg_replace('/(\d)/', '\1\\u20e3', $string);
     }
- }
+}

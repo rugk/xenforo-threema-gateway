@@ -29,8 +29,8 @@ class ThreemaGateway_Option_Status
     {
         /** @var array $status */
         $status = ['libsodium', 'libsodiumphp', 'phpsdk', 'credits'];
-        /** @var string $extraError */
-        $extraError = '';
+        /** @var array $extraError */
+        $extraError = [];
 
         /** @var bool $technSuccess */
         $technSuccess = self::checkTecRequire($status, $extraError);
@@ -77,9 +77,8 @@ class ThreemaGateway_Option_Status
             'preparedOption' => $preparedOption,
             'editLink' => $editLink,
             'status' => $status,
-            'additionalerror' => $extraError,
-            'technSuccess' => $technSuccess,
-            'phpSdkSuccess' => $phpSdkSuccess,
+            'extraError' => $extraError,
+            'technSuccess' => $technSuccess
         ]);
     }
 
@@ -95,7 +94,7 @@ class ThreemaGateway_Option_Status
      * @param  array $extraError Optional other errors may be added here
      * @return bool
      */
-    protected static function checkTecRequire(&$status, &$extraError)
+    protected static function checkTecRequire(array &$status, array &$extraError)
     {
         // optional check: HTTPS
         if (!XenForo_Application::$secure) {
@@ -147,7 +146,7 @@ class ThreemaGateway_Option_Status
      * @param  ThreemaGateway_Handler_Settings $gwSettings
      * @return bool
      */
-    protected static function checkPhpSdk(&$status, &$extraError, ThreemaGateway_Handler_Settings $gwSettings = null)
+    protected static function checkPhpSdk(array &$status, array &$extraError, ThreemaGateway_Handler_Settings $gwSettings = null)
     {
         // auto-create Gateway settings if not given
         if ($gwSettings == null) {
@@ -198,7 +197,7 @@ class ThreemaGateway_Option_Status
      * @param  array $extraError Optional other errors may be added here
      * @return bool
      */
-    protected static function queryCredits(&$status, &$extraError)
+    protected static function queryCredits(array &$status, array &$extraError)
     {
         /** @var ThreemaGateway_Handler_Permissions $permissions */
         $permissions = ThreemaGateway_Handler_Permissions::getInstance();

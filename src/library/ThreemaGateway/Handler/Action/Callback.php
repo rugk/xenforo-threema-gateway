@@ -293,8 +293,9 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
     /**
      * Adds a string to the current log string or array.
      *
-     * @param array|string $log         string or array
+     * @param array|string $log              string or array
      * @param string       $stringToAdd
+     * @param string       $stringToAddDetail
      */
     public function addLog(&$log, $stringToAdd, $stringToAddDetail = null)
     {

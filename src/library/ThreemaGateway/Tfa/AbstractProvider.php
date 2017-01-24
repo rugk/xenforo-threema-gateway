@@ -205,9 +205,8 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * Currently this is not correctly implemented in XenForo.
      * See {@link https://xenforo.com/community/threads/1-5-documentation-for-two-step-authentication.102846/#post-1031047}
      *
-     * @param XenForo_Input $input
-     * @param array         $user
-     * @param array         $error
+     * @param XenForo_View $view
+     * @param array        $user
      *
      * @return string HTML code
      */
@@ -389,9 +388,6 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
 
     /**
      * Called when verifying displaying the choose 2FA mode.
-     *
-     * @param array  $user
-     * @param object $error
      *
      * @return bool
      */
