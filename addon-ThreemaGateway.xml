@@ -176,8 +176,8 @@ automatically triggers the form submission via JavaScript
 		<p>{xen:raw $status.credits.text} <span class="explain addnote">{xen:raw $status.credits.addition}</span></p>
 		<p class="explain {$status.credits.descclass}">{xen:raw $status.credits.descr}</p>
 
-		<xen:if is="{$additionalerror}">
-			<xen:foreach loop="$additionalerror" value="$error" i="$i">
+		<xen:if is="{$extraError}">
+			<xen:foreach loop="$extraError" value="$error" i="$i">
 				<br />
 				<p class="<xen:if is="{$error.descclass}">{$error.descclass}<xen:else />error</xen:if>">{xen:raw $error.text}<span class="explain addnote">{xen:raw $error.addition}</span></p>
 			</xen:foreach>
