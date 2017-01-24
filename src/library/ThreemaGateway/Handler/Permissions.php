@@ -128,8 +128,8 @@ class ThreemaGateway_Handler_Permissions
         // check whether visitor is user
         /**
          * @var bool $userIsAlreadyVisitor Whether the new user is already the
-         *                                 default user and the old user is the
-         *                                 default user too.
+         *           default user and the old user is the
+         *           default user too.
          */
         $userIsAlreadyVisitor = $this->userIsDefault($newUser) && $this->userIsDefault($oldUserId);
         // prevent unnecessary changes

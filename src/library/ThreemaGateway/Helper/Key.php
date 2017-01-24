@@ -60,7 +60,7 @@ class ThreemaGateway_Helper_Key
      *
      * XenForo template helper: threemaisvalidpubkey.
      *
-     * @param  string $threemaid Threema ID
+     * @param  string $pubKey Threema ID
      * @return bool
      */
     public static function checkPublic($pubKey)
@@ -73,8 +73,8 @@ class ThreemaGateway_Helper_Key
      *
      * XenForo template helper: threemaisvalidkey.
      *
-     * @param string the public key
-     * @param string optional suffix (usually 'private:' or 'public:') (default: '')
+     * @param string $publicKey the public key in hex
+     * @param string $suffix    optional suffix (usually 'private:' or 'public:') (default: '')
      *
      * @return bool whether the key is valid (true) or not (false)
      */

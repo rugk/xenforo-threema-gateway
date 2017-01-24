@@ -64,10 +64,10 @@ class ThreemaGateway_Handler_PhpSdk
     /**
      * Initiate PHP-SDK.
      *
-     * @param ThreemaGateway_Handler_Settings
+     * @param ThreemaGateway_Handler_Settings|null $settings
      * @throws XenForo_Exception
      */
-    private function __construct($settings)
+    private function __construct($settings = null)
     {
         // get options
         $this->xenOptions = XenForo_Application::getOptions();
@@ -101,7 +101,7 @@ class ThreemaGateway_Handler_PhpSdk
      * @param ThreemaGateway_Handler_Settings If you already used the settings
      *                                        you can pass them here, so the
      *                                        class can reuse them.
-     * @param ThreemaGateway_Handler_Settings $settings
+     * @param  ThreemaGateway_Handler_Settings $settings
      * @throws XenForo_Exception
      * @return void
      */
@@ -127,7 +127,7 @@ class ThreemaGateway_Handler_PhpSdk
     /**
      * Returns the feature level of the SDK.
      *
-     * @return integer
+     * @return int
      */
     public function getFeatureLevel()
     {

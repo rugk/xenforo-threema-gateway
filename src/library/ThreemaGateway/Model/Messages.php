@@ -178,7 +178,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      * Sets the a time limit for what messages should be queried.
      *
      * @param int|null $dateMin   oldest date of messages (optional)
-     * @param int|null $dateMax  latest date of messages (optional)
+     * @param int|null $dateMax   latest date of messages (optional)
      * @param string   $attribute Set the atttribute to apply this to.
      */
     public function setTimeLimit($dateMin = null, $dateMax = null, $attribute = 'metamessage.date_send')
@@ -196,7 +196,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
     /**
      * Limit the result to a number of datasets.
      *
-     * @param int $limit   oldest date of messages
+     * @param int $limit oldest date of messages
      */
     public function setResultLimit($limit)
     {
@@ -520,7 +520,7 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
      */
     public function removeMetaData(array $additionalConditions = [], array $removeOnlyField = [])
     {
-        if ($removeOnlyField) {
+        if (!empty($removeOnlyField)) {
             $this->_getDb()->update(
                 self::DB_TABLE_MESSAGES,
                 array_fill_keys($removeOnlyField, null),
