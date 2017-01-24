@@ -73,7 +73,6 @@ class ThreemaGateway_Handler_Action_TfaCallback_TextMessage extends ThreemaGatew
 
             default:
                 throw new XenForo_Exception('Unknown filter type: ' . $filterType);
-                break;
         }
 
         if ($failOnError && !$success) {

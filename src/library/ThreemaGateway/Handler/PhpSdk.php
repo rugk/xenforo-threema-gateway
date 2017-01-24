@@ -70,7 +70,6 @@ class ThreemaGateway_Handler_PhpSdk
     private function __construct($settings = null)
     {
         // get options
-        $this->xenOptions = XenForo_Application::getOptions();
         if ($settings !== null) {
             $this->settings = $settings;
         } else {
@@ -107,11 +106,11 @@ class ThreemaGateway_Handler_PhpSdk
      */
     public static function getInstance($settings = null)
     {
-        if (!isset(static::$instance)) {
-            static::$instance = new static($settings);
+        if (!isset(self::$instance)) {
+            self::$instance = new self($settings);
         }
 
-        return static::$instance;
+        return self::$instance;
     }
 
     /**
@@ -199,7 +198,9 @@ class ThreemaGateway_Handler_PhpSdk
     {
         // use source option can force the use of the source code, but there is
         // also an automatic fallback to the source
-        if (!$this->xenOptions->threema_gateway_usesource && file_exists($this->sdkDir . '/threema_msgapi.phar')) {
+        if (!XenForo_Application::getOptions()->threema_gateway_usesource &&
+            file_exists($this->sdkDir . '/threema_msgapi.phar')
+        ) {
             // PHAR mode
             require_once $this->sdkDir . '/threema_msgapi.phar';
         } elseif (file_exists($this->sdkDir . '/source/bootstrap.php')) {
@@ -225,7 +226,7 @@ class ThreemaGateway_Handler_PhpSdk
     protected function createKeystore()
     {
         /** @var array $phpKeystore The setting for an optional PHP keystore */
-        $phpKeystore = $this->xenOptions->threema_gateway_keystorefile;
+        $phpKeystore = XenForo_Application::getOptions()->threema_gateway_keystorefile;
 
         if (!$phpKeystore || !$phpKeystore['enabled']) {
             $keystore = new ThreemaGateway_Handler_DbKeystore();
@@ -266,15 +267,16 @@ class ThreemaGateway_Handler_PhpSdk
      */
     protected function createConnectionSettings($gatewayId, $gatewaySecret)
     {
+        /** @var XenForo_Options $xenOptions */
+        $xenOptions = XenForo_Application::getOptions();
+
         /** @var null|ConnectionSettings $settings */
-        $settings = null;
-        if ($this->xenOptions->threema_gateway_httpshardening) {
+        if ($xenOptions->threema_gateway_httpshardening) {
             //create a connection with advanced options
-            /** @var array $tlsSettings */
-            $tlsSettings = [];
-            switch ($this->xenOptions->threema_gateway_httpshardening) {
+            switch ($xenOptions->threema_gateway_httpshardening) {
                 case 1:
                     // only force TLS v1.2
+                    /** @var array $tlsSettings */
                     $tlsSettings = [
                             'forceHttps' => true,
                             'tlsVersion' => '1.2'
@@ -282,6 +284,7 @@ class ThreemaGateway_Handler_PhpSdk
                     break;
                 case 2:
                     // also force strong cipher
+                    /** @var array $tlsSettings */
                     $tlsSettings = [
                             'forceHttps' => true,
                             'tlsVersion' => '1.2',
@@ -290,23 +293,20 @@ class ThreemaGateway_Handler_PhpSdk
                     break;
                 default:
                     throw new XenForo_Exception(new XenForo_Phrase('threemagw_invalid_httpshardening_option'));
-                    break;
             }
 
-            $settings = new ConnectionSettings(
+            return new ConnectionSettings(
                 $gatewayId,
                 $gatewaySecret,
                 null,
                 $tlsSettings
             );
-        } else {
-            //create a connection with default options
-            $settings = new ConnectionSettings(
-                $gatewayId,
-                $gatewaySecret
-            );
         }
 
-        return $settings;
+        //create a connection with default options
+        return new ConnectionSettings(
+            $gatewayId,
+            $gatewaySecret
+        );
     }
 }

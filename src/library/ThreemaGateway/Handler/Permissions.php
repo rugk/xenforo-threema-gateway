@@ -89,11 +89,11 @@ class ThreemaGateway_Handler_Permissions
      */
     public static function getInstance()
     {
-        if (!isset(static::$instance)) {
-            static::$instance = new static;
+        if (!isset(self::$instance)) {
+            self::$instance = new self;
         }
 
-        return static::$instance;
+        return self::$instance;
     }
 
     /**
@@ -131,7 +131,7 @@ class ThreemaGateway_Handler_Permissions
          *           default user and the old user is the
          *           default user too.
          */
-        $userIsAlreadyVisitor = $this->userIsDefault($newUser) && $this->userIsDefault($oldUserId);
+        $userIsAlreadyVisitor = $this->userIsDefault($newUserId) && $this->userIsDefault($oldUserId);
         // prevent unnecessary changes
         if ($oldUserId == $newUserId || $userIsAlreadyVisitor) {
             return false;

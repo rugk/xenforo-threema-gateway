@@ -378,7 +378,6 @@ class ThreemaGateway_Model_Messages extends XenForo_Model
 
             default:
                 throw new XenForo_Exception(new XenForo_Phrase('threemagw_unknown_message_type'));
-                break;
         }
 
         // add table if necessary

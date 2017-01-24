@@ -81,7 +81,6 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
 
             default:
                 throw new XenForo_Exception('Unknown filter type: ' . $filterType);
-                break;
         }
 
         if ($failOnError && !$success) {

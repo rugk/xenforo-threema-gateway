@@ -46,7 +46,7 @@ class ThreemaGateway_Helper_Message
     }
 
     /**
-     * Returns the date/time where a message would still be accepted altghough
+     * Returns the date/time where a message would still be accepted although
      * it is outdated.
      *
      * Note that for doing the actual replay attack check, this method *must not*
@@ -57,17 +57,17 @@ class ThreemaGateway_Helper_Message
     public static function getOldestPossibleReplayAttackDate()
     {
         /** @var XenForo_Options $options */
-        $options   = XenForo_Application::getOptions();
-        /** @var int $rejectOlDefault the default maximum age of a message according*/
-        $rejectOlDefault = strtotime('-14 days', XenForo_Application::$time);
-        /* @var int $rejectOld the maximum age of a message according to the options */
-        $rejectOldOption = '';
-        if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
+        $options = XenForo_Application::getOptions();
+        /* @var int $rejectOldDefault the maximum age of a message as hardcoded/predefined fallback */
+        $rejectOldDefault = strtotime('-14 days', XenForo_Application::$time);
+        /* @var int $rejectOldOption the maximum age of a message according to the options */
+        $rejectOldOption = $rejectOldDefault;
+        if ($options->threema_gateway_verify_receive_time &&
+            $options->threema_gateway_verify_receive_time['enabled']
+        ) {
             $rejectOldOption = strtotime($options->threema_gateway_verify_receive_time['time'], XenForo_Application::$time);
-        } else {
-            $rejectOldOption = $rejectOlDefault;
         }
 
-        return min($rejectOlDefault, $rejectOldOption);
+        return min($rejectOldDefault, $rejectOldOption);
     }
 }

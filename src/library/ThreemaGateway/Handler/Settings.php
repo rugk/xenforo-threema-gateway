@@ -16,14 +16,9 @@
 class ThreemaGateway_Handler_Settings
 {
     /**
-     * @var XenForo_Options $xenOptions XenForo options
+     * @var string $gatewayId Your own Threema Gateway ID
      */
-    protected $xenOptions;
-
-    /**
-     * @var string $GatewayId Your own Threema Gateway ID
-     */
-    protected $GatewayId = '';
+    protected $gatewayId = '';
 
     /**
      * @var string $gatewaySecret Your own Threema Gateway secret
@@ -50,18 +45,19 @@ class ThreemaGateway_Handler_Settings
      */
     public function __construct()
     {
-        $this->xenOptions = XenForo_Application::getOptions();
+        /** @var XenForo_Options $xenOptions */
+        $xenOptions = XenForo_Application::getOptions();
 
         // get options (if not hard-coded)
-        if (!$this->GatewayId) {
-            $this->GatewayId = $this->xenOptions->threema_gateway_threema_id;
+        if (!$this->gatewayId) {
+            $this->gatewayId = $xenOptions->threema_gateway_threema_id;
         }
         if (!$this->gatewaySecret) {
-            $this->gatewaySecret = $this->xenOptions->threema_gateway_threema_id_secret;
+            $this->gatewaySecret = $xenOptions->threema_gateway_threema_id_secret;
         }
         if (!$this->privateKey) {
             if (!$this->privateKeyBase) {
-                $this->privateKeyBase = $this->xenOptions->threema_gateway_privatekeyfile;
+                $this->privateKeyBase = $xenOptions->threema_gateway_privatekeyfile;
             }
 
             // vadility check & processing is later done when private key is actually requested
@@ -85,7 +81,7 @@ class ThreemaGateway_Handler_Settings
      */
     public function isAvaliable()
     {
-        if (!$this->GatewayId ||
+        if (!$this->gatewayId ||
             !$this->gatewaySecret ||
             $this->xenOptions->threema_gateway_e2e == ''
         ) {
@@ -124,7 +120,7 @@ class ThreemaGateway_Handler_Settings
             if (!$this->privateKey) {
                 try {
                     $this->convertPrivateKey();
-                } catch (XenForo_Exception $e) {
+                } catch (Exception $e) {
                     // in case of an error, it is not ready
                     return false;
                 }
@@ -149,7 +145,7 @@ class ThreemaGateway_Handler_Settings
      */
     public function isEndToEnd()
     {
-        return ($this->xenOptions->threema_gateway_e2e == 'e2e');
+        return (XenForo_Application::getOptions()->threema_gateway_e2e == 'e2e');
     }
 
     /**
@@ -162,8 +158,11 @@ class ThreemaGateway_Handler_Settings
      */
     public function isDebug()
     {
-        return (($this->xenOptions->threema_gateway_logreceivedmsgs['enabled'] ||
-            $this->xenOptions->threema_gateway_allow_get_receive) &&
+        /** @var XenForo_Options $xenOptions */
+        $xenOptions = XenForo_Application::getOptions();
+
+        return (($xenOptions->threema_gateway_logreceivedmsgs['enabled'] ||
+            $xenOptions->threema_gateway_allow_get_receive) &&
             XenForo_Application::debugMode());
     }
 
@@ -174,7 +173,7 @@ class ThreemaGateway_Handler_Settings
      */
     public function getId()
     {
-        return $this->GatewayId;
+        return $this->gatewayId;
     }
 
     /**
@@ -225,25 +224,29 @@ class ThreemaGateway_Handler_Settings
      */
     protected function convertPrivateKey()
     {
-        // find path of private key file
-        if (file_exists(__DIR__ . '/../' . $this->privateKeyBase)) {
-            /** @var resource|false $fileres */
-            $fileres = fopen(__DIR__ . '/../' . $this->privateKeyBase, 'r');
-        } elseif (ThreemaGateway_Helper_Key::check($this->privateKeyBase, 'private:')) {
-            // use raw key (undocumented, not recommend)
+        // use raw key (undocumented, not recommend)
+        if (ThreemaGateway_Helper_Key::check($this->privateKeyBase, 'private:')) {
             $this->privateKey = $this->privateKeyBase;
-        } else {
+            return;
+        }
+
+        // find path of private key file
+        if (!file_exists(__DIR__ . '/../' . $this->privateKeyBase)) {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_invalid_privatekey'));
         }
 
+        // open file
+        /** @var resource|false $fileres */
+        $fileres = fopen(__DIR__ . '/../' . $this->privateKeyBase, 'r');
+
         // read content of private key file
-        if (is_resource($fileres)) {
-            $this->privateKey = fgets($fileres);
-            fclose($fileres);
-        } else {
+        if (empty($fileres) || !is_resource($fileres)) {
             //error opening file
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_invalid_keystorepath'));
         }
+
+        $this->privateKey = fgets($fileres);
+        fclose($fileres);
     }
 
     /**
@@ -264,6 +267,6 @@ class ThreemaGateway_Handler_Settings
      */
     public function __toString()
     {
-        return __CLASS__ . ' of ' . $this->GatewayId;
+        return __CLASS__ . ' of ' . $this->gatewayId;
     }
 }

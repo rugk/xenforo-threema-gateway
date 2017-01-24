@@ -738,7 +738,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     /**
      * Returns the PHP SDK object.
      *
-     * @param ThreemaGateway_Handler_PhpSdk
+     * @return ThreemaGateway_Handler_PhpSdk
      */
     final protected function getSdk()
     {

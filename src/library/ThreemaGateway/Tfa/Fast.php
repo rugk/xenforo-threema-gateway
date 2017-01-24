@@ -457,7 +457,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         /** @var int $blockingTime seconds how long users should be blocked */
         $blockingTime = $xenOptions->threema_gateway_tfa_blocking_time * 60;
 
-        if (!$userIp) {
+        if ($userIp === null) {
             $userIp = $providerData['triggerIp'];
         }
         // cancel, if already handeled

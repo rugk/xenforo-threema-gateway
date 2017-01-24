@@ -38,8 +38,7 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
      */
     public function initCallbackHandling(Zend_Controller_Request_Http $request)
     {
-        $this->request = $request;
-        $this->input   = new XenForo_Input($request);
+        $this->input = new XenForo_Input($request);
 
         $this->filtered = $this->input->filter([
             'accesstoken' => XenForo_Input::STRING,
