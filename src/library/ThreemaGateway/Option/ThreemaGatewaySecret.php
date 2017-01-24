@@ -53,24 +53,24 @@ class ThreemaGateway_Option_ThreemaGatewaySecret
     /**
      * Verifies the Threema Gateway Secret format.
      *
-     * @param string             $threemaid Input threema ID
-     * @param XenForo_DataWriter $dw
-     * @param string             $fieldName Name of field/option
+     * @param string             $threemaid  Input threema ID
+     * @param XenForo_DataWriter $dataWriter
+     * @param string             $fieldName  Name of field/option
      *
      * @return bool
      */
-    public static function verifyOption(&$threemagwsecret, XenForo_DataWriter $dw, $fieldName)
+    public static function verifyOption(&$threemagwsecret, XenForo_DataWriter $dataWriter, $fieldName)
     {
         //check whether change was really done by user
         // https://regex101.com/r/eY2uE3/3
         if (preg_match('/\*{' . (16 - self::CHARS_LEAVE_UNCENSORED) . '}[A-Za-z0-9]*/', $threemagwsecret)) {
-            $threemagwsecret = $dw->getExisting('option_value'); //reset old value
+            $threemagwsecret = $dataWriter->getExisting('option_value'); //reset old value
             return true;
         }
 
         //check for formal errors
         if ($threemagwsecret != '' && !preg_match('/[A-Za-z0-9]{16}/', $threemagwsecret)) {
-            $dw->error(new XenForo_Phrase('threemagw_invalid_threema_secret'), $fieldName);
+            $dataWriter->error(new XenForo_Phrase('threemagw_invalid_threema_secret'), $fieldName);
             return false;
         }
 

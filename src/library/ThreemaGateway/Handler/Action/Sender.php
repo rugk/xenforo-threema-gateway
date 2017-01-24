@@ -81,18 +81,17 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
         // send message
         if ($this->settings->isEndToEnd()) {
             return $this->sendE2EText($threemaId, $message);
-        } else {
-            return $this->sendSimple($threemaId, $message);
         }
+
+        return $this->sendSimple($threemaId, $message);
     }
 
     /**
-     * Skips the permission check. (not recommend!)
+     * Skips the permission check. (not recommend!).
      *
      * Only do this if you are e.g. operating as another user currently such as
      * when you want to send a (reply) message directly after receiving one
      * though the Gateway callback.
-     *
      */
     public function skipPermissionCheck()
     {

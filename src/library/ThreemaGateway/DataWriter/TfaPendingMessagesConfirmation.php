@@ -61,7 +61,7 @@ class ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation extends XenForo_D
     /**
      * Gets the actual existing data out of data that was passed in. See parent for explanation.
      *
-     * @param mixed
+     * @param mixed $data
      * @see XenForo_DataWriter::_getExistingData()
      * @return array
      */
@@ -116,6 +116,7 @@ class ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation extends XenForo_D
     /**
      * Gets SQL condition to update the existing record.
      *
+     * @param string $tableName
      * @see XenForo_DataWriter::_getUpdateCondition()
      * @return string
      */

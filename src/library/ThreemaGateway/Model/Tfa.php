@@ -11,7 +11,7 @@
 class ThreemaGateway_Model_Tfa extends XFCP_ThreemaGateway_Model_Tfa
 {
     /**
-     * Array of attempt limits per provider
+     * Array of attempt limits per provider.
      *
      * Each entry for a provider has this format: [time, max attempts]
      *

@@ -28,7 +28,7 @@ class ThreemaGateway_Helper_Message
             return true;
         }
 
-        /** @var XenForo_Options $options */
+        /* @var XenForo_Options $options */
         $xenOptions = XenForo_Application::getOptions();
 
         // when the hardened mode is activated, always return true
@@ -59,8 +59,8 @@ class ThreemaGateway_Helper_Message
         /** @var XenForo_Options $options */
         $options   = XenForo_Application::getOptions();
         /** @var int $rejectOlDefault the default maximum age of a message according*/
-        $rejectOlDefault = strtotime('-14 days', XenForo_Application::$time);;
-        /** @var int $rejectOld the maximum age of a message according to the options */
+        $rejectOlDefault = strtotime('-14 days', XenForo_Application::$time);
+        /* @var int $rejectOld the maximum age of a message according to the options */
         $rejectOldOption = '';
         if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
             $rejectOldOption = strtotime($options->threema_gateway_verify_receive_time['time'], XenForo_Application::$time);

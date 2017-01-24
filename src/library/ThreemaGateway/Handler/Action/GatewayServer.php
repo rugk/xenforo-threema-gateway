@@ -106,7 +106,7 @@ class ThreemaGateway_Handler_Action_GatewayServer extends ThreemaGateway_Handler
      * Returns the remaining credits of the Gateway account.
      *
      * @throws XenForo_Exception
-     * @return string
+     * @return int
      */
     public function getCredits()
     {

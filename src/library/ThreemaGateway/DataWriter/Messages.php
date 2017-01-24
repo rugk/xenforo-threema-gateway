@@ -170,7 +170,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      * Currently this removes the directory structure, so that only the file
      * name is saved.
      *
-     * @param string $filepath
+     * @param  string $filepath
      * @return string
      */
     public function normalizeFilePath($filepath)
@@ -186,7 +186,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
      * currently only used for deleting data. Updates can never happen in any
      * message table.
      *
-     * @param mixed
+     * @param mixed $data
      * @see XenForo_DataWriter::_getExistingData()
      * @return array
      */
@@ -259,6 +259,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
     /**
      * Gets SQL condition to update the existing record.
      *
+     * @param string $tableName
      * @see XenForo_DataWriter::_getUpdateCondition()
      * @return bool
      */
@@ -325,20 +326,20 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
                 continue;
             }
 
-            // table contains data
-            if ($isData) {
-                //but required key is missing
-                if (
-                    !$this->getNew($field, ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES) &&
-                    !isset($fieldData['default']) // exception: a default value is set
-                ) {
-                    $this->_triggerRequiredFieldError(ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES, $field);
-                }
-            } else {
-                // table does not contain data,
-                // so make sure data is really "null" and not some other type of data by removing it completly from the model
+            // when table does not contain data
+            if (!$isData) {
+                // make sure data is really "null" and not some other type of data by removing it completly from the model
                 unset($this->_newData[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES][$field]);
                 unset($this->_fields[ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES][$field]);
+                continue;
+            }
+
+            // table contains data, but required key is missing
+            if (
+                !$this->getNew($field, ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES) &&
+                !isset($fieldData['default']) // exception: a default value is set
+            ) {
+                $this->_triggerRequiredFieldError(ThreemaGateway_Model_Messages::DB_TABLE_MESSAGES, $field);
             }
         }
 
@@ -477,7 +478,7 @@ class ThreemaGateway_DataWriter_Messages extends XenForo_DataWriter
         // round unix time to day (00:00)
         $receiveDate = ThreemaGateway_Helper_General::roundToDay($receiveDate);
 
-        return (int)$receiveDate;
+        return (int) $receiveDate;
     }
 
     /**

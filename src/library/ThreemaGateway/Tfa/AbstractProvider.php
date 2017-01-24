@@ -54,11 +54,11 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     /**
      * Create provider.
      *
-     * @param string $id Provider id
+     * @param string $providerId Provider id
      */
-    public function __construct($id)
+    public function __construct($providerId)
     {
-        parent::__construct($id);
+        parent::__construct($providerId);
         $this->gatewayPermissions = ThreemaGateway_Handler_Permissions::getInstance();
         $this->gatewaySettings    = new ThreemaGateway_Handler_Settings;
         $this->gatewayServer      = new ThreemaGateway_Handler_Action_GatewayServer;
@@ -100,11 +100,11 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      *
      * @param  string $context
      * @param  array  $user
-     * @param  string $ip
+     * @param  string $userIp
      * @param  array  $providerData
      * @return array
      */
-    public function triggerVerification($context, array $user, $ip, array &$providerData)
+    public function triggerVerification($context, array $user, $userIp, array &$providerData)
     {
         $this->gatewayPermissions->setUserId($user);
 
@@ -170,16 +170,14 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
         //check Threema ID
         /** @var string $verifyError */
         $verifyError = '';
-        if (ThreemaGateway_Handler_Validation::checkThreemaId($threemaid, 'personal', $verifyError)) {
-            // correct
-            $providerData['threemaid'] = $threemaid;
-        } else {
-            // incorrect
+        if (!ThreemaGateway_Handler_Validation::checkThreemaId($threemaid, 'personal', $verifyError)) {
+            // incorrect Threema ID
             $error[] = $verifyError;
             return [];
         }
 
-        return $providerData;
+        // Threema ID verification succeeded
+        $providerData['threemaid'] = $threemaid;
     }
 
     /**
@@ -422,8 +420,8 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
     abstract protected function generateDefaultData();
 
     /**
-    * Adjust the view params for managing the 2FA mode, e.g. add special
-    * params needed by your template.
+     * Adjust the view params for managing the 2FA mode, e.g. add special
+     * params needed by your template.
      *
      * @param array  $viewParams
      * @param string $context
@@ -454,7 +452,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * please do not forget to call the parent.
      *
      * @param string $context
-     * @param array $providerData
+     * @param array  $providerData
      */
     protected function resetProviderOptionsForTrigger($context, array &$providerData)
     {
@@ -524,29 +522,30 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      */
     final protected function getDefaultThreemaId(array $user)
     {
+        /** @var XenForo_Options $options */
         $options = XenForo_Application::getOptions();
-        /** @var string $threemaId */
-        $threemaId = '';
-
+        // check for custom user field
         if (array_key_exists('threemaid', $user['customFields']) &&
             $user['customFields']['threemaid'] != '') {
 
             //use custom user field
-            $threemaId = $user['customFields']['threemaid'];
+            return $user['customFields']['threemaid'];
         }
-        if ($threemaId == '' &&
-            $options->threema_gateway_tfa_autolookupmail &&
+
+        // lookup mail address
+        if ($options->threema_gateway_tfa_autolookupmail &&
             $user['user_state'] == 'valid') {
 
             //lookup mail
             try {
-                $threemaId = $this->gatewaySdkServer->lookupMail($user['email']);
+                return $this->gatewaySdkServer->lookupMail($user['email']);
             } catch (Exception $e) {
-                //ignore failures
+                //ignore failures, fall through/try next method
             }
         }
-        if ($threemaId == '' &&
-            $options->threema_gateway_tfa_autolookupphone && //verify ACP permission
+
+        // lookup phone number
+        if ($options->threema_gateway_tfa_autolookupphone && //verify ACP permission
             $options->threema_gateway_tfa_autolookupphone['enabled'] &&
             $options->threema_gateway_tfa_autolookupphone['userfield'] && //verify ACP setup
             array_key_exists($options->threema_gateway_tfa_autolookupphone['userfield'], $user['customFields']) && //verify user field
@@ -554,13 +553,11 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
 
             //lookup phone number
             try {
-                $threemaId = $this->gatewaySdkServer->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
+                return $this->gatewaySdkServer->lookupPhone($user['customFields'][$options->threema_gateway_tfa_autolookupphone['userfield']]);
             } catch (Exception $e) {
                 //ignore failure
             }
         }
-
-        return $threemaId;
     }
 
     /**
@@ -660,7 +657,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * secret.
      *
      * @param  array  $providerData
-     * @param  string $newSecret      the new secret, which is currently checked/verified
+     * @param  string $newSecret    the new secret, which is currently checked/verified
      * @return bool
      */
     final protected function verifyNoReplayAttack(array $providerData, $newSecret)
@@ -679,7 +676,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
      * Updates the data used by {@see verifyNoReplayAttack()} to prevent replay attacks.
      *
      * @param  array      $providerData
-     * @param  string|int $secret         The currently processed (& verified) secret
+     * @param  string|int $secret       The currently processed (& verified) secret
      * @return bool
      */
     final protected function updateReplayCheckData(array &$providerData, $secret)
@@ -724,7 +721,7 @@ abstract class ThreemaGateway_Tfa_AbstractProvider extends XenForo_Tfa_AbstractP
             $displayTime = floor($hours / 24) . ' ' . new XenForo_Phrase('threemagw_days');
         }
 
-        return (string)$displayTime;
+        return (string) $displayTime;
     }
 
     /**

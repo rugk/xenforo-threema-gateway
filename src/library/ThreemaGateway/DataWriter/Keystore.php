@@ -43,7 +43,7 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
      * As an update cannot happen in the keystore anyway, this function is not
      * implemented in any way.
      *
-     * @param mixed
+     * @param mixed $data
      * @see XenForo_DataWriter::_getExistingData()
      * @return array
      */
@@ -58,6 +58,7 @@ class ThreemaGateway_DataWriter_Keystore extends XenForo_DataWriter
      * As an update cannot happen in the keystore anyway, this function is not
      * implemented in any way.
      *
+     * @param string $tableName
      * @see XenForo_DataWriter::_getUpdateCondition()
      * @return string
      */

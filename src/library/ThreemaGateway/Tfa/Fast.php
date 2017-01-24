@@ -54,13 +54,13 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      *
      * @param  string $context
      * @param  array  $user
-     * @param  string $ip
+     * @param  string $userIp
      * @param  array  $providerData
      * @return array
      */
-    public function triggerVerification($context, array $user, $ip, array &$providerData)
+    public function triggerVerification($context, array $user, $userIp, array &$providerData)
     {
-        parent::triggerVerification($context, $user, $ip, $providerData);
+        parent::triggerVerification($context, $user, $userIp, $providerData);
 
         // this 2FA mode requires end-to-end encryption
         if (!$this->gatewaySettings->isEndToEnd()) {
@@ -78,7 +78,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         }
 
         // temporarily save IP, which triggered this
-        $providerData['triggerIp'] = $ip;
+        $providerData['triggerIp'] = $userIp;
 
         // send message
         /** @var string $phrase name of XenForo phrase to use */
@@ -115,7 +115,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         /** @var XenForo_Phrase $message */
         $message = new XenForo_Phrase($phrase, [
             'user' => $user['username'],
-            'ip' => $ip,
+            'ip' => $userIp,
             'validationTime' => $this->parseTime($providerData['validationTime']),
             'board' => $options->boardTitle,
             'board_url' => $options->boardUrl
@@ -182,13 +182,13 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      */
     public function verifyFromInput($context, XenForo_Input $input, array $user, array &$providerData)
     {
+        /** @var bool $result from parent, for error checking */
         $result = parent::verifyFromInput($context, $input, $user, $providerData);
 
         // let errors pass through
         if (!$result) {
             return $result;
         }
-
 
         // assure that secret has not expired yet
         if (!$this->verifySecretIsInTime($providerData)) {
@@ -285,9 +285,9 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
 
         // default to false (if not passed/set/allowed as permissions)
         $providerData['blockedNotification'] = false;
-        $providerData['blockTfaMode'] = false;
-        $providerData['blockUser'] = false;
-        $providerData['blockIp'] = false;
+        $providerData['blockTfaMode']        = false;
+        $providerData['blockUser']           = false;
+        $providerData['blockIp']             = false;
 
         // decline options
         if ($this->gatewayPermissions->hasPermission('blockedNotification')) {
@@ -337,8 +337,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
     }
 
     /**
-    * Adjust the view params for managing the 2FA mode, e.g. add special
-    * params needed by your template.
+     * Adjust the view params for managing the 2FA mode, e.g. add special
+     * params needed by your template.
      *
      * @param array  $viewParams
      * @param string $context
@@ -383,7 +383,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      * does not affect the next one.
      *
      * @param string $context
-     * @param array $providerData
+     * @param array  $providerData
      */
     protected function resetProviderOptionsForTrigger($context, array &$providerData)
     {
@@ -403,8 +403,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      * Checks whether a user is blocked.
      *
      * @param array $providerData
-     * @param bool $messageYetToSent Set to true to specify that the message
-     *                              still needs to be sent
+     * @param bool  $messageYetToSent Set to true to specify that the message
+     *                                still needs to be sent
      *
      * @return bool
      */
@@ -446,19 +446,19 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
      * It can block the login for some time, ban the user temporarily or even
      * ban the IP permanently.
      *
-     * @param array $providerData
-     * @param array $user aray of user data
-     * @param string|null $ip the current IP address
+     * @param array       $providerData
+     * @param array       $user         aray of user data
+     * @param string|null $userIp       the current IP address
      */
-    private function handleMessageDecline(array &$providerData, array $user, $ip = null)
+    private function handleMessageDecline(array &$providerData, array $user, $userIp = null)
     {
         /** @var XenForo_Options $xenOptions */
         $xenOptions = XenForo_Application::getOptions();
         /** @var int $blockingTime seconds how long users should be blocked */
         $blockingTime = $xenOptions->threema_gateway_tfa_blocking_time * 60;
 
-        if (!$ip) {
-            $ip = $providerData['triggerIp'];
+        if (!$userIp) {
+            $userIp = $providerData['triggerIp'];
         }
         // cancel, if already handeled
         if (!empty($providerData['messageDeclineHandeled'])) {
@@ -473,8 +473,8 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             $providerData['blockTfaMode']
         ) {
             // ban this 2FA method
-            $providerData['blocked'] = true;
-            $providerData['blockedBy'] = $providerData['secret'];
+            $providerData['blocked']      = true;
+            $providerData['blockedBy']    = $providerData['secret'];
             $providerData['blockedUntil'] = XenForo_Application::$time + $blockingTime;
 
             // append to action list
@@ -515,9 +515,9 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
         if ($this->gatewayPermissions->hasPermission('blockIp') &&
             $providerData['blockIp']
         ) {
-            /** @var XenForo_Model_Banning $ipBanModel */
-            $ipBanModel = XenForo_Model::create('XenForo_Model_Banning');
-            $ipBanModel->banIp($ip);
+            /** @var XenForo_Model_Banning $userIpBanModel */
+            $userIpBanModel = XenForo_Model::create('XenForo_Model_Banning');
+            $userIpBanModel->banIp($userIp);
 
             // append to action list
             $blockActions .= ' ' . (new XenForo_Phrase('tfa_threemagw_message_blocked_ip'))->render();
@@ -553,7 +553,7 @@ class ThreemaGateway_Tfa_Fast extends ThreemaGateway_Tfa_AbstractProvider
             /** @var XenForo_Phrase $message */
             $message = new XenForo_Phrase('tfa_threemagw_message_blocked_general', [
                 'user' => $user['username'],
-                'ip' => $ip,
+                'ip' => $userIp,
                 'blockActions' => $blockActions,
                 'board' => $options->boardTitle,
                 'board_url' => $options->boardUrl

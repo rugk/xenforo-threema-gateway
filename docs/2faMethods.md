@@ -1,4 +1,5 @@
 # Two factor authentication methods
+
 ## Overview
 Basic priority: 40 (see `ThreemaGateway_Constants::TFA_BASE_PRIORITY`)  
 Range reserved: `TFA_BASE_PRIORITY-29` to `TFA_BASE_PRIORITY-1` (currently 21-39)
@@ -10,7 +11,6 @@ Reversed     | receives 6 digits code                       | sends 6 digits cod
 Fast login   | sends login message, receives status updates | receives message, sends status update back | taps on accept/decline on their phone            | ThreemaGateway_Tfa_Fast         | 35
 
 ## Conventional
-
 **Pro:** Well-tested standard method  
 **Contra:** Inconvenient to use
 

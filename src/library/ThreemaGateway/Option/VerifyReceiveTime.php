@@ -14,13 +14,13 @@ class ThreemaGateway_Option_VerifyReceiveTime
     /**
      * Verifies the existence of the path.
      *
-     * @param string             $option    Input
-     * @param XenForo_DataWriter $dw
-     * @param string             $fieldName Name of field/option
+     * @param string             $option     Input
+     * @param XenForo_DataWriter $dataWriter
+     * @param string             $fieldName  Name of field/option
      *
      * @return bool
      */
-    public static function verifyOption(&$option, XenForo_DataWriter $dw, $fieldName)
+    public static function verifyOption(&$option, XenForo_DataWriter $dataWriter, $fieldName)
     {
         if (!$option || !$option['enabled']) {
             // skip check if option is disabled
@@ -42,7 +42,7 @@ class ThreemaGateway_Option_VerifyReceiveTime
         if (!$test ||
             $test > strtotime('now')
         ) {
-            $dw->error(new XenForo_Phrase('threemagw_invalid_discard_old_date'), $fieldName);
+            $dataWriter->error(new XenForo_Phrase('threemagw_invalid_discard_old_date'), $fieldName);
             return false;
         }
 

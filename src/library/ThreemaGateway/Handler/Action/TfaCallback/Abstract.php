@@ -28,7 +28,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
     /**
      * @var string how the provider data has been fetched
      */
-    protected $providerDataFetchMethod;
+    protected $dataFetchMode;
 
     /**
      * @var ThreemaGateway_Handler_Action_Callback
@@ -173,24 +173,24 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
         }
 
         // handle all requests
-        /** @var bool $successfullyProcessed */
-        $successfullyProcessed = false;
+        /** @var bool $success whether the request has been successfully processed */
+        $success = false;
 
-        foreach ($this->pendingRequests as $id => $confirmRequest) {
+        foreach ($this->pendingRequests as $confirmRequest) {
             // now confirm request
             if (!$this->processConfirmRequest($confirmRequest, $processOptions)) {
                 // in case of error, just skip the message
                 continue;
             }
 
-            $successfullyProcessed = true;
+            $success = true;
         }
 
-        if (!$this->postProcessPending($successfullyProcessed)) {
+        if (!$this->postProcessPending($success)) {
             return false;
         }
 
-        return $successfullyProcessed;
+        return $success;
     }
 
     /**
@@ -371,13 +371,13 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      * Childs should call the parent here as the things done in this class are
      * essential!
      *
-     * @param  bool              $successfullyProcessed whether the data was processed successfully
+     * @param  bool              $success whether the data was processed successfully
      * @throws XenForo_Exception
      * @return bool
      */
-    protected function postProcessPending($successfullyProcessed)
+    protected function postProcessPending($success)
     {
-        if ($successfullyProcessed) {
+        if ($success) {
             // do not save message as it already has been processed
             $this->saveMessage = false;
         }
@@ -548,7 +548,7 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
             throw new XenForo_Exception('Could not get provider data from session using key ' . $sessionKey . '.');
         }
 
-        $this->providerDataFetchMethod = 'session';
+        $this->dataFetchMode = 'session';
         return $providerData;
     }
 
@@ -581,35 +581,41 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
             throw new XenForo_Exception('Could not get provider data.');
         }
 
-        $this->providerDataFetchMethod = 'tfa_model';
+        $this->dataFetchMode = 'tfa_model';
         return $providerData;
     }
 
     /**
      * Gets model from cache or initializes a new model if needed.
      *
-     * @param array $newProviderData porovider data to save
+     * @param array $newProviderData provider data to save
      * @param array $confirmRequest  the confirmation message request
      *
      * @throws XenForo_Exception
      */
     protected function saveProviderData(array $newProviderData, array $confirmRequest)
     {
-        if ($this->providerDataFetchMethod == 'session') {
-            /** @var string $sessionKey session key identifying  */
-            $sessionKey = 'tfaData_' . $confirmRequest['provider_id'];
+        switch ($this->dataFetchMode) {
+            case 'session':
+                /** @var string $sessionKey session key identifying */
+                $sessionKey = 'tfaData_' . $confirmRequest['provider_id'];
 
-            /** @var XenForo_Session $session */
-            $session = $this->getSession();
+                /** @var XenForo_Session $session */
+                $session = $this->getSession();
 
-            $session->set($sessionKey, $newProviderData);
-            $session->save();
-        } elseif ($this->providerDataFetchMethod == 'tfa_model') {
-            /** @var XenForo_Model_Tfa $tfaModel */
-            $tfaModel = $this->getModelFromCache('XenForo_Model_Tfa');
-            $tfaModel->updateUserProvider($confirmRequest['user_id'], $confirmRequest['provider_id'], $newProviderData, false);
-        } else {
-            throw new XenForo_Exception('Invalid provider data fetch method: ' . $this->providerDataFetchMethod);
+                $session->set($sessionKey, $newProviderData);
+                $session->save();
+                break;
+
+            case 'tfa_model':
+                /** @var XenForo_Model_Tfa $tfaModel */
+                $tfaModel = $this->getModelFromCache('XenForo_Model_Tfa');
+                $tfaModel->updateUserProvider($confirmRequest['user_id'], $confirmRequest['provider_id'], $newProviderData, false);
+                break;
+
+            default:
+                // if all fails, we can only throw an exception
+                throw new XenForo_Exception('Invalid provider data fetch method: ' . $this->dataFetchMode);
         }
     }
 

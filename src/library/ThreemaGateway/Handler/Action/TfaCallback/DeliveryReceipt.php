@@ -172,7 +172,7 @@ class ThreemaGateway_Handler_Action_TfaCallback_DeliveryReceipt extends ThreemaG
      * Checks whether the previously saved receipt type is smaller than the
      * one got currently.
      *
-     * @param array $confirmRequest the confirm request
+     * @param array $confirmRequest  the confirm request
      * @param array $oldProviderData old data read
      * @param array $setData         new data to set
      * @param array $processOptions  custom options (optional)

@@ -67,13 +67,13 @@ abstract class ThreemaGateway_Handler_Action_Abstract
     }
 
     /**
-     * Returns the Threema Receiver
+     * Returns the Threema Receiver.
      *
      * Note that you may need to call $this->getSdk(); manually if you want to
      * pass a specific type via the $type param.
      *
      * @param string $value the query value (Threema ID, phone number, …)
-     * @param string $type the type of the queried data (use constzants of Threema\MsgApi\Receiver)
+     * @param string $type  the type of the queried data (use constzants of Threema\MsgApi\Receiver)
      *
      * @return Threema\MsgApi\Receiver
      */

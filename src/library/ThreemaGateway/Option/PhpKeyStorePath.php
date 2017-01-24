@@ -14,12 +14,12 @@ class ThreemaGateway_Option_PhpKeyStorePath
      * Verifies the existence of the path.
      *
      * @param string             $phpKeystore Input
-     * @param XenForo_DataWriter $dw
+     * @param XenForo_DataWriter $dataWriter
      * @param string             $fieldName   Name of field/option
      *
      * @return bool
      */
-    public static function verifyOption(&$phpKeystore, XenForo_DataWriter $dw, $fieldName)
+    public static function verifyOption(&$phpKeystore, XenForo_DataWriter $dataWriter, $fieldName)
     {
         if (!$phpKeystore || !$phpKeystore['enabled']) {
             // skip check if PHP keystore is not enabled
@@ -30,13 +30,13 @@ class ThreemaGateway_Option_PhpKeyStorePath
         if (pathinfo($phpKeystore['path'], PATHINFO_EXTENSION) != 'php' ||
             !file_exists(__DIR__ . '/../' . $phpKeystore['path'])
         ) {
-            $dw->error(new XenForo_Phrase('threemagw_invalid_keystorepath'), $fieldName);
+            $dataWriter->error(new XenForo_Phrase('threemagw_invalid_keystorepath'), $fieldName);
             return false;
         }
 
         // check whether it is writable
         if (!is_writable(__DIR__ . '/../' . $phpKeystore['path'])) {
-            $dw->error(new XenForo_Phrase('threemagw_not_writable_keystorefile'), $fieldName);
+            $dataWriter->error(new XenForo_Phrase('threemagw_not_writable_keystorefile'), $fieldName);
             return false;
         }
 

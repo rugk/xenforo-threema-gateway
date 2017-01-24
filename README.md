@@ -1,13 +1,13 @@
 # XenForo - Threema Gateway (two-factor-authentication)
 
+<!-- video link/preview gif on the right site -->
+[<img alt="preview of 2FA modes" align="right"  src="https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/gifs/allLoginMobilePlaySmall.gif">](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/9bc57e61/docs/screencasts/allMobile.webm)
+
 <!-- badges -->
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9fd833d10dda4833a1c55b9e4d44d153)](https://www.codacy.com/app/rugk/xenforo-threema-gateway?utm_source=github.com&utm_medium=referral&utm_content=rugk/xenforo-threema-gateway&utm_campaign=badger)
 [![Code Climate](https://codeclimate.com/github/rugk/xenforo-threema-gateway/badges/gpa.svg)](https://codeclimate.com/github/rugk/xenforo-threema-gateway)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/rugk/xenforo-threema-gateway/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/rugk/xenforo-threema-gateway/?branch=master)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/9fd1d8e7-ed09-4b34-8242-7d2c51de19a1/mini.png)](https://insight.sensiolabs.com/projects/9fd1d8e7-ed09-4b34-8242-7d2c51de19a1)
-
-<!-- video link/preview gif on the right site -->
-[<img alt="preview of 2FA modes" align="right"  src="https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/gifs/allLoginMobilePlaySmall.gif">](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/9bc57e61/docs/screencasts/allMobile.webm)
 
 This add-on integrates the secure instant-messaging app [Threema](https://threema.ch) into the forum software XenForo. Using the [Threema Gateway](https://gateway.threema.ch) it offers three new [two-step authentication](https://xenforo.com/community/threads/two-step-verification-and-security-improvements.99881/) (also called two-factor authentication) modes for users and admins.
 

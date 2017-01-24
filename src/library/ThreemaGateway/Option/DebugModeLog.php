@@ -53,13 +53,13 @@ class ThreemaGateway_Option_DebugModeLog
     /**
      * Verifies whether the dir of the file is valid (can be created) and is writable.
      *
-     * @param string             $filepath  Input
-     * @param XenForo_DataWriter $dw
-     * @param string             $fieldName Name of field/option
+     * @param string             $filepath   Input
+     * @param XenForo_DataWriter $dataWriter
+     * @param string             $fieldName  Name of field/option
      *
      * @return bool
      */
-    public static function verifyOption(&$filepath, XenForo_DataWriter $dw, $fieldName)
+    public static function verifyOption(&$filepath, XenForo_DataWriter $dataWriter, $fieldName)
     {
         $filepath = self::correctOption($filepath);
 
@@ -67,7 +67,7 @@ class ThreemaGateway_Option_DebugModeLog
         $dirpath     = dirname($filepath['path']);
         $absoluteDir = XenForo_Application::getInstance()->getRootDir() . '/' . $dirpath;
         if (!ThreemaGateway_Handler_Validation::checkDir($absoluteDir)) {
-            $dw->error(new XenForo_Phrase('threemagw_invalid_debuglogpath'), $fieldName);
+            $dataWriter->error(new XenForo_Phrase('threemagw_invalid_debuglogpath'), $fieldName);
             return false;
         }
 
@@ -100,7 +100,7 @@ class ThreemaGateway_Option_DebugModeLog
     /**
      * Corrects the option array.
      *
-     * @param  array $option
+     * @param  array  $option
      * @return string
      */
     protected static function correctOption($option)

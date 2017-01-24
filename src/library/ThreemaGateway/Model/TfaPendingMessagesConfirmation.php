@@ -97,7 +97,6 @@ class ThreemaGateway_Model_TfaPendingMessagesConfirmation extends XenForo_Model
      *
      * This should be executed regularely as otherwise the database gets filled
      * up with unconfirmed/never handled pending requests.
-     *
      */
     public function deleteExpired()
     {

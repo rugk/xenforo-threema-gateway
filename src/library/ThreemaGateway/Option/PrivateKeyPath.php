@@ -16,13 +16,13 @@ class ThreemaGateway_Option_PrivateKeyPath
      * Note that $filepath can also be the key directly. However this is neither
      * the official way nor recommend/documented.
      *
-     * @param string             $filepath  Input
-     * @param XenForo_DataWriter $dw
-     * @param string             $fieldName Name of field/option
+     * @param string             $filepath   Input
+     * @param XenForo_DataWriter $dataWriter
+     * @param string             $fieldName  Name of field/option
      *
      * @return bool
      */
-    public static function verifyOption(&$filepath, XenForo_DataWriter $dw, $fieldName)
+    public static function verifyOption(&$filepath, XenForo_DataWriter $dataWriter, $fieldName)
     {
         $filepath = self::correctOption($filepath);
 
@@ -31,7 +31,7 @@ class ThreemaGateway_Option_PrivateKeyPath
             !self::isValidPath($filepath) && //verify path
             !ThreemaGateway_Helper_Key::check($filepath, 'private:') //allow private key string directly
         ) {
-            $dw->error(new XenForo_Phrase('threemagw_invalid_privkeypath'), $fieldName);
+            $dataWriter->error(new XenForo_Phrase('threemagw_invalid_privkeypath'), $fieldName);
             return false;
         }
 

@@ -13,11 +13,11 @@ class ThreemaGateway_Handler_Validation
     /**
      * Checks whether a Threema ID is valid and exists.
      *
-     * @param  string         $threemaid      The Threema ID to check.
-     * @param  string         $type           The type of the Threema ID (personal, gateway, any)
-     * @param  string         $error
-     * @param  bool           $checkExistence Whether not only formal aspects should
-     *                                        be checked, but also the existence of the ID.
+     * @param  string $threemaid      The Threema ID to check.
+     * @param  string $type           The type of the Threema ID (personal, gateway, any)
+     * @param  string $error
+     * @param  bool   $checkExistence Whether not only formal aspects should
+     *                                be checked, but also the existence of the ID.
      * @return bool
      */
     public static function checkThreemaId(&$threemaid, $type, &$error, $checkExistence = true)

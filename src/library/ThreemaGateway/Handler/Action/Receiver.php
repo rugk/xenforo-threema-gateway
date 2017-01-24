@@ -185,9 +185,9 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // query meta data
         if ($model->getMessageMetaData(false, false)) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -211,24 +211,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         $this->initiate();
         $model = XenForo_Model::create('ThreemaGateway_Model_Messages');
 
-        // determinate, which message types may be affected
-        /** @var string|null $messageType */
-        $messageType = null;
-        if ($mimeType !== null &&
-            $mimeType !== 'image/jpeg') {
-            // we can skip the image table as it is impossible that image files
-            // would be returned in this query
-            $messageType = ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE;
-
-            // and we can already set the mime type as a condition
-            $model->injectFetchOption('where', 'message.mime_type = ?', true);
-            $model->injectFetchOption('params', $mimeType, true);
-        }
-
         // set options
-        if ($messageType) {
-            $model->setTypeCode($messageType);
-        }
         if ($threemaId) {
             $model->setSenderId($threemaId);
         }
@@ -241,11 +224,25 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // reset grouping as it cannot be processed
         $this->groupByMessageType = false;
 
-        if ($messageType) {
-            // this can only be done when the mime type is set to something
-            // different than image/jpeg, so now all images are already
-            // excluded.
-            // This makes it possible to return the data with one query.
+        // determinate, which message types may be affected
+        if ($mimeType !== null &&
+            $mimeType !== 'image/jpeg') {
+            // we can skip the image table as it is impossible that image files
+            // would be returned in this query
+            /** @var string|null $messageType */
+            $messageType = ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE;
+
+            // and we can already set the mime type as a condition
+            $model->injectFetchOption('where', 'message.mime_type = ?', true);
+            $model->injectFetchOption('params', $mimeType, true);
+
+            // set message type as option
+            $model->setTypeCode($messageType);
+
+            // As the mime type is set to something different than image/jpeg,
+            // now all images are already excluded, so we can return the data
+            // with one query querying only the files table.
+
             /** @var array $result */
             $result = $model->getMessageDataByType($messageType, $queryMetaData);
         } else {
@@ -262,7 +259,8 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
 
             // first we query the image files
             // (without MIME type setting as images can only have one
-            // MIME type anyway)
+            // MIME type - image/jpeg - anyway)
+
             /** @var array|null $images */
             $images = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_IMAGE_MESSAGE, $queryMetaData);
 
@@ -277,20 +275,21 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             $files = $model->getMessageDataByType(ThreemaGateway_Model_Messages::TYPE_FILE_MESSAGE, $queryMetaData);
             $model->resetFetchOptions();
 
-            // handle empty queries transparently
+            // handle empty results transparently
             if (!$images) {
                 $images = [];
             }
             if (!$files) {
                 $files = [];
             }
+
             // and combine results
             /** @var array $result */
             $result = array_merge($images, $files);
+        }
 
-            if (empty($result)) {
-                $result = null;
-            }
+        if (empty($result)) {
+            return null;
         }
 
         return $result;
@@ -326,7 +325,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
         // delivery receipts we formally have to walk through the result
         /** @var int $deliveryReceipt */
         $deliveryReceipt = 0;
-        foreach ($result as $i => $content) {
+        foreach ($result as $content) {
             if ($content['receipt_type'] > $deliveryReceipt) {
                 $deliveryReceipt = $content['receipt_type'];
             }

@@ -80,7 +80,7 @@ class ThreemaGateway_Helper_General
     /**
      * Rounds a given timestamp (unix time) to the day.
      *
-     * @param int $time
+     * @param int  $time
      * @param bool $roundUp set to true to round up to the next day
      *
      * @return int

@@ -14,8 +14,11 @@ If you experience any issues you can use the [GitHubs Issue Tracker](issues) to 
 
 An issue template will be shown when you create a new issue in this repo.
 
+If you are not the server admin and your error happened on a publicy available server you can also just share the link to the forum. However,
+please make sure to contact the server admin before, to make sure the issue cannot be solved by him/her.
+
 ## Translating
-The language files can be found in _xenforo-threema-gateway\languages_. If there is a language missing which you like to be supported, feel free to translate it. You can use the [English example](languages/en-US.xml) as a starting point. It is recommend to use XenForo for this as you can use the internal XenForo translation system for this, but as these are just XML files you can also manually translate them.
+The language files can be found in _xenforo-threema-gateway\languages_. If there is a language missing which you like to be supported, feel free to translate it. You can use the [English example](languages/en-US.xml) as a starting point. It is recommend to use XenForo for this as you can use the internal XenForo translation system, but as these are just XML files so you can also manually translate them.
 
 ## Coding
 Here are some rules you should follow when you want to contribute code to this repo.
@@ -41,6 +44,8 @@ Use the **[PHP Coding Style Fixer](http://cs.sensiolabs.org/)** to clean up your
 
 Additionally there some other rules:
 - Use **PHPdoc**
+- Also use PHPDOC for all new variables you introduce:
+   `/** @var string $someString This string is an example. */`
 - Do **not require** a **higher PHP version** as described in the current [system requirements](./README.md#Requirements) without prior discussing this. Actually I think the current required PHP version is already quite high, so you should be able to use most of the nice features of recent PHP versions.
 - **Test your changes!** (except when you only edit the documentation)
 - use **camelCase** for variable and function names
@@ -49,9 +54,9 @@ Additionally there some other rules:
   ```php
   <?php
   /**
-   * Short description of the purpose of this file
+   * Short description of the purpose of this file.
    *
-   * More information if required
+   * More information if required.
    *
    * @package ThreemaGateway
    * @author rugk
@@ -60,18 +65,11 @@ Additionally there some other rules:
    */
   ```
 
-- add a short description to any class you create:
-
-  ```php
-  /**
-   * An example class which does nothing
-   */
-  class ThreemaGateway_ExampleClass
-  ```
-- When adding an regular expression add a link to a sample/test set on https://regex101.com/ in the comments. When modifying the RegExp edit this test set and update the link.
+- When adding a regular expression add a link to a sample/test set on https://regex101.com/ in the comments. When modifying the RegExp edit this test set and update the link.
 
 ### MySQL
-* Always use prepared statements if possible.
+* Always use prepared statements.
+* Use Zend_Db - that's how XenForo does it.
 
 ### JavaScript/jQuery
 
@@ -80,16 +78,3 @@ Additionally there some other rules:
 ### XenForo
 * Intend templates correctly with tabs.
 * Avoid direct MySQL queries. Use Models/DataWriters instead.
-
-### Markdown Style
-These markdown rules of course only apply to markdown files in this repo. When creating a description for issues or pull requests with markdown I do not care how you do this.
-
-Please follow [this styleguide](https://github.com/slang800/markdown-styleguide) when writing Markdown. The most important things are:
-- avoid HTML in markdown files - use markdown
-- use one space after a the # of the headline
-- use correct headlines: start with `#h1` and add one # for every subheadline
-- use `-` to start an enumeration
-- after each paragraph (before a new headline) use _one_ empty line. Do not included unnecessary extra empty lines.
-- use 2 spaces indentation if you e.g. indent an enumeration
-
-You can use [tidy-markdown](https://github.com/slang800/tidy-markdown) which does all this for you.

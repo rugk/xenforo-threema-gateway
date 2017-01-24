@@ -17,7 +17,6 @@ class ThreemaGateway_CronEntry_CleanUp
      * This ensures that unnecessary meta data is deleted as afterwards also
      * the message ID is deleted so no one knows that the message has been
      * received.
-     *
      */
     public static function pruneOldDeletedMessages()
     {
@@ -25,11 +24,11 @@ class ThreemaGateway_CronEntry_CleanUp
         $messageModel = XenForo_Model::create('ThreemaGateway_Model_Messages');
         $messageModel->setTimeLimit(null, ThreemaGateway_Helper_Message::getOldestPossibleReplayAttackDate(), 'date_received');
 
-        /** @var XenForo_Options $options */
+        /* @var XenForo_Options $options */
         $xenOptions = XenForo_Application::getOptions();
         // only need to test whether one attribute is invalid, all others are
         // automatically invalid too unless something is really went wrong
-        /** @var array $condition */
+        /* @var array $condition */
         $conditions = ['date_send IS NULL'];
 
         // when the hardened mode is activated, only set receive date to "null"
@@ -47,7 +46,6 @@ class ThreemaGateway_CronEntry_CleanUp
      * This task removes all expired pending requests for the 2FA modes.
      *
      * This task should stay enabled.
-     *
      */
     public static function pruneExpiredTfaPendingRequests()
     {

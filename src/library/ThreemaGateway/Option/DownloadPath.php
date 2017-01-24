@@ -13,13 +13,13 @@ class ThreemaGateway_Option_DownloadPath
     /**
      * Verifies whether the dir is valid (can be created) and is writable.
      *
-     * @param string             $dirpath   Input
-     * @param XenForo_DataWriter $dw
-     * @param string             $fieldName Name of field/option
+     * @param string             $dirpath    Input
+     * @param XenForo_DataWriter $dataWriter
+     * @param string             $fieldName  Name of field/option
      *
      * @return bool
      */
-    public static function verifyOption(&$dirpath, XenForo_DataWriter $dw, $fieldName)
+    public static function verifyOption(&$dirpath, XenForo_DataWriter $dataWriter, $fieldName)
     {
         // correct path
         if (substr($dirpath, 0, 1) == '/') {
@@ -42,7 +42,7 @@ class ThreemaGateway_Option_DownloadPath
 
         // check path
         if (!ThreemaGateway_Handler_Validation::checkDir($absoluteDir)) {
-            $dw->error(new XenForo_Phrase('threemagw_invalid_downloadpath'), $fieldName);
+            $dataWriter->error(new XenForo_Phrase('threemagw_invalid_downloadpath'), $fieldName);
             return false;
         }
 

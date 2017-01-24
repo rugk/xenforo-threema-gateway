@@ -63,13 +63,13 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
      *
      * @param  string $context
      * @param  array  $user
-     * @param  string $ip
+     * @param  string $userIp
      * @param  array  $providerData
      * @return array
      */
-    public function triggerVerification($context, array $user, $ip, array &$providerData)
+    public function triggerVerification($context, array $user, $userIp, array &$providerData)
     {
-        parent::triggerVerification($context, $user, $ip, $providerData);
+        parent::triggerVerification($context, $user, $userIp, $providerData);
 
         if (!$providerData) {
             return [];
@@ -108,7 +108,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
         $message = new XenForo_Phrase($phrase, [
             'secret' => $secret,
             'user' => $user['username'],
-            'ip' => $ip,
+            'ip' => $userIp,
             'validationTime' => $this->parseTime($providerData['validationTime']),
             'board' => $options->boardTitle,
             'board_url' => $options->boardUrl
@@ -154,6 +154,7 @@ class ThreemaGateway_Tfa_Conventional extends ThreemaGateway_Tfa_AbstractProvide
      */
     public function verifyFromInput($context, XenForo_Input $input, array $user, array &$providerData)
     {
+        /** @var bool $result from parent, for error checking */
         $result = parent::verifyFromInput($context, $input, $user, $providerData);
 
         // let errors pass through

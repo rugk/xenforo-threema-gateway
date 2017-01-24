@@ -73,6 +73,8 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
 
         // only allow POST requests (unless GET is allowed in ACP)
         if (!$this->settings->isDebug() || !$options->threema_gateway_allow_get_receive) {
+            // as an exception we access the superglobal directly here as it is
+            // difficult to get the request object
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 $errorString = [null, 'No POST request.', ''];
                 return false;
@@ -183,13 +185,10 @@ class ThreemaGateway_Handler_Action_Callback extends ThreemaGateway_Handler_Acti
 
         /** @var XenForo_Options $options */
         $options   = XenForo_Application::getOptions();
-        /** @var string $rejectOld the maximum age of a message */
-        $rejectOld = '';
+        /** @var string $rejectOld the maximum age of a message; default/fallback: 14 days */
+        $rejectOld = '-14 days';
         if ($options->threema_gateway_verify_receive_time && $options->threema_gateway_verify_receive_time['enabled']) {
             $rejectOld = $options->threema_gateway_verify_receive_time['time'];
-        } else {
-            // fallback to 14 days
-            $rejectOld = '-14 days';
         }
 
         // discard too old messages
