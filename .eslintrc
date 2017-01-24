@@ -14,14 +14,17 @@ extends: 'eslint:recommended'
 # http://eslint.org/docs/rules/
 rules:
   no-eval: 2
+  indent:
+    - 2
+    - 4
   linebreak-style:
-    - error
+    - 2
     - unix
   quotes:
-    - error
+    - 2
     - single
   semi:
-    - error
+    - 2
     - always
-  no-console: off
+  no-console: 0
   wrap-iife: [2, inside]
