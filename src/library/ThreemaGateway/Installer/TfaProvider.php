@@ -14,33 +14,33 @@
 class ThreemaGateway_Installer_TfaProvider
 {
     /**
-     * @var string $TfaId The unique ID of the providet
+     * @var string $tfaId The unique ID of the providet
      */
-    protected $TfaId;
+    protected $tfaId;
 
     /**
-     * @var string $TfaClass The class which handles 2FA requests
+     * @var string $tfaClass The class which handles 2FA requests
      */
-    protected $TfaClass;
+    protected $tfaClass;
 
     /**
-     * @var int $TfaClass A number, which represents the priority of the
+     * @var int $tfaClass A number, which represents the priority of the
      *          provider.
      */
-    protected $TfaPriority;
+    protected $tfaPriority;
 
     /**
      * Add a new provider to the database.
      *
-     * @param string $TfaId       The unique ID of the provider
-     * @param string $TfaClass    The class which handles 2FA requests
-     * @param int    $TfaPriority
+     * @param string $tfaId       The unique ID of the provider
+     * @param string $tfaClass    The class which handles 2FA requests
+     * @param int    $tfaPriority
      */
-    public function __construct($TfaId, $TfaClass, $TfaPriority)
+    public function __construct($tfaId, $tfaClass, $tfaPriority)
     {
-        $this->TfaId       = $TfaId;
-        $this->TfaClass    = $TfaClass;
-        $this->TfaPriority = $TfaPriority;
+        $this->tfaId       = $tfaId;
+        $this->tfaClass    = $tfaClass;
+        $this->tfaPriority = $tfaPriority;
     }
 
     /**
@@ -55,7 +55,7 @@ class ThreemaGateway_Installer_TfaProvider
         $db->query('INSERT INTO `xf_tfa_provider`
                   (`provider_id`, `provider_class`, `priority`, `active`)
                   VALUES (?, ?, ?, ?)',
-                  [$this->TfaId, $this->TfaClass, $this->TfaPriority, (int) $enabled]);
+                  [$this->tfaId, $this->tfaClass, $this->tfaPriority, (int) $enabled]);
     }
 
     /**
@@ -66,18 +66,18 @@ class ThreemaGateway_Installer_TfaProvider
         $db = XenForo_Application::get('db');
         // delete user data
         $db->delete('xf_user_tfa', [
-            'provider_id = ?' => $this->TfaId
+            'provider_id = ?' => $this->tfaId
         ]);
 
         // unfortunately I do not want to go through each deleted user data here
         // to test whether the user has no 2FA mode anymore as it is done in
-        // XenForo_Model_Tfa->disableTfaForUser().
+        // XenForo_Model_Tfa::disableTfaForUser.
         // I have not experienced any issues when this is not done and when the
         // deleted data is stored there this is not very bad.
 
         // delete provider itself
         $db->delete('xf_tfa_provider', [
-            'provider_id = ?' => $this->TfaId
+            'provider_id = ?' => $this->tfaId
         ]);
     }
 }
