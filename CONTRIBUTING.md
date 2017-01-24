@@ -20,6 +20,10 @@ please make sure to contact the server admin before, to make sure the issue cann
 ## Translating
 The language files can be found in _xenforo-threema-gateway\languages_. If there is a language missing which you like to be supported, feel free to translate it. You can use the [English example](languages/en-US.xml) as a starting point. It is recommend to use XenForo for this as you can use the internal XenForo translation system, but as these are just XML files so you can also manually translate them.
 
+Special notes for some languages:
+
+- German: Place the verb last, so say "Modus aktivieren" instead of "Aktiviere Modus".
+
 ## Coding
 Here are some rules you should follow when you want to contribute code to this repo.
 
