@@ -85,35 +85,35 @@ abstract class ThreemaGateway_Handler_Action_TfaCallback_Abstract extends Threem
      */
     protected $pendingRequests;
 
-   /**
-    * Checks whether text messages contain code used for the receiver 2FA.
-    *
-    * You should set the "event hint" to "1" to only pass text messages to the
-    * listener. Otherwise errors may happen.
-    *
-    * @param ThreemaGateway_Handler_Action_Callback      $handler
-    * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult
-    * @param Threema\MsgApi\Messages\ThreemaMessage      $threemaMsg
-    * @param array|string                                $output        [$logType, $debugLog, $publicLog]
-    * @param bool                                        $saveMessage
-    * @param bool                                        $debugMode
-    *
-    * @throws XenForo_Exception
-    */
-   public function __construct(ThreemaGateway_Handler_Action_Callback $handler,
-                               Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,
-                               Threema\MsgApi\Messages\ThreemaMessage $threemaMsg,
-                               &$output,
-                               &$saveMessage,
-                               $debugMode)
-   {
-       $this->callback              = $handler;
-       $this->log                   = $output;
-       $this->receiveResult         = $receiveResult;
-       $this->threemaMsg            = $threemaMsg;
-       $this->saveMessage           = $saveMessage;
-       $this->debugMode             = $debugMode;
-   }
+    /**
+     * Checks whether text messages contain code used for the receiver 2FA.
+     *
+     * You should set the "event hint" to "1" to only pass text messages to the
+     * listener. Otherwise errors may happen.
+     *
+     * @param ThreemaGateway_Handler_Action_Callback      $handler
+     * @param Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult
+     * @param Threema\MsgApi\Messages\ThreemaMessage      $threemaMsg
+     * @param array|string                                $output        [$logType, $debugLog, $publicLog]
+     * @param bool                                        $saveMessage
+     * @param bool                                        $debugMode
+     *
+     * @throws XenForo_Exception
+     */
+    public function __construct(ThreemaGateway_Handler_Action_Callback $handler,
+                                Threema\MsgApi\Helpers\ReceiveMessageResult $receiveResult,
+                                Threema\MsgApi\Messages\ThreemaMessage $threemaMsg,
+                                &$output,
+                                &$saveMessage,
+                                $debugMode)
+    {
+        $this->callback              = $handler;
+        $this->log                   = $output;
+        $this->receiveResult         = $receiveResult;
+        $this->threemaMsg            = $threemaMsg;
+        $this->saveMessage           = $saveMessage;
+        $this->debugMode             = $debugMode;
+    }
 
     /**
      * Prepare the message handling.
