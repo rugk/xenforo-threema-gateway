@@ -9,6 +9,8 @@ $ build.sh
 
 You can pass `-h` to it to see the help.
 
+For the script to work you must have [`rpl`](http://rpl.sourceforge.net/) and 7zip installed.
+
 ## Creating PHPDOC
 If you want you can create a PHPdoc of this.
 

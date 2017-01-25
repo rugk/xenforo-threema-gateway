@@ -58,6 +58,11 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 * HTTPS on server (recommend, required for receiving messages and some details)  
    If you have not set it up use [Let's Encrypt](https://letsencrypt.org/), certificates must be valid (self-signed certificates are not accepted).
 
+## Get it now!
+
+* [Build it by yourself](/docs/Build.md) or
+* [Download a released version]()
+
 ## Support this project
 
 [![Donate via PayPal](https://www.paypalobjects.com/webstatic/en_US/i/btn/png/gold-pill-paypal-26px.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W97D7EVM95V2Q)

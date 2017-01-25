@@ -1,7 +1,7 @@
 ## Steps to reproduce
 
-1.
-2.
+1. 
+2. 
 
 ### What happens:
 
@@ -12,16 +12,17 @@
 ## Status
 
 OS: Linux
-PHP version:
-XenForo version:
-add-on version:
-cURL version:
+PHP version: 
+XenForo version: 
+add-on version: 
+cURL version: 
 
 <!-- Copy the status message from the ACP in the settings, you do not have to include your remaining credits) -->  
 
 ```
 Sodium version: x.y.z
 Version of Threema PHP SDK: x.y.z
+…
 ...
 ```
 

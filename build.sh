@@ -10,6 +10,7 @@ SCRIPT_DIR="$CURR_DIR/scripts"
 DOC_DIR="$CURR_DIR/docs"
 LANG_DIR="$CURR_DIR/languages"
 BUILD_DIR="$CURR_DIR/build"
+RELEASE_DIR="$CURR_DIR/release"
 ADD_HASHES=1
 
 # functions
@@ -61,6 +62,12 @@ mkdir -p "$BUILD_DIR"
 echo "Copy add-on XML…"
 cp -a "addon-ThreemaGateway.xml" "$BUILD_DIR"
 
+echo "Copy README.txt…"
+cp -a "$DOC_DIR/templates/ArchiveReadme.md" "$BUILD_DIR/README.txt"
+
+echo "Copy LICENSE.md…"
+cp -a "LICENSE.md" "$BUILD_DIR"
+
 echo "Copy source files…"
 mkdir -p "$BUILD_DIR/upload"
 rsync -a "$SOURCE_DIR/" "$BUILD_DIR/upload/"
@@ -106,3 +113,24 @@ if [ $copyDoc = 1 ]; then
     mkdir -p "$BUILD_DIR/docs"
     rsync -a "$DOC_DIR/" "$BUILD_DIR/docs/"
 fi
+
+# get version number
+versionDefault=$( git describe --abbrev=0 --tags )
+read -p "Version number [${versionDefault}]: " version
+version=${version:-$versionDefault}
+
+# replace variables
+echo "Replace variables…"
+rpl -q -R -d '{{CURR_VERSION}}' "${version}" "$BUILD_DIR"
+rpl -q -R -d '{{CURR_GIT_HASH}}' "$( git rev-parse HEAD )" "$BUILD_DIR"
+rpl -q -R -d '{{CURR_DATE}}' "$( date +%F )" "$BUILD_DIR"
+
+# ZIP files
+mkdir -p "$RELEASE_DIR"
+
+echo "Generating archives…"
+cd "$BUILD_DIR"
+7z a -mx=9 "$RELEASE_DIR/xenforo-threema-gateway_v${version}.zip" "./*" > /dev/null
+tar -caz --owner=rugk -f "$RELEASE_DIR/xenforo-threema-gateway_v${version}.tar.gz" -- *
+
+cd ..
