@@ -10,7 +10,7 @@ jQuery(document).ready(function() {
     'use strict';
 
     // global variable
-    window.DEBUG = true;
+    window.DEBUG = true /* BUILD ADJUST */;
 
     QrCodeCreator.createQr();
     AutoTriggerer.init();
@@ -73,6 +73,8 @@ var AutoTriggerer = (function(window, document) {
 
     /**
      * triggerCheck - triggers a new form check
+     *
+     * @private
      */
     function triggerCheck() {
         if (!active) {
@@ -91,6 +93,7 @@ var AutoTriggerer = (function(window, document) {
      * errorHandler - handles errors when verifying the 2FA mode
      *
      * @this form, which triggered the error
+     * @private
      * @param {object} event jQuery event
      */
     function errorHandler(event) {
@@ -123,6 +126,7 @@ var AutoTriggerer = (function(window, document) {
     /**
      * hideAjaxLoadingInit - wraps ajax loader, so it can be hidden later
      *
+     * @private
      */
     function hideAjaxLoadingInit() {
         // unregister myself
@@ -143,6 +147,7 @@ var AutoTriggerer = (function(window, document) {
     /**
      * hideAjaxLoading - hides the AJAX loading overlay
      *
+     * @private
      */
     function hideAjaxLoading() {
         // let XenForo create element if needed
@@ -158,6 +163,7 @@ var AutoTriggerer = (function(window, document) {
     /**
      * hideAjaxLoading - shows the AJAX loading overlay
      *
+     * @private
      */
     function showAjaxLoading() {
         // ignore this, if element does not exist

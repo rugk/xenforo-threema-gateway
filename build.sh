@@ -11,7 +11,12 @@ DOC_DIR="$CURR_DIR/docs"
 LANG_DIR="$CURR_DIR/languages"
 BUILD_DIR="$CURR_DIR/build"
 RELEASE_DIR="$CURR_DIR/release"
+
+JS_DIR="upload/js/ThreemaGateway"
+
 ADD_HASHES=1
+DEBUG_MARKER=" /* BUILD ADJUST */"
+DEBUG_MARKED=" /* ADJUSTED AT BUILD TIME */"
 
 # functions
 show_help() {
@@ -22,6 +27,7 @@ show_help() {
 # parse parameters
 languages=''
 copyDoc=0
+debugMode=0
 while getopts "h?vcl:" opt; do
     case "$opt" in
     h|\?)
@@ -30,6 +36,9 @@ while getopts "h?vcl:" opt; do
         ;;
     c|copydoc)
         copyDoc=1
+        ;;
+    d|debug)
+        debugMode=1
         ;;
     l|languages) # TODO: long form
         languages=$OPTARG
@@ -41,7 +50,7 @@ shift $((OPTIND-1))
 
 [ "$1" = "--" ] && shift
 
-# get potential user input
+# get user input
 if [ "$XENFORO_DIR" = "" ]; then
     read -p "Please enter the dir to XenForo: " XENFORO_DIR
     if [ "${XENFORO_DIR}" = "" ]; then
@@ -52,7 +61,12 @@ if [ "$XENFORO_DIR" = "" ]; then
     export XENFORO_DIR
 fi
 
-# build
+# get version number
+versionDefault=$( git describe --abbrev=0 --tags )
+read -p "Version number [${versionDefault}]: " version
+version=${version:-$versionDefault}
+
+# copy files
 echo "Clean & create dir…"
 if [ -d "$BUILD_DIR" ]; then
     rm -rf "$BUILD_DIR"
@@ -74,6 +88,12 @@ rsync -a "$SOURCE_DIR/" "$BUILD_DIR/upload/"
 
 if [ "$languages" ]; then
     mkdir -p "$BUILD_DIR/languages"
+fi
+
+if [ $copyDoc = 1 ]; then
+    echo "Copy doc files…"
+    mkdir -p "$BUILD_DIR/docs"
+    rsync -a "$DOC_DIR/" "$BUILD_DIR/docs/"
 fi
 
 langFiles=''
@@ -103,27 +123,46 @@ for langFile in $langFiles; do
     cp -a "$LANG_DIR/$langFile.xml" "$BUILD_DIR/languages"
 done
 
+
+# replace variables
+echo "Replace variables…"
+# for Readme or so…
+rpl -q -R -d '{{CURR_VERSION}}' "${version}" "$BUILD_DIR"
+rpl -q -R -d '{{CURR_GIT_HASH}}' "$( git rev-parse HEAD )" "$BUILD_DIR"
+rpl -q -R -d '{{CURR_DATE}}' "$( date +%F )" "$BUILD_DIR"
+# for source code debug
+if [ $debugMode = 1 ]; then
+    rpl -q -R -d "DEBUG = false$DEBUG_MARKER" "DEBUG = true$DEBUG_MARKED" "$BUILD_DIR"
+else
+    rpl -q -R -d "DEBUG = true$DEBUG_MARKER" "DEBUG = false$DEBUG_MARKED" "$BUILD_DIR"
+fi
+
+# finalize files
 if [ $ADD_HASHES = 1 ]; then
     echo "Generating file hashes…"
     php "$SCRIPT_DIR/GenFileHashes.php" "$BUILD_DIR/upload"
 fi
 
-if [ $copyDoc = 1 ]; then
-    echo "Copy doc files…"
-    mkdir -p "$BUILD_DIR/docs"
-    rsync -a "$DOC_DIR/" "$BUILD_DIR/docs/"
-fi
+# minify JS files
+for jsFile in "$BUILD_DIR"/"$JS_DIR"/*; do
+    jsFilename="${jsFile%%.*}"
 
-# get version number
-versionDefault=$( git describe --abbrev=0 --tags )
-read -p "Version number [${versionDefault}]: " version
-version=${version:-$versionDefault}
+    # RegExp for comments: https://regex101.com/r/sP0bU3/2
+    uglifyjs \
+    --compress \
+    --mangle \
+    --screw-ie8 \
+    --output "${jsFilename}.min.js" \
+    --comments "/MIT license|Copyright|@preserve|@license|@source/i" \
+    -- "${jsFile}"
+    # Note: "define" does not work for some reason (so we could do define DEBUG=true/false)...
 
-# replace variables
-echo "Replace variables…"
-rpl -q -R -d '{{CURR_VERSION}}' "${version}" "$BUILD_DIR"
-rpl -q -R -d '{{CURR_GIT_HASH}}' "$( git rev-parse HEAD )" "$BUILD_DIR"
-rpl -q -R -d '{{CURR_DATE}}' "$( date +%F )" "$BUILD_DIR"
+    # rename files to make the minimized version the default one if debug mode is disabled
+    if [ $debugMode = 0 ]; then
+        mv "${jsFile}" "${jsFilename}.full.js"
+        mv "${jsFilename}.min.js" "${jsFile}"
+    fi
+done
 
 # ZIP files
 mkdir -p "$RELEASE_DIR"
