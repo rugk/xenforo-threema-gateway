@@ -98,7 +98,7 @@ if ($options->threema_gateway_logreceivedmsgs['enabled'] && $debugMode) {
     try {
         $logheader  = PHP_EOL;
         $logheader .= '[' . date('Y-m-d H:i:s', XenForo_Application::$time) . ']' . PHP_EOL;
-        $logheader .= 'UA: ' . $_SERVER['HTTP_USER_AGENT'] . PHP_EOL;
+        $logheader .= 'UA: ' . substr($_SERVER['HTTP_USER_AGENT'], 0, 100) . PHP_EOL;
         $logheader .= 'time: ' . sprintf('%f', microtime(true) - $startTime) . 's' . PHP_EOL;
 
         $fhandle = fopen($options->threema_gateway_logreceivedmsgs['path'], 'a');
