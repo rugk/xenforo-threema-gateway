@@ -1,4 +1,4 @@
-# XenForo - Threema Gateway (two-factor-authentication)
+# <img alt="icon" height="32px" src="docs/images/icon_minified.svg"> XenForo - Threema Gateway (two-factor-authentication)
 
 <!-- video link/preview gif on the right site -->
 [<img alt="preview of 2FA modes" align="right"  src="https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/gifs/allLoginMobilePlaySmall.gif">](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/9bc57e61/docs/screencasts/allMobile.webm)
@@ -61,7 +61,7 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 ## Get it now!
 
 * [Build it by yourself](/docs/Build.md) or
-* [Download a released version]()
+* [Download the latest release](releases/latest)
 
 ## Support this project
 

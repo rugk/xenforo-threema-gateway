@@ -21,4 +21,5 @@ More information can be found…
 sign](https://openclipart.org/detail/11118/check-sign-and-cross-sign) by jetxee,
 CC0
 - [Play button (transparent)](https://openclipart.org/detail/270781/play-button-transparent) by rugkme,
-CC0, based on [simple play](https://openclipart.org/detail/169272/simple-play) by txapelgorri
+CC0; based on [simple play](https://openclipart.org/detail/169272/simple-play) by txapelgorri, CC0
+- [download button](https://openclipart.org/detail/112/download-button) by molumen, CC0
