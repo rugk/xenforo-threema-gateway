@@ -77,7 +77,7 @@ echo "Copy add-on XML…"
 cp -a "addon-ThreemaGateway.xml" "$BUILD_DIR"
 
 echo "Copy README.txt…"
-cp -a "$DOC_DIR/templates/ArchiveReadme.md" "$BUILD_DIR/README.txt"
+cp -a "$DOC_DIR/templates/ArchiveReadme.txt" "$BUILD_DIR/README.txt"
 
 echo "Copy LICENSE.md…"
 cp -a "LICENSE.md" "$BUILD_DIR"

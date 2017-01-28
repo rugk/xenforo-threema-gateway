@@ -14,12 +14,12 @@
 class ThreemaGateway_Constants
 {
     /**
-     * @var string ID of 2FA methode in general
+     * @var string ID of the 2FA methods in general
      */
     const TFA_ID_PREFIX = 'threemagw';
 
     /**
-     * @var int Priority of 2FA methode in general
+     * @var int Priority of the 2FA methods in general
      */
     const TFA_BASE_PRIORITY = 40;
 

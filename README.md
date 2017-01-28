@@ -13,7 +13,13 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 
 ## Features
 
-**[Three 2FA modes](docs/2faMethods.md) offer you and your users a flexible and secure way for easily securing their account**. Multiple settings allow server admins to configure and/or restrict any aspect of the add-on and one can always extend this add-on to do other things with the Threema Gateway.
+**[Three 2FA modes](docs/2faMethods.md) offer you and your users a flexible and secure way for easily securing their account**. Multiple settings allow server admins to configure and/or restrict any aspect of the add-on and one can always extend this add-on to do other things with the Threema Gateway.  
+The add-on is built with security, flexibility and user choice in mind and is straightforward to use.
+
+**Featured FAQs:**
+* [What is 2FA and why should I use 2FA?](wiki/FAQ#what-is-two-factor-authentication-and-why-should-i-use-it)
+* [Why should not I use SMS for 2FA?](wiki/FAQ#why-not-just-sms)
+* [Why use Threema?](wiki/FAQ#why-did-you-choose-threema-id-like-to-have-whatsapp-instead)
 
 ### Users
 * Multiple two step/two factor authentication modes allow you to choose the most suitable for yourself.
