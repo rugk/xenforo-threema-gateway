@@ -20,7 +20,18 @@ DEBUG_MARKED=" /* ADJUSTED AT BUILD TIME */"
 
 # functions
 show_help() {
-    # TODO
+    echo "This is the built script for xenforo-threema-gateway.
+
+    $0 [-h|-?|--help]
+    $0 [-c|--copydoc] [-d|--debug] [[-l|--languages] language list]
+
+    -h|-?|--help    Show this help.
+    -c|--copydoc    Additionally copy the doc files.
+    -d|--debug      Build a debug version instead of a productive built.
+    -l|--languages  After this parmeter specify the languages, which should be
+                    included, separated by spaces. So you need to quote the
+                    string. (e.g. 'en de' for English and German)
+    "
     return;
 }
 
@@ -28,27 +39,33 @@ show_help() {
 languages=''
 copyDoc=0
 debugMode=0
-while getopts "h?vcl:" opt; do
-    case "$opt" in
-    h|\?)
-        show_help
-        exit 0
-        ;;
-    c|copydoc)
-        copyDoc=1
-        ;;
-    d|debug)
-        debugMode=1
-        ;;
-    l|languages) # TODO: long form
-        languages=$OPTARG
-        ;;
+while true; do
+    case "$1" in
+        --)
+            shift
+            break
+            ;;
+        -h|-?|--help)
+            show_help
+            exit 0
+            ;;
+        -c|--copydoc)
+            copyDoc=1
+            shift
+            ;;
+        -d|--debug)
+            debugMode=1
+            shift
+            ;;
+        -l|--languages)
+            languages="$2"
+            shift 2
+            ;;
+        *)
+            break
+            ;;
     esac
 done
-
-shift $((OPTIND-1))
-
-[ "$1" = "--" ] && shift
 
 # get user input
 if [ "$XENFORO_DIR" = "" ]; then
