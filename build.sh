@@ -206,12 +206,6 @@ else
     rpl -q -R -d "DEBUG = true$DEBUG_MARKER" "DEBUG = false$DEBUG_MARKED" "$BUILD_DIR"
 fi
 
-# finalize files
-if [ $addHashes = 1 ]; then
-    echo "Generating file hashes…"
-    php "$SCRIPT_DIR/GenFileHashes.php" "$BUILD_DIR/upload"
-fi
-
 # minify JS files
 if [ $minimizeJs = 1 ]; then
     for jsFile in "$BUILD_DIR"/"$JS_DIR"/*; do
@@ -233,6 +227,12 @@ if [ $minimizeJs = 1 ]; then
             mv "${jsFilename}.min.js" "${jsFile}"
         fi
     done
+fi
+
+# finalize files
+if [ $addHashes = 1 ]; then
+    echo "Generating file hashes…"
+    php "$SCRIPT_DIR/GenFileHashes.php" "$BUILD_DIR/upload"
 fi
 
 #generate archives
