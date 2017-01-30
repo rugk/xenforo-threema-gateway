@@ -149,7 +149,7 @@ class ThreemaGateway_Option_Status
     protected static function checkPhpSdk(array &$status, array &$extraError, ThreemaGateway_Handler_Settings $gwSettings = null)
     {
         // auto-create Gateway settings if not given
-        if ($gwSettings == null) {
+        if ($gwSettings === null) {
             $gwSettings = new ThreemaGateway_Handler_Settings;
         }
 
