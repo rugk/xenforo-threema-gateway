@@ -17,9 +17,9 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 The add-on is built with security, flexibility and user choice in mind and is straightforward to use.
 
 **Featured FAQs:**
-* [What is 2FA and why should I use 2FA?](wiki/FAQ#what-is-two-factor-authentication-and-why-should-i-use-it)
-* [Why should not I use SMS for 2FA?](wiki/FAQ#why-not-just-sms)
-* [Why use Threema?](wiki/FAQ#why-did-you-choose-threema-id-like-to-have-whatsapp-instead)
+* [What is 2FA and why should I use 2FA?](https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ#what-is-two-factor-authentication-and-why-should-i-use-it)
+* [Why should not I use SMS for 2FA?](https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ#why-not-just-sms)
+* [Why use Threema?](https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ#why-did-you-choose-threema-id-like-to-have-whatsapp-instead)
 
 ### Users
 * Multiple two step/two factor authentication modes allow you to choose the most suitable for yourself.
