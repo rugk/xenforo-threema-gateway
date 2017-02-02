@@ -30,7 +30,7 @@ Also biete Nutzern mit diesem Add-on die Möglichkeit, ihre Accounts unter Kontr
 <!-- admin -->
 * Funktionsfähig mit dem **Basic-Modus** oder - wie empfohlen - den **Ende-zu-Ende-verschlüsselten Modus** des [Threema Gateways](https://gateway.threema.ch/de/products)
 * Einfache Anzeige des Gateway-Status und der verbleibenden Credits direkt im ACP.
-* Ein integrierter Guide und das  [Wiki]((https://github.com/rugk/xenforo-threema-gateway/wiki/Setup) helfen beim Einrichten des Add-ons.
+* Ein integrierter Guide und das  [Wiki](https://github.com/rugk/xenforo-threema-gateway/wiki/Setup) helfen beim Einrichten des Add-ons.
 <!-- security -->
 * Automatische Anzeige des Threema-ID-Verifikations-QR-Codes.
 * Dein privater Schlüssel verlässt deinen Server nie!
