@@ -20,9 +20,9 @@ Also biete Nutzern mit diesem Add-on die Möglichkeit, ihre Accounts unter Kontr
 ### Top-Features
 
 * **Wahl:** Lasse Nutzer und Forenadmins von bis zu **drei 2FA-Algorithmen** wählen, wobei zwei davon ein komplett **neues Konzept** nutzen.
-* **Anpassbarkeit:** Du kannst **fast alles IM ACP** konfigurieren ud auf deine Anforderungen zuschneiden.
+* **Anpassbarkeit:** Du kannst **fast alles im ACP** konfigurieren und auf deine Anforderungen zuschneiden.
 * **Flexbilität:** Forummitglieder können die 2 2FA-Modi **unabhängig voneinander konfigurieren** um ihren persönlichen Anforderungen gerecht zu werden.
-* **Frei und sicher:** Als **Open-source** (und [freie Software](https://de.wikipedia.org/wiki/Freie_Software)) kann das Add-on jederzeit von unabhängigen Forschern anylysiert werden und auf einfache  Weise die **Sicherheit verifiziert** werden.
+* **Frei und sicher:** Als **Open-source** (und [freie Software](https://de.wikipedia.org/wiki/Freie_Software)) kann das Add-on jederzeit von unabhängigen Forschern analysiert werden und auf einfache  Weise die **Sicherheit verifiziert** werden.
 * **Erweiterbarkeit:** Durch Bereitstellen einer API kann jedes andere Add-on dieses Add-on erweitern und so **noch mehr Features** hinzufügen.
 
 #### Mehr Features
