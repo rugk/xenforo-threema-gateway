@@ -29,15 +29,17 @@ So let's allow users to keep their accounts under their control and make the wor
 
 <!-- admin -->
 * Works with the **basic mode** or - as recommend - the **end-to-end mode** of the [Threema Gateway](https://gateway.threema.ch/en/products).
-* Easy display of Threema Gateway status & remaining credits directly in ACP.
-* Integrated guide and [Wiki]((https://github.com/rugk/xenforo-threema-gateway/wiki/Setup) help you with the server setup.
+* Easy display of Threema **Gateway status** & remaining credits directly in ACP.
+* Integrated guide and [Wiki]((https://github.com/rugk/xenforo-threema-gateway/wiki/Setup) help you with the **server setup**.
 <!-- security -->
-* Automatic display of Threema ID verification QR codes.
-* Your private key stays on your server!
-* Detailed permissions to control the whole add-on
-* Integration into XenForo's health check
-* No calls to any third-parties servers, only calls to Threema's Gateway API!
-* Security settings are improvable with a few clicks in the ACP.
+* Automatic display of Threema ID verification **QR codes**.
+* Your **private key** stays on your server!
+* Detailed **permissions** to control the whole add-on
+* Integration into XenForo's **health check**
+* **No calls** to any third-parties servers, only calls to Threema's Gateway API!
+* **Security settings** are improvable with a few clicks in the ACP.
+<!-- more -->
+* **Easy to use** for any Threema user.
 
 ---
 

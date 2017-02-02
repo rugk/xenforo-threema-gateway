@@ -28,16 +28,18 @@ Also biete Nutzern mit diesem Add-on die Möglichkeit, ihre Accounts unter Kontr
 #### Mehr Features
 
 <!-- admin -->
-* Funktionsfähig mit dem **Basic-Modus** oder - wie empfohlen - den **Ende-zu-Ende-verschlüsselten Modus** des [Threema Gateways](https://gateway.threema.ch/de/products)
-* Einfache Anzeige des Gateway-Status und der verbleibenden Credits direkt im ACP.
-* Ein integrierter Guide und das  [Wiki](https://github.com/rugk/xenforo-threema-gateway/wiki/Setup) helfen beim Einrichten des Add-ons.
+* Funktionsfähig mit dem **Basic-Modus** oder - wie empfohlen - dem **Ende-zu-Ende-verschlüsselten Modus** des [Threema Gateways](https://gateway.threema.ch/de/products)
+* Einfache Anzeige des **Gateway-Status** und der verbleibenden Credits direkt im ACP.
+* Ein integrierter Guide und das  [Wiki](https://github.com/rugk/xenforo-threema-gateway/wiki/Setup) helfen beim **Einrichten des Add-ons**.
 <!-- security -->
-* Automatische Anzeige des Threema-ID-Verifikations-QR-Codes.
-* Dein privater Schlüssel verlässt deinen Server nie!
-* Detaillierte Berechtigungen zum Kontrollierung des gesamten add-ons
-* Integration in Xenforos Dateiintegritätsprüfung
-* Keine Anfragen an irgendeinen Drittparteiserver, nur zur den Threema-Gateway-Servern!
-* Die Sicherheitseinstellungen sind mit ein paar Klicks im ACP verbesserbar.
+* Automatische Anzeige des Threema-ID-Verifikations-**QR-Codes**.
+* Dein **privater Schlüssel** verlässt deinen Server nie!
+* Detaillierte **Berechtigungen** zum Kontrollieren des gesamten Add-ons
+* Integration in Xenforos **Dateiintegritätsprüfung**
+* **Keine Anfragen** an irgendeinen Drittparteiserver, nur zur den Threema-Gateway-Servern!
+* Die **Sicherheitseinstellungen** sind mit ein paar Klicks im ACP verbesserbar.
+<!-- more -->
+* **Einfach** für jeden Threema-Nutzer zu benutzen.
 
 ---
 
