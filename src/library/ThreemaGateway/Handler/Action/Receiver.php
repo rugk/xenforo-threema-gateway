@@ -390,7 +390,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
      * against replay attacks" setting.
      * This prevents replay attacks as otherwise a message with the same message
      * ID could be inserted again into the database and would therefore be
-     * considered a new message, which has just been received altghough it
+     * considered a new message, which has just been received although it
      * actually had been received two times.
      * However the message ID alone does not reveal any data (as all data &
      * meta data, even the message type, is deleted).
