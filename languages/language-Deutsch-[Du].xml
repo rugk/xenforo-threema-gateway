@@ -84,7 +84,7 @@ Gebe die ID des Benutzerfeldes in das Eingabefeld ein, in welchem nach der Telef
   <phrase title="option_threema_gateway_tfa_conventional_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Dies erlaubt Nutzern die Benutzung der 2FA-Methode "Klassisch".]]></phrase>
   <phrase title="option_threema_gateway_tfa_conventional_validation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer]]></phrase>
   <phrase title="option_threema_gateway_tfa_conventional_validation_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll. (in Minuten)]]></phrase>
-  <phrase title="option_threema_gateway_tfa_conventional_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer beim Setup]]></phrase>
+  <phrase title="option_threema_gateway_tfa_conventional_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer bei der Einrichtung]]></phrase>
   <phrase title="option_threema_gateway_tfa_conventional_validation_setup_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll, wenn die 2FA-Methode eingerichtet wird. (in Minuten)<br>
 Es ist nützlich, wenn dieser Wert etwas höher ist als der vorherige, um dem Nutzer etwas mehr Zeit zu geben die Erklärungen o.ä. durchzulesen. Es wird angenommen, dass die erste Einrichtung etwas länger dauert.]]></phrase>
   <phrase title="option_threema_gateway_tfa_fast" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Den schnellen Modus aktivieren]]></phrase>
@@ -102,7 +102,7 @@ Du kannst für alle Nutzergruppen in den Berechtigungen (bei "Threema - Zwei-Sch
   <phrase title="option_threema_gateway_tfa_fast_validation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer]]></phrase>
   <phrase title="option_threema_gateway_tfa_fast_validation_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll. (in Minuten)<br>
 Das Standartzeitlimit ist so hoch (im Vergleich zu anderen 2FA-Methoden), da hier eine lange Gültigkeitsdauer die Sicherheit nicht verringert (da die Nachrichten-ID als stärkeres Geheimnis bei diesem Modus verwendet wird) und da die Gültigkeitsdauer auch die Zeit limitiert, die ein Nutzer die Nachricht spätestens ablehnen kann, um eine (bösartigen) Eindringling zu blockieren. Deswegen ist es hier sogar nützlich ein hohes Limit festzulegen.]]></phrase>
-  <phrase title="option_threema_gateway_tfa_fast_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer beim Setup]]></phrase>
+  <phrase title="option_threema_gateway_tfa_fast_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer bei der Einrichtung]]></phrase>
   <phrase title="option_threema_gateway_tfa_fast_validation_setup_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Nutzer in der Lage sein sollte, die Nachricht zu bestätigen oder abzulehnen, wenn die 2FA-Methode eingerichtet wird. (in Minuten)]]></phrase>
   <phrase title="option_threema_gateway_tfa_reversed" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Den umgekehrten Modus aktivieren]]></phrase>
   <phrase title="option_threema_gateway_tfa_reversed_auto_trigger" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Die Überprüfung automatisch auslösen]]></phrase>
@@ -114,7 +114,7 @@ Wenn die Option deaktiviert ist, muss der Nutzer den "Bestätigen"-Knopf manuell
 <b>Hinweis:</b> Aus Sicherheitsgründen wird diese Option immer ignoriert, wenn kein HTTPS benutzt wird.]]></phrase>
   <phrase title="option_threema_gateway_tfa_reversed_validation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer]]></phrase>
   <phrase title="option_threema_gateway_tfa_reversed_validation_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll. (in Minuten)]]></phrase>
-  <phrase title="option_threema_gateway_tfa_reversed_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer beim Setup]]></phrase>
+  <phrase title="option_threema_gateway_tfa_reversed_validation_setup" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Gültigkeitsdauer bei der Einrichtung]]></phrase>
   <phrase title="option_threema_gateway_tfa_reversed_validation_setup_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wie lange der Einmalcode valide sein soll, wenn die 2FA-Methode eingerichtet wird. (in Minuten)<br>
 Es ist nützlich, wenn dieser Wert etwas höher ist als der vorherige, um dem Nutzer etwas mehr Zeit zu geben die Erklärungen o.ä. durchzulesen. Es wird angenommen, dass die erste Einrichtung etwas länger dauert.]]></phrase>
   <phrase title="option_threema_gateway_threema_id" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema-Gateway-ID]]></phrase>

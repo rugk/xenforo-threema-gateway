@@ -4,10 +4,10 @@ When the [two-step authentication was introduced into XenForo](https://xenforo.c
 
 This add-on integrates the secure instant-messaging app [Threema](https://threema.ch) into the forum software XenForo. Using the [Threema Gateway](https://gateway.threema.ch) it offers three new [two-step authentication](https://xenforo.com/community/threads/two-step-verification-and-security-improvements.99881/) (also called two-factor authentication or "2FA") modes for users and admins.
 
-Source code: <https://github.com/rugk/xenforo-threema-gateway>  
-FAQ: <https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ>  
-XenForo: [coming soon…]  
-Download: <https://github.com/rugk/xenforo-threema-gateway/releases/latest>  
+[📝 Source code](https://github.com/rugk/xenforo-threema-gateway)  
+[❔ FAQ](https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ)  
+🔵 XenForo (coming soon…)  
+[🔽 Download](https://github.com/rugk/xenforo-threema-gateway/releases/latest)   
 
 **[Three 2FA modes](https://github.com/rugk/xenforo-threema-gateway/blob/master/docs/2faMethods.md) offer you and your users a flexible and secure way for easily securing their account.**  
 Multiple settings allow server admins to configure and/or restrict any aspect of the add-on. Additionally one can always extend this add-on to do other things with the Threema Gateway.  
@@ -20,7 +20,7 @@ So let's allow users to keep their accounts under their control and make the wor
 ### Top features
 
 * **Choice:** Let users and forum admins choose from up to **three 2FA algorithms** with two of them using a **new concept**.
-* **Adaptability:** You can configure nearly **anything in the ACP** to tailor the add-on to your requirements.
+* **Adaptability:** You can configure nearly **everything in the ACP** to tailor the add-on to your requirements.
 * **Flexibility:** Forum members can **independently configure each one** of the three 2FA modes up to satisfy their personal needs.
 * **Free and secure:** Being **open-source** (and [free software](https://en.wikipedia.org/wiki/Free_software)) it's reviewable by any independend researcher to **easily verify** the security at any time.
 * **Extensibility:** By providing an API any other add-on can add **even more features** to your add-on.
@@ -50,6 +50,6 @@ So let's allow users to keep their accounts under their control and make the wor
 
 ---
 
-You will get access to this release and future ones when you donate **15€** with the "donwload/buy" button at the top.
+You will get access to this release and future ones when you donate **15€** with the "download/buy" button at the top.
 Of course, as this is an open-source project, this is not necessary and you can just build it by yourself, but each donation helps to keep this project alive. After all this are just five bucks per 2FA method. More information can be found in the [wiki](https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ#donations--releases).  
 **Note:** I reserve my right to require another donation for mayor releases (from version `1.x.y` to `2.x.y`) if basic code changes have been done.

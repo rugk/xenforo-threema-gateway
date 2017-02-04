@@ -4,10 +4,10 @@ Als die [Zwei-Schritt-Authentifizierung in XenForo eingeführt wurde](https://xe
 
 Dieses Add-on integriert die sichere Instant-Messaging-App  [Threema](https://threema.ch) in die Forensoftware XenForo. Durch Benutzung des [Threema Gateways](https://gateway.threema.ch) bietet es drei neue Arten der  [Zwei-Schritt-Authentifizierung](https://xenforo.com/community/threads/two-step-verification-and-security-improvements.99881/) (auch Zwei-Faktor-Authentifzierung, "2FA", genannt) für Nutzer und Admins an.
 
-Quellcode: <https://github.com/rugk/xenforo-threema-gateway>  
-Meistgestellte Fragen (FAQ): <https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ>  
-XenForo: [coming soon…]  
-Download: <https://github.com/rugk/xenforo-threema-gateway/releases/latest>  
+[📝 Quellcode](https://github.com/rugk/xenforo-threema-gateway)  
+[❔ Meistgestellte Fragen (FAQ)](https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ)  
+🔵 XenForo (coming soon…)  
+[🔽 Download](https://github.com/rugk/xenforo-threema-gateway/releases/latest)  
 
 **[Drei 2FA-Methoden](https://github.com/rugk/xenforo-threema-gateway/blob/master/docs/2faMethods.md) bieten dir und deinen Nutzern eine flexible und sichere Möglichkeit den Account abzusichern.**  
 Mehrere Einstellungen ermöglichen es Server-Admins jeden Aspekt des Add-ons anzupassen oder zu beschränken. Zusätzlich kann dieses Add-on jederzeit erweitert werden, um andere Dinge mit dem Threema Gateway auszuführen.  
