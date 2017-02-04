@@ -67,7 +67,7 @@ The add-on is built with security, flexibility and user choice in mind and is st
 ## Get it now!
 
 * [Build it by yourself](/docs/Build.md) or
-* [Download the latest release](../releases/latest)
+* [Download the latest release](https://github.com/rugk/xenforo-threema-gateway/releases/latest)
 
 ## Support this project
 
