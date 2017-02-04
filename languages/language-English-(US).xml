@@ -309,12 +309,14 @@ The displayed fingerprint is derived from the public key, which is linked to you
   <phrase title="threemagw_donate_currency" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[{num}€]]></phrase>
   <phrase title="threemagw_donate_flattr" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Flattr]]></phrase>
   <phrase title="threemagw_donate_flattr_language_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[en_GB]]></phrase>
+  <phrase title="threemagw_donate_gratipay" addon_id="ThreemaGateway" version_id="0" version_string=""><![CDATA[Gratipay]]></phrase>
   <phrase title="threemagw_donate_like_addon_and_support_dev" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[You like this add-on and want to <b>support</b> the development?]]></phrase>
   <phrase title="threemagw_donate_micro_donation" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Micro-donation]]></phrase>
   <phrase title="threemagw_donate_other_amount" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[other amount]]></phrase>
   <phrase title="threemagw_donate_paypal" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[PayPal]]></phrase>
   <phrase title="threemagw_donate_paypal_button_text" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Donate]]></phrase>
   <phrase title="threemagw_donate_paypal_me" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[PayPal.me]]></phrase>
+  <phrase title="threemagw_donate_weekly" addon_id="ThreemaGateway" version_id="0" version_string=""><![CDATA[Weekly]]></phrase>
   <phrase title="threemagw_fetching_publickey_failed" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
   <phrase title="threemagw_getting_credits_failed" addon_id="ThreemaGateway" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
   <phrase title="threemagw_hours" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[hours]]></phrase>
