@@ -24,7 +24,7 @@ Ein starker Schutz gegen Replay-Angriffe wird immer benutzt. Es ist also nicht n
   <phrase title="option_threema_gateway_httpshardening" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[HTTPS-Verbindung verstärken]]></phrase>
   <phrase title="option_threema_gateway_httpshardening_basic" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Einfaches Hardening]]></phrase>
   <phrase title="option_threema_gateway_httpshardening_enhanced" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erweitertes Hardening]]></phrase>
-  <phrase title="option_threema_gateway_httpshardening_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn Nachrichten gesendet werden, verhindern dies Fallback-Angriffe auf die TLS/HTTPS-Verbindung indem es die TLS-Version und Cipher auf eine moderne Auswahl limitiert.
+  <phrase title="option_threema_gateway_httpshardening_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn Nachrichten gesendet werden, verhindert dies Fallback-Angriffe auf die TLS/HTTPS-Verbindung indem es die TLS-Version und Cipher auf eine moderne Auswahl limitiert.
 Du solltest versuchen, dies so hoch wie möglich zu setzen. Wenn du Verbindungsprobleme zum Threema-Server bemerkst (z.B. wenn die Credits nicht korrekt angezeigt werden können) kennst du dein Limit.]]></phrase>
   <phrase title="option_threema_gateway_httpshardening_no" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Kein Hardening]]></phrase>
   <phrase title="option_threema_gateway_keystorefile" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Den PHP-Keystore benutzen (nicht empfohlen)]]></phrase>

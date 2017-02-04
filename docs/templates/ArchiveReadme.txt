@@ -1,5 +1,5 @@
-# XenForo - Threema Gateway (two-factor-authentication)
- 
+### XenForo - Threema Gateway (two-factor-authentication) ###
+
 **************************************************************
 * On GitHub: https://github.com/rugk/xenforo-threema-gateway *
 **************************************************************
@@ -16,7 +16,7 @@ You have now installed the add-on. Please continue with the setup steps describe
 
 ## Another thing…
 
-As this add-on is an open-source add-on and anyone could have given you this archive file, I would like to remind you that this add-on can only be developed and maintained because of your donations.  
+As this add-on is an open-source add-on and anyone could have given you this archive file, I would like to remind you that this add-on can only be developed and maintained because of your donations.
 So if you like it and do not want to see it dying, please donate to the developer:
 
 https://paypal.me/rugk
@@ -26,6 +26,6 @@ https://github.com/rugk/xenforo-threema-gateway#support-this-project
 
 --------------------------------------------------------------------------------
 
-Release version: {{CURR_VERSION}}  
-Release git hash: {{CURR_GIT_HASH}}  
-Release date: {{CURR_DATE}}  
+Release version: {{CURR_VERSION}}
+Release git hash: {{CURR_GIT_HASH}}
+Release date: {{CURR_DATE}}
