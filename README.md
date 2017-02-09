@@ -1,7 +1,7 @@
 # <img alt="icon" height="32px" src="https://cdn.rawgit.com/rugk/xenforo-threema-gateway/bdaa4454/docs/images/icon_minified.svg"> XenForo - Threema Gateway (two-factor-authentication)
 
 <!-- video link/preview gif on the right site -->
-[<img alt="preview of 2FA modes" align="right"  src="https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/gifs/allLoginMobilePlaySmall.gif">](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/9bc57e61/docs/screencasts/allMobile.webm)
+[<img alt="preview of 2FA modes" align="right"  src="https://cdn.rawgit.com/rugk/xenforo-threema-gateway/5cfd16b8/docs/gifs/allLoginMobilePlaySmall.gif">](https://cdn.rawgit.com/rugk/xenforo-threema-gateway/master/docs/screencasts/allMobile.webm)
 
 <!-- badges -->
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9fd833d10dda4833a1c55b9e4d44d153)](https://www.codacy.com/app/rugk/xenforo-threema-gateway?utm_source=github.com&utm_medium=referral&utm_content=rugk/xenforo-threema-gateway&utm_campaign=badger)

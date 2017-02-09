@@ -6,7 +6,7 @@ This add-on integrates the secure instant-messaging app [Threema](https://threem
 
 [📝 Source code](https://github.com/rugk/xenforo-threema-gateway)  
 [❔ FAQ](https://github.com/rugk/xenforo-threema-gateway/wiki/FAQ)  
-🔵 XenForo (coming soon…)  
+🔵 [XenForo](https://xenforo.com/community/resources/threema-gateway-two-step-verification-sms-replacement.5454/)  
 [🔽 Download](https://github.com/rugk/xenforo-threema-gateway/releases/latest)   
 
 **[Three 2FA modes](https://github.com/rugk/xenforo-threema-gateway/blob/master/docs/2faMethods.md) offer you and your users a flexible and secure way for easily securing their account.**  
