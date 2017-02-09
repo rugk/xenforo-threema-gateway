@@ -6,6 +6,7 @@
 
 CURR_DIR="$( pwd )"
 SOURCE_DIR="$CURR_DIR/src"
+PHP_SDK_SOURCE_DIR="$CURR_DIR/src/library/ThreemaGateway/threema-msgapi-sdk-php"
 SCRIPT_DIR="$CURR_DIR/scripts"
 DOC_DIR="$CURR_DIR/docs"
 LANG_DIR="$CURR_DIR/languages"
@@ -22,10 +23,12 @@ show_help() {
     echo "This is the built script for xenforo-threema-gateway.
 
     $0 [-h|-?|--help]
-    $0 [[-m|--copydoc] 0/1] [[-d|--debug] 0/1] [[-l|--languages] language list]
-       [[-g|--genArchives] 0/1] [[-o|--addHashes] 0/1] [[-t|--date] date]
+    $0 [[-p|--sdkPhar] 0/1] [[-m|--copydoc] 0/1] [[-d|--debug] 0/1]
+       [[-l|--languages] language list] [[-g|--genArchives] 0/1]
+       [[-o|--addHashes] 0/1] [[-t|--date] date]
 
     -h|-?|--help     Show this help.
+    -p|--sdkPhar     Build the PHP-SDK phar.
     -m|--copydoc     Additionally copy the doc files.
     -d|--debug       Build a debug version instead of a productive one.
     -l|--languages   After this parmeter specify the languages, which should be
@@ -45,6 +48,7 @@ show_help() {
 
 # default parameters
 languages=''
+genPhpSdkPhar=1
 copyDoc=0
 debugMode=0
 addHashes=1
@@ -71,6 +75,9 @@ while true; do
         -h|-\?|--help)
             show_help
             exit 0
+            ;;
+        -p|--sdkPhar)
+            genPhpSdkPhar="${paramValue}"
             ;;
         -m|--copydoc)
             copyDoc="${paramValue}"
@@ -150,6 +157,15 @@ cp -a "$DOC_DIR/templates/ArchiveReadme.txt" "$BUILD_DIR/README.txt"
 
 echo "Copy LICENSE.md…"
 cp -a "LICENSE.md" "$BUILD_DIR"
+
+if [ ${genPhpSdkPhar} = 1 ]; then
+    echo "Generate PHP-SDK phar…"
+    cd "$PHP_SDK_SOURCE_DIR" || exit
+
+    scripts/buildPhar.php
+
+    cd "$CURR_DIR"
+fi
 
 echo "Copy source files…"
 mkdir -p "$BUILD_DIR/upload"

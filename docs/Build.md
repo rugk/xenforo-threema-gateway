@@ -1,5 +1,9 @@
 # How to build
 
+## Cloning
+
+Please clone this repo and also (recursively) clone all submodules, because e.g. the PHP-SDK is a git submodule.
+
 ## Creating add-on
 Just execute the included build script:
 
