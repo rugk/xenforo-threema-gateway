@@ -209,7 +209,7 @@ Wenn du diese Anfrage nicht ausgelöst hast, solltest du diese Nachricht ablehne
 Danke,
 {board}
 {board_url}]]></phrase>
-  <phrase title="tfa_threemagw_fast_message_blocked" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 Login-Zugriff blockiert!
+  <phrase title="tfa_threemagw_fast_message_blocked" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[\u26D4 Login-Zugriff blockiert!
 
 \u26A0 *Wichtige* *Nachricht!*
 
@@ -219,7 +219,7 @@ ein Nutzer mit der *IP* *{ip}* versuchte sich (erneut) mit dem "Threema - Schnel
 Dies wurde blockiert, da der Nutzer durch eine abgelehnte Loginanfrage deinerseits vorher blockiert wurde.
 Falls du dies aus Versehen getan hast, musst du warten bis die Blockade aufgehoben wurde.
 
-Thanks,
+Danke,
 {board}
 {board_url}]]></phrase>
   <phrase title="tfa_threemagw_fast_message_short" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
@@ -244,7 +244,7 @@ Wenn du diese Anfrage nicht ausgelöst hast, solltest du diese Nachricht ablehne
 Danke,
 {board}
 {board_url}]]></phrase>
-  <phrase title="tfa_threemagw_fast_setup_message_blocked" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 2FA-Aktivierung blockiert!
+  <phrase title="tfa_threemagw_fast_setup_message_blocked" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[\u26D4 2FA-Aktivierung blockiert!
 
 \u26A0 *Wichtige* *Nachricht!*
 
@@ -254,7 +254,7 @@ ein Nutzer mit der *IP* *{ip}* versuchte den "Threema - Schneller Login"-2FA-Mod
 Dies wurde blockiert, da der Nutzer durch eine abgelehnte Loginanfrage deinerseits vorher blockiert wurde.
 Falls du dies aus Versehen getan hast, musst du warten bis die Blockade aufgehoben wurde.
 
-Thanks,
+Danke,
 {board}
 {board_url}]]></phrase>
   <phrase title="tfa_threemagw_fast_setup_message_short" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\ud83d\udd10
@@ -272,13 +272,13 @@ Bestätige diese Nachricht um die Anfrage zu erlauben.
   <phrase title="tfa_threemagw_message_blocked_canreverse" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\uD83D\uDC49 Falls du dies aus Versehen getan hast, kannst du immer noch den Status der (vorherigen!) *Login-Nachricht* nach
     \uD83D\uDC4D Bestätigen
 *ändern*, um den Login zu erlauben.]]></phrase>
-  <phrase title="tfa_threemagw_message_blocked_general" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[\u26D4 Login-Zugriff blockiert!
+  <phrase title="tfa_threemagw_message_blocked_general" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[\u26D4 Login-Zugriff blockiert!
 
 Hallo {user},
 da du eine Login-Nachricht abgelehnt hast, wurde verhindert, dass der Nutzer mit der *IP* *{ip}* auf deinen Account zugreift.
 {blockActions}
 
-Thanks,
+Danke,
 {board}
 {board_url}]]></phrase>
   <phrase title="tfa_threemagw_message_blocked_ip" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Die IP wurde dauerhaft gesperrt.]]></phrase>
