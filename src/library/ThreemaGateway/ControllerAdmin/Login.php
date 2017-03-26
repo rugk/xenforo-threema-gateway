@@ -11,7 +11,7 @@
 class ThreemaGateway_ControllerAdmin_Login extends XFCP_ThreemaGateway_ControllerAdmin_Login
 {
     /**
-     * Passes the provider ID to the TFa model to enable customized behaviour.
+     * Passes the provider ID to the TFA model to enable customized behaviour.
      *
      * @return XenForo_ControllerResponse_View
      */

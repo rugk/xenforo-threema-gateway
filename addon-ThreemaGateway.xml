@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="ThreemaGateway" title="Threema Gateway (2FA)" version_string="0.3.0" version_id="3" url="https://github.com/rugk/xenforo-threema-gateway" install_callback_class="ThreemaGateway_Installer" install_callback_method="install" uninstall_callback_class="ThreemaGateway_Installer" uninstall_callback_method="uninstall">
+<addon addon_id="ThreemaGateway" title="Threema Gateway (2FA)" version_string="1.0.0" version_id="1000070" url="https://github.com/rugk/xenforo-threema-gateway" install_callback_class="ThreemaGateway_Installer" install_callback_method="install" uninstall_callback_class="ThreemaGateway_Installer" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions>
     <admin_permission admin_permission_id="threemagw_showcredits" display_order="620"/>
@@ -300,19 +300,20 @@ automatically triggers the form submission via JavaScript
     <listener event_id="threemagw_message_callback_presave" execute_order="240" callback_class="ThreemaGateway_Listener_TfaMessageCallback" callback_method="checkForDeliveryReceipt" active="1" hint="128" description="2FA Fast - message processing callback"/>
   </code_event_listeners>
   <cron>
+    <entry entry_id="threemagwCleanUpALog" cron_class="ThreemaGateway_CronEntry_CleanUp" cron_method="pruneOldActionLogEntries" active="1"><![CDATA[{"day_type":"dow","dow":["-1"],"hours":["-1"],"minutes":["18"]}]]></entry>
     <entry entry_id="threemagwCleanUpMsgs" cron_class="ThreemaGateway_CronEntry_CleanUp" cron_method="pruneOldDeletedMessages" active="1"><![CDATA[{"day_type":"dow","dow":["-1"],"hours":["3"],"minutes":["17"]}]]></entry>
-    <entry entry_id="threemagwCleanUpTfaPend" cron_class="ThreemaGateway_CronEntry_CleanUp" cron_method="pruneExpiredTfaPendingRequests" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["-1"],"minutes":["48"]}]]></entry>
+    <entry entry_id="threemagwCleanUpTfaPend" cron_class="ThreemaGateway_CronEntry_CleanUp" cron_method="pruneExpiredTfaPendingRequests" active="1"><![CDATA[{"day_type":"dow","dow":["-1"],"hours":["-1"],"minutes":["48"]}]]></entry>
   </cron>
   <email_templates/>
   <email_template_modifications/>
   <optiongroups>
-    <group group_id="threemagw" display_order="1" debug_only="0"/>
-    <group group_id="threemagw_tfa" display_order="2" debug_only="0"/>
+    <group group_id="threemagw" display_order="115" debug_only="0"/>
+    <group group_id="threemagw_tfa" display_order="116" debug_only="0"/>
     <option option_id="threema_gateway_allow_get_receive" edit_format="callback" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params>ThreemaGateway_Option_AllowGet::renderOption</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="370"/>
+      <relation group_id="threemagw" display_order="770"/>
     </option>
     <option option_id="threema_gateway_donate" edit_format="template" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
@@ -337,7 +338,7 @@ e2e={xen:phrase option_threema_gateway_mode_e2e}</edit_format_params>
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="340"/>
+      <relation group_id="threemagw" display_order="740"/>
     </option>
     <option option_id="threema_gateway_httpshardening" edit_format="select" data_type="integer" can_backup="1">
       <default_value>1</default_value>
@@ -362,7 +363,7 @@ path</sub_options>
       <edit_format_params>ThreemaGateway_Option_DebugModeLog::renderOption</edit_format_params>
       <sub_options>enabled
 path</sub_options>
-      <relation group_id="threemagw" display_order="360"/>
+      <relation group_id="threemagw" display_order="760"/>
     </option>
     <option option_id="threema_gateway_privatekeyfile" edit_format="textbox" data_type="string" can_backup="1" validation_class="ThreemaGateway_Option_PrivateKeyPath" validation_method="verifyOption">
       <default_value></default_value>
@@ -380,7 +381,7 @@ path</sub_options>
       <default_value>1</default_value>
       <edit_format_params>threemagw_option_list_static_explain</edit_format_params>
       <sub_options></sub_options>
-      <relation group_id="threemagw" display_order="301"/>
+      <relation group_id="threemagw" display_order="701"/>
     </option>
     <option option_id="threema_gateway_status" edit_format="callback" data_type="boolean" can_backup="1">
       <default_value>1</default_value>
@@ -506,6 +507,24 @@ userfield</sub_options>
       <sub_options></sub_options>
       <relation group_id="threemagw" display_order="115"/>
     </option>
+    <option option_id="threema_gateway_throttle_1h" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="330"/>
+    </option>
+    <option option_id="threema_gateway_throttle_1min" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>4</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="305"/>
+    </option>
+    <option option_id="threema_gateway_throttle_5min" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>8</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="threemagw" display_order="310"/>
+    </option>
     <option option_id="threema_gateway_userfield_verifyexist" edit_format="onoff" data_type="boolean" can_backup="1">
       <default_value>0</default_value>
       <edit_format_params></edit_format_params>
@@ -526,7 +545,7 @@ type=textbox
 placeholder=-14 days</edit_format_params>
       <sub_options>enabled
 time</sub_options>
-      <relation group_id="threemagw" display_order="330"/>
+      <relation group_id="threemagw" display_order="730"/>
     </option>
   </optiongroups>
   <permissions>
@@ -552,8 +571,9 @@ time</sub_options>
   </permissions>
   <phrases>
     <phrase title="admin_permission_threemagw_showcredits" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway: Show credits]]></phrase>
+    <phrase title="cron_entry_threemagwCleanUpALog" version_id="3" version_string="0.3.0"><![CDATA[Threema Gateway: Clean up old action log entries previously used for rate-limiting]]></phrase>
     <phrase title="cron_entry_threemagwCleanUpMsgs" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway: Clean up old deleted Threema messages]]></phrase>
-    <phrase title="cron_entry_threemagwCleanUpTfaPend" version_id="2" version_string="0.2.0"><![CDATA[Threema 2FA: Clean up expired pending requests]]></phrase>
+    <phrase title="cron_entry_threemagwCleanUpTfaPend" version_id="3" version_string="0.3.0"><![CDATA[Threema 2FA: Räume abgelaufene Pending Requests auf]]></phrase>
     <phrase title="option_group_threemagw" version_id="1" version_string="0.1"><![CDATA[Threema Gateway]]></phrase>
     <phrase title="option_group_threemagw_description" version_id="1" version_string="0.1.0"><![CDATA[Here you can configure the "core" settings of the <a href="https://gateway.threema.ch" target="_blank" rel="noopener noreferrer">Threema Gateway</a>.]]></phrase>
     <phrase title="option_group_threemagw_tfa" version_id="1" version_string="0.1.0"><![CDATA[Threema Gateway - Two-factor-authentication]]></phrase>
@@ -674,6 +694,15 @@ It is useful that this value is a bit higher than the previous one, to give the 
     <phrase title="option_threema_gateway_threema_id_secret_explain" version_id="1" version_string="0.1.0"><![CDATA[Enter your secret for accessing the Threema Gateway here.{note}]]></phrase>
     <phrase title="option_threema_gateway_threema_id_secret_explain_note" version_id="1" version_string="0.1.0"><![CDATA[<br >
 <b>Note:</b> For security reasons your secret is mostly hidden and will only be changed when you replace the value here.]]></phrase>
+    <phrase title="option_threema_gateway_throttle_1h" version_id="3" version_string="0.3.0"><![CDATA[Send rate limit per hour]]></phrase>
+    <phrase title="option_threema_gateway_throttle_1h_explain" version_id="3" version_string="0.3.0"><![CDATA[Sets the maximum number of messages a user is allowed to sent in one hour.
+Setting this to 0 will disable this limitation.]]></phrase>
+    <phrase title="option_threema_gateway_throttle_1min" version_id="3" version_string="0.3.0"><![CDATA[Sent rate limit per minute]]></phrase>
+    <phrase title="option_threema_gateway_throttle_1min_explain" version_id="3" version_string="0.3.0"><![CDATA[Sets the maximum number of messages a user is allowed to sent in one minute.
+Setting this to 0 will disable this limitation.]]></phrase>
+    <phrase title="option_threema_gateway_throttle_5min" version_id="3" version_string="0.3.0"><![CDATA[Send rate limit in 5min]]></phrase>
+    <phrase title="option_threema_gateway_throttle_5min_explain" version_id="3" version_string="0.3.0"><![CDATA[Sets the maximum number of messages a user is allowed to sent in one 5 minutes.
+Setting this to 0 will disable this limitation.]]></phrase>
     <phrase title="option_threema_gateway_userfield_verifyexist" version_id="1" version_string="0.1.0"><![CDATA[Verify existence of Threema IDs entered in custom user fields]]></phrase>
     <phrase title="option_threema_gateway_userfield_verifyexist_explain" version_id="2" version_string="0.2.0"><![CDATA[When this option is deactivated only the format of the Threema ID is verified. If it is activated the Threema server is also queried to check whether the ID really exists.<br>
 Note that it is not verified whether the Threema ID <strong>belongs</strong> to the user.]]></phrase>
@@ -853,18 +882,21 @@ The displayed fingerprint is derived from the public key, which is linked to you
     <phrase title="tfa_threemagw_use_number_smilies_explain" version_id="1" version_string="0.1"><![CDATA[Replaces the numbers in the code with smilies.]]></phrase>
     <phrase title="tfa_threemagw_use_short_message" version_id="1" version_string="0.1"><![CDATA[Use short messages]]></phrase>
     <phrase title="tfa_threemagw_use_short_message_explain" version_id="2" version_string="0.2.0"><![CDATA[Uses short messages instead of long ones to allow you to see your verification code directly in the notification, so you do not have to open Threema to see it.]]></phrase>
+    <phrase title="threemagw_account_locked_due_to_high_number_of_sent_messages" version_id="3" version_string="0.3.0"><![CDATA[Your account was temporarily locked due to a high number of sent Threema messages.]]></phrase>
     <phrase title="threemagw_confirmation_code" version_id="1" version_string="0.1"><![CDATA[Threema Confirmation Code]]></phrase>
     <phrase title="threemagw_days" version_id="2" version_string="0.2.0"><![CDATA[days]]></phrase>
     <phrase title="threemagw_donate_consider_donating" version_id="2" version_string="0.2.0"><![CDATA[<b>Consider donating!</b> ❤️]]></phrase>
     <phrase title="threemagw_donate_currency" version_id="2" version_string="0.2.0"><![CDATA[{num}€]]></phrase>
     <phrase title="threemagw_donate_flattr" version_id="2" version_string="0.2.0"><![CDATA[Flattr]]></phrase>
     <phrase title="threemagw_donate_flattr_language_code" version_id="2" version_string="0.2.0"><![CDATA[en_GB]]></phrase>
+    <phrase title="threemagw_donate_gratipay" version_id="1000070" version_string="1.0.0"><![CDATA[Gratipay]]></phrase>
     <phrase title="threemagw_donate_like_addon_and_support_dev" version_id="2" version_string="0.2.0"><![CDATA[You like this add-on and want to <b>support</b> the development?]]></phrase>
     <phrase title="threemagw_donate_micro_donation" version_id="2" version_string="0.2.0"><![CDATA[Micro-donation]]></phrase>
     <phrase title="threemagw_donate_other_amount" version_id="2" version_string="0.2.0"><![CDATA[other amount]]></phrase>
     <phrase title="threemagw_donate_paypal" version_id="2" version_string="0.2.0"><![CDATA[PayPal]]></phrase>
     <phrase title="threemagw_donate_paypal_button_text" version_id="2" version_string="0.2.0"><![CDATA[Donate]]></phrase>
     <phrase title="threemagw_donate_paypal_me" version_id="2" version_string="0.2.0"><![CDATA[PayPal.me]]></phrase>
+    <phrase title="threemagw_donate_weekly" version_id="1000070" version_string="1.0.0"><![CDATA[Weekly]]></phrase>
     <phrase title="threemagw_fetching_publickey_failed" version_id="1" version_string="0.1.0"><![CDATA[Fetching public key failed.]]></phrase>
     <phrase title="threemagw_getting_credits_failed" version_id="1" version_string="0.1.0"><![CDATA[Getting credits failed.]]></phrase>
     <phrase title="threemagw_hours" version_id="2" version_string="0.2.0"><![CDATA[hours]]></phrase>

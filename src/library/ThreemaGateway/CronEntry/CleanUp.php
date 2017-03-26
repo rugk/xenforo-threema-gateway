@@ -53,4 +53,17 @@ class ThreemaGateway_CronEntry_CleanUp
         $messageModel = XenForo_Model::create('ThreemaGateway_Model_TfaPendingMessagesConfirmation');
         $messageModel->deleteExpired();
     }
+
+    /**
+     * This task removes all old action log entries, which are not anymore used
+     * for rate-limiting/throtteling any actions.
+     *
+     * This task should stay enabled.
+     */
+    public static function pruneOldActionLogEntries()
+    {
+        /** @var $throttleModel ThreemaGateway_Model_ActionThrottle */
+        $throttleModel = XenForo_Model::create('ThreemaGateway_Model_ActionThrottle');
+        $throttleModel->pruneActionLog();
+    }
 }

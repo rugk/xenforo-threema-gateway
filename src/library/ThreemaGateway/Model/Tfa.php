@@ -48,7 +48,7 @@ class ThreemaGateway_Model_Tfa extends XFCP_ThreemaGateway_Model_Tfa
     }
 
     /**
-     * Setter for provider ID.
+     * Getter for (custom) attempt limits.
      *
      * @return array
      */

@@ -171,7 +171,7 @@ class ThreemaGateway_Option_Status
                 // presumambly an error in setup
                 $extraError[]['text'] = new XenForo_Phrase('option_threema_gateway_status_phpsdk_not_ready');
             } else {
-                // presumambly not yet setup (default settings or so)
+                // presumably not yet setup (default settings or so)
                 $extraError[] = [
                     'text' => new XenForo_Phrase('option_threema_gateway_status_phpsdk_not_ready_yet'),
                     'descclass' => 'warning'

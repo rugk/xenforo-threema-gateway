@@ -161,13 +161,8 @@ class ThreemaGateway_Handler_Permissions
      */
     public function hasPermission($action = null, $noCache = false)
     {
-        if ($this->user === null) {
-            /** @var int|null $userId User id of user (from class) */
-            $userId = null;
-        } else {
-            /** @var int|null $userId User id of user (from class) */
-            $userId = $this->user['user_id'];
-        }
+        /** @var int|null $userId User id of user */
+        $userId = $this->userGetId(false);
 
         // check permission cache
         if ($noCache || !is_array($this->permissions)) {
@@ -185,6 +180,40 @@ class ThreemaGateway_Handler_Permissions
         }
 
         return $this->permissions;
+    }
+
+    /**
+     * Logs an action for checking it via {@link isLimited()} later.
+     *
+     * This uses the user e.g. set by {@link setUserId()}. If no user is set it
+     * uses the current visitor/user.
+     *
+     * @param  string     $action  The action the user has done
+     * @return bool|array
+     */
+    public function logAction($action)
+    {
+        /** @var int|null $userId User id of user */
+        $userId = $this->userGetId();
+
+        return (new ThreemaGateway_Model_ActionThrottle)->logAction($userId, $action);
+    }
+
+    /**
+     * Checks whether the user has the permission to do something.
+     *
+     * This uses the user e.g. set by {@link setUserId()}. If no user is set it
+     * uses the current visitor/user.
+     *
+     * @param  string     $action  The action you want to do
+     * @return bool|array
+     */
+    public function isLimited($action)
+    {
+        /** @var int|null $userId User id of user */
+        $userId = $this->userGetId();
+
+        return (new ThreemaGateway_Model_ActionThrottle)->isLimited($userId, $action);
     }
 
     /**
@@ -241,6 +270,26 @@ class ThreemaGateway_Handler_Permissions
     }
 
     /**
+     * Returns the current user ID.
+     *
+     * @param  bool $visitorFallback Optional - If set to false, this does not
+     *                                          fallback to the current user.
+     *
+     * @return int|null
+     */
+    protected function userGetId($visitorFallback = true)
+    {
+        if ($this->user !== null) {
+            return $this->user['user_id'];
+        }
+        if ($visitorFallback) {
+            return $this->getVisitorUserId();
+        }
+
+        return null;
+    }
+
+    /**
      * Checks whether a user is the default user/the current "visitor".
      *
      * @param  int|null $userId A user id or null
@@ -248,11 +297,18 @@ class ThreemaGateway_Handler_Permissions
      */
     protected function userIsDefault($userId)
     {
+        return $userId === $this->getVisitorUserId() || $userId === null;
+    }
+
+    /**
+     * Returns the user ID of the current visitor.
+     *
+     * @return int
+     */
+    protected function getVisitorUserId()
+    {
         /** @var XenForo_Visitor $visitor */
         $visitor = XenForo_Visitor::getInstance();
-        /** @var int $visitorUserId Visitor user id */
-        $visitorUserId = $visitor->getUserId();
-
-        return $userId === $visitorUserId || $userId === null;
+        return $visitor->getUserId();
     }
 }

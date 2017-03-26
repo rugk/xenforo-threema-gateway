@@ -19,7 +19,7 @@ class ThreemaGateway_Installer_Permissions
     const GROUP_ID = 'threemagw';
 
     /**
-     * Sets an "allow" rule for a specific user group.
+     * Sets the rule for a specific user group.
      *
      * @param int    $userGroupId        The user group:
      *                                   1 = unconfirmed

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <language title="Deutsch [Sie]" date_format="j. F Y" time_format="H:i" decimal_point="," thousands_separator="." language_code="de-DE" text_direction="LTR" addon_id="ThreemaGateway">
   <phrase title="admin_permission_threemagw_showcredits" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway: Credits anzeigen]]></phrase>
+  <phrase title="cron_entry_threemagwCleanUpALog" addon_id="ThreemaGateway" version_id="1000070" version_string="1.0.0"><![CDATA[Threema Gateway: Räume alte Log-Aktionen-Einträge auf, die zuvor zur Ratenbeschränkung genutzt wurden]]></phrase>
   <phrase title="cron_entry_threemagwCleanUpMsgs" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway: Räume alte, gelöschte Threema-Nachrichten auf]]></phrase>
   <phrase title="cron_entry_threemagwCleanUpTfaPend" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema 2FA: Räume abgelaufene Pending Requests auf]]></phrase>
   <phrase title="option_group_threemagw" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Gateway]]></phrase>
@@ -24,7 +25,7 @@ Ein starker Schutz gegen Replay-Angriffe wird immer benutzt. Es ist also nicht n
   <phrase title="option_threema_gateway_httpshardening" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[HTTPS-Verbindung verstärken]]></phrase>
   <phrase title="option_threema_gateway_httpshardening_basic" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Einfaches Hardening]]></phrase>
   <phrase title="option_threema_gateway_httpshardening_enhanced" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erweitertes Hardening]]></phrase>
-  <phrase title="option_threema_gateway_httpshardening_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn Nachrichten gesendet werden, verhindert dies Fallback-Angriffe auf die TLS/HTTPS-Verbindung indem es die TLS-Version und Cipher auf eine moderne Auswahl limitiert.
+  <phrase title="option_threema_gateway_httpshardening_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn Nachrichten gesendet werden, verhindern dies Fallback-Angriffe auf die TLS/HTTPS-Verbindung indem es die TLS-Version und Cipher auf eine moderne Auswahl limitiert.
 Sie solltest versuchen, dies so hoch wie möglich zu setzen. Wenn Sie Verbindungsprobleme zum Threema-Server bemerken (z.B. wenn die Credits nicht korrekt angezeigt werden können) kennen Sie Ihr Limit.]]></phrase>
   <phrase title="option_threema_gateway_httpshardening_no" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Kein Hardening]]></phrase>
   <phrase title="option_threema_gateway_keystorefile" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Den PHP-Keystore benutzen (nicht empfohlen)]]></phrase>
@@ -44,11 +45,11 @@ Aus Sicherheitsgründen wird diese Einstellung ignoriert, wenn XenForo nicht im 
   <phrase title="option_threema_gateway_receivecallback_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Hier können Sie die URL für eingehende Nachrichten für den Threema Gateway-Server finden, welche Sie benötigen um Nachrichten zu empfangen. Der Zugriffstoken, den Sie hier verändern können, sollte ein zufälliger String sein.
 Dieser wurde bei Installation dieses Add-ons zufällig generiert. Sie können das Feld leer lassen, um ihn neu generieren zu lassen.]]></phrase>
   <phrase title="option_threema_gateway_static_advanced_settings_warning" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Erweiterte Optionen]]></phrase>
-  <phrase title="option_threema_gateway_static_advanced_settings_warning_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<b>Warnung:</b> Unten sind spezielle Einstellungen für fortgeschrittene Nutzer aufgelistet! Es wird im Allgemeinen nicht empfohlen, sie zu ändern. <b>Änderen Sie diese nur wenn Sie wissen, was Sie tun!</b>]]></phrase>
+  <phrase title="option_threema_gateway_static_advanced_settings_warning_explain" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[<b>Warnung:</b> Unten sind spezielle Einstellungen für fortgeschrittene Nutzer aufgelistet! Es wird im Allgemeinen nicht empfohlen, sie zu ändern. <b>Ändern Sie diese nur, wenn Sie wissen, was Sie tun!</b>]]></phrase>
   <phrase title="option_threema_gateway_status" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Status]]></phrase>
   <phrase title="option_threema_gateway_status_credits" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Verbleibende Credits: <b>{credits}</b>]]></phrase>
   <phrase title="option_threema_gateway_status_credits_error" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Es gab einen Fehler beim Abrufen der Credits. Sie haben vielleicht eine falsche Threema-Gateway-ID oder -Secret eingeben oder es gab einen Verbindungsfehler.]]></phrase>
-  <phrase title="option_threema_gateway_status_credits_low" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Ihre Credits werden weniger. Bitte erwägen Sie, sie aufzuladen.]]></phrase>
+  <phrase title="option_threema_gateway_status_credits_low" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[Ihre Credits werden weniger. Bitte erwägen Sie sie aufzuladen.]]></phrase>
   <phrase title="option_threema_gateway_status_credits_out" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie haben keine Credits (mehr). Ohne Credits können Sie keine Nachrichten mehr versenden.]]></phrase>
   <phrase title="option_threema_gateway_status_credits_permission" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Sie haben keine Berechtigung zum Einsehen der Credits.]]></phrase>
   <phrase title="option_threema_gateway_status_credits_recharge" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[(<a href="https://gateway.threema.ch/de/load" target="_blank" rel="noopener noreferrer">aufladen</a>)]]></phrase>
@@ -123,6 +124,15 @@ Es ist nützlich, wenn dieser Wert etwas höher ist als der vorherige, um dem Nu
   <phrase title="option_threema_gateway_threema_id_secret_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Geben Sie hier Ihr Secret zum Zugriff auf das Threema Gateway ein.{note}]]></phrase>
   <phrase title="option_threema_gateway_threema_id_secret_explain_note" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<br >
 <b>Hinweis:</b> Aus Sicherheitsgründen ist das Secret hier größtenteils versteckt und wird nur geändert, wenn Sie den Wert hier ersetzen.]]></phrase>
+  <phrase title="option_threema_gateway_throttle_1h" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[Senderatenlimit pro Stunde]]></phrase>
+  <phrase title="option_threema_gateway_throttle_1h_explain" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[Legt die maximale Anzahl an Nachrichten fest, die ein Nutzer in einer Stunde senden darf.
+Ist dies auf 0 gesetzt, so wird dieses Limit ignoriert.]]></phrase>
+  <phrase title="option_threema_gateway_throttle_1min" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[Senderatenlimit pro Minute]]></phrase>
+  <phrase title="option_threema_gateway_throttle_1min_explain" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[Legt die maximale Anzahl an Nachrichten fest, die ein Nutzer in einer Minute senden darf.
+Ist dies auf 0 gesetzt, so wird dieses Limit ignoriert.]]></phrase>
+  <phrase title="option_threema_gateway_throttle_5min" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[Senderatenlimit in 5 MIn.]]></phrase>
+  <phrase title="option_threema_gateway_throttle_5min_explain" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[Legt die maximale Anzahl an Nachrichten fest, die ein Nutzer in fünf Minuten senden darf.
+Ist dies auf 0 gesetzt, so wird dieses Limit ignoriert.]]></phrase>
   <phrase title="option_threema_gateway_userfield_verifyexist" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Die Existenz von Threema-IDs in Benutzerfeldern verifizieren]]></phrase>
   <phrase title="option_threema_gateway_userfield_verifyexist_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Wenn diese Option deaktiviert ist, wird nur das Format der Threema-ID überprüft. Ist sie aktiviert, wird der Threema-Server auch gefragt, ob die ID wirklich existiert.<br>
 Bedenke, dass nicht geprüft wird, ob die Threema ID wirklich zu dem Nutzer <b>gehört</b>.]]></phrase>
@@ -303,6 +313,7 @@ Der dargestellte Fingerabdruck ist von Ihrem öffentlichen Schlüssel abgeleitet
   <phrase title="tfa_threemagw_use_short_message" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Benutze kurze Nachrichten]]></phrase>
   <phrase title="tfa_threemagw_use_short_message_explain" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Benutzt kurze Nachrichten anstatt langen Nachrichten, um es möglich zu machen, dass Sie den Verifikationscode direkt in der Benachrichtigung sehen, sodass Sie Threema nicht extra öffnen müssen, um ihn zu sehen.]]></phrase>
   <phrase title="threema_this_action_required_e2e" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Diese Aktion benötigt den Ende-zu-Ende-verschlüsselten Threema-Modus.]]></phrase>
+  <phrase title="threemagw_account_locked_due_to_high_number_of_sent_messages" addon_id="ThreemaGateway" version_id="3" version_string="0.3.0"><![CDATA[Ihr Account wurde wegen einer hohen Anzahl an gesendeten Threema-Nachrichten temporär gesperrt.]]></phrase>
   <phrase title="threemagw_confirmation_code" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Threema Bestätigungscode]]></phrase>
   <phrase title="threemagw_days" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[Tage]]></phrase>
   <phrase title="threemagw_donate_consider_donating" addon_id="ThreemaGateway" version_id="2" version_string="0.2.0"><![CDATA[<b>Erwägen Sie eine Spende!</b> ❤️]]></phrase>

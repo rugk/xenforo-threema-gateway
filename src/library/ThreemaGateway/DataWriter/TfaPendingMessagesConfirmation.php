@@ -39,8 +39,7 @@ class ThreemaGateway_DataWriter_TfaPendingMessagesConfirmation extends XenForo_D
                 ],
                 'user_id' => [
                     'type' => self::TYPE_UINT,
-                    'required' => true,
-                    'maxLength' => 10
+                    'required' => true
                 ],
                 'session_id' => [
                     'type' => self::TYPE_STRING,

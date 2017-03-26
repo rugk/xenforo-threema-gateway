@@ -19,7 +19,7 @@ class ThreemaGateway_Installer_TfaPendingConfirmMsgs
     const DB_TABLE = 'xf_threemagw_tfa_pending_msgs_confirm';
 
     /**
-     * Create a new keystore (table) in the database.
+     * Create a new table in the database.
      */
     public function create()
     {
@@ -39,7 +39,7 @@ class ThreemaGateway_Installer_TfaPendingConfirmMsgs
     }
 
     /**
-     * Deletes the keystore (table).
+     * Deletes the table.
      */
     public function destroy()
     {

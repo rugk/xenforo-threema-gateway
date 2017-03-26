@@ -88,6 +88,14 @@ class ThreemaGateway_Installer
             $pendReqInstaller = new ThreemaGateway_Installer_TfaPendingConfirmMsgs;
             $pendReqInstaller->create();
         }
+
+        // introduced in v1.00.00 70 (stable)
+        if ($oldAddonVersion < 1000070) {
+            // add throttle table
+            /** @var ThreemaGateway_Installer_ActionThrottle $throttleInstaller */
+            $throttleInstaller = new ThreemaGateway_Installer_ActionThrottle;
+            $throttleInstaller->create();
+        }
     }
 
     /**
@@ -95,6 +103,11 @@ class ThreemaGateway_Installer
      */
     public static function uninstall()
     {
+        // delete throttle table
+        /** @var ThreemaGateway_Installer_ActionThrottle $throttleInstaller */
+        $throttleInstaller = new ThreemaGateway_Installer_ActionThrottle;
+        $throttleInstaller->destroy();
+
         // delete tfa tables
         /** @var ThreemaGateway_Installer_TfaPendingConfirmMsgs $pendReqInstaller */
         $pendReqInstaller = new ThreemaGateway_Installer_TfaPendingConfirmMsgs;
@@ -145,8 +158,8 @@ class ThreemaGateway_Installer
             ThreemaGateway_Option_PrivateKeyPath::removePrivateKey($xenOptions->threema_gateway_privatekeyfile);
         } catch (Exception $e) {
             // ignore errors as deletion operations are additional security
-            // features, which may fail in an excpected way, e.g. when XenForo
-            // does not have access to the files
+            // features, which may fail in an expected way, e.g. when XenForo
+            // does not have write access to these files.
         }
     }
 

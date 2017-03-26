@@ -12,7 +12,7 @@
 class ThreemaGateway_Session extends XFCP_ThreemaGateway_Session
 {
     /**
-     * Exposes the protected method _setup publicy, so everyone can use it.
+     * Exposes the protected method _setup publicly, so everyone can use it.
      *
      * To skip IP address validation now one just have to use $ipAddress = false.
      *

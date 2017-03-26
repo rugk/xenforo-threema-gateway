@@ -88,10 +88,6 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
 
     /**
      * Skips the permission check. (not recommend!).
-     *
-     * Only do this if you are e.g. operating as another user currently such as
-     * when you want to send a (reply) message directly after receiving one
-     * though the Gateway callback.
      */
     public function skipPermissionCheck()
     {
@@ -108,9 +104,18 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
     protected function initiate(&$threemaId = null)
     {
         if (!$this->isPermissionChecked) {
+            // general permission
             if (!$this->permissions->hasPermission('send')) {
                 throw new XenForo_Exception(new XenForo_Phrase('threemagw_permission_error'));
             }
+
+            // rate-limit
+            // NOTE: As this check is skipped with the permission cache it may
+            // happen that the limit is exceeded when more than one message is
+            // sent per request, which is unlikely AFAIK.
+            if ($this->permissions->isLimited('send')) {
+                throw new XenForo_Exception(new XenForo_Phrase('threemagw_account_locked_due_to_high_number_of_sent_messages'));
+            };
 
             $this->isPermissionChecked = true;
         }
@@ -130,6 +135,9 @@ class ThreemaGateway_Handler_Action_Sender extends ThreemaGateway_Handler_Action
     protected function evaluateResult($result)
     {
         if ($result->isSuccess()) {
+            // log that the user has sent a message
+            $this->permissions->logAction('send');
+
             return $result->getMessageId();
         } else {
             throw new XenForo_Exception(new XenForo_Phrase('threemagw_sending_failed') . ' ' . $result->getErrorMessage());

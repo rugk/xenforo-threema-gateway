@@ -251,7 +251,7 @@ class ThreemaGateway_Handler_Action_Receiver extends ThreemaGateway_Handler_Acti
             //
             // Forunately this problem can be solved by just querying each
             // message type individually. This does also only do 2 queries,
-            // which is even less than if we would use getAllMessageData, as
+            // which is even less than if we would use getAllMessageData(), as
             // there we need 3 queries: metadata + msg type 1 + msg type 2.
             // As we know the possible message types this is possible. In
             // all other ways one must query the metadata and filter or split
