@@ -130,8 +130,8 @@ class ThreemaGateway_Model_ActionThrottle extends XenForo_Model
                 if ($xenOptions->threema_gateway_throttle_5min > 0) {
                     $limitArray[] = [60 * 5, $xenOptions->threema_gateway_throttle_5min];
                 }
-                if ($xenOptions->threema_gateway_throttle_5h > 0) {
-                    $limitArray[] = [60 * 60, $xenOptions->threema_gateway_throttle_5h];
+                if ($xenOptions->threema_gateway_throttle_1h > 0) {
+                    $limitArray[] = [60 * 60, $xenOptions->threema_gateway_throttle_1h];
                 }
                 break;
         }
